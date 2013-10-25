@@ -1,0 +1,95 @@
+LEVEL1
+
+
+Ability/Weapon/Class enumeration:
+	
+	weapon		class				power attack		ranged/melee		NOTES:
+	SWORD:		Fighter class. 		EVISCERATE			melee				eviscerate almost kills most enemies. (single target.)
+	BOW:		Archer class. 		BLINK				ranged				blink allows player to teleport forwards a several feet
+	STAFF:		Mage class. 		DISCHARGE			ranged				discharge electrocutes several nearby enemies stunning them briefly and doing medium damage
+	TOOLBOX:	Engineer class. 	TURRETS!!			melee				turrets do relatively high damage, very weak. engineer has slow base attack that briefly stuns
+
+
+Item Enumeration and naming convention:
+
+BASE ORES:
+Bones
+Copper Ore
+Iron Ore
+Steel Chunks
+Mithril Ore
+Dragon Scales
+Ethereal Ore
+
+
+BASE WEAPON PARTS:
+shagreen 					SWORD HANDLE
+sharpening stone			SWORD BLADE
+magical essence				STAFF HANDLE
+black gem					STAFF TOPPER
+fibrous roots				BOW HANDLE
+wood scraps					BOW ARROWS
+viscous oil					TOOLBOX BOX
+draconi currency			TOOLBOX PARTS
+
+BASE ARMOR PARTS:
+padding			helmet
+solder			armor
+leather strip	boots
+
+The NAMING CONVENTION is as follows:
+
+name1:		name2:		metal:
+lightened	alloy		bone
+crafted					copper
+hardened	great		iron
+						steel
+						mithril
+						dragon scale
+						ethereal
+
+
+WEAPONS:
+<name1> <blade metal> <name2> <sword/bow/axe/toolbox>
+
+WEAPON PARTS:
+<metal> <name2> sword handle	
+<name1> <metal> sword blade		
+<metal> <name2> staff handle	
+<name1> <metal> powerstone
+<metal> <name2> toolbox (empty)
+<name1> <metal>	spare parts
+<metal> <name2> bow (empty)
+<name1> <metal>	arrows
+
+ARMOR TYPES:
+<name1> <metal>	helm
+<name1> <metal>	boots
+<name1> <metal>	curaiss
+
+ORES:
+lightened <ore>
+<ore>             <--(normal ore has no special name)
+hardened <ore>
+
+
+
+LEVEL2
+
+
+
+
+BASE UPGRADE PARTS:
+adhesive goo			ARMOR			-- found in dungeon randomly
+magic charm				DAMAGE			-- drops from monster
+flesh scraps			HEALTH			-- drops from monster
+mercury					ATTACK SPEED	-- found in dungeon randomly
+
+
+UPGRADE CATEGORIES:
+
+	Health			in 7 tiers, copper->ethereal
+	Damage			
+	Atk Speed			
+	Armour		
+
