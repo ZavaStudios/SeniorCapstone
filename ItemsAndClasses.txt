@@ -1,5 +1,161 @@
 LEVEL1
 
+Crafting any weapon:
+All weapons in rogue craft are composed of a 'handle' and a 'blade.'
+The player must craft a handle and blade of their choosing and combine them to create a weapon.
+Both the handle and blade are crafted following the crafting a weapon component use case.
+The blade and handle may be crafted into the finished weapon following the crafting an item use case.
+The tier of ore used to craft the blade and handle will determine the quality of the weapon, where the stats of the finished weapon are the combined stats of the blade and handle.
+
+Crafting any ‘handle’
+Handles are made of three ores and a base component.
+All handles come in three varieties: alloy, regular, and great.
+Handles require the respective ore to create.
+Handles and their base component consist of:
+bow (empty)		-- fibrous roots
+toolbox (empty)		-- viscous oil
+staff handle		-- magical essence
+sword handle		-- shagreen leather
+In order to craft a particular handle of a particular tier of ore, the user must first have unlocked crafting that type of handle at that tier.
+By crafting a handle of a particular type, the player unlocks the ability to craft another handle of that type using the next tier ore.
+
+Crafting any ‘blade’
+Blades are made of five ores and a base component.
+All blades come in three varieties: hardened, crafted, and lightened.
+Blades require the respective ore to create. 'Crafted' blades require regular ore.
+Blades and their base component consist of:
+arrows	-- wooden scraps
+spare parts	-- ancient currency
+staff powerstone	-- black crystal
+sword blade	-- sharpening stone
+In order to craft a particular handle of a particular tier of ore, the user must first have unlocked crafting that type of handle at that tier.
+By crafting a handle of a particular type, the player unlocks the ability to craft another handle of that type using the next tier ore.
+
+Creating your first sword
+To create a bone sword the player must first craft a sword blade and a sword handle
+
+Crafting a bone sword handle:	
+There are three types of bone sword handles that can be created: alloy, regular and great. Each requires 3 bones and 1 shagreen leather.
+bone alloy sword handle
+low attack damage and high attack speed.
+requires lightened bones.
+bone sword handle
+balanced attack speed and damage.
+requires regular bones.	
+bone great sword handle
+high attack damage and low attack speed.
+requires hardened bones.				
+The player follows the crafting an item use case to combine the components into a sword handle. 
+By crafting a particular type of bone sword handle, the player unlocks the ability to craft a bronze version of that sword handle.
+
+Crafting a bone sword blade:
+There are three types of bone sword blade that can be created: lightened, crafted and hardened. Each requires 3 bones and 1 shagreen leather.
+lightened bone sword blade
+low attack damage and high attack speed.
+requires lightened bones.
+crafted bone sword blade
+balanced attack speed and damage.
+requires regular bones.	
+hardened bone sword blade
+high attack damage and low attack speed.
+requires hardened bones.				
+The player follows the crafting an item use case to combine the components into a sword blade. 
+By crafting a particular type of bone sword blade, the player unlocks the ability to craft a bronze version of that sword blade.
+
+Combining the bone sword blade and handle:
+Once the player has crafted the handle and blade, they can combine them following the crafting an item use case to create the final weapon.
+If the player built a lightened blade and a great sword handle, their final weapon would be a Lightened Bone Great Sword.
+
+Creating a helmet
+Helmets come in three varieties: hardened, crafted, and lightened. 
+Crafting a helmet requires four (4) of the respective ore and some cloth padding.
+To create a helmet the player will combine the ore and padding via the crafting an item use case
+lightened helmet
+higher speed and less armor
+crafted helmet
+balanced speed/armor
+hardened helmet
+higher armor and less speed	
+In order to craft a particular helmet with a particular tier of ore, the player must have first unlocked it by crafting a helmet of that type of the tier below.
+
+Creating a cuirass
+Cuirasses come in three varieties: hardened, crafted, and lightened. 
+Crafting a cuirass requires six (6) of the respective ore and some solder
+To create a cuirass the player will combine the ore and padding via the crafting an item use case
+lightened cuirass 
+higher speed and less armor
+crafted cuirass 
+balanced speed/armor
+hardened cuirass 
+higher armor and less speed	
+In order to craft a particular cuirass with a particular tier of ore, the player must have first unlocked it by crafting a cuirass of that type of the tier below.
+
+Creating boots
+boots come in three varieties: hardened, crafted, and lightened. 
+Crafting boots requires three (3) of the respective ore and some leather strips.
+To create boots the player will combine the ore and padding via the crafting an item use case
+lightened boots 
+higher speed and less armor
+crafted boots 
+balanced speed/armor
+hardened boots 
+higher armor and less speed	
+In order to craft particular boots with a particular tier of ore, the player must have first unlocked it by crafting boots of that type of the tier below.
+
+Crafting a sword
+To craft a sword the player must craft a sword handle and a sword blade following the crafting an item use case.
+The player may then combine the two items following the crafting an item use case to create the finished sword.
+
+Crafting a staff
+To craft a sword the player must craft a staff handle and a powerstone following the crafting an item use case.
+The player may then combine the two items following the crafting an item use case to create the finished staff.
+
+Crafting a bow
+To craft a sword the player must craft a bow handle and arrows following the crafting an item use case.
+The player may then combine the two items following the crafting an item use case to create the finished bow.
+
+Crafting a toolbox
+To craft a sword the player must craft an empty toolbox and spare parts following the crafting an item use case.
+The player may then combine the two items following the crafting an item use case to create the finished toolbox.
+
+Crafting a staff handle
+Crafting a staff handle requires three ores and the staff handle base component: magical essence.
+The player can create an alloy, regular, or a great staff handle; crafting a type of handle requires the respective ore type. The alloy allows faster, lower damage attacks, the regular is balanced, and the great version allows higher damage attacks at lower speed.
+The player can find magical essence and ores throughout the dungeon, then follow the crafting an item use case to create a staff handle.
+In order to craft a staff handle of a particular tier, the player must have unlocked it by crafting that type of staff handle in the previous tier.
+
+Crafting a powerstone
+Crafting a powerstone requires five ores and the powerstone base component: black crystal.
+The player can create a lightened, crafted, or a hardened powerstone; crafting a type of handle requires the respective ore type. The lightened allows faster, lower damage attacks, the crafted is balanced, and the hardened version allows higher damage attacks at lower speed.
+The player can find black crystal and ores throughout the dungeon, then follow the crafting an item use case to create a powerstone.
+In order to craft a staff handle of a particular tier, the player must have unlocked it by crafting that type of staff handle in the previous tier.
+
+Fighting with a staff
+Player chooses to build a staff at the beginning of game.
+Player now has basic ranged attacks that do low damage
+Player also can activate a special ability every X seconds.
+Magic Blast: Does high damage to area
+
+Fighting with a sword
+Player chooses to build a sword at the beginning of game.
+Player now has basic melee attacks that do medium damage
+Player also can activate a special ability every X seconds.
+Eviscerate: Massive damage to single target, kills most enemies
+
+Fighting with a bow
+Player chooses to build a bow at the beginning of game.
+Player now has basic ranged attacks that do medium damage
+Player also can activate a special ability every X seconds.
+Blink: Teleport fifteen feet forwards
+
+Fighting with a toolbox
+Player chooses to build a toolbox at the beginning of game.
+Player now has basic ranged attacks with low damage and brief stun
+Player also can activate a special ability every X seconds.
+Turret: High damage turret with very low health spawns for a few seconds
+Turret shoots nearby enemies
+
+
 
 Ability/Weapon/Class enumeration:
 	
