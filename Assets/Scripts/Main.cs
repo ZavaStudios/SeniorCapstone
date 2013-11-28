@@ -12,6 +12,7 @@ public class Main : MonoBehaviour
 
     public Transform floor_tile;
     public Transform wall_tile;
+	public Transform mine_cube;
 
 	// Use this for initialization
 	void Start ()
@@ -75,6 +76,17 @@ public class Main : MonoBehaviour
                 }
                 else
                     InstantiateWall(center, roomWidth, roomHeight, RogueDungeon.Room.RIGHT_DOOR_MASK);
+
+				// One last thing: add some cubes!
+				for (int x_0 = 0; x_0 < 3; x_0++)
+				{
+					for (int y_0 = 0; y_0 < 3; y_0++)
+					{
+						Instantiate (mine_cube,
+				             		center + new Vector3 (x_0, 0.5f, y_0),
+				             		Quaternion.identity);
+					}
+				}
 
                 // Move to the next row
                 room_bounds.y += (RogueDungeon.MAX_ROOM_HEIGHT + 1) * TILE_SCALAR;
@@ -190,9 +202,9 @@ public class Main : MonoBehaviour
         float offsetDistanceZ1 = -(roomHeight + wallLength);
         float offsetDistanceZ2 = -(roomHeight + wallLength);
         float offsetDistanceX1 = TILE_SCALAR;
-        float offsetDistanceX2 = -TILE_SCALAR;
-
-        if (door_code == RogueDungeon.Room.DOWN_DOOR_MASK)
+		float offsetDistanceX2 = -TILE_SCALAR;
+		
+		if (door_code == RogueDungeon.Room.DOWN_DOOR_MASK)
         {
             offsetDistanceZ1 = -offsetDistanceZ1;
             offsetDistanceZ2 = -offsetDistanceZ2;
@@ -215,9 +227,9 @@ public class Main : MonoBehaviour
             offsetDistanceZ1 = TILE_SCALAR;
             offsetDistanceZ2 = -TILE_SCALAR;
             offsetDistanceX1 = roomWidth + wallLength;
-            offsetDistanceX2 = roomWidth + wallLength;
-        }
-        // else: door mask is presumed to be up, which we set up to already
+			offsetDistanceX2 = roomWidth + wallLength;
+		}
+		// else: door mask is presumed to be up, which we set up to already
 
         // If the wallLength would be 0, don't waste space drawing an invisible wall
         if (wallLength == 0)

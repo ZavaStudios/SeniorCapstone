@@ -39,10 +39,10 @@
 	<Reference Include="System.Core" />
 	<Reference Include="System.Xml.Linq" />
 	<Reference Include="UnityEngine">
-	  <HintPath>E:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>E:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +52,9 @@
      <Compile Include="Assets\Scripts\Maze Generation\DungeonGenerator.cs" />
      <Compile Include="Assets\Scripts\Maze Generation\Maze.cs" />
      <Compile Include="Assets\Scripts\Maze Generation\RogueDungeon.cs" />
+     <Compile Include="Assets\Scripts\MineableBlockLogic.cs" />
+     <Compile Include="Assets\Scripts\MiningScript.cs" />
+     <Compile Include="Assets\Scripts\Player.cs" />
  <Reference Include="Assembly-UnityScript-firstpass">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>
