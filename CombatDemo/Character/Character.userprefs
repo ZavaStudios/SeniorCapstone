@@ -1,11 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\WeaponBase.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GUICrosshair.cs">
     <Files>
-      <File FileName="Assets\Scripts\WeaponBase.cs" Line="30" Column="4" />
-      <File FileName="Assets\Scripts\Unit.cs" Line="24" Column="1" />
-      <File FileName="Assets\Scripts\UnitPlayer.cs" Line="22" Column="2" />
-      <File FileName="Assets\Scripts\WeaponSword.cs" Line="13" Column="16" />
+      <File FileName="Assets\Scripts\GUICrosshair.cs" Line="22" Column="1" />
+      <File FileName="Assets\Scripts\WeaponBase.cs" Line="34" Column="11" />
+      <File FileName="Assets\Scripts\UnitPlayer.cs" Line="23" Column="26" />
+      <File FileName="Assets\Scripts\WeaponSword.cs" Line="35" Column="44" />
+      <File FileName="Assets\Scripts\Unit.cs" Line="28" Column="4" />
+      <File FileName="Assets\Scripts\UnitEnemy.cs" Line="36" Column="2" />
+      <File FileName="Assets\Scripts\WeaponStaff.cs" Line="17" Column="35" />
+      <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\CharacterMotor.js" Line="222" Column="42" />
+      <File FileName="Assets\Scripts\WeaponMonster.cs" Line="12" Column="22" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

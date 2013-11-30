@@ -6,18 +6,32 @@ using System.Collections;
 
 public class Unit : MonoBehaviour 
 {
-	
+	protected float health = 		100.0f;
+	protected float moveSpeed = 	10.0f;
 	protected WeaponBase weapon;
 	
-	// Use this for initialization
-	void Start () 
+	virtual protected void Start () 
+	{
+		weapon = gameObject.GetComponent<WeaponBase>();
+	}
+	
+	virtual protected void Update () 
 	{
 		
 	}
 	
-	// Update is called once per frame
-	void Update () 
+	public void doDamage(float amount)
 	{
+		this.health -=  amount;
 		
+		if (health <= 0)
+		{
+			killUnit();
+		}
+	}
+	
+	virtual protected void killUnit()
+	{
+
 	}
 }

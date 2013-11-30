@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeaponSword : WeaponBase
+public class WeaponStaff : WeaponBase
 {
 
 	// Use this for initialization
 	protected override void Start ()
 	{
-		attackRange = 5f;
+		attackRange = 1000.0f;
 		weaponDamage = 20.0f;
-		attackDelay = 1.5f;
+		attackDelay = 2.0f;
 		base.Start();
 	}
 	
@@ -26,7 +26,7 @@ public class WeaponSword : WeaponBase
 		{
 			if(rayHit.collider.gameObject.CompareTag("Enemy"))
 			{
-				Unit enemy = rayHit.collider.GetComponent<Unit>();
+				UnitEnemy enemy = rayHit.collider.GetComponent<UnitEnemy>();
 				if(!enemy)
 					print ("that is not a real enemy");
 				else
@@ -34,7 +34,7 @@ public class WeaponSword : WeaponBase
 			}
 			if(rayHit.collider.gameObject.CompareTag("Ore"))
 			{
-				print ("You can't mine with a sword");
+				print ("You missed! That's a wall.");
 			}
 		}
 		attack = false;

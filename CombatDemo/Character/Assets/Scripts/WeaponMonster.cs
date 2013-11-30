@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeaponSword : WeaponBase
+public class WeaponMonster : WeaponBase
 {
 
 	// Use this for initialization
@@ -9,7 +9,7 @@ public class WeaponSword : WeaponBase
 	{
 		attackRange = 5f;
 		weaponDamage = 20.0f;
-		attackDelay = 1.5f;
+		attackDelay = 2.0f;
 		base.Start();
 	}
 	
@@ -22,19 +22,21 @@ public class WeaponSword : WeaponBase
 	protected override void attackRoutine (Vector3 faceDir)
 	{
 		print("attacking..");
-		if(Physics.Raycast(transform.position, faceDir, out rayHit, attackRange,3<<8)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
+		
+		Transform Player = GameObject.FindGameObjectWithTag("Player").transform; 
+		Vector3 PlayerPosition = Player.position;
+		Vector3 dir = PlayerPosition - transform.position;
+		
+		if(Physics.Raycast(transform.position, dir, out rayHit, attackRange)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
 		{
-			if(rayHit.collider.gameObject.CompareTag("Enemy"))
+			print ("Raycast hit");
+			if(rayHit.collider.gameObject.CompareTag("Player"))
 			{
 				Unit enemy = rayHit.collider.GetComponent<Unit>();
 				if(!enemy)
 					print ("that is not a real enemy");
 				else
 					enemy.doDamage(weaponDamage);
-			}
-			if(rayHit.collider.gameObject.CompareTag("Ore"))
-			{
-				print ("You can't mine with a sword");
 			}
 		}
 		attack = false;
