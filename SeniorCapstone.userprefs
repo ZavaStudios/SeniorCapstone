@@ -1,13 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\MineableBlockLogic.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Unit.cs">
     <Files>
-      <File FileName="..\..\MiningSkeleton\Assets\MiningScript.cs" Line="16" Column="76" />
-      <File FileName="Assets\Scripts\Main.cs" Line="87" Column="41" />
-      <File FileName="Assets\Scripts\FirstPersonViewController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Player.cs" Line="20" Column="1" />
-      <File FileName="Assets\Scripts\MiningScript.cs" Line="26" Column="4" />
-      <File FileName="Assets\Scripts\MineableBlockLogic.cs" Line="40" Column="1" />
+      <File FileName="Assets\Scripts\WeaponSword.cs" Line="33" Column="20" />
+      <File FileName="Assets\Scripts\UnitEnemy.cs" Line="37" Column="46" />
+      <File FileName="Assets\Scripts\Unit.cs" Line="15" Column="50" />
+      <File FileName="Assets\Scripts\WeaponMonster.cs" Line="30" Column="43" />
+      <File FileName="Assets\Scripts\WeaponBase.cs" Line="29" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

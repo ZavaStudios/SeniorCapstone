@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\FirstPersonViewController.cs" />
+     <Compile Include="Assets\Scripts\GUICrosshair.cs" />
      <Compile Include="Assets\Scripts\Main.cs" />
      <Compile Include="Assets\Scripts\Main_Skeleton.cs" />
      <Compile Include="Assets\Scripts\Maze Generation\DungeonGenerator.cs" />
@@ -55,6 +56,13 @@
      <Compile Include="Assets\Scripts\MineableBlockLogic.cs" />
      <Compile Include="Assets\Scripts\MiningScript.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\Unit.cs" />
+     <Compile Include="Assets\Scripts\UnitEnemy.cs" />
+     <Compile Include="Assets\Scripts\UnitPlayer.cs" />
+     <Compile Include="Assets\Scripts\WeaponBase.cs" />
+     <Compile Include="Assets\Scripts\WeaponMonster.cs" />
+     <Compile Include="Assets\Scripts\WeaponStaff.cs" />
+     <Compile Include="Assets\Scripts\WeaponSword.cs" />
  <Reference Include="Assembly-UnityScript-firstpass">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>
