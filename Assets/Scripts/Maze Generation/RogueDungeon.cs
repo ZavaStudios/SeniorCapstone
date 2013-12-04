@@ -40,9 +40,15 @@ namespace MazeGeneration
             public const int LEFT_DOOR_MASK = 0x04;
             public const int RIGHT_DOOR_MASK = 0x08;
 
+			public enum RoomType
+			{
+				empty, enemy, start,
+			}
+
             public Room(int width, int height, int doors)
                 : this()
             {
+				Type = RoomType.empty;
                 Width = width;
                 Height = height;
                 Doors = doors;
@@ -77,6 +83,12 @@ namespace MazeGeneration
                 get;
                 set;
             }
+
+			public RoomType Type
+			{
+				get;
+				set;
+			}
         }
 
         /// <summary>
@@ -94,6 +106,7 @@ namespace MazeGeneration
             // Use the maze to fill in our map
             Map = new Room[width, height];
             Random r = new Random();
+			bool placedFirstRoom = false;
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -135,6 +148,14 @@ namespace MazeGeneration
 
                     // Create the room, and insert it into the map:
                     Room newRoom = new Room(roomWidth, roomHeight, doorCode);
+					// Determine room type at random:
+					if (!placedFirstRoom)
+					{
+						newRoom.Type = Room.RoomType.start;
+						placedFirstRoom = true;
+					}
+					else if (r.NextDouble() < 0.5)
+						newRoom.Type = Room.RoomType.enemy;
                     Map[x, y] = newRoom;
                 }
             }

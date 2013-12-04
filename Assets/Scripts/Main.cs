@@ -10,6 +10,8 @@ public class Main : MonoBehaviour
     private const float TILE_SCALAR = 10.0f;
     private const float CEILING_HEIGHT = 10.0f;
 
+	public Transform player;
+	public Transform enemy;
     public Transform floor_tile;
     public Transform wall_tile;
 	public Transform mine_cube;
@@ -37,13 +39,14 @@ public class Main : MonoBehaviour
         {
             for (int roomY = 0; roomY < HEIGHT; roomY++)
             {
+				RogueDungeon.Room room = dungeon.Map[roomX, roomY];
                 Vector3 center = new Vector3(room_bounds.center.x, 0.0f, room_bounds.center.y);
 
                 // Draw walls, leaving space for doors where necessary
-                int doorCode = dungeon.Map[roomX, roomY].Doors;
+                int doorCode = room.Doors;
                 Debug.Log("DOOR CODE: " + roomX + ", " + roomY + " -- " + doorCode);
-                float roomWidth  = dungeon.Map[roomX, roomY].Width  * TILE_SCALAR;
-                float roomHeight = dungeon.Map[roomX, roomY].Height * TILE_SCALAR;
+                float roomWidth  = room.Width  * TILE_SCALAR;
+                float roomHeight = room.Height * TILE_SCALAR;
                 // UP
                 if ((doorCode & RogueDungeon.Room.UP_DOOR_MASK) != 0)
                 {
@@ -86,6 +89,18 @@ public class Main : MonoBehaviour
 				             		center + new Vector3 (x_0, 0.5f, y_0),
 				             		Quaternion.identity);
 					}
+				}
+				// Also an enemy for shits and giggles
+				if (room.Type == RogueDungeon.Room.RoomType.enemy)
+				{
+					Instantiate (enemy,
+					             center + new Vector3(0, 100.0f, 0),
+					             Quaternion.identity);
+					Debug.Log("Enemey!");
+				}
+				else if (room.Type == RogueDungeon.Room.RoomType.start)
+				{
+					player.transform.position = center + new Vector3(0, 10, 0);
 				}
 
                 // Move to the next row
