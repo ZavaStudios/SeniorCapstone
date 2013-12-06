@@ -4,7 +4,7 @@ using System.Collections;
 public class UnitPlayer : Unit {
 	
 	//Not sure how time is measured, but 30 seems to be good. 
-	private float delay = 30.0f;
+	private float delay = 0f;
 	
 	void Start () 
 	{
@@ -56,7 +56,7 @@ public class UnitPlayer : Unit {
 		//Set the length of time to display the game over tag.
 		if(delay == 0)
 		{
-			delay += Time.time;
+			delay = Time.time + 5;
 		}
 		
 		//Restart the application when the game is over.
