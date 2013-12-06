@@ -9,6 +9,7 @@ public class Main : MonoBehaviour
 
     private const float TILE_SCALAR = 10.0f;
     private const float CEILING_HEIGHT = 10.0f;
+    private const float LIGHT_DISTANCE = 2.0f;
 
 	public Transform player;
 	public Transform enemy;
@@ -29,6 +30,9 @@ public class Main : MonoBehaviour
         Instantiate(floor_tile,
                     new Vector3(0.0f, 0.0f, 0.0f),
                     Quaternion.identity);
+        Instantiate(floor_tile,
+                    new Vector3(0.0f, CEILING_HEIGHT, 0.0f),
+                    Quaternion.AngleAxis(180, Vector3.forward));
 
         // build walls
         Rect room_bounds = new Rect(TILE_SCALAR - (dungeon_width  / 2.0f),
@@ -209,6 +213,7 @@ public class Main : MonoBehaviour
                     wall_angle);
     }
 
+    private static int lightId = 0; // Just used to uniquely identify
     private void InstantiateCorridor(Vector3 center, float roomWidth, float roomHeight, int door_code)
     {
         Quaternion wall_angle1 = Quaternion.AngleAxis(270.0f, Vector3.up);
@@ -217,12 +222,16 @@ public class Main : MonoBehaviour
         float offsetDistanceZ1 = -(roomHeight + wallLength);
         float offsetDistanceZ2 = -(roomHeight + wallLength);
         float offsetDistanceX1 = TILE_SCALAR;
-		float offsetDistanceX2 = -TILE_SCALAR;
-		
+        float offsetDistanceX2 = -TILE_SCALAR;
+        Vector3 lightVec = new Vector3(0.0f, 0.0f, LIGHT_DISTANCE * TILE_SCALAR);
+        Vector3 lightOff = new Vector3(0.0f, CEILING_HEIGHT/2.0f, roomHeight);
+        
 		if (door_code == RogueDungeon.Room.DOWN_DOOR_MASK)
         {
             offsetDistanceZ1 = -offsetDistanceZ1;
             offsetDistanceZ2 = -offsetDistanceZ2;
+            lightVec = new Vector3(0.0f, 0.0f, -LIGHT_DISTANCE * TILE_SCALAR);
+            lightOff = new Vector3(0.0f, CEILING_HEIGHT / 2.0f, -roomHeight);
         }
         else if (door_code == RogueDungeon.Room.LEFT_DOOR_MASK)
         {
@@ -233,6 +242,8 @@ public class Main : MonoBehaviour
             offsetDistanceZ2 = -TILE_SCALAR;
             offsetDistanceX1 = -(roomWidth + wallLength);
             offsetDistanceX2 = -(roomWidth + wallLength);
+            lightVec = new Vector3(LIGHT_DISTANCE * TILE_SCALAR, 0.0f, 0.0f);
+            lightOff = new Vector3(roomWidth, CEILING_HEIGHT / 2.0f, 0.0f);
         }
         else if (door_code == RogueDungeon.Room.RIGHT_DOOR_MASK)
         {
@@ -243,6 +254,8 @@ public class Main : MonoBehaviour
             offsetDistanceZ2 = -TILE_SCALAR;
             offsetDistanceX1 = roomWidth + wallLength;
 			offsetDistanceX2 = roomWidth + wallLength;
+            lightVec = new Vector3(-LIGHT_DISTANCE * TILE_SCALAR, 0.0f, 0.0f);
+            lightOff = new Vector3(-roomWidth, CEILING_HEIGHT / 2.0f, 0.0f);
 		}
 		// else: door mask is presumed to be up, which we set up to already
 
@@ -259,6 +272,19 @@ public class Main : MonoBehaviour
         Instantiate(wall_tile,
                     center + new Vector3(offsetDistanceX2 / 2.0f, CEILING_HEIGHT / 2.0f, offsetDistanceZ2 / 2.0f),
                     wall_angle2);
+
+        // Spawn some lights:
+        // NM, not for now: this seems to be weird?
+        /*
+        for (int i = 0; i < (int)(wallLength / (LIGHT_DISTANCE * TILE_SCALAR)); i++)
+        {
+            var light = new GameObject("light" + (++lightId));
+            light.AddComponent<Light>();
+            light.transform.position = center +
+                                       (i * lightVec) +
+                                       lightOff;
+        }
+         */
     }
 
     // Update is called once per frame
