@@ -11,3 +11,6 @@ Assets/Ouya/
 Assets/Plugins/
 Assets/LitJson/
 *.apk
+*.unityproj
+*.csproj
+*.pidb

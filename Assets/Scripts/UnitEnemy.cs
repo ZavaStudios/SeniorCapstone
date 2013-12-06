@@ -32,8 +32,11 @@ public class UnitEnemy : Unit
 		transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
 		//transform.Rotate(-90,0,0);
 	
-		control.SimpleMove (dir * moveSpeed);		
-	
+		if(distance < 700f)
+		{
+			control.SimpleMove (dir * moveSpeed);		
+		}
+			
 		if(weapon && distance < weapon.attackRange)
 		{
 			weapon.attack = true;

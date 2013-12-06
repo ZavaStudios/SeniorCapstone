@@ -3,6 +3,9 @@ using System.Collections;
 
 public class UnitPlayer : Unit {
 	
+	//Not sure how time is measured, but 30 seems to be good. 
+	private float delay = 30.0f;
+	
 	void Start () 
 	{
 		setMaxSpeed();
@@ -46,5 +49,20 @@ public class UnitPlayer : Unit {
 	protected override void killUnit ()
 	{
 		print ("How did you die...???");
+		
+		//Draws the gameover GUI to the screen. 
+		GameOver.gameOver = true;
+		
+		//Set the length of time to display the game over tag.
+		if(delay == 0)
+		{
+			delay += Time.time;
+		}
+		
+		//Restart the application when the game is over.
+		if(Time.time >= delay)
+		{
+			Application.LoadLevel(0);
+		}
 	}
 }
