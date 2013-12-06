@@ -16,7 +16,6 @@ public class UnitEnemy : Unit
 		moveSpeed = 5.0f;
 		weapon.attackRange = 2.5f;
 		weapon.weaponDamage = 10.0f;
-
 	}
 	
 	protected override  void Update ()
@@ -32,9 +31,14 @@ public class UnitEnemy : Unit
 		transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
 		//transform.Rotate(-90,0,0);
 	
+        //If the player is within a certain distance then execute move code, otherwise patrol.
 		if(distance < 700f)
 		{
 			control.SimpleMove (dir * moveSpeed);		
+		}
+		else
+		{
+            control.SimpleMove(Vector3.zero);
 		}
 			
 		if(weapon && distance < weapon.attackRange)
