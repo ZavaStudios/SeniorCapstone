@@ -3,8 +3,6 @@ ProjectSettings/
 *.suo
 *.sln
 *.userprefs
-*/*.meta
-*.meta
 bin/
 Temp/
 Assets/Ouya/
