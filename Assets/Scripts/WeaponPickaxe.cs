@@ -22,7 +22,7 @@ public class WeaponPickaxe : WeaponBase
     protected override void attackRoutine (Vector3 faceDir)
     {
         print("mining..");
-//        LayerMask mask = LayerMask.NameToLayer("world");// | LayerMask.NameToLayer("enemy");
+        //LayerMask mask = LayerMask.NameToLayer("world");// | LayerMask.NameToLayer("enemy");
 
         //TODO The raycast doesn't seemm to hit if the player is above the ore
         if(Physics.Raycast(transform.position, faceDir, out rayHit, attackRange, 3<<8)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
@@ -33,13 +33,13 @@ public class WeaponPickaxe : WeaponBase
             }
             if(rayHit.collider.gameObject.CompareTag("Ore"))
             {
-                //TODO Do some mining
                 MineableBlock resource = rayHit.collider.GetComponent<MineableBlock>();
                 resource.doDamage(1);
 
                 print ("Mining for treasure...");
             }
         }
+        
         attack = false;
     }
 }

@@ -10,12 +10,13 @@ public class UnitEnemy : Unit
 	
 	protected override void Start ()
 	{
-		base.Start();
+
 		Player = GameObject.FindGameObjectWithTag("Player").transform; 
 		control = gameObject.GetComponent<CharacterController>();
+        gameObject.AddComponent(typeof (WeaponMonster));
 		moveSpeed = 5.0f;
-		weapon.attackRange = 2.5f;
-		weapon.weaponDamage = 10.0f;
+
+        base.Start(); //gets reference to weapon, among other things.
 	}
 	
 	protected override void Update ()

@@ -6,19 +6,24 @@ public class UnitPlayer : Unit {
 	//Not sure how time is measured, but 30 seems to be good. 
 	private float delay = 0f;
 	
-	void Start () 
+	protected override void Start () 
 	{
 		setMaxSpeed();
+        
+        gameObject.AddComponent(typeof(WeaponSword));
+        
 		base.Start();
+     
+        //equipWeapon("WeaponSword");
+        
+        weapon = gameObject.GetComponent<WeaponBase>();
 	}
 	
-	void Update () 
+	protected override void Update () 
 	{
 		if(Input.GetKeyDown(KeyCode.Mouse0)) //or some other button on OUYA
 		{
 			print ("mouse clicked....");
-            if(pickaxe != null)
-                pickaxe.attack = true;
 			if (weapon != null)
 				weapon.attack = true;
 			else

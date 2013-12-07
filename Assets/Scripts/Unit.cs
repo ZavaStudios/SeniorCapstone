@@ -6,11 +6,12 @@ using System.Collections;
 
 public class Unit : MonoBehaviour 
 {
+    Inventory inventory;
+    
 	protected float health = 100.0f;
     protected float maxHealth = 100.0f;
 	protected float moveSpeed = 	10.0f;
-	protected WeaponBase weapon;
-    protected WeaponPickaxe pickaxe;
+	public WeaponBase weapon;
 
     public float Health
     {
@@ -23,12 +24,13 @@ public class Unit : MonoBehaviour
         get { return maxHealth; }
         set { maxHealth = value; }
     }
-	virtual protected void Start () 
+    
+    //////////////////////////////////
+	
+    virtual protected void Start () 
 	{
-		weapon = gameObject.GetComponent<WeaponBase>();
-
-        //TODO player has a pickaxe and weapon equipped right now, change this so the pickaxe is a weapon
-        pickaxe = gameObject.GetComponent<WeaponPickaxe>();
+        inventory = new Inventory();
+		//weapon = gameObject.GetComponent<WeaponBase>();
 	}
 	
 	virtual protected void Update () 
@@ -46,6 +48,16 @@ public class Unit : MonoBehaviour
 		}
 	}
 	
+    public void equipWeapon(string newWeapon)
+    {
+       GameObject.Destroy(weapon);
+        
+       gameObject.AddComponent(typeof(WeaponSword));
+        
+       weapon = this.GetComponent<WeaponBase>();
+        
+    }   
+    
 	virtual protected void killUnit()
 	{
 
