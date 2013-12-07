@@ -31,6 +31,8 @@ public class WeaponBase : MonoBehaviour
 	        {
 	            nextDamageEvent = Time.time + attackDelay;
        			attackRoutine(faceDir);
+                Character.playAttackAnimation();
+
 	        }
 		}
 		

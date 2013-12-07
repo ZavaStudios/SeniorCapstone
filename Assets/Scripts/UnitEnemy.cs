@@ -13,7 +13,7 @@ public class UnitEnemy : Unit
 
 		Player = GameObject.FindGameObjectWithTag("Player").transform; 
 		control = gameObject.GetComponent<CharacterController>();
-        gameObject.AddComponent(typeof (WeaponMonster));
+        equipWeapon("WeaponMonster");
 		moveSpeed = 5.0f;
 
         base.Start(); //gets reference to weapon, among other things.

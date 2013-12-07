@@ -47,18 +47,23 @@ public class Unit : MonoBehaviour
 		}
 	}
 	
-    public void equipWeapon(string newWeapon)
+    virtual public void equipWeapon(string newWeapon)
     {
        GameObject.Destroy(weapon);
         
        gameObject.AddComponent(newWeapon);
         
        weapon = (WeaponBase) this.GetComponent(newWeapon);
-        
+       
     }   
     
 	virtual protected void killUnit()
 	{
 
 	}
-}
+    
+    virtual public void playAttackAnimation()
+    {
+
+    }
+}   

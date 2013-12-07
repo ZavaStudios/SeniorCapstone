@@ -5,16 +5,14 @@ public class UnitPlayer : Unit {
 	
 	//Not sure how time is measured, but 30 seems to be good. 
 	private float delay = 0f;
-	
+	WeaponModelSwitcher wepSwitcher;
 	protected override void Start () 
 	{
 		setMaxSpeed();
-        
+        wepSwitcher = gameObject.GetComponentInChildren<WeaponModelSwitcher>();
 		base.Start();
-     
-
+             
         equipWeapon("WeaponSword");
-        equipWeapon("WeaponPickaxe");
 	}
 	
 	protected override void Update () 
@@ -30,7 +28,7 @@ public class UnitPlayer : Unit {
 		
 		if(Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift))
 		{
-			moveSpeed = 25.0f;
+			moveSpeed = 20.0f;
 			setMaxSpeed ();
 		}
 		else if(Input.GetKeyUp (KeyCode.LeftShift) || Input.GetKeyUp (KeyCode.RightShift))
@@ -38,7 +36,7 @@ public class UnitPlayer : Unit {
 			moveSpeed = 10.0f;
 			setMaxSpeed ();
 		}
-	
+
 	}
 	
 	
@@ -50,7 +48,13 @@ public class UnitPlayer : Unit {
 		m.movement.maxSidewaysSpeed = moveSpeed;
 		m.movement.maxBackwardsSpeed = moveSpeed;
 	}
-	
+    
+	public override void equipWeapon(string newWeapon)
+    {
+        base.equipWeapon(newWeapon);
+        wepSwitcher.SwitchWeapon(newWeapon);
+    }   
+        
 	protected override void killUnit ()
 	{
 		print ("How did you die...???");
@@ -70,4 +74,9 @@ public class UnitPlayer : Unit {
 			Application.LoadLevel(0);
 		}
 	}
+    
+    public override void playAttackAnimation()
+    {
+        wepSwitcher.playAnimation();
+    }
 }

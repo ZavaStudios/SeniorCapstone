@@ -63,6 +63,7 @@
      <Compile Include="Assets\Scripts\UnitEnemy.cs" />
      <Compile Include="Assets\Scripts\UnitPlayer.cs" />
      <Compile Include="Assets\Scripts\WeaponBase.cs" />
+     <Compile Include="Assets\Scripts\WeaponModelSwitcher.cs" />
      <Compile Include="Assets\Scripts\WeaponMonster.cs" />
      <Compile Include="Assets\Scripts\WeaponPickaxe.cs" />
      <Compile Include="Assets\Scripts\WeaponStaff.cs" />
