@@ -10,6 +10,7 @@ public class UnitPlayer : Unit {
 	{
 		setMaxSpeed();
         
+<<<<<<< HEAD
         //gameObject.AddComponent(typeof(WeaponSword));
         
 		base.Start();
@@ -17,6 +18,13 @@ public class UnitPlayer : Unit {
         //equipWeapon("WeaponSword");
         
         //weapon = gameObject.GetComponent<WeaponBase>();
+=======
+		base.Start();
+     
+
+        equipWeapon("WeaponSword");
+        equipWeapon("WeaponPickaxe");
+>>>>>>> 376c751a4fcf79e80ab6348b0ea9e87cd0e634fd
 	}
 	
 	protected override void Update () 

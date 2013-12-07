@@ -10,7 +10,7 @@ public class Unit : MonoBehaviour
     
 	protected float health = 100.0f;
     protected float maxHealth = 100.0f;
-	protected float moveSpeed = 	10.0f;
+	protected float moveSpeed = 10.0f;
 	public WeaponBase weapon;
 
     public float Health
@@ -30,8 +30,11 @@ public class Unit : MonoBehaviour
     virtual protected void Start () 
 	{
         inventory = new Inventory();
+<<<<<<< HEAD
 
 		weapon = gameObject.GetComponent<WeaponBase>();
+=======
+>>>>>>> 376c751a4fcf79e80ab6348b0ea9e87cd0e634fd
 	}
 	
 	virtual protected void Update () 
@@ -53,9 +56,9 @@ public class Unit : MonoBehaviour
     {
        GameObject.Destroy(weapon);
         
-       gameObject.AddComponent(typeof(WeaponSword));
+       gameObject.AddComponent(newWeapon);
         
-       weapon = this.GetComponent<WeaponBase>();
+       weapon = (WeaponBase) this.GetComponent(newWeapon);
         
     }   
     
