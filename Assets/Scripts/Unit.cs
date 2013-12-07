@@ -30,7 +30,8 @@ public class Unit : MonoBehaviour
     virtual protected void Start () 
 	{
         inventory = new Inventory();
-		//weapon = gameObject.GetComponent<WeaponBase>();
+
+		weapon = gameObject.GetComponent<WeaponBase>();
 	}
 	
 	virtual protected void Update () 
