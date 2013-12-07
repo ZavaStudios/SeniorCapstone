@@ -18,7 +18,7 @@ public class UnitEnemy : Unit
 		weapon.weaponDamage = 10.0f;
 	}
 	
-	protected override  void Update ()
+	protected override void Update ()
 	{
 		//move
 		Vector3 PlayerPosition = Player.position;

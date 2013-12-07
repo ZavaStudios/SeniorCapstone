@@ -17,6 +17,8 @@ public class UnitPlayer : Unit {
 		if(Input.GetKeyDown(KeyCode.Mouse0)) //or some other button on OUYA
 		{
 			print ("mouse clicked....");
+            if(pickaxe != null)
+                pickaxe.attack = true;
 			if (weapon != null)
 				weapon.attack = true;
 			else

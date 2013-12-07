@@ -46,6 +46,8 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Hud.cs" />
+     <Compile Include="Assets\Inventory.cs" />
      <Compile Include="Assets\Scripts\FirstPersonViewController.cs" />
      <Compile Include="Assets\Scripts\GUICrosshair.cs" />
      <Compile Include="Assets\Scripts\GameOver.cs" />
@@ -54,7 +56,7 @@
      <Compile Include="Assets\Scripts\Maze Generation\DungeonGenerator.cs" />
      <Compile Include="Assets\Scripts\Maze Generation\Maze.cs" />
      <Compile Include="Assets\Scripts\Maze Generation\RogueDungeon.cs" />
-     <Compile Include="Assets\Scripts\MineableBlockLogic.cs" />
+     <Compile Include="Assets\Scripts\MineableBlock.cs" />
      <Compile Include="Assets\Scripts\MiningScript.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\Unit.cs" />
@@ -62,6 +64,7 @@
      <Compile Include="Assets\Scripts\UnitPlayer.cs" />
      <Compile Include="Assets\Scripts\WeaponBase.cs" />
      <Compile Include="Assets\Scripts\WeaponMonster.cs" />
+     <Compile Include="Assets\Scripts\WeaponPickaxe.cs" />
      <Compile Include="Assets\Scripts\WeaponStaff.cs" />
      <Compile Include="Assets\Scripts\WeaponSword.cs" />
  <Reference Include="Assembly-UnityScript-firstpass">
@@ -80,5 +83,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  
+  <ProjectExtensions xmlns="http://schemas.microsoft.com/developer/msbuild/2003"><MonoDevelop><Properties><Policies><TextStylePolicy inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp" /><CSharpFormattingPolicy IndentSwitchBody="True" AnonymousMethodBraceStyle="NextLine" PropertyBraceStyle="NextLine" PropertyGetBraceStyle="NextLine" PropertySetBraceStyle="NextLine" EventBraceStyle="NextLine" EventAddBraceStyle="NextLine" EventRemoveBraceStyle="NextLine" StatementBraceStyle="NextLine" ArrayInitializerBraceStyle="NextLine" BeforeMethodDeclarationParentheses="False" BeforeMethodCallParentheses="False" BeforeConstructorDeclarationParentheses="False" BeforeDelegateDeclarationParentheses="False" NewParentheses="False" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" /></Policies></Properties></MonoDevelop></ProjectExtensions>
+
 </Project>
