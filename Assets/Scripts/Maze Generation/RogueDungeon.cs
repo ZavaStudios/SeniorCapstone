@@ -42,7 +42,7 @@ namespace MazeGeneration
 
 			public enum RoomType
 			{
-				empty, enemy, start,
+				empty, enemy, start, corridor,
 			}
 
             public Room(int width, int height, int doors)
@@ -114,6 +114,7 @@ namespace MazeGeneration
                     // Corridors have unit width
                     int roomWidth = 1;
                     int roomHeight = 1;
+                    Room.RoomType type = Room.RoomType.corridor;
 
                     // If we decide to place a room here, adjust the width
                     // and height accordingly
@@ -121,6 +122,17 @@ namespace MazeGeneration
                     {
                         roomWidth = r.Next(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
                         roomHeight = r.Next(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
+
+                        // Determine room type at random:
+                        if (!placedFirstRoom)
+                        {
+                            type = Room.RoomType.start;
+                            placedFirstRoom = true;
+                        }
+                        else if (r.NextDouble() < 0.5)
+                            type = Room.RoomType.enemy;
+                        else
+                            type = Room.RoomType.empty;
                     }
 
                     // Determine what the door code should be, by checking the map:
@@ -148,14 +160,8 @@ namespace MazeGeneration
 
                     // Create the room, and insert it into the map:
                     Room newRoom = new Room(roomWidth, roomHeight, doorCode);
-					// Determine room type at random:
-					if (!placedFirstRoom)
-					{
-						newRoom.Type = Room.RoomType.start;
-						placedFirstRoom = true;
-					}
-					else if (r.NextDouble() < 0.5)
-						newRoom.Type = Room.RoomType.enemy;
+                    newRoom.Type = type;
+					
                     Map[x, y] = newRoom;
                 }
             }

@@ -7,15 +7,17 @@ public class Main : MonoBehaviour
     private const int WIDTH  = 5;
     private const int HEIGHT = 5;
 
-    private const float TILE_SCALAR = 10.0f;
-    private const float CEILING_HEIGHT = 10.0f;
+    private const float TILE_SCALAR = 4.0f;
+    private const float CEILING_HEIGHT = 5.0f;
     private const float LIGHT_DISTANCE = 2.0f;
+    private const float ORE_DISTRIBUTION = 0.2f;
 
 	public Transform player;
 	public Transform enemy;
     public Transform floor_tile;
     public Transform wall_tile;
 	public Transform mine_cube;
+    public Transform ore_cube;
 
 	// Use this for initialization
 	void Start ()
@@ -85,15 +87,9 @@ public class Main : MonoBehaviour
                     InstantiateWall(center, roomWidth, roomHeight, RogueDungeon.Room.RIGHT_DOOR_MASK);
 
 				// One last thing: add some cubes!
-				for (int x_0 = 0; x_0 < 3; x_0++)
-				{
-					for (int y_0 = 0; y_0 < 3; y_0++)
-					{
-						Instantiate (mine_cube,
-				             		center + new Vector3 (x_0, 0.5f, y_0),
-				             		Quaternion.identity);
-					}
-				}
+                if (room.Type != RogueDungeon.Room.RoomType.corridor)
+                    InstantiateCubes(center, roomWidth, roomHeight, doorCode);
+
 				// Also an enemy for shits and giggles
 				if (room.Type == RogueDungeon.Room.RoomType.enemy)
 				{
@@ -121,6 +117,69 @@ public class Main : MonoBehaviour
             room_bounds.width = RogueDungeon.MAX_ROOM_WIDTH * TILE_SCALAR;
         }
 	}
+
+    // Helper function for instantiating cubes in the rooms
+    private void InstantiateCubes(Vector3 center, float roomWidth, float roomHeight, int doorCode)
+    {
+        Vector3 botLeft = center - new Vector3(roomWidth / 2.0f, 0.0f, roomHeight / 2.0f);
+        Vector3 topRight = center + new Vector3(roomWidth / 2.0f, 0.0f, roomHeight / 2.0f);
+        Vector3 cubeOffset = new Vector3(0.5f, 0.0f, 0.5f);
+        Vector3 cubeOffsetZ = new Vector3(0.0f, 0.5f, 0.0f);
+        
+        Vector2 minDoorRange = new Vector2(center.x - TILE_SCALAR / 2.0f, center.z - TILE_SCALAR / 2.0f);
+        Vector2 maxDoorRange = new Vector2(center.x + TILE_SCALAR / 2.0f, center.z + TILE_SCALAR / 2.0f);
+
+        int cubesWide = (int)roomWidth;
+        int cubesTall = (int)roomHeight;
+        int cubesUp = (int)CEILING_HEIGHT;
+
+        for (int z = 0; z < cubesUp; z++)
+        {
+            for (int x = 0; x < cubesWide; x++)
+            {
+                Vector3 botPos = botLeft + cubeOffsetZ + cubeOffset + new Vector3(x, z, 0.0f);
+                Vector3 topPos = topRight + cubeOffsetZ -cubeOffset - new Vector3(x, -z, 0.0f);
+                // Top:
+                if ((doorCode & RogueDungeon.Room.UP_DOOR_MASK) == 0 ||
+                    botPos.x < minDoorRange.x || botPos.x > maxDoorRange.x)
+                {
+                    Instantiate((Random.value > ORE_DISTRIBUTION) ? mine_cube : ore_cube,
+                                botPos,
+                                Quaternion.identity);
+                }
+                // Bot:
+                if ((doorCode & RogueDungeon.Room.DOWN_DOOR_MASK) == 0 ||
+                    topPos.x < minDoorRange.x || topPos.x > maxDoorRange.x)
+                {
+                    Instantiate((Random.value > ORE_DISTRIBUTION) ? mine_cube : ore_cube,
+                                topPos,
+                                Quaternion.identity);
+                }
+            }
+            // Trim edges for y placement so we don't double place in corners
+            for (int y = 1; y < cubesTall - 1; y++)
+            {
+                Vector3 lftPos = botLeft + cubeOffsetZ + cubeOffset + new Vector3(0.0f, z, y);
+                Vector3 rgtPos = topRight + cubeOffsetZ - cubeOffset - new Vector3(0.0f, -z, y);
+                // Left:
+                if ((doorCode & RogueDungeon.Room.LEFT_DOOR_MASK) == 0 ||
+                    lftPos.z < minDoorRange.y || lftPos.z > maxDoorRange.y)
+                {
+                    Instantiate((Random.value > ORE_DISTRIBUTION) ? mine_cube : ore_cube,
+                                lftPos,
+                                Quaternion.identity);
+                }
+                // Right:
+                if ((doorCode & RogueDungeon.Room.RIGHT_DOOR_MASK) == 0 ||
+                    rgtPos.z < minDoorRange.y || rgtPos.z > maxDoorRange.y)
+                {
+                    Instantiate((Random.value > ORE_DISTRIBUTION) ? mine_cube : ore_cube,
+                                rgtPos,
+                                Quaternion.identity);
+                }
+            }
+        }
+    }
 
     // Helper function for instantiating walls of the rooms
     private void InstantiateWall(Vector3 center, float roomWidth, float roomHeight, int door_code)
