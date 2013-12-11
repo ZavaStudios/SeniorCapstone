@@ -6,13 +6,14 @@ public class UnitPlayer : Unit {
 	//Not sure how time is measured, but 30 seems to be good. 
 	private float delay = 0f;
 	WeaponModelSwitcher wepSwitcher;
+	int wep = 0;
 	protected override void Start () 
 	{
 		setMaxSpeed();
         wepSwitcher = gameObject.GetComponentInChildren<WeaponModelSwitcher>();
 		base.Start();
              
-        equipWeapon("WeaponSword");
+        equipWeapon("WeaponPickaxe");
 	}
 	
 	protected override void Update () 
@@ -24,6 +25,26 @@ public class UnitPlayer : Unit {
 				weapon.attack = true;
 			else
 				print ("You cannot attack without a weapon!");
+		}
+		
+		if(Input.GetKeyDown (KeyCode.Q))
+		{
+			switch (wep)
+			{
+				case 0:
+					equipWeapon("WeaponPickaxe");
+					wep++;
+					break;
+				case 1:
+					equipWeapon("WeaponSword");
+					wep++;
+					break;
+			}
+			if (wep > 1)
+			{
+				wep = 0;
+			}
+			
 		}
 		
 		if(Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift))
