@@ -19,10 +19,10 @@ public class WeaponStaff : WeaponBase
 		base.Update();
 	}
 	
-	protected override void attackRoutine (Vector3 faceDir)
+	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
 		print("attacking..");
-		if(Physics.Raycast(transform.position, faceDir, out rayHit, attackRange,3<<8)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
+		if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange,3<<8)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
 		{
 			if(rayHit.collider.gameObject.CompareTag("Enemy"))
 			{

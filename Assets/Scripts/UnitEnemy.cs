@@ -54,4 +54,14 @@ public class UnitEnemy : Unit
 		print ("Ow you kilt meh");
 		Destroy (gameObject);
 	}
+	
+	public override Vector3 getLookDirection()
+	{
+		return base.getLookDirection();
+	}
+	
+	public override Vector3 getEyePosition()
+	{
+		return base.getEyePosition();
+	}
 }

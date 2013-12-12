@@ -23,22 +23,19 @@ public class WeaponBase : MonoBehaviour
 	// Update is called once per frame
 	virtual protected void Update ()
 	{
-	
-		Vector3 faceDir = gameObject.transform.forward; //get direction character is facing.
 		if (attack)
 		{
 			if (Time.time >= nextDamageEvent)
 	        {
 	            nextDamageEvent = Time.time + attackDelay;
-       			attackRoutine(faceDir);
+       			attackRoutine(Character.getEyePosition(),Character.getLookDirection());
                 Character.playAttackAnimation();
-
 	        }
 		}
 		
 	}
 	
-	virtual protected void attackRoutine(Vector3 faceDir)
+	virtual protected void attackRoutine(Vector3 startPos, Vector3 faceDir)
 	{
 
 	}

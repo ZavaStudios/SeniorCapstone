@@ -19,7 +19,7 @@ public class WeaponMonster : WeaponBase
 		base.Update();
 	}
 	
-	protected override void attackRoutine (Vector3 faceDir)
+	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
 		print("attacking..");
 		

@@ -9,7 +9,7 @@ public class WeaponPickaxe : WeaponBase
     {
         attackRange = 10f;
         weaponDamage = 20.0f;
-        attackDelay = 1.5f;
+        attackDelay = 1.2f;
         base.Start();
     }
     
@@ -19,13 +19,12 @@ public class WeaponPickaxe : WeaponBase
         base.Update();
     }
     
-    protected override void attackRoutine (Vector3 faceDir)
+    protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
     {
         print("mining..");
         //LayerMask mask = LayerMask.NameToLayer("world");// | LayerMask.NameToLayer("enemy");
 
-        //TODO The raycast doesn't seemm to hit if the player is above the ore
-        if(Physics.Raycast(transform.position, faceDir, out rayHit, attackRange, 3<<8)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
+        if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange, 3<<8)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
         {
             if(rayHit.collider.gameObject.CompareTag("Enemy"))
             {  

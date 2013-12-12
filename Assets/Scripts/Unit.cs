@@ -66,4 +66,15 @@ public class Unit : MonoBehaviour
     {
 
     }
+	
+	virtual public Vector3 getLookDirection()
+	{
+		return gameObject.transform.forward;	
+	}
+	
+		
+	virtual public Vector3 getEyePosition()
+	{
+		return gameObject.transform.position + new Vector3(0,0.5f,0); //eyes are on the top of the head? idk...
+	}
 }   

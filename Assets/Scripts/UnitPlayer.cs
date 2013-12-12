@@ -7,10 +7,12 @@ public class UnitPlayer : Unit {
 	private float delay = 0f;
 	WeaponModelSwitcher wepSwitcher;
 	int wep = 0;
+	
 	protected override void Start () 
 	{
 		setMaxSpeed();
         wepSwitcher = gameObject.GetComponentInChildren<WeaponModelSwitcher>();
+		
 		base.Start();
              
         equipWeapon("WeaponPickaxe");
@@ -100,4 +102,14 @@ public class UnitPlayer : Unit {
     {
         wepSwitcher.playAnimation();
     }
+	
+	public override Vector3 getLookDirection()
+	{
+		return Camera.main.transform.forward;
+	}
+	
+	public override Vector3 getEyePosition()
+	{
+		return Camera.main.transform.position;
+	}
 }
