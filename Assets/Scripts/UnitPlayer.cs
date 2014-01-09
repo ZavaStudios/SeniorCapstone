@@ -17,7 +17,12 @@ public class UnitPlayer : Unit {
              
         equipWeapon("WeaponPickaxe");
 	}
-	
+
+	public void incrementScore()
+	{
+		Score++;
+	}
+
 	protected override void Update () 
 	{
 		if(Input.GetKeyDown(KeyCode.Mouse0)) //or some other button on OUYA

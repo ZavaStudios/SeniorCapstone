@@ -18,6 +18,12 @@ public class Unit : MonoBehaviour
         get {return health; }
         set {health = value; }
     }
+
+	public int Score
+	{
+				get;
+				set;
+	}
 	
     public float MaxHealth
     {

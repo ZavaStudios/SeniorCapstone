@@ -7,7 +7,7 @@ public class WeaponPickaxe : WeaponBase
     // Use this for initialization
     protected override void Start ()
     {
-        attackRange = 10f;
+        attackRange = 2.5f;
         weaponDamage = 20.0f;
         attackDelay = 1.2f;
         base.Start();

@@ -7,7 +7,7 @@ public class WeaponSword : WeaponBase
 	// Use this for initialization
 	protected override void Start ()
 	{
-		attackRange = 5f;
+		attackRange = 2.5f;
 		weaponDamage = 20.0f;
 		attackDelay = 1.5f;
 		base.Start();

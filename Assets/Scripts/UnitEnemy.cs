@@ -53,6 +53,10 @@ public class UnitEnemy : Unit
 	{
 		print ("Ow you kilt meh");
 		Destroy (gameObject);
+
+		// Increment player's score
+		GameObject player = GameObject.FindGameObjectWithTag ("Player");
+		player.transform.SendMessage ("incrementScore", 1);
 	}
 	
 	public override Vector3 getLookDirection()
