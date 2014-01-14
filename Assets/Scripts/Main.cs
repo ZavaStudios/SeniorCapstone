@@ -37,11 +37,17 @@ public class Main : MonoBehaviour
                                     TILE_SCALAR - (dungeon_height / 2.0f),
                                     RogueDungeon.MAX_ROOM_WIDTH  * TILE_SCALAR,
                                     RogueDungeon.MAX_ROOM_HEIGHT * TILE_SCALAR);
+
         for (int roomX = 0; roomX < WIDTH; roomX++)
         {
             for (int roomY = 0; roomY < HEIGHT; roomY++)
             {
 				RogueRoom room = dungeon.Map[roomX, roomY];
+
+				room.LoadRoom(TILE_SCALAR, roomX, roomY,
+				              RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_HEIGHT,
+				              RogueDungeon.CORRIDOR_WIDTH);
+				/*
                 Vector3 center = new Vector3(room_bounds.center.x, 0.0f, room_bounds.center.y);
 
                 // Draw walls, leaving space for doors where necessary
@@ -102,8 +108,10 @@ public class Main : MonoBehaviour
                 // Move to the next row
                 room_bounds.y += (RogueDungeon.MAX_ROOM_HEIGHT + 1) * TILE_SCALAR;
                 room_bounds.height = RogueDungeon.MAX_ROOM_HEIGHT * TILE_SCALAR;
+                */
             }
 
+			/*
             // Reset the row
             room_bounds.y = TILE_SCALAR - (dungeon_height / 2.0f);
             room_bounds.height = RogueDungeon.MAX_ROOM_HEIGHT * TILE_SCALAR;
@@ -111,9 +119,11 @@ public class Main : MonoBehaviour
             // Move to the next column
             room_bounds.x += (RogueDungeon.MAX_ROOM_WIDTH + 1) * TILE_SCALAR;
             room_bounds.width = RogueDungeon.MAX_ROOM_WIDTH * TILE_SCALAR;
+            */
         }
 	}
 
+	/*
     // Helper function for instantiating cubes in the rooms
     private void InstantiateCubes(Vector3 center, float roomWidth, float roomHeight, int doorCode)
     {
@@ -176,6 +186,7 @@ public class Main : MonoBehaviour
             }
         }
     }
+    */
 
 	/*
     // Helper function for instantiating walls of the rooms
@@ -220,6 +231,7 @@ public class Main : MonoBehaviour
     }
     */
 
+	/*
     private void InstantiateDoor(Vector3 center, float roomWidth, float roomHeight, int door_code)
     {
         Quaternion wall_angle = Quaternion.identity;
@@ -269,7 +281,9 @@ public class Main : MonoBehaviour
                     center + new Vector3(offsetDistanceX2 / 2.0f, CEILING_HEIGHT / 2.0f, offsetDistanceZ2 / 2.0f),
                     wall_angle);
     }
+    */
 
+	/*
     private static int lightId = 0; // Just used to uniquely identify
     private void InstantiateCorridor(Vector3 center, float roomWidth, float roomHeight, int door_code)
     {
@@ -332,17 +346,8 @@ public class Main : MonoBehaviour
 
         // Spawn some lights:
         // NM, not for now: this seems to be weird?
-        /*
-        for (int i = 0; i < (int)(wallLength / (LIGHT_DISTANCE * TILE_SCALAR)); i++)
-        {
-            var light = new GameObject("light" + (++lightId));
-            light.AddComponent<Light>();
-            light.transform.position = center +
-                                       (i * lightVec) +
-                                       lightOff;
-        }
-         */
     }
+    */
 
     // Update is called once per frame
     void Update()

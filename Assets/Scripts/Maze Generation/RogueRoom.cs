@@ -98,10 +98,14 @@ namespace MazeGeneration
 		/// <param name="center">Position of the center of the room in block-lengths</param>
 		/// <param name="totalHeight">Height of surrounding space in block-lengths</param>
 		/// <param name="totalWidth">Width of surrounding space in block-lengths</param> 
-		public void LoadRoom(float sizeOfBlockUnit, Vector2 center, int totalHeight, int totalWidth)
+		public void LoadRoom(float sizeOfBlockUnit, int gridPosX, int gridPosY,
+		                     int totalHeight, int totalWidth, int corridorWidth)
 		{
 			// Spawn main walls.
 			// TODO: spawn doors, spawn ores, and more(s)!
+
+			Vector2 center = new Vector2((float)totalWidth * ((float)gridPosX + 0.5f),
+			                             (float)totalHeight * ((float)gridPosY + 0.5f));
 
 			// LEFT
 			//	if there is no door here:
@@ -115,7 +119,7 @@ namespace MazeGeneration
 			else
 			{
 				// Walls
-				float wallLength = ((float)Height - RogueDungeon.CORRIDOR_WIDTH) * 0.5f;
+				float wallLength = ((float)Height - corridorWidth) * 0.5f;
 				InstantiateWall(wallLength * sizeOfBlockUnit,
 				                (center + new Vector3(-Width * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
@@ -128,16 +132,16 @@ namespace MazeGeneration
 				                Quaternion.AngleAxis(90.0f, Vector3.up));
 
 				// Corridors
-				wallLength = ((float)RogueDungeon.MAX_ROOM_WIDTH + RogueDungeon.CORRIDOR_WIDTH - (float)Width) * 0.5f;
+				wallLength = ((float)totalWidth + corridorWidth - (float)Width) * 0.5f;
 				InstantiateWall(wallLength * sizeOfBlockUnit,
 				                (center + new Vector3(-(wallLength + Width) * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
-				                      				  RogueDungeon.CORRIDOR_WIDTH * 0.5f)) * sizeOfBlockUnit,
+				                      				  corridorWidth * 0.5f)) * sizeOfBlockUnit,
 				                Quaternion.AngleAxis(180.0f, Vector3.up));
 				InstantiateWall(wallLength * sizeOfBlockUnit,
 				                (center + new Vector3(-(wallLength + Width) * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
-				                      				  -RogueDungeon.CORRIDOR_WIDTH * 0.5f)) * sizeOfBlockUnit,
+				                      				  -corridorWidth * 0.5f)) * sizeOfBlockUnit,
 				                Quaternion.identity);
 			}
 			
@@ -153,7 +157,7 @@ namespace MazeGeneration
 			else
 			{
 				// Walls
-				float wallLength = ((float)Width - RogueDungeon.CORRIDOR_WIDTH) * 0.5f;
+				float wallLength = ((float)Width - corridorWidth) * 0.5f;
 				InstantiateWall(wallLength * sizeOfBlockUnit,
 				                (center + new Vector3(wallLength * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
@@ -166,14 +170,14 @@ namespace MazeGeneration
 				                Quaternion.identity);
 
 				// Corridors
-				wallLength = ((float)RogueDungeon.MAX_ROOM_HEIGHT + RogueDungeon.CORRIDOR_WIDTH - (float)Height) * 0.5f;
+				wallLength = ((float)totalHeight + corridorWidth - (float)Height) * 0.5f;
 				InstantiateWall(wallLength * sizeOfBlockUnit,
-				                (center + new Vector3(RogueDungeon.CORRIDOR_WIDTH * 0.5f,
+				                (center + new Vector3(corridorWidth * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
 				                      				  -(wallLength + Height) * 0.5f)) * sizeOfBlockUnit,
 				                Quaternion.AngleAxis(270.0f, Vector3.up));
 				InstantiateWall(wallLength * sizeOfBlockUnit,
-				                (center + new Vector3(-RogueDungeon.CORRIDOR_WIDTH * 0.5f,
+				                (center + new Vector3(-corridorWidth * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
 				                      				  -(wallLength + Height) * 0.5f)) * sizeOfBlockUnit,
 				                Quaternion.AngleAxis(90.0f, Vector3.up));
@@ -191,7 +195,7 @@ namespace MazeGeneration
 			else
 			{
 				// Walls
-				float wallLength = ((float)Height - RogueDungeon.CORRIDOR_WIDTH) * 0.5f;
+				float wallLength = ((float)Height - corridorWidth) * 0.5f;
 				InstantiateWall(wallLength * sizeOfBlockUnit,
 				                (center + new Vector3(Width * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
@@ -204,16 +208,16 @@ namespace MazeGeneration
 				                Quaternion.AngleAxis(270.0f, Vector3.up));
 
 				// Corridors
-				wallLength = ((float)RogueDungeon.MAX_ROOM_WIDTH + RogueDungeon.CORRIDOR_WIDTH - (float)Width) * 0.5f;
+				wallLength = ((float)totalWidth + corridorWidth - (float)Width) * 0.5f;
 				InstantiateWall(wallLength * sizeOfBlockUnit,
 				                (center + new Vector3((wallLength + Width) * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
-				                      				  RogueDungeon.CORRIDOR_WIDTH * 0.5f)) * sizeOfBlockUnit,
+				                      				  corridorWidth * 0.5f)) * sizeOfBlockUnit,
 				                Quaternion.AngleAxis(180.0f, Vector3.up));
 				InstantiateWall(wallLength * sizeOfBlockUnit,
 				                (center + new Vector3((wallLength + Width) * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
-				                      				  -RogueDungeon.CORRIDOR_WIDTH * 0.5f)) * sizeOfBlockUnit,
+				                      				  -corridorWidth * 0.5f)) * sizeOfBlockUnit,
 				                Quaternion.identity);
 			}
 			
@@ -229,7 +233,7 @@ namespace MazeGeneration
 			else
 			{
 				// Walls
-				float wallLength = ((float)Width - RogueDungeon.CORRIDOR_WIDTH) * 0.5f;
+				float wallLength = ((float)Width - corridorWidth) * 0.5f;
 				InstantiateWall(wallLength * sizeOfBlockUnit,
 				                (center + new Vector3(wallLength * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
@@ -242,14 +246,14 @@ namespace MazeGeneration
 				                Quaternion.AngleAxis(180.0f, Vector3.up));
 
 				// Corridors
-				wallLength = ((float)RogueDungeon.MAX_ROOM_HEIGHT + RogueDungeon.CORRIDOR_WIDTH - (float)Height) * 0.5f;
+				wallLength = ((float)totalHeight + corridorWidth - (float)Height) * 0.5f;
 				InstantiateWall(wallLength * sizeOfBlockUnit,
-				                (center + new Vector3(RogueDungeon.CORRIDOR_WIDTH * 0.5f,
+				                (center + new Vector3(corridorWidth * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
 				                      				  (wallLength + Height) * 0.5f)) * sizeOfBlockUnit,
 				                Quaternion.AngleAxis(270.0f, Vector3.up));
 				InstantiateWall(wallLength * sizeOfBlockUnit,
-				                (center + new Vector3(-RogueDungeon.CORRIDOR_WIDTH * 0.5f,
+				                (center + new Vector3(-corridorWidth * 0.5f,
 				                      				  CEILING_HEIGHT / 2.0f,
 				                      				  (wallLength + Height) * 0.5f)) * sizeOfBlockUnit,
 				                Quaternion.AngleAxis(90.0f, Vector3.up));
