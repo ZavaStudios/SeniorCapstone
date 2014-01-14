@@ -20,6 +20,7 @@ namespace MazeGeneration
         //      1) The rooms are noticebaly larger than hallways
         //      2) The rooms are not absurdly huge (for a wide number of reasons)
         // Also, note that MIN is inclusive, MAX is exclusive
+		public const int CORRIDOR_WIDTH = 5;
         public const int MIN_ROOM_WIDTH = 10;
         public const int MAX_ROOM_WIDTH = 25;
         public const int MIN_ROOM_HEIGHT = 10;
