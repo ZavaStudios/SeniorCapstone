@@ -14,6 +14,7 @@ public class Main : MonoBehaviour
 
 	public Transform player;
 	public Transform enemy;
+	public Transform boss;
     public Transform floor_tile;
     public Transform wall_tile;
 	public Transform mine_cube;
@@ -101,6 +102,11 @@ public class Main : MonoBehaviour
 				else if (room.Type == RogueDungeon.Room.RoomType.start)
 				{
 					player.transform.position = center + new Vector3(0, 10, 0);
+
+					//Zach's code.
+					Instantiate (boss,
+					             center + new Vector3(0, 15.0f, 0),
+					             Quaternion.identity);
 				}
 
                 // Move to the next row
