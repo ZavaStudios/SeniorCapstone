@@ -3,6 +3,10 @@ using System.Collections;
 
 public class WeaponBase : MonoBehaviour
 {
+	//The name of the weapon base
+	public static string strWeaponName {get{return "Default";}}
+	public static string strWeaponType {get{return "Default";}}
+
 	public Unit Character;
 	
 	protected RaycastHit rayHit;
@@ -14,6 +18,7 @@ public class WeaponBase : MonoBehaviour
 	public bool attack = false;
 	
 	private float nextDamageEvent = 0.0f;
+
 	// Use this for initialization
 	virtual protected void Start ()
 	{
