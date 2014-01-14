@@ -26,72 +26,6 @@ namespace MazeGeneration
         public const int MAX_ROOM_HEIGHT = 10;
 
         /// <summary>
-        /// Represents one room in the map.
-        /// 
-        /// TODO: make this potentially more sophisticated. For now, the room
-        /// is simply going to be variable width / height, of unit sizes
-        /// (which can then be used dynamically by the system to size precisely
-        /// as desired).
-        /// </summary>
-        public struct Room
-        {
-            public const int UP_DOOR_MASK = 0x01;
-            public const int DOWN_DOOR_MASK = 0x02;
-            public const int LEFT_DOOR_MASK = 0x04;
-            public const int RIGHT_DOOR_MASK = 0x08;
-
-			public enum RoomType
-			{
-				empty, enemy, start, corridor,
-			}
-
-            public Room(int width, int height, int doors)
-                : this()
-            {
-				Type = RoomType.empty;
-                Width = width;
-                Height = height;
-                Doors = doors;
-            }
-
-            /// <summary>
-            /// Represents the width of the room
-            /// </summary>
-            public int Width
-            {
-                get;
-                set;
-            }
-
-            /// <summary>
-            /// Represents the height of the room
-            /// </summary>
-            public int Height
-            {
-                get;
-                set;
-            }
-
-            /// <summary>
-            /// Represents which doors are exits from this room. The
-            /// specific doors are available through the static bitmask
-            /// fields. A value is on when the door exists, and off if
-            /// it is not.
-            /// </summary>
-            public int Doors
-            {
-                get;
-                set;
-            }
-
-			public RoomType Type
-			{
-				get;
-				set;
-			}
-        }
-
-        /// <summary>
         /// Generates a new RogueDungeon of the specified width and height.
         /// In this case, "width" and "height" mean the number of potential
         /// rooms horizontally or vertically, respectively.
@@ -104,7 +38,7 @@ namespace MazeGeneration
             bool[,] boolMap = Maze.GenerateMaze(width, height);
 
             // Use the maze to fill in our map
-            Map = new Room[width, height];
+            Map = new RogueRoom[width, height];
             Random r = new Random();
 			bool placedFirstRoom = false;
             for (int x = 0; x < width; x++)
@@ -114,7 +48,7 @@ namespace MazeGeneration
                     // Corridors have unit width
                     int roomWidth = 1;
                     int roomHeight = 1;
-                    Room.RoomType type = Room.RoomType.corridor;
+                    RogueRoom.RoomType type = RogueRoom.RoomType.corridor;
 
                     // If we decide to place a room here, adjust the width
                     // and height accordingly
@@ -126,13 +60,13 @@ namespace MazeGeneration
                         // Determine room type at random:
                         if (!placedFirstRoom)
                         {
-                            type = Room.RoomType.start;
+                            type = RogueRoom.RoomType.start;
                             placedFirstRoom = true;
                         }
                         else if (r.NextDouble() < 0.5)
-                            type = Room.RoomType.enemy;
+                            type = RogueRoom.RoomType.enemy;
                         else
-                            type = Room.RoomType.empty;
+                            type = RogueRoom.RoomType.empty;
                     }
 
                     // Determine what the door code should be, by checking the map:
@@ -144,22 +78,22 @@ namespace MazeGeneration
                     // that the map will have a buffer of false values around where the rooms are.
                     // Left:
                     if (boolMap[mapCoordX - 1, mapCoordY])
-                        doorCode |= Room.LEFT_DOOR_MASK;
+                        doorCode |= RogueRoom.LEFT_DOOR_MASK;
 
                     // Right:
                     if (boolMap[mapCoordX + 1, mapCoordY])
-                        doorCode |= Room.RIGHT_DOOR_MASK;
+                        doorCode |= RogueRoom.RIGHT_DOOR_MASK;
 
                     // Up:
                     if (boolMap[mapCoordX, mapCoordY - 1])
-                        doorCode |= Room.UP_DOOR_MASK;
+                        doorCode |= RogueRoom.UP_DOOR_MASK;
 
                     // Down:
                     if (boolMap[mapCoordX, mapCoordY + 1])
-                        doorCode |= Room.DOWN_DOOR_MASK;
+                        doorCode |= RogueRoom.DOWN_DOOR_MASK;
 
                     // Create the room, and insert it into the map:
-                    Room newRoom = new Room(roomWidth, roomHeight, doorCode);
+                    RogueRoom newRoom = new RogueRoom(roomWidth, roomHeight, doorCode);
                     newRoom.Type = type;
 					
                     Map[x, y] = newRoom;
@@ -190,7 +124,7 @@ namespace MazeGeneration
             {
                 for (int y = 0; y < Map.GetLength(1); y++)
                 {
-                    Room room = Map[x, y];
+                    RogueRoom room = Map[x, y];
                     // Note: we pad lengths by 2 so we can ensure some walls between rooms
                     maxWidths[x] = (maxWidths[x] < room.Width + 2) ? room.Width + 2 : maxWidths[x];
                     maxHeights[y] = (maxHeights[y] < room.Height + 2) ? room.Height + 2 : maxHeights[y];
@@ -221,7 +155,7 @@ namespace MazeGeneration
                 int yOffset = 1;
                 for (int y = 0; y < maxHeights.Length; y++)
                 {
-                    Room room = Map[x, y];
+                    RogueRoom room = Map[x, y];
 
                     // First, fill out grid square based on room size
                     for (int x0 = xOffset; x0 < xOffset + room.Width; x0++)
@@ -245,7 +179,7 @@ namespace MazeGeneration
                             grid[x0, yOffset] = true;
                     }
                      */
-                    if ((room.Doors & Room.RIGHT_DOOR_MASK) != 0)
+                    if ((room.Doors & RogueRoom.RIGHT_DOOR_MASK) != 0)
                     {
                         for (int x0 = xOffset; x0 < xOffset + maxWidths[x]; x0++)
                             grid[x0, yOffset] = true;
@@ -257,7 +191,7 @@ namespace MazeGeneration
                             grid[xOffset, y0] = true;
                     }
                      */
-                    if ((room.Doors & Room.DOWN_DOOR_MASK) != 0)
+                    if ((room.Doors & RogueRoom.DOWN_DOOR_MASK) != 0)
                     {
                         for (int y0 = yOffset; y0 < yOffset + maxHeights[y]; y0++)
                             grid[xOffset, y0] = true;
@@ -272,7 +206,7 @@ namespace MazeGeneration
             return grid;
         }
 
-        public Room[,] Map
+        public RogueRoom[,] Map
         {
             get;
             private set;

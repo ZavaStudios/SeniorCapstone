@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using MazeGeneration;
 
@@ -14,10 +14,6 @@ public class Main : MonoBehaviour
 
 	public Transform player;
 	public Transform enemy;
-    public Transform floor_tile;
-    public Transform wall_tile;
-	public Transform mine_cube;
-    public Transform ore_cube;
 
 	// Use this for initialization
 	void Start ()
@@ -45,7 +41,7 @@ public class Main : MonoBehaviour
         {
             for (int roomY = 0; roomY < HEIGHT; roomY++)
             {
-				RogueDungeon.Room room = dungeon.Map[roomX, roomY];
+				RogueRoom room = dungeon.Map[roomX, roomY];
                 Vector3 center = new Vector3(room_bounds.center.x, 0.0f, room_bounds.center.y);
 
                 // Draw walls, leaving space for doors where necessary
@@ -54,51 +50,51 @@ public class Main : MonoBehaviour
                 float roomWidth  = room.Width  * TILE_SCALAR;
                 float roomHeight = room.Height * TILE_SCALAR;
                 // UP
-                if ((doorCode & RogueDungeon.Room.UP_DOOR_MASK) != 0)
+                if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
                 {
-                    InstantiateDoor(center, roomWidth, roomHeight, RogueDungeon.Room.UP_DOOR_MASK);
-                    InstantiateCorridor(center, roomWidth, roomHeight, RogueDungeon.Room.UP_DOOR_MASK);
+                    InstantiateDoor(center, roomWidth, roomHeight, RogueRoom.UP_DOOR_MASK);
+                    InstantiateCorridor(center, roomWidth, roomHeight, RogueRoom.UP_DOOR_MASK);
                 }
                 else
-                    InstantiateWall(center, roomWidth, roomHeight, RogueDungeon.Room.UP_DOOR_MASK);
+                    InstantiateWall(center, roomWidth, roomHeight, RogueRoom.UP_DOOR_MASK);
                 // DOWN
-                if ((doorCode & RogueDungeon.Room.DOWN_DOOR_MASK) != 0)
+                if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
                 {
-                    InstantiateDoor(center, roomWidth, roomHeight, RogueDungeon.Room.DOWN_DOOR_MASK);
-                    InstantiateCorridor(center, roomWidth, roomHeight, RogueDungeon.Room.DOWN_DOOR_MASK);
+                    InstantiateDoor(center, roomWidth, roomHeight, RogueRoom.DOWN_DOOR_MASK);
+                    InstantiateCorridor(center, roomWidth, roomHeight, RogueRoom.DOWN_DOOR_MASK);
                 }
                 else
-                    InstantiateWall(center, roomWidth, roomHeight, RogueDungeon.Room.DOWN_DOOR_MASK);
+                    InstantiateWall(center, roomWidth, roomHeight, RogueRoom.DOWN_DOOR_MASK);
                 // LEFT
-                if ((doorCode & RogueDungeon.Room.LEFT_DOOR_MASK) != 0)
+                if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
                 {
-                    InstantiateDoor(center, roomWidth, roomHeight, RogueDungeon.Room.LEFT_DOOR_MASK);
-                    InstantiateCorridor(center, roomWidth, roomHeight, RogueDungeon.Room.LEFT_DOOR_MASK);
+                    InstantiateDoor(center, roomWidth, roomHeight, RogueRoom.LEFT_DOOR_MASK);
+                    InstantiateCorridor(center, roomWidth, roomHeight, RogueRoom.LEFT_DOOR_MASK);
                 }
                 else
-                    InstantiateWall(center, roomWidth, roomHeight, RogueDungeon.Room.LEFT_DOOR_MASK);
+                    InstantiateWall(center, roomWidth, roomHeight, RogueRoom.LEFT_DOOR_MASK);
                 // RIGHT
-                if ((doorCode & RogueDungeon.Room.RIGHT_DOOR_MASK) != 0)
+                if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
                 {
-                    InstantiateDoor(center, roomWidth, roomHeight, RogueDungeon.Room.RIGHT_DOOR_MASK);
-                    InstantiateCorridor(center, roomWidth, roomHeight, RogueDungeon.Room.RIGHT_DOOR_MASK);
+                    InstantiateDoor(center, roomWidth, roomHeight, RogueRoom.RIGHT_DOOR_MASK);
+                    InstantiateCorridor(center, roomWidth, roomHeight, RogueRoom.RIGHT_DOOR_MASK);
                 }
                 else
-                    InstantiateWall(center, roomWidth, roomHeight, RogueDungeon.Room.RIGHT_DOOR_MASK);
+                    InstantiateWall(center, roomWidth, roomHeight, RogueRoom.RIGHT_DOOR_MASK);
 
 				// One last thing: add some cubes!
-                if (room.Type != RogueDungeon.Room.RoomType.corridor)
+                if (room.Type != RogueRoom.RoomType.corridor)
                     InstantiateCubes(center, roomWidth, roomHeight, doorCode);
 
 				// Also an enemy for shits and giggles
-				if (room.Type == RogueDungeon.Room.RoomType.enemy)
+				if (room.Type == RogueRoom.RoomType.enemy)
 				{
 					Instantiate (enemy,
 					             center + new Vector3(0, 100.0f, 0),
 					             Quaternion.identity);
 					Debug.Log("Enemey!");
 				}
-				else if (room.Type == RogueDungeon.Room.RoomType.start)
+				else if (room.Type == RogueRoom.RoomType.start)
 				{
 					player.transform.position = center + new Vector3(0, 10, 0);
 				}
@@ -140,7 +136,7 @@ public class Main : MonoBehaviour
                 Vector3 botPos = botLeft + cubeOffsetZ + cubeOffset + new Vector3(x, z, 0.0f);
                 Vector3 topPos = topRight + cubeOffsetZ -cubeOffset - new Vector3(x, -z, 0.0f);
                 // Top:
-                if ((doorCode & RogueDungeon.Room.UP_DOOR_MASK) == 0 ||
+                if ((doorCode & RogueRoom.UP_DOOR_MASK) == 0 ||
                     botPos.x < minDoorRange.x || botPos.x > maxDoorRange.x)
                 {
                     Instantiate((Random.value > ORE_DISTRIBUTION) ? mine_cube : ore_cube,
@@ -148,7 +144,7 @@ public class Main : MonoBehaviour
                                 Quaternion.identity);
                 }
                 // Bot:
-                if ((doorCode & RogueDungeon.Room.DOWN_DOOR_MASK) == 0 ||
+                if ((doorCode & RogueRoom.DOWN_DOOR_MASK) == 0 ||
                     topPos.x < minDoorRange.x || topPos.x > maxDoorRange.x)
                 {
                     Instantiate((Random.value > ORE_DISTRIBUTION) ? mine_cube : ore_cube,
@@ -162,7 +158,7 @@ public class Main : MonoBehaviour
                 Vector3 lftPos = botLeft + cubeOffsetZ + cubeOffset + new Vector3(0.0f, z, y);
                 Vector3 rgtPos = topRight + cubeOffsetZ - cubeOffset - new Vector3(0.0f, -z, y);
                 // Left:
-                if ((doorCode & RogueDungeon.Room.LEFT_DOOR_MASK) == 0 ||
+                if ((doorCode & RogueRoom.LEFT_DOOR_MASK) == 0 ||
                     lftPos.z < minDoorRange.y || lftPos.z > maxDoorRange.y)
                 {
                     Instantiate((Random.value > ORE_DISTRIBUTION) ? mine_cube : ore_cube,
@@ -170,7 +166,7 @@ public class Main : MonoBehaviour
                                 Quaternion.identity);
                 }
                 // Right:
-                if ((doorCode & RogueDungeon.Room.RIGHT_DOOR_MASK) == 0 ||
+                if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) == 0 ||
                     rgtPos.z < minDoorRange.y || rgtPos.z > maxDoorRange.y)
                 {
                     Instantiate((Random.value > ORE_DISTRIBUTION) ? mine_cube : ore_cube,
@@ -189,19 +185,19 @@ public class Main : MonoBehaviour
         float offsetDistanceZ = -roomHeight;
         float offsetDistanceX = 0.0f;
 
-        if (door_code == RogueDungeon.Room.DOWN_DOOR_MASK)
+        if (door_code == RogueRoom.DOWN_DOOR_MASK)
         {
             wall_angle = Quaternion.AngleAxis(180.0f, Vector3.up);
             offsetDistanceZ = -offsetDistanceZ;
         }
-        else if (door_code == RogueDungeon.Room.LEFT_DOOR_MASK)
+        else if (door_code == RogueRoom.LEFT_DOOR_MASK)
         {
             wall_angle = Quaternion.AngleAxis(90.0f, Vector3.up);
             wallLength = roomHeight;
             offsetDistanceZ = 0.0f;
             offsetDistanceX = -roomWidth;
         }
-        else if (door_code == RogueDungeon.Room.RIGHT_DOOR_MASK)
+        else if (door_code == RogueRoom.RIGHT_DOOR_MASK)
         {
             wall_angle = Quaternion.AngleAxis(270.0f, Vector3.up);
             wallLength = roomHeight;
@@ -231,13 +227,13 @@ public class Main : MonoBehaviour
         float offsetDistanceX1 = (wallLength + TILE_SCALAR);
         float offsetDistanceX2 = -(wallLength + TILE_SCALAR);
 
-        if (door_code == RogueDungeon.Room.DOWN_DOOR_MASK)
+        if (door_code == RogueRoom.DOWN_DOOR_MASK)
         {
             wall_angle = Quaternion.AngleAxis(180.0f, Vector3.up);
             offsetDistanceZ1 = -offsetDistanceZ1;
             offsetDistanceZ2 = -offsetDistanceZ2;
         }
-        else if (door_code == RogueDungeon.Room.LEFT_DOOR_MASK)
+        else if (door_code == RogueRoom.LEFT_DOOR_MASK)
         {
             wall_angle = Quaternion.AngleAxis(90.0f, Vector3.up);
             wallLength = (roomHeight - TILE_SCALAR) / 2.0f;
@@ -246,7 +242,7 @@ public class Main : MonoBehaviour
             offsetDistanceX1 = -roomWidth;
             offsetDistanceX2 = -roomWidth;
         }
-        else if (door_code == RogueDungeon.Room.RIGHT_DOOR_MASK)
+        else if (door_code == RogueRoom.RIGHT_DOOR_MASK)
         {
             wall_angle = Quaternion.AngleAxis(270.0f, Vector3.up);
             wallLength = (roomHeight - TILE_SCALAR) / 2.0f;
@@ -285,14 +281,14 @@ public class Main : MonoBehaviour
         Vector3 lightVec = new Vector3(0.0f, 0.0f, LIGHT_DISTANCE * TILE_SCALAR);
         Vector3 lightOff = new Vector3(0.0f, CEILING_HEIGHT/2.0f, roomHeight);
         
-		if (door_code == RogueDungeon.Room.DOWN_DOOR_MASK)
+		if (door_code == RogueRoom.DOWN_DOOR_MASK)
         {
             offsetDistanceZ1 = -offsetDistanceZ1;
             offsetDistanceZ2 = -offsetDistanceZ2;
             lightVec = new Vector3(0.0f, 0.0f, -LIGHT_DISTANCE * TILE_SCALAR);
             lightOff = new Vector3(0.0f, CEILING_HEIGHT / 2.0f, -roomHeight);
         }
-        else if (door_code == RogueDungeon.Room.LEFT_DOOR_MASK)
+        else if (door_code == RogueRoom.LEFT_DOOR_MASK)
         {
             wall_angle1 = Quaternion.AngleAxis(180.0f, Vector3.up);
             wall_angle2 = Quaternion.identity;
@@ -304,7 +300,7 @@ public class Main : MonoBehaviour
             lightVec = new Vector3(LIGHT_DISTANCE * TILE_SCALAR, 0.0f, 0.0f);
             lightOff = new Vector3(roomWidth, CEILING_HEIGHT / 2.0f, 0.0f);
         }
-        else if (door_code == RogueDungeon.Room.RIGHT_DOOR_MASK)
+        else if (door_code == RogueRoom.RIGHT_DOOR_MASK)
         {
             wall_angle1 = Quaternion.AngleAxis(180.0f, Vector3.up);
             wall_angle2 = Quaternion.identity;
