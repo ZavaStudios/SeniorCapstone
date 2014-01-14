@@ -20,11 +20,11 @@ namespace MazeGeneration
         //      1) The rooms are noticebaly larger than hallways
         //      2) The rooms are not absurdly huge (for a wide number of reasons)
         // Also, note that MIN is inclusive, MAX is exclusive
-		public const int CORRIDOR_WIDTH = 5;
-        public const int MIN_ROOM_WIDTH = 10;
-        public const int MAX_ROOM_WIDTH = 25;
-        public const int MIN_ROOM_HEIGHT = 10;
-        public const int MAX_ROOM_HEIGHT = 25;
+		public const int CORRIDOR_WIDTH = 1;
+        public const int MIN_ROOM_WIDTH = 7;
+        public const int MAX_ROOM_WIDTH = 10;
+        public const int MIN_ROOM_HEIGHT = 7;
+        public const int MAX_ROOM_HEIGHT = 10;
 
         /// <summary>
         /// Generates a new RogueDungeon of the specified width and height.
@@ -38,6 +38,17 @@ namespace MazeGeneration
             // Build a maze, which gives us door values
             bool[,] boolMap = Maze.GenerateMaze(width, height);
 
+			// Print boolMap to console for me to investigate:
+			string mapStr = "";
+			for (int x = 0; x < width; x++)
+			{
+				mapStr += "\n";
+				for (int y = 0; y < height; y++)
+				{
+					mapStr += boolMap[x,y] ? "_" : "X";
+				}
+			}
+
             // Use the maze to fill in our map
             Map = new RogueRoom[width, height];
             Random r = new Random();
@@ -47,8 +58,8 @@ namespace MazeGeneration
                 for (int y = 0; y < height; y++)
                 {
                     // Corridors have unit width
-                    int roomWidth = 1;
-                    int roomHeight = 1;
+                    int roomWidth = CORRIDOR_WIDTH;
+                    int roomHeight = CORRIDOR_WIDTH;
                     RogueRoom.RoomType type = RogueRoom.RoomType.corridor;
 
                     // If we decide to place a room here, adjust the width

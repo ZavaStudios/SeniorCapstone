@@ -12,6 +12,11 @@ public class Main : MonoBehaviour
     private const float LIGHT_DISTANCE = 2.0f;
     private const float ORE_DISTRIBUTION = 0.2f;
 
+	public Transform floor_tile;
+	public Transform wall_tile;
+	public Transform mine_cube;
+	public Transform ore_cube;
+
 	public Transform player;
 	public Transform enemy;
 
@@ -24,6 +29,7 @@ public class Main : MonoBehaviour
         float dungeon_width  = WIDTH  * TILE_SCALAR * (RogueDungeon.MAX_ROOM_WIDTH  + 2);
         float dungeon_height = HEIGHT * TILE_SCALAR * (RogueDungeon.MAX_ROOM_HEIGHT + 2);
 
+		/*
         floor_tile.transform.localScale = new Vector3(dungeon_width, 1.0f, dungeon_height);
         Instantiate(floor_tile,
                     new Vector3(0.0f, 0.0f, 0.0f),
@@ -31,6 +37,7 @@ public class Main : MonoBehaviour
         Instantiate(floor_tile,
                     new Vector3(0.0f, CEILING_HEIGHT, 0.0f),
                     Quaternion.AngleAxis(180, Vector3.forward));
+		*/
 
         // build walls
         Rect room_bounds = new Rect(TILE_SCALAR - (dungeon_width  / 2.0f),
@@ -43,6 +50,11 @@ public class Main : MonoBehaviour
             for (int roomY = 0; roomY < HEIGHT; roomY++)
             {
 				RogueRoom room = dungeon.Map[roomX, roomY];
+				// TODO: FIX!
+				room.floor_tile = floor_tile;
+				room.wall_tile = wall_tile;
+				room.mine_cube = mine_cube;
+				room.ore_cube = ore_cube;
 
 				room.LoadRoom(TILE_SCALAR, roomX, roomY,
 				              RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_HEIGHT,
@@ -232,6 +244,7 @@ public class Main : MonoBehaviour
     */
 
 	/*
+	// Helper function for instantiating doors on the rooms
     private void InstantiateDoor(Vector3 center, float roomWidth, float roomHeight, int door_code)
     {
         Quaternion wall_angle = Quaternion.identity;
