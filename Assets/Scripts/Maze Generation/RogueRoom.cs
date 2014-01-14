@@ -98,38 +98,113 @@ public class RogueRoom
 	/// <param name="totalWidth">Width of surrounding space in block-lengths</param> 
 	public void LoadRoom(float sizeOfBlockUnit, Vector2 center, int totalHeight, int totalWidth)
 	{
-		// Spawn main walls. TODO: handle doors! :o
+		// Spawn main walls.
+		// TODO: spawn doors, spawn ores, and more(s)!
 
 		// LEFT
-		wall_tile.transform.localScale = new Vector3(Height * sizeOfBlockUnit,
-		                                             CEILING_HEIGHT,
-		                                             1.0f);
-		Instantiate(wall_tile,
-		            (center + new Vector3(-(float)Width / 2.0f, CEILING_HEIGHT / 2.0f, 0.0f)) * sizeOfBlockUnit,
-		            Quaternion.AngleAxis(90.0f, Vector3.up));
+		//	if there is no door here:
+		if (Doors & LEFT_DOOR_MASK == 0)
+		{
+			InstantiateWall(Height * sizeOfBlockUnit,
+			                (center + new Vector3(-(float)Width / 2.0f, CEILING_HEIGHT / 2.0f, 0.0f)) * sizeOfBlockUnit,
+						    Quaternion.AngleAxis(90.0f, Vector3.up));
+		}
+		//  if there is a door here:
+		else
+		{
+			float wallLength = ((float)Height - 1.0f) * 0.5f;
+			InstantiateWall(wallLength * sizeOfBlockUnit,
+			                (center + new Vector3(-Width * 0.5f,
+			                      				  CEILING_HEIGHT / 2.0f,
+			                      				  wallLength * 0.5f)) * sizeOfBlockUnit,
+			                Quaternion.AngleAxis(90.0f, Vector3.up));
+			InstantiateWall(wallLength * sizeOfBlockUnit,
+			                (center + new Vector3(-width * 0.5f,
+			                      			      CEILING_HEIGHT / 2.0f,
+			                      				  -wallLength * 0.5f)) * sizeOfBlockUnit,
+			                Quaternion.AngleAxis(90.0f, Vector3.up));
+		}
 		
 		// TOP
-		wall_tile.transform.localScale = new Vector3(Width * sizeOfBlockUnit,
-		                                             CEILING_HEIGHT,
-		                                             1.0f);
-		Instantiate(wall_tile,
-		            (center + new Vector3(0.0f, CEILING_HEIGHT / 2.0f, -(float)Height / 2.0f)) * sizeOfBlockUnit,
-		            Quaternion.identity);
+		//	if there is no door here:
+		if (Doors & UP_DOOR_MASK == 0)
+		{
+			InstantiateWall(Width * sizeOfBlockUnit,
+			                (center + new Vector3(0.0f, CEILING_HEIGHT / 2.0f, -(float)Height / 2.0f)) * sizeOfBlockUnit,
+			                Quaternion.identity);
+		}
+		//  if there is a door here:
+		else
+		{
+			float wallLength = ((float)Width - 1.0f) * 0.5f;
+			InstantiateWall(wallLength * sizeOfBlockUnit,
+			                (center + new Vector3(wallLength * 0.5f,
+			                      				  CEILING_HEIGHT / 2.0f,
+			                      				  Height * 0.5f)) * sizeOfBlockUnit,
+			                Quaternion.identity);
+			InstantiateWall(wallLength * sizeOfBlockUnit,
+			                (center + new Vector3(-wallLength * 0.5f,
+			                      				  CEILING_HEIGHT / 2.0f,
+			                      				  Height * 0.5f)) * sizeOfBlockUnit,
+			                Quaternion.identity);
+		}
 
 		// RIGHT
-		wall_tile.transform.localScale = new Vector3(Height * sizeOfBlockUnit,
-		                                             CEILING_HEIGHT,
-		                                             1.0f);
-		Instantiate(wall_tile,
-		            (center + new Vector3((float)Width / 2.0f, CEILING_HEIGHT / 2.0f, 0.0f)) * sizeOfBlockUnit,
-		            Quaternion.AngleAxis(270.0f, Vector3.up));
+		//	if there is no door here:
+		if (Doors & RIGHT_DOOR_MASK == 0)
+		{
+			InstantiateWall(Height * sizeOfBlockUnit,
+			                (center + new Vector3((float)Width / 2.0f, CEILING_HEIGHT / 2.0f, 0.0f)) * sizeOfBlockUnit,
+			                Quaternion.AngleAxis(270.0f, Vector3.up));
+		}
+		//  if there is a door here:
+		else
+		{
+			float wallLength = ((float)Height - 1.0f) * 0.5f;
+			InstantiateWall(wallLength * sizeOfBlockUnit,
+			                (center + new Vector3(Width * 0.5f,
+			                      				  CEILING_HEIGHT / 2.0f,
+			                      				  wallLength * 0.5f)) * sizeOfBlockUnit,
+			                Quaternion.AngleAxis(270.0f, Vector3.up));
+			InstantiateWall(wallLength * sizeOfBlockUnit,
+			                (center + new Vector3(Width * 0.5f,
+			                      				  CEILING_HEIGHT / 2.0f,
+			                      				  -wallLength * 0.5f)) * sizeOfBlockUnit,
+			                Quaternion.AngleAxis(270.0f, Vector3.up));
+		}
 		
 		// BOTTOM
-		wall_tile.transform.localScale = new Vector3(Width * sizeOfBlockUnit,
+		//	if there is no door here:
+		if (Doors & RIGHT_DOOR_MASK == 0)
+		{
+			InstantiateWall(Width * sizeOfBlockUnit,
+			                (center + new Vector3(0.0f, CEILING_HEIGHT / 2.0f, (float)Height / 2.0f)) * sizeOfBlockUnit,
+			                Quaternion.AngleAxis(180.0f, Vector3.up));
+		}
+		//  if there is a door here:
+		else
+		{
+			float wallLength = ((float)Width - 1.0f) * 0.5f;
+			InstantiateWall(wallLength * sizeOfBlockUnit,
+			                (center + new Vector3(wallLength * 0.5f,
+			                      				  CEILING_HEIGHT / 2.0f,
+			                      				  -Height * 0.5f)) * sizeOfBlockUnit,
+			                Quaternion.AngleAxis(180.0f, Vector3.up));
+			InstantiateWall(wallLength * sizeOfBlockUnit,
+			                (center + new Vector3(-wallLength * 0.5f,
+			                      				  CEILING_HEIGHT / 2.0f,
+			                      				  -Height * 0.5f)) * sizeOfBlockUnit,
+			                Quaternion.AngleAxis(180.0f, Vector3.up));
+		}
+	}
+
+	private void InstantiateWall(float wallWidth, Vector3 position, Quaternion angle)
+	{
+		wall_tile.transform.localScale = new Vector3(wallWidth,
 		                                             CEILING_HEIGHT,
 		                                             1.0f);
 		Instantiate(wall_tile,
-		            (center + new Vector3(0.0f, CEILING_HEIGHT / 2.0f, (float)Height / 2.0f)) * sizeOfBlockUnit,
-		            Quaternion.AngleAxis(180.0f, Vector3.up));
+		            position,
+		            angle);
 	}
 }

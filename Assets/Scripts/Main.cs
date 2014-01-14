@@ -177,6 +177,7 @@ public class Main : MonoBehaviour
         }
     }
 
+	/*
     // Helper function for instantiating walls of the rooms
     private void InstantiateWall(Vector3 center, float roomWidth, float roomHeight, int door_code)
     {
@@ -217,6 +218,7 @@ public class Main : MonoBehaviour
                     center + new Vector3(offsetDistanceX / 2.0f, CEILING_HEIGHT / 2.0f, offsetDistanceZ / 2.0f),
                     wall_angle);
     }
+    */
 
     private void InstantiateDoor(Vector3 center, float roomWidth, float roomHeight, int door_code)
     {
