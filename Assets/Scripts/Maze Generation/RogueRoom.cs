@@ -232,7 +232,7 @@ namespace MazeGeneration
 			
 			// BOTTOM
 			//	if there is no door here:
-			if ((Doors & RIGHT_DOOR_MASK) == 0)
+			if ((Doors & DOWN_DOOR_MASK) == 0)
 			{
 				InstantiateWall(Width * sizeOfBlockUnit,
 				                (center + new Vector3(0.0f, wallHeight, (float)Height / 2.0f)) * sizeOfBlockUnit,

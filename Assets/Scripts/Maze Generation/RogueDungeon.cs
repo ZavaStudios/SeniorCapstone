@@ -40,10 +40,10 @@ namespace MazeGeneration
 
 			// Print boolMap to console for me to investigate:
 			string mapStr = "";
-			for (int x = 0; x < width; x++)
+			for (int y = 0; y < boolMap.GetLength(1); y++)
 			{
 				mapStr += "\n";
-				for (int y = 0; y < height; y++)
+				for (int x = 0; x < boolMap.GetLength(0); x++)
 				{
 					mapStr += boolMap[x,y] ? "_" : "X";
 				}
