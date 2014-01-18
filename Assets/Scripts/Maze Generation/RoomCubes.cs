@@ -68,20 +68,18 @@ namespace MazeGeneration
 			public int Y { get; set; }
 			public int Z { get; set; }
 
-			/*
-			public Cube(CubeType _type, int _x, int _y, int _z)
+			public Cube(CubeType _type, int _x, int _y, int _z) : this()
 			{
 				Type = _type;
 				X = _x;
 				Y = _y;
 				Z = _z;
 			}
-			*/
 		}
 
 		private const int CORNER_WIDTH = 5;
 		private const int CORNER_LENGTH = 5;
-		private const int ROOM_HEIGHT = RogueRoom.CEILING_HEIGHT;
+		private int ROOM_HEIGHT;
 
 		private Cube.CubeType[,,] tlCorner;
 		private Cube.CubeType[,,] trCorner;
@@ -92,8 +90,17 @@ namespace MazeGeneration
 		private LinkedList<Cube.CubeType>[,] tSide;
 		private LinkedList<Cube.CubeType>[,] bSide;
 
-		public RoomCubes(int roomWidth, int roomHeight)
+		/// <summary>
+		/// Constructs a new instance of the RoomCubes data structure, given the dimensions of
+		/// the room the cubes are in.
+		/// </summary>
+		/// <param name="roomWidth">Width of the room</param>
+		/// <param name="roomHeight">Height of the room</param>
+		/// <param name="ceilingHeight">Height of the ceiling</param>
+		public RoomCubes(int roomWidth, int roomHeight, int ceilingHeight)
 		{
+			ROOM_HEIGHT = ceilingHeight;
+
 			// If the room is small enough that our corners would fill it up, we
 			// gain nothing from our system, so just use one corner as the whole
 			// room:
@@ -135,14 +142,262 @@ namespace MazeGeneration
 			// Otherwise, we're all good to do our usual thing:
 			else
 			{
-				tlCorner = new Cube.CubeType[roomWidth, ROOM_HEIGHT, roomHeight];
-				trCorner = new Cube.CubeType[0,0,0];
-				blCorner = new Cube.CubeType[0,0,0];
-				brCorner = new Cube.CubeType[0,0,0];
-				tSide = new LinkedList<Cube.CubeType>[0,0];
-				bSide = new LinkedList<Cube.CubeType>[0,0];
-				lSide = new LinkedList<Cube.CubeType>[0,0];
-				rSide = new LinkedList<Cube.CubeType>[0,0];
+				tlCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
+				trCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
+				blCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
+				brCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
+				tSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, roomWidth - (CORNER_WIDTH * 2)];
+				bSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, roomWidth - (CORNER_WIDTH * 2)];
+				lSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, roomHeight - (CORNER_LENGTH * 2)];
+				rSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, roomHeight - (CORNER_LENGTH * 2)];
+			}
+
+			// Fill in linkedLists into sides:
+			// left:
+			for (int z = 0; z < lSide.GetLength(0); z++)
+			{
+				for (int y = 0; y < lSide.GetLength(1); y++)
+				{
+					lSide[z,y] = new LinkedList<Cube.CubeType>();
+				}
+			}
+			// right:
+			for (int z = 0; z < rSide.GetLength(0); z++)
+			{
+				for (int y = 0; y < rSide.GetLength(1); y++)
+				{
+					rSide[z,y] = new LinkedList<Cube.CubeType>();
+				}
+			}
+			// top:
+			for (int z = 0; z < tSide.GetLength(0); z++)
+			{
+				for (int x = 0; x < tSide.GetLength(1); x++)
+				{
+					tSide[z,x] = new LinkedList<Cube.CubeType>();
+				}
+			}
+			// bottom:
+			for (int z = 0; z < bSide.GetLength(0); z++)
+			{
+				for (int x = 0; x < bSide.GetLength(1); x++)
+				{
+					bSide[z,x] = new LinkedList<Cube.CubeType>();
+				}
+			}
+			
+			// Initialize some cube values!
+			InitializeCubes();
+		}
+
+		/// <summary>
+		/// Determines the initial setup of cubes in the room. For now, this is pretty dumb.
+		/// Long term, this will do something smarter.
+		/// </summary>
+		public void InitializeCubes()
+		{
+			// Corners:
+				// top-left:
+			for (int x = 0; x < tlCorner.GetLength(0); x++)
+			{
+				for (int z = 0; z < tlCorner.GetLength(1); z++)
+				{
+					for (int y = 0; y < tlCorner.GetLength(2); y++)
+					{
+						tlCorner[x,z,y] = Cube.CubeType.Stone;
+					}
+				}
+			}
+				// top-right:
+			for (int x = 0; x < trCorner.GetLength(0); x++)
+			{
+				for (int z = 0; z < trCorner.GetLength(1); z++)
+				{
+					for (int y = 0; y < trCorner.GetLength(2); y++)
+					{
+						trCorner[x,z,y] = Cube.CubeType.Stone;
+					}
+				}
+			}
+				// bottom-left:
+			for (int x = 0; x < blCorner.GetLength(0); x++)
+			{
+				for (int z = 0; z < blCorner.GetLength(1); z++)
+				{
+					for (int y = 0; y < blCorner.GetLength(2); y++)
+					{
+						blCorner[x,z,y] = Cube.CubeType.Stone;
+					}
+				}
+			}
+				// bottom-right:
+			for (int x = 0; x < brCorner.GetLength(0); x++)
+			{
+				for (int z = 0; z < brCorner.GetLength(1); z++)
+				{
+					for (int y = 0; y < brCorner.GetLength(2); y++)
+					{
+						brCorner[x,z,y] = Cube.CubeType.Stone;
+					}
+				}
+			}
+			
+			// Sides:
+				// left:
+			for (int z = 0; z < lSide.GetLength(0); z++)
+			{
+				for (int y = 0; y < lSide.GetLength(1); y++)
+				{
+					lSide[z,y].AddLast (Cube.CubeType.Stone);
+					lSide[z,y].AddLast (Cube.CubeType.Stone);
+					lSide[z,y].AddLast (Cube.CubeType.Stone);
+				}
+			}
+				// right:
+			for (int z = 0; z < rSide.GetLength(0); z++)
+			{
+				for (int y = 0; y < rSide.GetLength(1); y++)
+				{
+					rSide[z,y].AddLast (Cube.CubeType.Stone);
+					rSide[z,y].AddLast (Cube.CubeType.Stone);
+					rSide[z,y].AddLast (Cube.CubeType.Stone);
+				}
+			}
+				// top:
+			for (int z = 0; z < tSide.GetLength(0); z++)
+			{
+				for (int x = 0; x < tSide.GetLength(1); x++)
+				{
+					tSide[z,x].AddLast (Cube.CubeType.Stone);
+					tSide[z,x].AddLast (Cube.CubeType.Stone);
+					tSide[z,x].AddLast (Cube.CubeType.Stone);
+				}
+			}
+				// bottom:
+			for (int z = 0; z < bSide.GetLength(0); z++)
+			{
+				for (int x = 0; x < bSide.GetLength(1); x++)
+				{
+					bSide[z,x].AddLast (Cube.CubeType.Stone);
+					bSide[z,x].AddLast (Cube.CubeType.Stone);
+					bSide[z,x].AddLast (Cube.CubeType.Stone);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Enumerates all cubes in the data structure. There are no guarantees in what
+		/// order the cubes will be returned - just that each cube will appear exactly once.
+		/// </summary>
+		/// <returns>Enumeration of cubes in hte data structure</returns>
+		public IEnumerable<Cube> EnumerateCubes()
+		{
+			// Corners:
+				// top-left:
+			for (int x = 0; x < tlCorner.GetLength(0); x++)
+			{
+				for (int z = 0; z < tlCorner.GetLength(1); z++)
+				{
+					for (int y = 0; y < tlCorner.GetLength(2); y++)
+					{
+						yield return new Cube(tlCorner[x,z,y], x, y, z);
+					}
+				}
+			}
+				// top-right:
+			for (int x = 0; x < trCorner.GetLength(0); x++)
+			{
+				for (int z = 0; z < trCorner.GetLength(1); z++)
+				{
+					for (int y = 0; y < trCorner.GetLength(2); y++)
+					{
+						yield return new Cube(trCorner[x,z,y],
+						                      x + tlCorner.GetLength(0) + tSide.GetLength(1), y, z);
+					}
+				}
+			}
+			// bottom-left:
+			for (int x = 0; x < blCorner.GetLength(0); x++)
+			{
+				for (int z = 0; z < blCorner.GetLength(1); z++)
+				{
+					for (int y = 0; y < blCorner.GetLength(2); y++)
+					{
+						yield return new Cube(blCorner[x,z,y],
+						                      x, y + tlCorner.GetLength(2) + lSide.GetLength(1), z);
+					}
+				}
+			}
+				// bottom-right:
+			for (int x = 0; x < brCorner.GetLength(0); x++)
+			{
+				for (int z = 0; z < brCorner.GetLength(1); z++)
+				{
+					for (int y = 0; y < brCorner.GetLength(2); y++)
+					{
+						yield return new Cube(brCorner[x,z,y],
+						                      x + tlCorner.GetLength(0) + tSide.GetLength(1),
+						                      y + tlCorner.GetLength(2) + lSide.GetLength(1), z);
+					}
+				}
+			}
+
+			// Sides:
+				// left:
+			for (int z = 0; z < lSide.GetLength(0); z++)
+			{
+				for (int y = 0; y < lSide.GetLength(1); y++)
+				{
+					int x = 0;
+					foreach (Cube.CubeType type in lSide[z,y])
+					{
+						yield return new Cube(type,
+						                      x, y + tlCorner.GetLength(2), z);
+						x++;
+					}
+				}
+			}
+				// right:
+			for (int z = 0; z < rSide.GetLength(0); z++)
+			{
+				for (int y = 0; y < rSide.GetLength(1); y++)
+				{
+					int x = tlCorner.GetLength(0) + tSide.GetLength(1) + trCorner.GetLength(0) - 1;
+					foreach (Cube.CubeType type in rSide[z,y])
+					{
+						yield return new Cube(type,
+						                      x, y + trCorner.GetLength(2), z);
+						x--;
+					}
+				}
+			}
+				// top:
+			for (int z = 0; z < tSide.GetLength(0); z++)
+			{
+				for (int x = 0; x < tSide.GetLength(1); x++)
+				{
+					int y = 0;
+					foreach (Cube.CubeType type in tSide[z,x])
+					{
+						yield return new Cube(type,
+						                      x + tlCorner.GetLength(0), y, z);
+						y++;
+					}
+				}
+			}
+				// bottom:
+			for (int z = 0; z < bSide.GetLength(0); z++)
+			{
+				for (int x = 0; x < bSide.GetLength(1); x++)
+				{
+					int y = tlCorner.GetLength(2) + lSide.GetLength(1) + blCorner.GetLength(2) - 1;
+					foreach (Cube.CubeType type in bSide[z,x])
+					{
+						yield return new Cube(type,
+						                      x + blCorner.GetLength(0), y, z);
+						y--;
+					}
+				}
 			}
 		}
 	}

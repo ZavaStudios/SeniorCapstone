@@ -7,7 +7,7 @@ public class Main : MonoBehaviour
     private const int WIDTH  = 5;
     private const int HEIGHT = 5;
 
-    private const float TILE_SCALAR = 4.0f;
+    private const float TILE_SCALAR = 1.0f;
     private const float CEILING_HEIGHT = 5.0f;
     private const float LIGHT_DISTANCE = 2.0f;
     private const float ORE_DISTRIBUTION = 0.2f;

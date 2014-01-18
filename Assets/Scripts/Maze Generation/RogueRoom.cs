@@ -29,6 +29,11 @@ namespace MazeGeneration
 		{
 			empty, enemy, start, corridor,
 		}
+
+		public RoomCubes Cubes
+		{
+			get; private set;
+		}
 		
 		public RogueRoom(int width, int height, int doors)
 		{
@@ -36,6 +41,7 @@ namespace MazeGeneration
 			Width = width;
 			Height = height;
 			Doors = doors;
+			Cubes = new RoomCubes(width, height, CEILING_HEIGHT);
 		}
 		
 		/// <summary>
@@ -288,6 +294,15 @@ namespace MazeGeneration
 				                      				  (wallLength + Height) * 0.5f)) * sizeOfBlockUnit,
 				                Quaternion.AngleAxis(90.0f, Vector3.up));
 			}
+
+			// CUBES
+			Vector3 cubeStart = center - 
+								new Vector3((float)Width * 0.5f, 0.0f, (float)Height * 0.5f) +
+								new Vector3(0.5f, 0.5f, 0.5f);
+			foreach (RoomCubes.Cube cube in Cubes.EnumerateCubes())
+			{
+				InstantiateCube(cube, cubeStart, sizeOfBlockUnit);
+			}
 		}
 
 		private void InstantiateWall(float wallWidth, float ceilingHeight, Vector3 position, Quaternion angle)
@@ -298,6 +313,13 @@ namespace MazeGeneration
 			MonoBehaviour.Instantiate(wall_tile,
 			            			  position,
 			            			  angle);
+		}
+
+		private void InstantiateCube(RoomCubes.Cube cube, Vector3 cubeStart, float sizeOfBlockUnit)
+		{
+			MonoBehaviour.Instantiate(ore_cube,
+			                          (new Vector3(cube.X, cube.Z, cube.Y) + cubeStart),
+			                          Quaternion.identity);
 		}
 	}
 }
