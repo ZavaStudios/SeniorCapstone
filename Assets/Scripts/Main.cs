@@ -56,7 +56,7 @@ public class Main : MonoBehaviour
 				room.mine_cube = mine_cube;
 				room.ore_cube = ore_cube;
 
-				room.LoadRoom(TILE_SCALAR, roomX, roomY,
+				room.LoadRoom(roomX, roomY,
 				              RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_HEIGHT,
 				              RogueDungeon.CORRIDOR_WIDTH);
 				/*

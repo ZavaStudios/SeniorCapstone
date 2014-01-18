@@ -90,6 +90,9 @@ namespace MazeGeneration
 		private LinkedList<Cube.CubeType>[,] tSide;
 		private LinkedList<Cube.CubeType>[,] bSide;
 
+		private int Width { get; set; }
+		private int Height { get; set; }
+
 		/// <summary>
 		/// Constructs a new instance of the RoomCubes data structure, given the dimensions of
 		/// the room the cubes are in.
@@ -97,16 +100,18 @@ namespace MazeGeneration
 		/// <param name="roomWidth">Width of the room</param>
 		/// <param name="roomHeight">Height of the room</param>
 		/// <param name="ceilingHeight">Height of the ceiling</param>
-		public RoomCubes(int roomWidth, int roomHeight, int ceilingHeight)
+		public RoomCubes(int roomWidth, int roomHeight, int doorCode, int ceilingHeight)
 		{
 			ROOM_HEIGHT = ceilingHeight;
+			Width = roomWidth;
+			Height = roomHeight;
 
 			// If the room is small enough that our corners would fill it up, we
 			// gain nothing from our system, so just use one corner as the whole
 			// room:
-			if (roomWidth <= CORNER_WIDTH * 2 && roomHeight <= CORNER_LENGTH * 2)
+			if (Width <= CORNER_WIDTH * 2 && Height <= CORNER_LENGTH * 2)
 			{
-				tlCorner = new Cube.CubeType[roomWidth, ROOM_HEIGHT, roomHeight];
+				tlCorner = new Cube.CubeType[Width, ROOM_HEIGHT, Height];
 				trCorner = new Cube.CubeType[0,0,0];
 				blCorner = new Cube.CubeType[0,0,0];
 				brCorner = new Cube.CubeType[0,0,0];
@@ -116,26 +121,26 @@ namespace MazeGeneration
 				rSide = new LinkedList<Cube.CubeType>[0,0];
 			}
 			// If we're too thin, merge top and bottom, but keep other sides:
-			else if (roomWidth <= CORNER_WIDTH * 2)
+			else if (Width <= CORNER_WIDTH * 2)
 			{
-				tlCorner = new Cube.CubeType[roomWidth, ROOM_HEIGHT, CORNER_LENGTH];
+				tlCorner = new Cube.CubeType[Width, ROOM_HEIGHT, CORNER_LENGTH];
 				trCorner = new Cube.CubeType[0,0,0];
-				blCorner = new Cube.CubeType[roomWidth, ROOM_HEIGHT, CORNER_LENGTH];
+				blCorner = new Cube.CubeType[Width, ROOM_HEIGHT, CORNER_LENGTH];
 				brCorner = new Cube.CubeType[0,0,0];
 				tSide = new LinkedList<Cube.CubeType>[0,0];
 				bSide = new LinkedList<Cube.CubeType>[0,0];
-				lSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,roomHeight - (CORNER_LENGTH * 2)];
-				rSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,roomHeight - (CORNER_LENGTH * 2)];
+				lSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,Height - (CORNER_LENGTH * 2)];
+				rSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,Height - (CORNER_LENGTH * 2)];
 			}
 			// If were too short, merge left and right, but keep other sides:
-			else if (roomHeight <= CORNER_LENGTH * 2)
+			else if (Height <= CORNER_LENGTH * 2)
 			{
-				tlCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, roomHeight];
+				tlCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, Height];
 				blCorner = new Cube.CubeType[0,0,0];
-				trCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, roomHeight];
+				trCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, Height];
 				brCorner = new Cube.CubeType[0,0,0];
-				tSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,roomWidth - (CORNER_WIDTH * 2)];
-				bSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,roomWidth - (CORNER_WIDTH * 2)];
+				tSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,Width - (CORNER_WIDTH * 2)];
+				bSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,Width - (CORNER_WIDTH * 2)];
 				lSide = new LinkedList<Cube.CubeType>[0,0];
 				rSide = new LinkedList<Cube.CubeType>[0,0];
 			}
@@ -146,10 +151,10 @@ namespace MazeGeneration
 				trCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
 				blCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
 				brCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
-				tSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, roomWidth - (CORNER_WIDTH * 2)];
-				bSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, roomWidth - (CORNER_WIDTH * 2)];
-				lSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, roomHeight - (CORNER_LENGTH * 2)];
-				rSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, roomHeight - (CORNER_LENGTH * 2)];
+				tSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, Width - (CORNER_WIDTH * 2)];
+				bSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, Width - (CORNER_WIDTH * 2)];
+				lSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, Height - (CORNER_LENGTH * 2)];
+				rSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, Height - (CORNER_LENGTH * 2)];
 			}
 
 			// Fill in linkedLists into sides:
@@ -187,14 +192,14 @@ namespace MazeGeneration
 			}
 			
 			// Initialize some cube values!
-			InitializeCubes();
+			InitializeCubes(doorCode);
 		}
 
 		/// <summary>
 		/// Determines the initial setup of cubes in the room. For now, this is pretty dumb.
 		/// Long term, this will do something smarter.
 		/// </summary>
-		public void InitializeCubes()
+		public void InitializeCubes(int doorCode)
 		{
 			// Corners:
 				// top-left:
@@ -204,6 +209,22 @@ namespace MazeGeneration
 				{
 					for (int y = 0; y < tlCorner.GetLength(2); y++)
 					{
+						// Don't place if it's in the doorway:
+						int modX = x;
+						int modY = y;
+						if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+							if (inLeftCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+							if (inUpCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+							if (inRightCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+							if (inDownCorridor(modX, modY))
+								continue;
+
 						tlCorner[x,z,y] = Cube.CubeType.Stone;
 					}
 				}
@@ -215,6 +236,22 @@ namespace MazeGeneration
 				{
 					for (int y = 0; y < trCorner.GetLength(2); y++)
 					{
+						// Don't place if it's in the doorway:
+						int modX = x + tlCorner.GetLength(0) + tSide.GetLength(1);
+						int modY = y;
+						if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+							if (inLeftCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+							if (inUpCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+							if (inRightCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+							if (inDownCorridor(modX, modY))
+								continue;
+
 						trCorner[x,z,y] = Cube.CubeType.Stone;
 					}
 				}
@@ -226,6 +263,30 @@ namespace MazeGeneration
 				{
 					for (int y = 0; y < blCorner.GetLength(2); y++)
 					{
+						// Don't place if it's in the doorway:
+						int modX = x;
+						int modY = y + tlCorner.GetLength(2) + lSide.GetLength(1);
+						if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+							if (inLeftCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+							if (inUpCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+							if (inRightCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+							if (inDownCorridor(modX, modY))
+								continue;
+
+						// Don't place if it's in the doorway:
+						if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+							if (inDownCorridor(x, y))
+								continue;
+						if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+							if (inLeftCorridor(x,y))
+								continue;
+
 						blCorner[x,z,y] = Cube.CubeType.Stone;
 					}
 				}
@@ -237,6 +298,30 @@ namespace MazeGeneration
 				{
 					for (int y = 0; y < brCorner.GetLength(2); y++)
 					{
+						// Don't place if it's in the doorway:
+						int modX = x + tlCorner.GetLength(0) + tSide.GetLength(1);
+						int modY = y + tlCorner.GetLength(2) + lSide.GetLength(1);
+						if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+							if (inLeftCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+							if (inUpCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+							if (inRightCorridor(modX, modY))
+								continue;
+						if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+							if (inDownCorridor(modX, modY))
+								continue;
+
+						// Don't place if it's in the doorway:
+						if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+							if (inDownCorridor(x, y))
+								continue;
+						if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+							if (inRightCorridor(x,y))
+								continue;
+
 						brCorner[x,z,y] = Cube.CubeType.Stone;
 					}
 				}
@@ -248,6 +333,22 @@ namespace MazeGeneration
 			{
 				for (int y = 0; y < lSide.GetLength(1); y++)
 				{
+					// Don't place if it's in the doorway:
+					int modX = 0;
+					int modY = y + tlCorner.GetLength(2);
+					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+						if (inLeftCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+						if (inUpCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+						if (inRightCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+						if (inDownCorridor(modX, modY))
+							continue;
+
 					lSide[z,y].AddLast (Cube.CubeType.Stone);
 					lSide[z,y].AddLast (Cube.CubeType.Stone);
 					lSide[z,y].AddLast (Cube.CubeType.Stone);
@@ -258,6 +359,22 @@ namespace MazeGeneration
 			{
 				for (int y = 0; y < rSide.GetLength(1); y++)
 				{
+					// Don't place if it's in the doorway:
+					int modX = tlCorner.GetLength(0) + tSide.GetLength(1) + trCorner.GetLength(0);
+					int modY = y + tlCorner.GetLength(2);
+					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+						if (inLeftCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+						if (inUpCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+						if (inRightCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+						if (inDownCorridor(modX, modY))
+							continue;
+
 					rSide[z,y].AddLast (Cube.CubeType.Stone);
 					rSide[z,y].AddLast (Cube.CubeType.Stone);
 					rSide[z,y].AddLast (Cube.CubeType.Stone);
@@ -268,6 +385,22 @@ namespace MazeGeneration
 			{
 				for (int x = 0; x < tSide.GetLength(1); x++)
 				{
+					// Don't place if it's in the doorway:
+					int modX = x + tlCorner.GetLength(0);
+					int modY = 0;
+					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+						if (inLeftCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+						if (inUpCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+						if (inRightCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+						if (inDownCorridor(modX, modY))
+							continue;
+
 					tSide[z,x].AddLast (Cube.CubeType.Stone);
 					tSide[z,x].AddLast (Cube.CubeType.Stone);
 					tSide[z,x].AddLast (Cube.CubeType.Stone);
@@ -278,11 +411,59 @@ namespace MazeGeneration
 			{
 				for (int x = 0; x < bSide.GetLength(1); x++)
 				{
+					// Don't place if it's in the doorway:
+					int modX = x + tlCorner.GetLength(0);
+					int modY = tlCorner.GetLength(2) + lSide.GetLength(1) + blCorner.GetLength(2);
+					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+						if (inLeftCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+						if (inUpCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+						if (inRightCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+						if (inDownCorridor(modX, modY))
+							continue;
+
 					bSide[z,x].AddLast (Cube.CubeType.Stone);
 					bSide[z,x].AddLast (Cube.CubeType.Stone);
 					bSide[z,x].AddLast (Cube.CubeType.Stone);
 				}
 			}
+		}
+
+		private bool inLeftCorridor(int x, int y)
+		{
+			int corMinPos = (Height / 2) - (RogueDungeon.CORRIDOR_WIDTH / 2);
+			int corMaxPos = (Height / 2) + (RogueDungeon.CORRIDOR_WIDTH / 2);
+
+			return ((y <= corMaxPos) && (y >= corMinPos) && (x <= Width / 2));
+		}
+
+		private bool inUpCorridor(int x, int y)
+		{
+			int corMinPos = (Width / 2) - (RogueDungeon.CORRIDOR_WIDTH / 2);
+			int corMaxPos = (Width / 2) + (RogueDungeon.CORRIDOR_WIDTH / 2);
+			
+			return ((x <= corMaxPos) && (x >= corMinPos) && (y <= Height / 2));
+		}
+
+		private bool inRightCorridor(int x, int y)
+		{
+			int corMinPos = (Height / 2) - (RogueDungeon.CORRIDOR_WIDTH / 2);
+			int corMaxPos = (Height / 2) + (RogueDungeon.CORRIDOR_WIDTH / 2);
+			
+			return ((y <= corMaxPos) && (y >= corMinPos) && (x > Width / 2));
+		}
+
+		private bool inDownCorridor(int x, int y)
+		{
+			int corMinPos = (Width / 2) - (RogueDungeon.CORRIDOR_WIDTH / 2);
+			int corMaxPos = (Width / 2) + (RogueDungeon.CORRIDOR_WIDTH / 2);
+
+			return ((x <= corMaxPos) && (x >= corMinPos) && (y > Height / 2));
 		}
 
 		/// <summary>

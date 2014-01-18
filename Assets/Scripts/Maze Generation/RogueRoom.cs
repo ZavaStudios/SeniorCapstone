@@ -41,7 +41,7 @@ namespace MazeGeneration
 			Width = width;
 			Height = height;
 			Doors = doors;
-			Cubes = new RoomCubes(width, height, CEILING_HEIGHT);
+			Cubes = new RoomCubes(width, height, Doors, CEILING_HEIGHT);
 		}
 		
 		/// <summary>
@@ -104,32 +104,35 @@ namespace MazeGeneration
 		/// <param name="center">Position of the center of the room in block-lengths</param>
 		/// <param name="totalHeight">Height of surrounding space in block-lengths</param>
 		/// <param name="totalWidth">Width of surrounding space in block-lengths</param> 
-		public void LoadRoom(float sizeOfBlockUnit, int gridPosX, int gridPosY,
-		                     int totalHeight, int totalWidth, int corridorWidth)
+		public void LoadRoom(int gridPosX, int gridPosY, int totalHeight,
+		                     int totalWidth, int corridorWidth)
 		{
 			// Spawn main walls.
 			// TODO: spawn doors, spawn ores, and more(s)!
 			
 			float wallHeight = 0.0f;
-			float bufferWidth = 1.0f;
+			float bufferWidth = corridorWidth;
 			Vector3 center = new Vector3(((float)totalWidth + bufferWidth) * ((float)gridPosX + 0.5f),
 			                             0.0f,
 			                             ((float)totalHeight + bufferWidth)  * ((float)gridPosY + 0.5f));
 
-			float ceilingHeight = CEILING_HEIGHT * sizeOfBlockUnit;
+			float ceilingHeight = CEILING_HEIGHT;
 
 			floor_tile.transform.localScale = new Vector3((float)totalWidth + bufferWidth,
 			                                              0.0f,
-			                                              (float)totalHeight + bufferWidth) * sizeOfBlockUnit;
-			MonoBehaviour.Instantiate(floor_tile, center * sizeOfBlockUnit, Quaternion.identity);
+			                                              (float)totalHeight + bufferWidth);
+			MonoBehaviour.Instantiate(floor_tile, center, Quaternion.identity);
+			MonoBehaviour.Instantiate(floor_tile,
+			                          center + new Vector3(0.0f, ceilingHeight, 0.0f),
+			                          Quaternion.AngleAxis (180.0f, Vector3.forward));
 
 			// LEFT
 			//	if there is no door here:
 			if ((Doors & LEFT_DOOR_MASK) == 0)
 			{
-				InstantiateWall(Height * sizeOfBlockUnit,
+				InstantiateWall(Height,
 				                ceilingHeight,
-				                (center + new Vector3(-(float)Width / 2.0f, wallHeight, 0.0f)) * sizeOfBlockUnit,
+				                (center + new Vector3(-(float)Width / 2.0f, wallHeight, 0.0f)),
 							    Quaternion.AngleAxis(90.0f, Vector3.up));
 			}
 			//  if there is a door here:
@@ -137,32 +140,32 @@ namespace MazeGeneration
 			{
 				// Walls
 				float wallLength = ((float)Height - corridorWidth) * 0.5f;
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(-Width * 0.5f,
 				                      				  wallHeight,
-				                      				  (wallLength + corridorWidth) * 0.5f)) * sizeOfBlockUnit,
+				                      				  (wallLength + corridorWidth) * 0.5f)),
 				                Quaternion.AngleAxis(90.0f, Vector3.up));
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(-Width * 0.5f,
 				                      			      wallHeight,
-				                      				  -(wallLength + corridorWidth) * 0.5f)) * sizeOfBlockUnit,
+				                      				  -(wallLength + corridorWidth) * 0.5f)),
 				                Quaternion.AngleAxis(90.0f, Vector3.up));
 
 				// Corridors
-				wallLength = ((float)totalWidth + corridorWidth - (float)Width) * 0.5f;
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				wallLength = ((float)totalWidth + bufferWidth - (float)Width) * 0.5f;
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(-(wallLength + Width) * 0.5f,
 				                      				  wallHeight,
-				                      				  corridorWidth * 0.5f)) * sizeOfBlockUnit,
+				                      				  corridorWidth * 0.5f)),
 				                Quaternion.AngleAxis(180.0f, Vector3.up));
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(-(wallLength + Width) * 0.5f,
 				                      				  wallHeight,
-				                      				  -corridorWidth * 0.5f)) * sizeOfBlockUnit,
+				                      				  -corridorWidth * 0.5f)),
 				                Quaternion.identity);
 			}
 			
@@ -170,9 +173,9 @@ namespace MazeGeneration
 			//	if there is no door here:
 			if ((Doors & UP_DOOR_MASK) == 0)
 			{
-				InstantiateWall(Width * sizeOfBlockUnit,
+				InstantiateWall(Width,
 				                ceilingHeight,
-				                (center + new Vector3(0.0f, wallHeight, -(float)Height / 2.0f)) * sizeOfBlockUnit,
+				                (center + new Vector3(0.0f, wallHeight, -(float)Height / 2.0f)),
 				                Quaternion.identity);
 			}
 			//  if there is a door here:
@@ -180,32 +183,32 @@ namespace MazeGeneration
 			{
 				// Walls
 				float wallLength = ((float)Width - corridorWidth) * 0.5f;
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3((wallLength + corridorWidth) * 0.5f,
 				                      				  wallHeight,
-				                      				  -Height * 0.5f)) * sizeOfBlockUnit,
+				                      				  -Height * 0.5f)),
 				                Quaternion.identity);
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(-(wallLength + corridorWidth) * 0.5f,
 				                      				  wallHeight,
-				                      				  -Height * 0.5f)) * sizeOfBlockUnit,
+				                      				  -Height * 0.5f)),
 				                Quaternion.identity);
 
 				// Corridors
-				wallLength = ((float)totalHeight + corridorWidth - (float)Height) * 0.5f;
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				wallLength = ((float)totalHeight + bufferWidth - (float)Height) * 0.5f;
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(corridorWidth * 0.5f,
 				                      				  wallHeight,
-				                      				  -(wallLength + Height) * 0.5f)) * sizeOfBlockUnit,
+				                      				  -(wallLength + Height) * 0.5f)),
 				                Quaternion.AngleAxis(270.0f, Vector3.up));
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(-corridorWidth * 0.5f,
 				                      				  wallHeight,
-				                      				  -(wallLength + Height) * 0.5f)) * sizeOfBlockUnit,
+				                      				  -(wallLength + Height) * 0.5f)),
 				                Quaternion.AngleAxis(90.0f, Vector3.up));
 			}
 
@@ -213,9 +216,9 @@ namespace MazeGeneration
 			//	if there is no door here:
 			if ((Doors & RIGHT_DOOR_MASK) == 0)
 			{
-				InstantiateWall(Height * sizeOfBlockUnit,
+				InstantiateWall(Height,
 				                ceilingHeight,
-				                (center + new Vector3((float)Width / 2.0f, wallHeight, 0.0f)) * sizeOfBlockUnit,
+				                (center + new Vector3((float)Width / 2.0f, wallHeight, 0.0f)),
 				                Quaternion.AngleAxis(270.0f, Vector3.up));
 			}
 			//  if there is a door here:
@@ -223,32 +226,32 @@ namespace MazeGeneration
 			{
 				// Walls
 				float wallLength = ((float)Height - corridorWidth) * 0.5f;
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(Width * 0.5f,
 				                      				  wallHeight,
-				                      				  (wallLength + corridorWidth) * 0.5f)) * sizeOfBlockUnit,
+				                      				  (wallLength + corridorWidth) * 0.5f)),
 				                Quaternion.AngleAxis(270.0f, Vector3.up));
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(Width * 0.5f,
 				                      				  wallHeight,
-				                      				  -(wallLength + corridorWidth) * 0.5f)) * sizeOfBlockUnit,
+				                      				  -(wallLength + corridorWidth) * 0.5f)),
 				                Quaternion.AngleAxis(270.0f, Vector3.up));
 
 				// Corridors
-				wallLength = ((float)totalWidth + corridorWidth - (float)Width) * 0.5f;
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				wallLength = ((float)totalWidth + bufferWidth - (float)Width) * 0.5f;
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3((wallLength + Width) * 0.5f,
 				                      				  wallHeight,
-				                      				  corridorWidth * 0.5f)) * sizeOfBlockUnit,
+				                      				  corridorWidth * 0.5f)),
 				                Quaternion.AngleAxis(180.0f, Vector3.up));
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3((wallLength + Width) * 0.5f,
 				                      				  wallHeight,
-				                      				  -corridorWidth * 0.5f)) * sizeOfBlockUnit,
+				                      				  -corridorWidth * 0.5f)),
 				                Quaternion.identity);
 			}
 			
@@ -256,9 +259,9 @@ namespace MazeGeneration
 			//	if there is no door here:
 			if ((Doors & DOWN_DOOR_MASK) == 0)
 			{
-				InstantiateWall(Width * sizeOfBlockUnit,
+				InstantiateWall(Width,
 				                ceilingHeight,
-				                (center + new Vector3(0.0f, wallHeight, (float)Height / 2.0f)) * sizeOfBlockUnit,
+				                (center + new Vector3(0.0f, wallHeight, (float)Height / 2.0f)),
 				                Quaternion.AngleAxis(180.0f, Vector3.up));
 			}
 			//  if there is a door here:
@@ -266,32 +269,32 @@ namespace MazeGeneration
 			{
 				// Walls
 				float wallLength = ((float)Width - corridorWidth) * 0.5f;
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3((wallLength + corridorWidth) * 0.5f,
 				                      				  wallHeight,
-				                      				  Height * 0.5f)) * sizeOfBlockUnit,
+				                      				  Height * 0.5f)),
 				                Quaternion.AngleAxis(180.0f, Vector3.up));
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(-(wallLength + corridorWidth) * 0.5f,
 				                      				  wallHeight,
-				                      				  Height * 0.5f)) * sizeOfBlockUnit,
+				                      				  Height * 0.5f)),
 				                Quaternion.AngleAxis(180.0f, Vector3.up));
 
 				// Corridors
-				wallLength = ((float)totalHeight + corridorWidth - (float)Height) * 0.5f;
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				wallLength = ((float)totalHeight + bufferWidth - (float)Height) * 0.5f;
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(corridorWidth * 0.5f,
 				                      				  wallHeight,
-				                      				  (wallLength + Height) * 0.5f)) * sizeOfBlockUnit,
+				                      				  (wallLength + Height) * 0.5f)),
 				                Quaternion.AngleAxis(270.0f, Vector3.up));
-				InstantiateWall(wallLength * sizeOfBlockUnit,
+				InstantiateWall(wallLength,
 				                ceilingHeight,
 				                (center + new Vector3(-corridorWidth * 0.5f,
 				                      				  wallHeight,
-				                      				  (wallLength + Height) * 0.5f)) * sizeOfBlockUnit,
+				                      				  (wallLength + Height) * 0.5f)),
 				                Quaternion.AngleAxis(90.0f, Vector3.up));
 			}
 
@@ -301,7 +304,8 @@ namespace MazeGeneration
 								new Vector3(0.5f, 0.5f, 0.5f);
 			foreach (RoomCubes.Cube cube in Cubes.EnumerateCubes())
 			{
-				InstantiateCube(cube, cubeStart, sizeOfBlockUnit);
+				if (cube.Type != RoomCubes.Cube.CubeType.Air)
+					InstantiateCube(cube, cubeStart);
 			}
 		}
 
@@ -311,11 +315,11 @@ namespace MazeGeneration
 			                                             ceilingHeight,
 			                                             1.0f);
 			MonoBehaviour.Instantiate(wall_tile,
-			            			  position,
+			                          position + new Vector3(0.0f, ceilingHeight * 0.5f, 0.0f),
 			            			  angle);
 		}
 
-		private void InstantiateCube(RoomCubes.Cube cube, Vector3 cubeStart, float sizeOfBlockUnit)
+		private void InstantiateCube(RoomCubes.Cube cube, Vector3 cubeStart)
 		{
 			MonoBehaviour.Instantiate(ore_cube,
 			                          (new Vector3(cube.X, cube.Z, cube.Y) + cubeStart),
