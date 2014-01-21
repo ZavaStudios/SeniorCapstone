@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -77,8 +77,8 @@ namespace MazeGeneration
 			}
 		}
 
-		private const int CORNER_WIDTH = 5;
-		private const int CORNER_LENGTH = 5;
+		private const int CORNER_WIDTH = 8;
+		private const int CORNER_LENGTH = 8;
 		private int ROOM_HEIGHT;
 
 		private Cube.CubeType[,,] tlCorner;
@@ -201,6 +201,133 @@ namespace MazeGeneration
 		/// </summary>
 		public void InitializeCubes(int doorCode)
 		{
+			// Randomizer:
+			Random r = new Random();
+			int[,] noise = PerlinNoise.GenerateNoise128();
+
+			// Sides:
+				// left:
+			for (int z = 0; z < lSide.GetLength(0); z++)
+			{
+				for (int y = 0; y < lSide.GetLength(1); y++)
+				{
+					// Don't place if it's in the doorway:
+					int modX = 0;
+					int modY = y + tlCorner.GetLength(2);
+					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+						if (inLeftCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+						if (inUpCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+						if (inRightCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+						if (inDownCorridor(modX, modY))
+							continue;
+
+					/*
+					// Pick base value by height up the wall:
+					// WARNING: math magic ahead!
+					int normalized = z-2;
+					int baseValue = (normalized*normalized)-(normalized*normalized/4)+3;
+					// Now, add a bit of noise
+					int noise = r.Next(-1, 2);
+					for (int x = 0; x < baseValue+noise; x++)
+					{
+						lSide[z,y].AddLast(Cube.CubeType.Stone);
+					}
+					*/
+					// TODO: better indexing. We could average nearby values or something.
+					int zIndex = (int)(((float)z / (float)lSide.GetLength(0)) * 128.0f);
+					int yIndex = (int)(((float)y / (float)lSide.GetLength(1)) * 128.0f);
+					int depth = (int)((float)noise[zIndex,yIndex] * 0.01f * (float)CORNER_WIDTH);
+					for (int x = 0; x < depth; x++)
+					{
+						lSide[z,y].AddLast(Cube.CubeType.Stone);
+					}
+				}
+			}
+			// right:
+			for (int z = 0; z < rSide.GetLength(0); z++)
+			{
+				for (int y = 0; y < rSide.GetLength(1); y++)
+				{
+					// Don't place if it's in the doorway:
+					int modX = tlCorner.GetLength(0) + tSide.GetLength(1) + trCorner.GetLength(0);
+					int modY = y + tlCorner.GetLength(2);
+					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+						if (inLeftCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+						if (inUpCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+						if (inRightCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+						if (inDownCorridor(modX, modY))
+							continue;
+					
+					rSide[z,y].AddLast (Cube.CubeType.Stone);
+					rSide[z,y].AddLast (Cube.CubeType.Stone);
+					rSide[z,y].AddLast (Cube.CubeType.Stone);
+				}
+			}
+			// top:
+			for (int z = 0; z < tSide.GetLength(0); z++)
+			{
+				for (int x = 0; x < tSide.GetLength(1); x++)
+				{
+					// Don't place if it's in the doorway:
+					int modX = x + tlCorner.GetLength(0);
+					int modY = 0;
+					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+						if (inLeftCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+						if (inUpCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+						if (inRightCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+						if (inDownCorridor(modX, modY))
+							continue;
+					
+					tSide[z,x].AddLast (Cube.CubeType.Stone);
+					tSide[z,x].AddLast (Cube.CubeType.Stone);
+					tSide[z,x].AddLast (Cube.CubeType.Stone);
+				}
+			}
+			// bottom:
+			for (int z = 0; z < bSide.GetLength(0); z++)
+			{
+				for (int x = 0; x < bSide.GetLength(1); x++)
+				{
+					// Don't place if it's in the doorway:
+					int modX = x + tlCorner.GetLength(0);
+					int modY = tlCorner.GetLength(2) + lSide.GetLength(1) + blCorner.GetLength(2);
+					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+						if (inLeftCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+						if (inUpCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+						if (inRightCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+						if (inDownCorridor(modX, modY))
+							continue;
+					
+					bSide[z,x].AddLast (Cube.CubeType.Stone);
+					bSide[z,x].AddLast (Cube.CubeType.Stone);
+					bSide[z,x].AddLast (Cube.CubeType.Stone);
+				}
+			}
+
 			// Corners:
 				// top-left:
 			for (int x = 0; x < tlCorner.GetLength(0); x++)
@@ -324,112 +451,6 @@ namespace MazeGeneration
 
 						brCorner[x,z,y] = Cube.CubeType.Stone;
 					}
-				}
-			}
-			
-			// Sides:
-				// left:
-			for (int z = 0; z < lSide.GetLength(0); z++)
-			{
-				for (int y = 0; y < lSide.GetLength(1); y++)
-				{
-					// Don't place if it's in the doorway:
-					int modX = 0;
-					int modY = y + tlCorner.GetLength(2);
-					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
-						if (inLeftCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
-						if (inUpCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
-						if (inRightCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
-						if (inDownCorridor(modX, modY))
-							continue;
-
-					lSide[z,y].AddLast (Cube.CubeType.Stone);
-					lSide[z,y].AddLast (Cube.CubeType.Stone);
-					lSide[z,y].AddLast (Cube.CubeType.Stone);
-				}
-			}
-				// right:
-			for (int z = 0; z < rSide.GetLength(0); z++)
-			{
-				for (int y = 0; y < rSide.GetLength(1); y++)
-				{
-					// Don't place if it's in the doorway:
-					int modX = tlCorner.GetLength(0) + tSide.GetLength(1) + trCorner.GetLength(0);
-					int modY = y + tlCorner.GetLength(2);
-					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
-						if (inLeftCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
-						if (inUpCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
-						if (inRightCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
-						if (inDownCorridor(modX, modY))
-							continue;
-
-					rSide[z,y].AddLast (Cube.CubeType.Stone);
-					rSide[z,y].AddLast (Cube.CubeType.Stone);
-					rSide[z,y].AddLast (Cube.CubeType.Stone);
-				}
-			}
-				// top:
-			for (int z = 0; z < tSide.GetLength(0); z++)
-			{
-				for (int x = 0; x < tSide.GetLength(1); x++)
-				{
-					// Don't place if it's in the doorway:
-					int modX = x + tlCorner.GetLength(0);
-					int modY = 0;
-					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
-						if (inLeftCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
-						if (inUpCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
-						if (inRightCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
-						if (inDownCorridor(modX, modY))
-							continue;
-
-					tSide[z,x].AddLast (Cube.CubeType.Stone);
-					tSide[z,x].AddLast (Cube.CubeType.Stone);
-					tSide[z,x].AddLast (Cube.CubeType.Stone);
-				}
-			}
-				// bottom:
-			for (int z = 0; z < bSide.GetLength(0); z++)
-			{
-				for (int x = 0; x < bSide.GetLength(1); x++)
-				{
-					// Don't place if it's in the doorway:
-					int modX = x + tlCorner.GetLength(0);
-					int modY = tlCorner.GetLength(2) + lSide.GetLength(1) + blCorner.GetLength(2);
-					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
-						if (inLeftCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
-						if (inUpCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
-						if (inRightCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
-						if (inDownCorridor(modX, modY))
-							continue;
-
-					bSide[z,x].AddLast (Cube.CubeType.Stone);
-					bSide[z,x].AddLast (Cube.CubeType.Stone);
-					bSide[z,x].AddLast (Cube.CubeType.Stone);
 				}
 			}
 		}

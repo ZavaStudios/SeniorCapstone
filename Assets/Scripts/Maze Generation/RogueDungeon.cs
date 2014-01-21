@@ -69,17 +69,18 @@ namespace MazeGeneration
             Random r = new Random();
 
 			// Assign initial placements:
-				// Boss room
-			int bossX = width/2;
-			int bossY = height/2;
 				// Starting room
 			int startX = r.Next (width);
 			int startY = r.Next (height);
-			// Guarantee we don't overwrite the boss room:
-			if (startX == width/2 && startY == height/2)
+				// Boss room
+			int bossX = width/2;
+			int bossY = height/2;
+			// Guarantee we don't overwrite the start room:
+			if (bossX == startX && bossY == startY)
 			{
-				startY += (r.Next (1) == 1 ? r.Next (1, height/2) : -r.Next(1, height/2));
-				startX += (r.Next (1) == 1 ? r.Next (1, width/2) : -r.Next(1, width/2));
+				// TODO: something better?
+				bossY += (r.Next (2) == 1 ? 1 : -1);
+				bossX += (r.Next (2) == 1 ? 1 : -1);
 			}
 				// TODO: further shops
 				// TODO: others?
@@ -94,17 +95,17 @@ namespace MazeGeneration
                     RogueRoom.RoomType type = RogueRoom.RoomType.corridor;
 
 					// If the x,y coordinate was one of our set aside vectors, use that type:
-					if (x == bossX && y == bossY)
-					{
-						roomWidth = r.Next(MIN_BOSS_ROOM_WIDTH, MAX_BOSS_ROOM_WIDTH);
-						roomHeight = r.Next (MIN_BOSS_ROOM_HEIGHT, MAX_BOSS_ROOM_HEIGHT);
-						type = RogueRoom.RoomType.boss;
-					}
-					else if (x == startX && y == startY)
+					if (x == startX && y == startY)
 					{
 						roomWidth = r.Next(MIN_SHOP_ROOM_WIDTH, MAX_SHOP_ROOM_WIDTH);
 						roomHeight = r.Next (MIN_SHOP_ROOM_HEIGHT, MAX_SHOP_ROOM_HEIGHT);
 						type = RogueRoom.RoomType.start;
+					}
+					else if (x == bossX && y == bossY)
+					{
+						roomWidth = r.Next(MIN_BOSS_ROOM_WIDTH, MAX_BOSS_ROOM_WIDTH);
+						roomHeight = r.Next (MIN_BOSS_ROOM_HEIGHT, MAX_BOSS_ROOM_HEIGHT);
+						type = RogueRoom.RoomType.boss;
 					}
 					// TODO: others?
 
