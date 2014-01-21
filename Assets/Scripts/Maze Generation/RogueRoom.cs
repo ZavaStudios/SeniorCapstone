@@ -5,11 +5,9 @@ namespace MazeGeneration
 {
 	/// <summary>
 	/// Represents one room in a RougeDungeon.
-	/// 
-	/// TODO: make this potentially more sophisticated. For now, the room
-	/// is simply going to be variable width / height, of unit sizes
-	/// (which can then be used dynamically by the system to size precisely
-	/// as desired).
+	/// Beyond tracking what type the room is, as well as its dimensions, the room
+	/// is also responsible for tracking what mineable blocks are stored inside, and
+	/// handles spawning / unspawning itself from the Unity environment upon request.
 	/// </summary>
 	public class RogueRoom
 	{
@@ -20,6 +18,7 @@ namespace MazeGeneration
 
 		public const int CEILING_HEIGHT = 5;
 
+		public Transform enemy;
 		public Transform floor_tile;
 		public Transform wall_tile;
 		public Transform mine_cube;
@@ -27,7 +26,7 @@ namespace MazeGeneration
 
 		public enum RoomType
 		{
-			empty, enemy, start, corridor,
+			empty, enemy, start, corridor, boss, shop, // TODO: others?
 		}
 
 		public RoomCubes Cubes
@@ -85,8 +84,26 @@ namespace MazeGeneration
 			set;
 		}
 
-		// TODO: store the blocks currently in the room somehow.
-		// I'm uncertain what sort of data structure to use for this.
+		// TODO: list of enemies in the room. For now, placeholder with just a counter
+		public int EnemyCount
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Assigns enemies to this room based on the assigned enemyScore.
+		/// Short version of how this works: various enemy types are worth differing
+		/// numbers of points. E.g., a spider may be worth 1 while a skeleton is worth 5.
+		/// This function randomly determines which type of enemies to spawn in the room
+		/// based on how many points are assigned to the room.
+		/// </summary>
+		/// <param name="enemyScore">Number of enemy points allocated to this room</param>
+		public void AssignEnemies(int enemyScore)
+		{
+			// For now, just assign one "enemy" per enemy score:
+			EnemyCount = enemyScore;
+		}
 
 		/// <summary>
 		/// Builds game objects to represent this room in Unity, and loads them
@@ -307,8 +324,25 @@ namespace MazeGeneration
 				if (cube.Type != RoomCubes.Cube.CubeType.Air)
 					InstantiateCube(cube, cubeStart);
 			}
+
+			// ENEMIES / ETC.
+			if (Type == RoomType.enemy)
+			{
+				// TODO: this won't be how enemies work long term, but for now just spawn it from count
+				for (int i = 0; i < EnemyCount; i++)
+				{
+					InstantiateEnemy(center);
+				}
+			}
 		}
 
+		/// <summary>
+		/// Spawns a wall in Unity given a position, width, height, and angle.
+		/// </summary>
+		/// <param name="wallWidth">Horizontal length of the wall.</param>
+		/// <param name="ceilingHeight">Vertical height of the wall.</param>
+		/// <param name="position">Position of the wall (center of the quad).</param>
+		/// <param name="angle">Angle about which to rotate the wall.</param>
 		private void InstantiateWall(float wallWidth, float ceilingHeight, Vector3 position, Quaternion angle)
 		{
 			wall_tile.transform.localScale = new Vector3(wallWidth,
@@ -319,11 +353,49 @@ namespace MazeGeneration
 			            			  angle);
 		}
 
+		/// <summary>
+		/// Spawns a cube in Unity given a Cube object (holding the type of cube, and (x,y,z)
+		/// coordinate position of the cube in the room) and a vector denoting where (0,0,0)
+		/// lies in Unity space.
+		/// </summary>
+		/// <param name="cube">Cube object you would like to spawn.</param>
+		/// <param name="cubeStart">Offset of (0,0,0) in Unity space.</param>
 		private void InstantiateCube(RoomCubes.Cube cube, Vector3 cubeStart)
 		{
 			MonoBehaviour.Instantiate(ore_cube,
 			                          (new Vector3(cube.X, cube.Z, cube.Y) + cubeStart),
 			                          Quaternion.identity);
+		}
+		
+		/// <summary>
+		/// Places an enemy in the room at the given floor position. Assumes
+		/// that the Y-coordinate is zero, and will lift the enemy up to
+		/// accomodate for that.
+		/// </summary>
+		/// <param name="position">Floor position to place enemy at.</param>
+		private void InstantiateEnemy(Vector3 position)
+		{
+			MonoBehaviour.Instantiate(enemy,
+			                          position + new Vector3(0.0f, enemy.collider.bounds.center.y, 0.0f),
+			                          Quaternion.identity);
+		}
+
+		/// <summary>
+		/// Returns center coordinates of the floor of this room.
+		/// </summary>
+		/// <returns>The center.</returns>
+		/// <param name="gridPosX">X position of this room in the dungeon map.</param>
+		/// <param name="gridPosY">Y position of this room in the dungeon map.</param>
+		/// <param name="totalHeight">Maximum height of a room.</param>
+		/// <param name="totalWidth">Maximum width of a room.</param>
+		/// <param name="corridorWidth">Width of a corridor.</param>
+		public Vector3 GetCenter(int gridPosX, int gridPosY, int totalHeight,
+		                         int totalWidth, int corridorWidth)
+		{
+			float bufferWidth = corridorWidth;
+			return new Vector3(((float)totalWidth + bufferWidth) * ((float)gridPosX + 0.5f),
+	                             0.0f,
+			                     ((float)totalHeight + bufferWidth)  * ((float)gridPosY + 0.5f));
 		}
 	}
 }

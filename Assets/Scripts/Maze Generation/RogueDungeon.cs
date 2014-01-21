@@ -10,21 +10,36 @@ namespace MazeGeneration
     /// </summary>
     class RogueDungeon
     {
-        // Approximate number of slots in the dungeon to be filled with rooms,
-        // with 1.0f being 100% of the rooms, and 0.0f being (probably) none
-        // of them.
-        private const float ROOM_DENSITY = 0.5f;
+        // Approximate number of slots in the dungeon to be filled with enemy rooms,
+        // with 1.0f being 100% of the rooms, and 0.0f being (probably) none of them.
+        private const float ENEMY_ROOM_DENSITY = 0.5f;
 
-        // Values deciding how large a standard room can be. These can be
-        // tweaked, but the desirable characteristics are:
-        //      1) The rooms are noticebaly larger than hallways
-        //      2) The rooms are not absurdly huge (for a wide number of reasons)
+        // Values deciding how large rooms can be. Specifically,
+		// main min/max values describe what the sizes of any room
+		// will be constrained to, and other values describe what
+		// specific room types are constrained to.
+		//
         // Also, note that MIN is inclusive, MAX is exclusive
 		public const int CORRIDOR_WIDTH = 4;
-        public const int MIN_ROOM_WIDTH = 28;
-        public const int MAX_ROOM_WIDTH = 40;
-        public const int MIN_ROOM_HEIGHT = 28;
-        public const int MAX_ROOM_HEIGHT = 40;
+		public const int MIN_ROOM_WIDTH = CORRIDOR_WIDTH;
+		public const int MAX_ROOM_WIDTH = 60;
+		public const int MIN_ROOM_HEIGHT = CORRIDOR_WIDTH;
+		public const int MAX_ROOM_HEIGHT = 60;
+		// Enemy Rooms
+		public const int MIN_ENEMY_ROOM_WIDTH = 28;
+		public const int MAX_ENEMY_ROOM_WIDTH = 40;
+		public const int MIN_ENEMY_ROOM_HEIGHT = 28;
+		public const int MAX_ENEMY_ROOM_HEIGHT = 40;
+		// Starting / Shop Room
+		public const int MIN_SHOP_ROOM_WIDTH = 28;
+		public const int MAX_SHOP_ROOM_WIDTH = 30;
+		public const int MIN_SHOP_ROOM_HEIGHT = 28;
+		public const int MAX_SHOP_ROOM_HEIGHT = 30;
+		// Boss Room
+		public const int MIN_BOSS_ROOM_WIDTH = 50;
+		public const int MAX_BOSS_ROOM_WIDTH = 60;
+		public const int MIN_BOSS_ROOM_HEIGHT = 50;
+		public const int MAX_BOSS_ROOM_HEIGHT = 60;
 
         /// <summary>
         /// Generates a new RogueDungeon of the specified width and height.
@@ -52,33 +67,56 @@ namespace MazeGeneration
             // Use the maze to fill in our map
             Map = new RogueRoom[width, height];
             Random r = new Random();
-			bool placedFirstRoom = false;
+
+			// Assign initial placements:
+				// Boss room
+			int bossX = width/2;
+			int bossY = height/2;
+				// Starting room
+			int startX = r.Next (width);
+			int startY = r.Next (height);
+			// Guarantee we don't overwrite the boss room:
+			if (startX == width/2 && startY == height/2)
+			{
+				startY += (r.Next (1) == 1 ? r.Next (1, height/2) : -r.Next(1, height/2));
+				startX += (r.Next (1) == 1 ? r.Next (1, width/2) : -r.Next(1, width/2));
+			}
+				// TODO: further shops
+				// TODO: others?
+
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    // Corridors have unit width
+                    // Corridor room by default
                     int roomWidth = CORRIDOR_WIDTH;
                     int roomHeight = CORRIDOR_WIDTH;
                     RogueRoom.RoomType type = RogueRoom.RoomType.corridor;
 
+					// If the x,y coordinate was one of our set aside vectors, use that type:
+					if (x == bossX && y == bossY)
+					{
+						roomWidth = r.Next(MIN_BOSS_ROOM_WIDTH, MAX_BOSS_ROOM_WIDTH);
+						roomHeight = r.Next (MIN_BOSS_ROOM_HEIGHT, MAX_BOSS_ROOM_HEIGHT);
+						type = RogueRoom.RoomType.boss;
+					}
+					else if (x == startX && y == startY)
+					{
+						roomWidth = r.Next(MIN_SHOP_ROOM_WIDTH, MAX_SHOP_ROOM_WIDTH);
+						roomHeight = r.Next (MIN_SHOP_ROOM_HEIGHT, MAX_SHOP_ROOM_HEIGHT);
+						type = RogueRoom.RoomType.start;
+					}
+					// TODO: others?
+
                     // If we decide to place a room here, adjust the width
                     // and height accordingly
-                    if (r.NextDouble() < ROOM_DENSITY)
+                    else if (r.NextDouble() < ENEMY_ROOM_DENSITY)
                     {
-                        roomWidth = r.Next(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
-                        roomHeight = r.Next(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
+						roomWidth = r.Next(MIN_ENEMY_ROOM_WIDTH, MAX_ENEMY_ROOM_WIDTH);
+						roomHeight = r.Next(MIN_ENEMY_ROOM_HEIGHT, MAX_ENEMY_ROOM_HEIGHT);
+						type = RogueRoom.RoomType.enemy;
 
-                        // Determine room type at random:
-                        if (!placedFirstRoom)
-                        {
-                            type = RogueRoom.RoomType.start;
-                            placedFirstRoom = true;
-                        }
-                        else if (r.NextDouble() < 0.5)
-                            type = RogueRoom.RoomType.enemy;
-                        else
-                            type = RogueRoom.RoomType.empty;
+						// TODO: handle enemy score distribution
                     }
 
                     // Determine what the door code should be, by checking the map:
@@ -107,6 +145,11 @@ namespace MazeGeneration
                     // Create the room, and insert it into the map:
                     RogueRoom newRoom = new RogueRoom(roomWidth, roomHeight, doorCode);
                     newRoom.Type = type;
+
+					// For enemy rooms, initialize enemy list.
+					// TODO: smarter distribution of enemy points. For now, just give same value to each room.
+					if (type == RogueRoom.RoomType.enemy)
+						newRoom.AssignEnemies(4);
 					
                     Map[x, y] = newRoom;
                 }

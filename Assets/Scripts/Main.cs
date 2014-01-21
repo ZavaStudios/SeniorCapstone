@@ -29,16 +29,6 @@ public class Main : MonoBehaviour
         float dungeon_width  = WIDTH  * TILE_SCALAR * (RogueDungeon.MAX_ROOM_WIDTH  + 2);
         float dungeon_height = HEIGHT * TILE_SCALAR * (RogueDungeon.MAX_ROOM_HEIGHT + 2);
 
-		/*
-        floor_tile.transform.localScale = new Vector3(dungeon_width, 1.0f, dungeon_height);
-        Instantiate(floor_tile,
-                    new Vector3(0.0f, 0.0f, 0.0f),
-                    Quaternion.identity);
-        Instantiate(floor_tile,
-                    new Vector3(0.0f, CEILING_HEIGHT, 0.0f),
-                    Quaternion.AngleAxis(180, Vector3.forward));
-		*/
-
         // build walls
         Rect room_bounds = new Rect(TILE_SCALAR - (dungeon_width  / 2.0f),
                                     TILE_SCALAR - (dungeon_height / 2.0f),
@@ -51,6 +41,7 @@ public class Main : MonoBehaviour
             {
 				RogueRoom room = dungeon.Map[roomX, roomY];
 				// TODO: FIX!
+				room.enemy = enemy;
 				room.floor_tile = floor_tile;
 				room.wall_tile = wall_tile;
 				room.mine_cube = mine_cube;
@@ -59,79 +50,15 @@ public class Main : MonoBehaviour
 				room.LoadRoom(roomX, roomY,
 				              RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_HEIGHT,
 				              RogueDungeon.CORRIDOR_WIDTH);
-				/*
-                Vector3 center = new Vector3(room_bounds.center.x, 0.0f, room_bounds.center.y);
 
-                // Draw walls, leaving space for doors where necessary
-                int doorCode = room.Doors;
-                Debug.Log("DOOR CODE: " + roomX + ", " + roomY + " -- " + doorCode);
-                float roomWidth  = room.Width  * TILE_SCALAR;
-                float roomHeight = room.Height * TILE_SCALAR;
-                // UP
-                if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
-                {
-                    InstantiateDoor(center, roomWidth, roomHeight, RogueRoom.UP_DOOR_MASK);
-                    InstantiateCorridor(center, roomWidth, roomHeight, RogueRoom.UP_DOOR_MASK);
-                }
-                else
-                    InstantiateWall(center, roomWidth, roomHeight, RogueRoom.UP_DOOR_MASK);
-                // DOWN
-                if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
-                {
-                    InstantiateDoor(center, roomWidth, roomHeight, RogueRoom.DOWN_DOOR_MASK);
-                    InstantiateCorridor(center, roomWidth, roomHeight, RogueRoom.DOWN_DOOR_MASK);
-                }
-                else
-                    InstantiateWall(center, roomWidth, roomHeight, RogueRoom.DOWN_DOOR_MASK);
-                // LEFT
-                if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
-                {
-                    InstantiateDoor(center, roomWidth, roomHeight, RogueRoom.LEFT_DOOR_MASK);
-                    InstantiateCorridor(center, roomWidth, roomHeight, RogueRoom.LEFT_DOOR_MASK);
-                }
-                else
-                    InstantiateWall(center, roomWidth, roomHeight, RogueRoom.LEFT_DOOR_MASK);
-                // RIGHT
-                if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
-                {
-                    InstantiateDoor(center, roomWidth, roomHeight, RogueRoom.RIGHT_DOOR_MASK);
-                    InstantiateCorridor(center, roomWidth, roomHeight, RogueRoom.RIGHT_DOOR_MASK);
-                }
-                else
-                    InstantiateWall(center, roomWidth, roomHeight, RogueRoom.RIGHT_DOOR_MASK);
-
-				// One last thing: add some cubes!
-                if (room.Type != RogueRoom.RoomType.corridor)
-                    InstantiateCubes(center, roomWidth, roomHeight, doorCode);
-
-				// Also an enemy for shits and giggles
-				if (room.Type == RogueRoom.RoomType.enemy)
+				if (room.Type == RogueRoom.RoomType.start)
 				{
-					Instantiate (enemy,
-					             center + new Vector3(0, 100.0f, 0),
-					             Quaternion.identity);
-					Debug.Log("Enemey!");
+					player.transform.position = room.GetCenter(roomX, roomY,
+					                                           RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_HEIGHT,
+					                                           RogueDungeon.CORRIDOR_WIDTH) +
+												new Vector3(0.0f, 1.5f, 0.0f);
 				}
-				else if (room.Type == RogueRoom.RoomType.start)
-				{
-					player.transform.position = center + new Vector3(0, 10, 0);
-				}
-
-                // Move to the next row
-                room_bounds.y += (RogueDungeon.MAX_ROOM_HEIGHT + 1) * TILE_SCALAR;
-                room_bounds.height = RogueDungeon.MAX_ROOM_HEIGHT * TILE_SCALAR;
-                */
             }
-
-			/*
-            // Reset the row
-            room_bounds.y = TILE_SCALAR - (dungeon_height / 2.0f);
-            room_bounds.height = RogueDungeon.MAX_ROOM_HEIGHT * TILE_SCALAR;
-
-            // Move to the next column
-            room_bounds.x += (RogueDungeon.MAX_ROOM_WIDTH + 1) * TILE_SCALAR;
-            room_bounds.width = RogueDungeon.MAX_ROOM_WIDTH * TILE_SCALAR;
-            */
         }
 	}
 
