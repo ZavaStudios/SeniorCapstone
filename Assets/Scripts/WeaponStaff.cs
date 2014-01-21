@@ -1,16 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class WeaponStaff : WeaponBase
 {
-
+	public GameObject Fireball;
+	
+	float bulletSpeed =  1000.0f;
+	float specialSpeed = 1000.0f;
+	
 	// Use this for initialization
 	protected override void Start ()
 	{
 		attackRange = 1000.0f;
 		weaponDamage = 20.0f;
-		attackDelay = 2.0f;
+		attackDelay = 0.5f;
 		base.Start();
+		
+		Fireball = (GameObject)Resources.Load("Fireball");
 	}
 	
 	// Update is called once per frame
@@ -21,22 +28,36 @@ public class WeaponStaff : WeaponBase
 	
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
-		print("attacking..");
-		if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange,3<<8)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
-		{
-			if(rayHit.collider.gameObject.CompareTag("Enemy"))
-			{
-				UnitEnemy enemy = rayHit.collider.GetComponent<UnitEnemy>();
-				if(!enemy)
-					print ("that is not a real enemy");
-				else
-					enemy.doDamage(weaponDamage);
-			}
-			if(rayHit.collider.gameObject.CompareTag("Ore"))
-			{
-				print ("You missed! That's a wall.");
-			}
-		}
+		 // Instantiate the projectile at the position and rotation of this transform
+    	ProjectileFireball p;
+    	GameObject clone = (GameObject)GameObject.Instantiate(Fireball, startPos,Character.getLookRotation());
+		clone.gameObject.AddComponent("ProjectileFireball");
+		Physics.IgnoreCollision(clone.collider,Camera.main.collider);
+		Physics.IgnoreCollision(clone.collider,Character.collider);
+		
+		p = clone.GetComponent<ProjectileFireball>();
+		p.damage = weaponDamage;
+		
+		
+    	// Add force to the cloned object in the object's forward direction
+    	clone.rigidbody.AddForce(clone.transform.forward * bulletSpeed);
+
 		attack = false;
+	}
+	
+	public override void attackSpecial ()
+	{
+		print("bouncebomb..");
+		ProjectileFireball p;
+    	GameObject clone = (GameObject)GameObject.Instantiate(Resources.Load("BouncingBomb"), Character.getEyePosition(),Character.getLookRotation());
+		//clone.gameObject.AddComponent("ProjectileFireball");
+		//Physics.IgnoreCollision(clone.collider,Camera.main.collider);
+		//Physics.IgnoreCollision(clone.collider,Character.collider);
+		
+		//p = clone.GetComponent<ProjectileFireball>();
+		//p.damage = weaponDamage;
+		
+    	// Add force to the cloned object in the object's forward direction
+    	clone.rigidbody.AddForce(clone.transform.forward * specialSpeed);
 	}
 }

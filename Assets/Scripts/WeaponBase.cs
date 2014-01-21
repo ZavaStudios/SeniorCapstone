@@ -39,4 +39,8 @@ public class WeaponBase : MonoBehaviour
 	{
 
 	}
+	
+	virtual public void attackSpecial ()
+	{
+	}
 }

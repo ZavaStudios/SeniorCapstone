@@ -78,6 +78,10 @@ public class Unit : MonoBehaviour
 		return gameObject.transform.forward;	
 	}
 	
+	virtual public Quaternion getLookRotation()
+	{
+		return gameObject.transform.rotation;
+	}
 		
 	virtual public Vector3 getEyePosition()
 	{
