@@ -362,7 +362,7 @@ namespace MazeGeneration
 		/// <param name="cubeStart">Offset of (0,0,0) in Unity space.</param>
 		private void InstantiateCube(RoomCubes.Cube cube, Vector3 cubeStart)
 		{
-			MonoBehaviour.Instantiate(ore_cube,
+			MonoBehaviour.Instantiate(mine_cube,
 			                          (new Vector3(cube.X, cube.Z, cube.Y) + cubeStart),
 			                          Quaternion.identity);
 		}

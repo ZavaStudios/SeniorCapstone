@@ -203,10 +203,10 @@ namespace MazeGeneration
 		{
 			// Randomizer:
 			Random r = new Random();
-			int[,] noise = PerlinNoise.GenerateNoise128();
 
 			// Sides:
 				// left:
+			int[,] noise = PerlinNoise.GenerateNoise128();
 			for (int z = 0; z < lSide.GetLength(0); z++)
 			{
 				for (int y = 0; y < lSide.GetLength(1); y++)
@@ -227,29 +227,21 @@ namespace MazeGeneration
 						if (inDownCorridor(modX, modY))
 							continue;
 
-					/*
-					// Pick base value by height up the wall:
-					// WARNING: math magic ahead!
-					int normalized = z-2;
-					int baseValue = (normalized*normalized)-(normalized*normalized/4)+3;
-					// Now, add a bit of noise
-					int noise = r.Next(-1, 2);
-					for (int x = 0; x < baseValue+noise; x++)
-					{
-						lSide[z,y].AddLast(Cube.CubeType.Stone);
-					}
-					*/
 					// TODO: better indexing. We could average nearby values or something.
-					int zIndex = (int)(((float)z / (float)lSide.GetLength(0)) * 128.0f);
-					int yIndex = (int)(((float)y / (float)lSide.GetLength(1)) * 128.0f);
+					int zIndex = (int)(((float)z / (float)lSide.GetLength(0)) * 127.0f);
+					int yIndex = (int)(((float)y / (float)lSide.GetLength(1)) * 127.0f);
 					int depth = (int)((float)noise[zIndex,yIndex] * 0.01f * (float)CORNER_WIDTH);
+					// HACK: for now, perlin noise is still busted. We don't want to get more than
+					// our corner sizes (or bad things happen), so clamp the value:
+					depth = (depth > CORNER_WIDTH) ? CORNER_WIDTH : depth;
 					for (int x = 0; x < depth; x++)
 					{
 						lSide[z,y].AddLast(Cube.CubeType.Stone);
 					}
 				}
 			}
-			// right:
+				// right:
+			noise = PerlinNoise.GenerateNoise128();
 			for (int z = 0; z < rSide.GetLength(0); z++)
 			{
 				for (int y = 0; y < rSide.GetLength(1); y++)
@@ -269,13 +261,21 @@ namespace MazeGeneration
 					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
 						if (inDownCorridor(modX, modY))
 							continue;
-					
-					rSide[z,y].AddLast (Cube.CubeType.Stone);
-					rSide[z,y].AddLast (Cube.CubeType.Stone);
-					rSide[z,y].AddLast (Cube.CubeType.Stone);
+
+					/*
+					// TODO: better indexing. We could average nearby values or something.
+					int zIndex = (int)(((float)z / (float)lSide.GetLength(0)) * 127.0f);
+					int yIndex = (int)(((float)y / (float)lSide.GetLength(1)) * 127.0f);
+					int depth = (int)((float)noise[zIndex,yIndex] * 0.01f * (float)CORNER_WIDTH);
+					for (int x = 0; x < depth; x++)
+					{
+						rSide[z,y].AddLast(Cube.CubeType.Stone);
+					}
+					*/
 				}
 			}
-			// top:
+				// top:
+			noise = PerlinNoise.GenerateNoise128();
 			for (int z = 0; z < tSide.GetLength(0); z++)
 			{
 				for (int x = 0; x < tSide.GetLength(1); x++)
@@ -296,9 +296,17 @@ namespace MazeGeneration
 						if (inDownCorridor(modX, modY))
 							continue;
 					
-					tSide[z,x].AddLast (Cube.CubeType.Stone);
-					tSide[z,x].AddLast (Cube.CubeType.Stone);
-					tSide[z,x].AddLast (Cube.CubeType.Stone);
+					// TODO: better indexing. We could average nearby values or something.
+					int zIndex = (int)(((float)z / (float)lSide.GetLength(0)) * 127.0f);
+					int xIndex = (int)(((float)x / (float)lSide.GetLength(1)) * 127.0f);
+					int depth = (int)((float)noise[zIndex,xIndex] * 0.01f * (float)CORNER_WIDTH);
+					// HACK: for now, perlin noise is still busted. We don't want to get more than
+					// our corner sizes (or bad things happen), so clamp the value:
+					depth = (depth > CORNER_LENGTH) ? CORNER_LENGTH : depth;
+					for (int y = 0; y < depth; y++)
+					{
+						tSide[z,x].AddLast(Cube.CubeType.Stone);
+					}
 				}
 			}
 			// bottom:
@@ -321,15 +329,23 @@ namespace MazeGeneration
 					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
 						if (inDownCorridor(modX, modY))
 							continue;
-					
-					bSide[z,x].AddLast (Cube.CubeType.Stone);
-					bSide[z,x].AddLast (Cube.CubeType.Stone);
-					bSide[z,x].AddLast (Cube.CubeType.Stone);
+
+					/*
+					// TODO: better indexing. We could average nearby values or something.
+					int zIndex = (int)(((float)z / (float)lSide.GetLength(0)) * 127.0f);
+					int xIndex = (int)(((float)x / (float)lSide.GetLength(1)) * 127.0f);
+					int depth = (int)((float)noise[zIndex,xIndex] * 0.01f * (float)CORNER_WIDTH);
+					for (int y = 0; y < depth; y++)
+					{
+						bSide[z,x].AddLast(Cube.CubeType.Stone);
+					}
+					*/
 				}
 			}
 
 			// Corners:
 				// top-left:
+			/*
 			for (int x = 0; x < tlCorner.GetLength(0); x++)
 			{
 				for (int z = 0; z < tlCorner.GetLength(1); z++)
@@ -356,6 +372,39 @@ namespace MazeGeneration
 					}
 				}
 			}
+			*/
+			for (int z = 0; z < tlCorner.GetLength(1); z++)
+			{
+				// Quadrants: Only one is interesting
+				int quadX = lSide[z, lSide.GetLength(1) - 1].Count;
+				int quadY = tSide[z, tSide.GetLength(1) - 1].Count;
+				// Quadrants 1 and 2 (merged for convenience)
+				for (int x = 0; x < CORNER_WIDTH; x++)
+				{
+					for (int y = 0; y < quadY; y++)
+					{
+						tlCorner[x,z,y] = Cube.CubeType.Stone;
+					}
+				}
+				// Quadrant 3
+				for (int x = 0; x < quadX; x++)
+				{
+					for (int y = quadY; y < CORNER_LENGTH; y++)
+					{
+						tlCorner[x,z,y] = Cube.CubeType.Stone;
+					}
+				}
+				// Quadrant 4
+				for (int x = quadX; x < CORNER_WIDTH; x++)
+				{
+					for (int y = quadY; y < CORNER_LENGTH; y++)
+					{
+						// TODO
+						tlCorner[x,z,y] = Cube.CubeType.Air;
+					}
+				}
+			}
+
 				// top-right:
 			for (int x = 0; x < trCorner.GetLength(0); x++)
 			{

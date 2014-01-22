@@ -37,7 +37,7 @@ namespace MazeGeneration
 				{
 					for (int y = 0; y < NOISE.GetLength(1) - 1; y++)
 					{
-						NOISE[x,y] = rnd.Next (0, 101);
+						NOISE[x,y] = rnd.Next (-50, 51);
 					}
 				}
 
@@ -72,7 +72,7 @@ namespace MazeGeneration
 						curPersistence *= PERSISTENCE;
 					}
 
-					toRet[x,y] = (int)h;
+					toRet[x,y] = (int)h + 50;
 				}
 			}
 
