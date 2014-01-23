@@ -12,9 +12,18 @@ public class UnitPlayer : Unit {
 	{
 		setMaxSpeed();
         wepSwitcher = gameObject.GetComponentInChildren<WeaponModelSwitcher>();
+
+		inventory = new Inventory();
 		
+		//Add the default weapons
+		//TODO Instead of using the weapon types, use the names. Need some way to map between the names back to the types
+        WeaponPickaxe wpnPickaxe = new WeaponPickaxe();
+        WeaponSword wpnSword = new WeaponSword();
+		inventory.inventoryAddWeapon (wpnPickaxe);
+		inventory.inventoryAddWeapon (wpnSword);
+
 		base.Start();
-             
+                 
         equipWeapon("WeaponPickaxe");
 	}
 

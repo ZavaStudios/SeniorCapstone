@@ -3,6 +3,8 @@ using System.Collections;
 
 public class WeaponMonster : WeaponBase
 {
+    public override string strWeaponName {get{return "Pickaxe";}}
+    public override string strWeaponType {get{return "WeaponPickaxe";}}
 
 	// Use this for initialization
 	protected override void Start ()

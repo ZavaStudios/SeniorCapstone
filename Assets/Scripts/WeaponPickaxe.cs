@@ -3,13 +3,18 @@ using System.Collections;
 
 public class WeaponPickaxe : WeaponBase
 {
-    
+	//TODO Better way to override the base string?
+	//TODO Instead of Using Strings, use an enum
+	public override string strWeaponName {get{return "Pickaxe";}}
+	public override string strWeaponType {get{return "WeaponPickaxe";}}
+
     // Use this for initialization
     protected override void Start ()
     {
         attackRange = 2.5f;
         weaponDamage = 20.0f;
         attackDelay = 1.2f;
+
         base.Start();
     }
     
@@ -19,7 +24,7 @@ public class WeaponPickaxe : WeaponBase
         base.Update();
     }
     
-    protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
+    protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)	
     {
         print("mining..");
         //LayerMask mask = LayerMask.NameToLayer("world");// | LayerMask.NameToLayer("enemy");
