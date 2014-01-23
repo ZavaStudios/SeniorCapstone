@@ -56,11 +56,12 @@ public class Unit : MonoBehaviour
 	
     virtual public void equipWeapon(string newWeapon)
     {
-       GameObject.Destroy(weapon);
-        
-       gameObject.AddComponent(newWeapon);
-        
-       weapon = (WeaponBase) this.GetComponent(newWeapon);
+        Debug.Log("Equipping :" + newWeapon);
+
+        GameObject.Destroy(weapon);
+        gameObject.AddComponent(newWeapon);
+        weapon = (WeaponBase) this.GetComponent(newWeapon);
+        Debug.Log("Current Equipped: " + weapon.strWeaponType);
        
     }   
     

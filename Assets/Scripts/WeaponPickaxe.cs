@@ -5,8 +5,8 @@ public class WeaponPickaxe : WeaponBase
 {
 	//TODO Better way to override the base string?
 	//TODO Instead of Using Strings, use an enum
-	public static string strWeaponName {get{return "Pickaxe";}}
-	public static string strWeaponType {get{return "WeaponPickaxe";}}
+	public override string strWeaponName {get{return "Pickaxe";}}
+	public override string strWeaponType {get{return "WeaponPickaxe";}}
 
     // Use this for initialization
     protected override void Start ()

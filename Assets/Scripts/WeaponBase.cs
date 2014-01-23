@@ -4,8 +4,8 @@ using System.Collections;
 public class WeaponBase : MonoBehaviour
 {
 	//The name of the weapon base
-	public static string strWeaponName {get{return "Default";}}
-	public static string strWeaponType {get{return "Default";}}
+	public virtual string strWeaponName {get{return "Default";}}
+	public virtual string strWeaponType {get{return "Default";}}
 
 	public Unit Character;
 	
