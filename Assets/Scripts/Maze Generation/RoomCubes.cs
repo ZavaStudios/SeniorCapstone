@@ -563,34 +563,34 @@ namespace MazeGeneration
 
 		private bool inLeftCorridor(int x, int y)
 		{
-			int corMinPos = (Height / 2) - (RogueDungeon.CORRIDOR_WIDTH / 2);
-			int corMaxPos = (Height / 2) + (RogueDungeon.CORRIDOR_WIDTH / 2);
+			int corMinPos = (Height - RogueDungeon.CORRIDOR_WIDTH) / 2;
+			int corMaxPos = (Height + RogueDungeon.CORRIDOR_WIDTH) / 2;
 
-			return ((y <= corMaxPos) && (y >= corMinPos) && (x <= Width / 2));
+			return ((y < corMaxPos) && (y >= corMinPos) && (x <= Width / 2));
 		}
 
 		private bool inUpCorridor(int x, int y)
 		{
-			int corMinPos = (Width / 2) - (RogueDungeon.CORRIDOR_WIDTH / 2);
-			int corMaxPos = (Width / 2) + (RogueDungeon.CORRIDOR_WIDTH / 2);
+			int corMinPos = (Width - RogueDungeon.CORRIDOR_WIDTH) / 2;
+			int corMaxPos = (Width + RogueDungeon.CORRIDOR_WIDTH) / 2;
 			
-			return ((x <= corMaxPos) && (x >= corMinPos) && (y <= Height / 2));
+			return ((x < corMaxPos) && (x >= corMinPos) && (y <= Height / 2));
 		}
 
 		private bool inRightCorridor(int x, int y)
 		{
-			int corMinPos = (Height / 2) - (RogueDungeon.CORRIDOR_WIDTH / 2);
-			int corMaxPos = (Height / 2) + (RogueDungeon.CORRIDOR_WIDTH / 2);
+			int corMinPos = (Height - RogueDungeon.CORRIDOR_WIDTH) / 2;
+			int corMaxPos = (Height + RogueDungeon.CORRIDOR_WIDTH) / 2;
 			
-			return ((y <= corMaxPos) && (y >= corMinPos) && (x > Width / 2));
+			return ((y < corMaxPos) && (y >= corMinPos) && (x > Width / 2));
 		}
 
 		private bool inDownCorridor(int x, int y)
 		{
-			int corMinPos = (Width / 2) - (RogueDungeon.CORRIDOR_WIDTH / 2);
-			int corMaxPos = (Width / 2) + (RogueDungeon.CORRIDOR_WIDTH / 2);
+			int corMinPos = (Width - RogueDungeon.CORRIDOR_WIDTH) / 2;
+			int corMaxPos = (Width + RogueDungeon.CORRIDOR_WIDTH) / 2;
 
-			return ((x <= corMaxPos) && (x >= corMinPos) && (y > Height / 2));
+			return ((x < corMaxPos) && (x >= corMinPos) && (y > Height / 2));
 		}
 
 		/// <summary>

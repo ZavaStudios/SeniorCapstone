@@ -97,14 +97,14 @@ namespace MazeGeneration
 					// If the x,y coordinate was one of our set aside vectors, use that type:
 					if (x == startX && y == startY)
 					{
-						roomWidth = r.Next(MIN_SHOP_ROOM_WIDTH, MAX_SHOP_ROOM_WIDTH);
-						roomHeight = r.Next (MIN_SHOP_ROOM_HEIGHT, MAX_SHOP_ROOM_HEIGHT);
+						roomWidth = r.Next(MIN_SHOP_ROOM_WIDTH, MAX_SHOP_ROOM_WIDTH-1);
+						roomHeight = r.Next (MIN_SHOP_ROOM_HEIGHT, MAX_SHOP_ROOM_HEIGHT-1);
 						type = RogueRoom.RoomType.start;
 					}
 					else if (x == bossX && y == bossY)
 					{
-						roomWidth = r.Next(MIN_BOSS_ROOM_WIDTH, MAX_BOSS_ROOM_WIDTH);
-						roomHeight = r.Next (MIN_BOSS_ROOM_HEIGHT, MAX_BOSS_ROOM_HEIGHT);
+						roomWidth = r.Next(MIN_BOSS_ROOM_WIDTH, MAX_BOSS_ROOM_WIDTH-1);
+						roomHeight = r.Next (MIN_BOSS_ROOM_HEIGHT, MAX_BOSS_ROOM_HEIGHT-1);
 						type = RogueRoom.RoomType.boss;
 					}
 					// TODO: others?
@@ -113,12 +113,22 @@ namespace MazeGeneration
                     // and height accordingly
                     else if (r.NextDouble() < ENEMY_ROOM_DENSITY)
                     {
-						roomWidth = r.Next(MIN_ENEMY_ROOM_WIDTH, MAX_ENEMY_ROOM_WIDTH);
-						roomHeight = r.Next(MIN_ENEMY_ROOM_HEIGHT, MAX_ENEMY_ROOM_HEIGHT);
+						roomWidth = r.Next(MIN_ENEMY_ROOM_WIDTH, MAX_ENEMY_ROOM_WIDTH-1);
+						roomHeight = r.Next(MIN_ENEMY_ROOM_HEIGHT, MAX_ENEMY_ROOM_HEIGHT-1);
 						type = RogueRoom.RoomType.enemy;
 
 						// TODO: handle enemy score distribution
                     }
+
+					// We need rooms to be nice values to accomodate corridor widths & cubes.
+					// Short version: we need an equal number of blocks on the left and right
+					// of every door in the maze, so width-corridor_width as well as
+					// height-corridor_width must be even.
+					// Adjust accordingly:
+					if ((roomWidth - CORRIDOR_WIDTH) % 2 == 1)
+						roomWidth++;
+					if ((roomHeight - CORRIDOR_WIDTH) % 2 == 1)
+						roomHeight++;
 
                     // Determine what the door code should be, by checking the map:
                     int mapCoordX = (2 * x) + 1;
