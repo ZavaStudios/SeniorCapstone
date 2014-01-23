@@ -7,7 +7,7 @@ public class WeaponMonster : WeaponBase
 	// Use this for initialization
 	protected override void Start ()
 	{
-		attackRange = 2.5f;
+		attackRange = 100f;
 		weaponDamage = 10.0f;
 		attackDelay = 2.0f;
 		base.Start();

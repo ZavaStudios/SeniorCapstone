@@ -25,8 +25,13 @@ public class UnitEnemy : Unit
 		dir = PlayerPosition - transform.position;
 		distance = dir.sqrMagnitude;
 
+		//Determine whether to attack or not.
+		if(weapon && distance < weapon.attackRange)
+		{
+			weapon.attack = true;
+		}
         //If the player is within a certain distance then execute move code
-		if(distance < 700f && weapon.attack != true)
+		else if(distance < 700f)
 		{
 			enemyMovement();		
 		}
@@ -35,11 +40,7 @@ public class UnitEnemy : Unit
             control.SimpleMove(Vector3.zero);
 		}
 
-		//Determine whether to attack or not.
-		if(weapon && distance < weapon.attackRange)
-		{
-			weapon.attack = true;
-		}
+
 		
 	}
 		
