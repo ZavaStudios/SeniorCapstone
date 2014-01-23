@@ -24,7 +24,7 @@ public class UnitPlayer : Unit {
 
 		base.Start();
                  
-        equipWeapon("WeaponPickaxe");
+        equipWeapon("WeaponStaff");
 	}
 
 	public void incrementScore()
@@ -41,6 +41,15 @@ public class UnitPlayer : Unit {
 				weapon.attack = true;
 			else
 				print ("You cannot attack without a weapon!");
+		}
+		if(Input.GetKeyDown(KeyCode.Mouse1))
+		{
+			print ("right clicked...");
+			
+			if (weapon != null)
+			{
+				weapon.attackSpecial();
+			}
 		}
 		
 		if(Input.GetKeyDown (KeyCode.Q))
@@ -120,6 +129,11 @@ public class UnitPlayer : Unit {
 	public override Vector3 getLookDirection()
 	{
 		return Camera.main.transform.forward;
+	}
+	
+	public override Quaternion getLookRotation()
+	{
+		return Camera.main.transform.rotation;
 	}
 	
 	public override Vector3 getEyePosition()
