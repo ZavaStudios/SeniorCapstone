@@ -23,6 +23,9 @@ namespace MazeGeneration
 		public Transform wall_tile;
 		public Transform mine_cube;
 		public Transform ore_cube;
+		public Transform ore2_cube;
+		public Transform ore3_cube;
+		public Transform ore4_cube;
 
 		public enum RoomType
 		{
@@ -321,8 +324,7 @@ namespace MazeGeneration
 								new Vector3(0.5f, 0.5f, 0.5f);
 			foreach (RoomCubes.Cube cube in Cubes.EnumerateCubes())
 			{
-				if (cube.Type != RoomCubes.Cube.CubeType.Air)
-					InstantiateCube(cube, cubeStart);
+				InstantiateCube(cube, cubeStart);
 			}
 
 			// ENEMIES / ETC.
@@ -362,7 +364,29 @@ namespace MazeGeneration
 		/// <param name="cubeStart">Offset of (0,0,0) in Unity space.</param>
 		private void InstantiateCube(RoomCubes.Cube cube, Vector3 cubeStart)
 		{
-			MonoBehaviour.Instantiate(mine_cube,
+			Transform toSpawn;
+			switch (cube.Type)
+			{
+			case RoomCubes.Cube.CubeType.Stone:
+				toSpawn = mine_cube;
+				break;
+			case RoomCubes.Cube.CubeType.Iron:
+				toSpawn = ore_cube;
+				break;
+			case RoomCubes.Cube.CubeType.Silver:
+				toSpawn = ore2_cube;
+				break;
+			case RoomCubes.Cube.CubeType.Gold:
+				toSpawn = ore3_cube;
+				break;
+			case RoomCubes.Cube.CubeType.Platinum:
+				toSpawn = ore4_cube;
+				break;
+			case RoomCubes.Cube.CubeType.Air:
+			default:
+				return;
+			}
+			MonoBehaviour.Instantiate(toSpawn,
 			                          (new Vector3(cube.X, cube.Z, cube.Y) + cubeStart),
 			                          Quaternion.identity);
 		}

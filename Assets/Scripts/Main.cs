@@ -4,8 +4,8 @@ using MazeGeneration;
 
 public class Main : MonoBehaviour
 {
-    private const int WIDTH  = 1;
-    private const int HEIGHT = 1;
+    private const int WIDTH  = 3;
+    private const int HEIGHT = 3;
 
     private const float TILE_SCALAR = 1.0f;
     private const float CEILING_HEIGHT = 5.0f;
@@ -16,6 +16,9 @@ public class Main : MonoBehaviour
 	public Transform wall_tile;
 	public Transform mine_cube;
 	public Transform ore_cube;
+	public Transform ore2_cube;
+	public Transform ore3_cube;
+	public Transform ore4_cube;
 
 	public Transform player;
 	public Transform enemy;
@@ -46,6 +49,9 @@ public class Main : MonoBehaviour
 				room.wall_tile = wall_tile;
 				room.mine_cube = mine_cube;
 				room.ore_cube = ore_cube;
+				room.ore2_cube = ore2_cube;
+				room.ore3_cube = ore3_cube;
+				room.ore4_cube = ore4_cube;
 
 				room.LoadRoom(roomX, roomY,
 				              RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_HEIGHT,
