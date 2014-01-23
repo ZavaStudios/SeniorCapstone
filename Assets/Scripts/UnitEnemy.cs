@@ -5,43 +5,37 @@ public class UnitEnemy : Unit
 {
 	protected Transform Player;
 	protected CharacterController control;
-	
-	float turnSpeed = 90;
+	protected Vector3 PlayerPosition;
+	protected Vector3 dir;
+	protected float distance;
 	
 	protected override void Start ()
 	{
 
 		Player = GameObject.FindGameObjectWithTag("Player").transform; 
 		control = gameObject.GetComponent<CharacterController>();
-        equipWeapon("WeaponMonster");
 		moveSpeed = 5.0f;
 
         base.Start(); //gets reference to weapon, among other things.
 	}
 	
 	protected override void Update ()
-	{
-		//move
-		Vector3 PlayerPosition = Player.position;
-		Vector3 dir = PlayerPosition - transform.position;
-		float distance = dir.sqrMagnitude;
-		dir.y = transform.position.y;
-		dir.Normalize();
-		
-		float angleToTarget = Mathf.Atan2((PlayerPosition.x - transform.position.x), (PlayerPosition.z - transform.position.z)) * Mathf.Rad2Deg;
-		transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
-		//transform.Rotate(-90,0,0);
-	
-        //If the player is within a certain distance then execute move code, otherwise patrol.
-		if(distance < 700f)
+	{	
+		PlayerPosition = Player.position;
+		dir = PlayerPosition - transform.position;
+		distance = dir.sqrMagnitude;
+
+        //If the player is within a certain distance then execute move code
+		if(distance < 700f && weapon.attack != true)
 		{
-			control.SimpleMove (dir * moveSpeed);		
+			enemyMovement();		
 		}
-		else
+		else //Doesn't move the enemy, but applies the physics affects of SimpleMove on the enemy.
 		{
             control.SimpleMove(Vector3.zero);
 		}
-			
+
+		//Determine whether to attack or not.
 		if(weapon && distance < weapon.attackRange)
 		{
 			weapon.attack = true;
@@ -49,6 +43,14 @@ public class UnitEnemy : Unit
 		
 	}
 		
+	//A method for how the enemy should behave with their movement.
+	//This method should be overridden by the super class.
+	protected virtual void enemyMovement()
+	{
+
+	}
+
+	//Kills the unit by removing the enemy from the screen and give credit to the player.
 	protected override void killUnit ()
 	{
 		print ("Ow you kilt meh");

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using MazeGeneration;
 
 public class Main : MonoBehaviour
@@ -11,7 +12,7 @@ public class Main : MonoBehaviour
     private const float CEILING_HEIGHT = 5.0f;
     private const float LIGHT_DISTANCE = 2.0f;
     private const float ORE_DISTRIBUTION = 0.2f;
-	private ArrayList enemies;
+	private List<GenerateEnemies.enemy> enemies;
 
 	public Transform player;
 	public Transform enemy;
@@ -100,7 +101,6 @@ public class Main : MonoBehaviour
 					foreach(GenerateEnemies.enemy e in enemies)
 						Debug.Log(e);
 					Debug.Log("Room Enemies complete.");
-					enemies.Clear();
 					
 					Instantiate (enemy,
 					             center + new Vector3(0, 100.0f, 0),
