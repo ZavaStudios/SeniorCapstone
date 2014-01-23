@@ -45,6 +45,7 @@ public class UnitEnemy : Unit
 		if(weapon && distance < weapon.attackRange)
 		{
 			weapon.attack = true;
+            animation.Play("idle");
 		}
 		
 	}
