@@ -11,6 +11,7 @@ public class Main : MonoBehaviour
     private const float CEILING_HEIGHT = 5.0f;
     private const float LIGHT_DISTANCE = 2.0f;
     private const float ORE_DISTRIBUTION = 0.2f;
+	private ArrayList enemies;
 
 	public Transform player;
 	public Transform enemy;
@@ -51,7 +52,7 @@ public class Main : MonoBehaviour
 
                 // Draw walls, leaving space for doors where necessary
                 int doorCode = room.Doors;
-                Debug.Log("DOOR CODE: " + roomX + ", " + roomY + " -- " + doorCode);
+              //  Debug.Log("DOOR CODE: " + roomX + ", " + roomY + " -- " + doorCode);
                 float roomWidth  = room.Width  * TILE_SCALAR;
                 float roomHeight = room.Height * TILE_SCALAR;
                 // UP
@@ -93,20 +94,22 @@ public class Main : MonoBehaviour
 
 				// Also an enemy for shits and giggles
 				if (room.Type == RogueDungeon.Room.RoomType.enemy)
-				{
+				{ 
+					//Testing the GenerateEnemy class to see if we can get some variety in here.
+					enemies = GenerateEnemies.generateEnemies(9);
+					foreach(GenerateEnemies.enemy e in enemies)
+						Debug.Log(e);
+					Debug.Log("Room Enemies complete.");
+					enemies.Clear();
+					
 					Instantiate (enemy,
 					             center + new Vector3(0, 100.0f, 0),
 					             Quaternion.identity);
-					Debug.Log("Enemey!");
+				//	Debug.Log("Enemey!");
 				}
 				else if (room.Type == RogueDungeon.Room.RoomType.start)
 				{
 					player.transform.position = center + new Vector3(0, 10, 0);
-
-					//Zach's code.
-					Instantiate (boss,
-					             center + new Vector3(0, 15.0f, 0),
-					             Quaternion.identity);
 				}
 
                 // Move to the next row
@@ -122,6 +125,7 @@ public class Main : MonoBehaviour
             room_bounds.x += (RogueDungeon.MAX_ROOM_WIDTH + 1) * TILE_SCALAR;
             room_bounds.width = RogueDungeon.MAX_ROOM_WIDTH * TILE_SCALAR;
         }
+		
 	}
 
     // Helper function for instantiating cubes in the rooms

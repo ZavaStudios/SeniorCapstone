@@ -3,8 +3,8 @@ using System.Collections;
 
 public class GenerateEnemies
 {
-	ArrayList enemyList = new ArrayList();
-	Random rand = new Random();
+	static ArrayList enemyList = new ArrayList();
+	static Random rand = new Random();
 
 	public enum enemy
 	{
@@ -13,7 +13,7 @@ public class GenerateEnemies
 
 	//Generates enemies at random based on the number of points that are allocated to that room.
 	// Returns an ArrayList of type enemy with the enemies that should be contained in any given room.
-	public ArrayList generateEnemies(int points)
+	public static ArrayList generateEnemies(int points)
 	{
 		//Fuck you Victor. Here's a comment for you! :) PS Angel Beats is the best! :DDDD 
 		int mod = points%5;
@@ -29,13 +29,13 @@ public class GenerateEnemies
 			if(rand.Next(2) == 0)
 			{
 				//Make it even point values and add spiders in. 
-				for(; points%5 == 0; points--)
+				for(; points%5 != 0; points--)
 					enemyList.Add(enemy.spider);
 			}
 			else
 			{
 				//Round up if we get a value greater than our threshold.
-				if(dif < rand.Next(5))
+				if(dif < rand.Next(6))
 				{
 					points += dif;
 				}
@@ -45,36 +45,31 @@ public class GenerateEnemies
 					points -= mod;
 				}
 			}
-
-			//Fill in the remaining points with random enemies.
-			for(int i = 0; i < points; i += 5)
+			
+		}
+		//Fill in the remaining points with random enemies.
+		for(int i = 0; i < points; i += 5)
+		{
+			switch(rand.Next(3))
 			{
-				switch(rand.Next(3))
-				{
-					case 0: 
-					{	
-						enemyList.Add(enemy.skeleton);
-						break;
-					}
-					case 1:
-					{
-						//Add 5 spiders. :)
-						enemyList.Add (enemy.spider);
-						enemyList.Add (enemy.spider);
-						enemyList.Add (enemy.spider);
-						enemyList.Add (enemy.spider);
-						enemyList.Add (enemy.spider);
-						break;
-					}
-					case 2:
-					{
-						enemyList.Add(enemy.zombie);
-						break;
-					}	
-				}
+				case 0: 				
+					enemyList.Add(enemy.skeleton);
+					break;
+				
+				case 1:				
+					//Add 5 spiders. :)
+					enemyList.Add (enemy.spider);
+					enemyList.Add (enemy.spider);
+					enemyList.Add (enemy.spider);
+					enemyList.Add (enemy.spider);
+					enemyList.Add (enemy.spider);
+					break;
+				
+				case 2:				
+					enemyList.Add(enemy.zombie);
+					break;					
 			}
 		}
-
 		return enemyList;
 	}
 }

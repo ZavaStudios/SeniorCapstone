@@ -3,9 +3,6 @@ using System.Collections;
 
 public class BossUnit : UnitEnemy 
 {
-
-	Transform Player;
-	CharacterController control;
 	public Transform enemy;
 
 	//Every 5 seconds generate a new enemy.
@@ -17,7 +14,7 @@ public class BossUnit : UnitEnemy
 	//ToDo: Once the enemies have been killed should we regenerate new ones? 
 
 	// Use this for initialization
-	void Start () 
+	protected override void Start () 
 	{
 		base.Start ();
 
@@ -27,13 +24,11 @@ public class BossUnit : UnitEnemy
 		weapon.attackDelay = 4;
 		weapon.attackRange = 5.0f;
 
-		control = gameObject.GetComponent<CharacterController> (); 
-
 
 	}
 	
 	// Update is called once per frame
-	void Update () 
+	protected override void Update () 
 	{
 		//Behaves the same as a normal enemy. 
 		base.Update();

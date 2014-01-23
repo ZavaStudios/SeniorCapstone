@@ -3,8 +3,8 @@ using System.Collections;
 
 public class UnitEnemy : Unit
 {
-	Transform Player;
-	CharacterController control;
+	protected Transform Player;
+	protected CharacterController control;
 	
 	float turnSpeed = 90;
 	
