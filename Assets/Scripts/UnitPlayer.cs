@@ -52,8 +52,16 @@ public class UnitPlayer : Unit {
 			}
 		}
 		
+		const int numWeapons = 3;
 		if(Input.GetKeyDown (KeyCode.Q))
 		{
+			if (wep > (numWeapons-1))
+			{
+				wep = 0;
+			}
+			
+			print ("switch to wep: " + wep);
+			
 			switch (wep)
 			{
 				case 0:
@@ -64,12 +72,11 @@ public class UnitPlayer : Unit {
 					equipWeapon("WeaponSword");
 					wep++;
 					break;
+				case 2:
+					equipWeapon ("WeaponStaff");
+					wep++;
+					break;
 			}
-			if (wep > 1)
-			{
-				wep = 0;
-			}
-			
 		}
 		
 		if(Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift))

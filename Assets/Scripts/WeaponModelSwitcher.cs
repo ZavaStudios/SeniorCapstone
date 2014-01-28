@@ -36,22 +36,26 @@ public class WeaponModelSwitcher : MonoBehaviour
 			crappy_staff.SetActive(true);
             crappy_sword.SetActive(false);
 			crappy_pickaxe.SetActive(false);
-			Active = null;
-		}
-        
+			Active = crappy_staff;
+		}        
     }
     
     public void playAnimation()
     {
-
+		print ((Active == crappy_staff) ? "its the staff" : "something else");
         if (Active == crappy_sword)
         {
             Active.animation.Play("SwordSwing");
         }
         else if (Active == crappy_pickaxe )
         {
-			print("animation!");
+			print("pickaxe animation!");
             Active.animation.Play("PickaxeSwing");
+        }
+		else if (Active == crappy_staff )
+        {
+			print("staff animation!");
+            Active.animation.Play("StaffBlast");
         }
     }
 }
