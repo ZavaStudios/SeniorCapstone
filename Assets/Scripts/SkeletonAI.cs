@@ -1,22 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpiderAI : UnitEnemy
+public class SkeletonAI : UnitEnemy
 {
 
 	// Use this for initialization
 	protected override void Start () 
 	{
 		base.Start();
-		moveSpeed = 20; // Moves as fast as a player can sprint. 
-		maxHealth = 10; //Very low life for a spider (one hit)
-		health = 10;
+		moveSpeed = 10; //Moves the same speed as a player. 
+		maxHealth = 50; // Half the health as a zombie and player.
+		health = 50;
 	}
 	
 	// Update is called once per frame
 	protected override void Update () 
 	{
-		base.Update();
+		
 	}
 
 	protected override void enemyMovement()

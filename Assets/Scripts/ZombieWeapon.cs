@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeaponMonster : WeaponBase
+public class ZombieWeapon : WeaponBase
 {
     public override string strWeaponName {get{return "Pickaxe";}}
     public override string strWeaponType {get{return "WeaponPickaxe";}}
@@ -10,7 +10,7 @@ public class WeaponMonster : WeaponBase
 	// Use this for initialization
 	protected override void Start ()
 	{
-		attackRange = 50f;
+		attackRange = 2.5f;
 		weaponDamage = 20.0f;
 		attackDelay = 1.0f;
 		base.Start();

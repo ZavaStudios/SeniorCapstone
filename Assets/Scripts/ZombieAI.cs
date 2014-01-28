@@ -10,8 +10,8 @@ public class ZombieAI : UnitEnemy
 		//Choose which weapon to give the Zombie. This must occur before the call to base.Start().
 		equipWeapon("ZombieWeapon"); 
 		base.Start(); //Call the base class to set up the basic enemy and unit class.
-		maxHealth = 50; //Set the health of the zombie.
-		health = 50;
+		maxHealth = 100; //Set the health of the zombie.
+		health = 100;
 		moveSpeed = 5; //Move half as fast as the player. 
 	}
 	
