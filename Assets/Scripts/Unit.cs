@@ -6,7 +6,7 @@ using System.Collections;
 
 public class Unit : MonoBehaviour 
 {
-    Inventory inventory;
+    public Inventory inventory;
     
 	protected float health = 100.0f;
     protected float maxHealth = 100.0f;
@@ -35,7 +35,7 @@ public class Unit : MonoBehaviour
 	
     virtual protected void Start () 
 	{
-        inventory = new Inventory();
+
 	}
 	
 	virtual protected void Update () 
@@ -49,17 +49,19 @@ public class Unit : MonoBehaviour
 		
 		if (health <= 0)
 		{
+			health = 0;
 			killUnit();
 		}
 	}
 	
     virtual public void equipWeapon(string newWeapon)
     {
-       GameObject.Destroy(weapon);
-        
-       gameObject.AddComponent(newWeapon);
-        
-       weapon = (WeaponBase) this.GetComponent(newWeapon);
+        Debug.Log("Equipping :" + newWeapon);
+
+        GameObject.Destroy(weapon);
+        gameObject.AddComponent(newWeapon);
+        weapon = (WeaponBase) this.GetComponent(newWeapon);
+        Debug.Log("Current Equipped: " + weapon.strWeaponType);
        
     }   
     
@@ -78,6 +80,10 @@ public class Unit : MonoBehaviour
 		return gameObject.transform.forward;	
 	}
 	
+	virtual public Quaternion getLookRotation()
+	{
+		return gameObject.transform.rotation;
+	}
 		
 	virtual public Vector3 getEyePosition()
 	{

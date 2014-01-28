@@ -3,11 +3,13 @@ using System.Collections;
 
 public class WeaponMonster : WeaponBase
 {
+    public override string strWeaponName {get{return "Pickaxe";}}
+    public override string strWeaponType {get{return "WeaponPickaxe";}}
 
 	// Use this for initialization
 	protected override void Start ()
 	{
-		attackRange = 2.5f;
+		attackRange = 100f;
 		weaponDamage = 10.0f;
 		attackDelay = 2.0f;
 		base.Start();

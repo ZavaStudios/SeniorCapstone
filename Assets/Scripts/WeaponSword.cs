@@ -3,6 +3,11 @@ using System.Collections;
 
 public class WeaponSword : WeaponBase
 {
+	//TODO Better way to override the base string?
+	//TODO Instead of Using Strings, use an enum
+	public override string strWeaponName {get{return "Sword";}}
+	public override string strWeaponType {get{return "WeaponSword";}}
+
 
 	// Use this for initialization
 	protected override void Start ()
@@ -10,6 +15,7 @@ public class WeaponSword : WeaponBase
 		attackRange = 2.5f;
 		weaponDamage = 20.0f;
 		attackDelay = 1.5f;
+
 		base.Start();
 	}
 	
