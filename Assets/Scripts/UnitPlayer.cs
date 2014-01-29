@@ -115,6 +115,8 @@ public class UnitPlayer : Unit {
 		}
 		
 		//Restart the application when the game is over.
+		
+		//TODO: Need to make sure that this executes every time even when no damage is being delt.
 		if(Time.time >= delay)
 		{
 			Application.LoadLevel(0);
