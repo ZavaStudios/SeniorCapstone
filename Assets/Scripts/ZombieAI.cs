@@ -4,6 +4,7 @@ using System.Collections;
 public class ZombieAI : UnitEnemy
 {
 	float turnSpeed = 90;
+	
 	// Use this for initialization
 	protected override void Start () 
 	{
@@ -27,7 +28,6 @@ public class ZombieAI : UnitEnemy
 		//move
 		PlayerPosition = Player.position;
 		dir = PlayerPosition - transform.position;
-		distance = dir.sqrMagnitude;
 		dir.y = transform.position.y;
 		dir.Normalize();
 		

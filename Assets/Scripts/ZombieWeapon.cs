@@ -5,32 +5,20 @@ public class ZombieWeapon : WeaponBase
 {
     public override string strWeaponName {get{return "Pickaxe";}}
     public override string strWeaponType {get{return "WeaponPickaxe";}}
-	private float nextDamageEvent = 0;
 
 	// Use this for initialization
 	protected override void Start ()
 	{
 		attackRange = 2.5f;
-		weaponDamage = 20.0f;
-		attackDelay = 1.0f;
+		weaponDamage = 40.0f;
+		attackDelay = 4.0f;
 		base.Start();
 	}
 	
 	// Update is called once per frame
 	protected override void Update ()
 	{
-		//May need to clean this up later to be nice with the weaponbase class. Repeated code.
-		if (attack)
-		{
-			if (Time.time >= nextDamageEvent)
-			{
-
-				attackRoutine(Character.getEyePosition(),Character.getLookDirection());
-				Character.playAttackAnimation();
-			}
-		}
-		//Always update this to create a delay between when the zombie stops and the attack hits.
-		nextDamageEvent = Time.time + attackDelay;
+		base.Update();
 	}
 		
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)

@@ -21,7 +21,9 @@ public class Main : MonoBehaviour
 	public Transform ore4_cube;
 
 	public Transform player;
-	public Transform enemy;
+	public Transform zombie;
+	public Transform skeleton;
+	public Transform spider;
 
 	// Use this for initialization
 	void Start ()
@@ -44,7 +46,10 @@ public class Main : MonoBehaviour
             {
 				RogueRoom room = dungeon.Map[roomX, roomY];
 				// TODO: FIX!
-				room.enemy = enemy;
+				//room.enemy = enemy;
+				room.skeleton = skeleton;
+				room.spider = spider;
+				room.zombie = zombie;
 				room.floor_tile = floor_tile;
 				room.wall_tile = wall_tile;
 				room.mine_cube = mine_cube;

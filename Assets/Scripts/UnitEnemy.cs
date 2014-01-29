@@ -21,18 +21,17 @@ public class UnitEnemy : Unit
 	
 	protected override void Update ()
 	{	
-		PlayerPosition = Player.position;
-		dir = PlayerPosition - transform.position;
-		distance = dir.sqrMagnitude;
+		distance = Mathf.Abs(Player.position.z - transform.position.z);
 
 		//Determine whether to attack or not.
 		if(weapon && distance < weapon.attackRange)
 		{
 			weapon.attack = true;
-            animation.Play("idle");
+       		animation.Play("idle");
+			
 		}
         //If the player is within a certain distance then execute move code
-		else if(distance < 700f)
+		else if(distance <= 20f)
 		{
 			enemyMovement();		
 		}
@@ -51,7 +50,7 @@ public class UnitEnemy : Unit
 	{
 
 	}
-
+	
 	//Kills the unit by removing the enemy from the screen and give credit to the player.
 	protected override void killUnit ()
 	{

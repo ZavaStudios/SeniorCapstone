@@ -13,7 +13,7 @@ public class WeaponBase : MonoBehaviour
 		
 	public float attackRange = 0f;
 	public float weaponDamage = 0f;
-	public float attackDelay = 1000.0f; //default 2 second attack delay.
+	public float attackDelay = 2.0f; //default 2 second attack delay.
 	
 	public bool attack = false;
 	
