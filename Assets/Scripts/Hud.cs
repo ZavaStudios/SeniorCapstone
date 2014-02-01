@@ -10,9 +10,11 @@ public class Hud : MonoBehaviour
     public const KeyCode keyCodeInventoryLeft = KeyCode.LeftArrow;
     public const KeyCode keyCodeInventoryDown = KeyCode.DownArrow;
     public const KeyCode keyCodeInventoryRight = KeyCode.RightArrow;
+	public const KeyCode keyCodeConfirm = KeyCode.J;
 
 	//Declare instance variables
 	private bool boolInventory = false;
+	private bool boolEquipWeapon = false;
 	Unit player;
 	UnitPlayer unitPlayer;
 
@@ -49,6 +51,7 @@ public class Hud : MonoBehaviour
         //If the inventory is open, process movement inside the inventory
         if (boolInventory)
         {
+			//Process movement inside the inventory
             if(Input.GetKeyUp(keyCodeInventoryUp))
                moveSelectionUp();
             else if (Input.GetKeyUp(keyCodeInventoryDown))
@@ -57,6 +60,10 @@ public class Hud : MonoBehaviour
                moveSelectionLeft();
             else if (Input.GetKeyUp (keyCodeInventoryRight))
                moveSelectionRight();
+
+			//Process confirmations
+			if(Input.GetKeyUp(keyCodeConfirm))
+				boolEquipWeapon = true;
         }
 	}
 
@@ -111,8 +118,12 @@ public class Hud : MonoBehaviour
 
 		intSelectedWeapon = GUI.SelectionGrid (new Rect (vec2CurrentPos.x, vec2CurrentPos.y, Screen.width, intSlotHeight),
 		                                      intSelectedWeapon, arrStringWeapons, intItemsPerRow);
-		unitPlayer.equipWeapon (arrStringWeapons [intSelectedWeapon]);
 
+		if(boolEquipWeapon)
+		{
+			unitPlayer.equipWeapon (arrStringWeapons [intSelectedWeapon]);
+			boolEquipWeapon = false;
+		}
 
 //      //TODO Uncomment this out if we want to use this
 //		//Loop through all the items and lay them out simply

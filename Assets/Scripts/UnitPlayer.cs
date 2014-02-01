@@ -24,7 +24,7 @@ public class UnitPlayer : Unit {
 
 		base.Start();
                  
-        equipWeapon("WeaponStaff");
+        equipWeapon("WeaponPickaxe");
 	}
 
 	public void incrementScore()
