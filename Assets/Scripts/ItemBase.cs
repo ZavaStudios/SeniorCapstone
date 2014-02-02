@@ -9,6 +9,16 @@ public class ItemBase
     protected bool _isStackable;
     public tOreType oreType;
     public Texture2D imageIcon;
+    public tItemType type;
+
+    public enum tItemType
+    {
+        Weapon,
+        Armor,
+        Component,
+        Item,
+        Ore
+    }
 
     public enum tOreType
     {
@@ -48,6 +58,7 @@ public class ItemBase
     public ItemBase(string name)
     {
         oreType = tOreType.NOT_ORE;
+        type = tItemType.Item;
         _name = name;
         description = "This item is called " + _name + ".";
 		_quantity = 1;
@@ -55,15 +66,24 @@ public class ItemBase
  
     virtual public string toString()
     {
+        return _name;
+    }
+
+    virtual public string getDescription()
+    {
         return description;
     }
-	
+ 
     public bool isStackable
 	{
         set { this._isStackable = value; }
         get { return this._isStackable; }
 	}
-	
+
+    public string name
+    {
+        get { return this._name; }
+    }	
 	
 
 }

@@ -14,18 +14,29 @@ public class UnitPlayer : Unit {
 		setMaxSpeed();
         wepSwitcher = gameObject.GetComponentInChildren<WeaponModelSwitcher>();
 
-		inventory = new Inventory();
+		inventory = Inventory.getInstance();
 		
 		//Add the default weapons
 		//TODO Instead of using the weapon types, use the names. Need some way to map between the names back to the types
-        WeaponPickaxe wpnPickaxe = new WeaponPickaxe();
-        WeaponSword wpnSword = new WeaponSword();
-		inventory.inventoryAddWeapon (wpnPickaxe);
-		inventory.inventoryAddWeapon (wpnSword);
+        ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.");
+        inventory.inventoryAddItem((ItemWeapon)myFirstPickaxe);
+
+        //test of factory. Make a sword.
+        ItemOre myOre = new ItemOre(ItemBase.tOreType.Steel);
+
+        ItemBase myBlade = ItemFactory.createComponent(ItemComponent.tComponentType.SwordBladeNormal, myOre);
+        ItemBase myHandle = ItemFactory.createComponent(ItemComponent.tComponentType.SwordHandleNormal, myOre);
+
+        ItemWeapon myWeapon = ItemFactory.createWeapon((ItemComponent) myBlade, (ItemComponent) myHandle);
+
+        inventory.inventoryAddItem(myWeapon);
 
 		base.Start();
         attackDamage = 20.0f;
-        equipWeapon("WeaponPickaxe");
+        equipWeapon(ItemWeapon.tWeaponType.WeaponPickaxe.ToString());
+
+        inventory.inventoryAddItem(ItemFactory.createComponent(ItemComponent.tComponentType.SwordBladeHeavy, new ItemOre(ItemBase.tOreType.Copper)));
+
 	}
 
 	public void incrementScore()

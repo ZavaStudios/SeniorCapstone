@@ -38,15 +38,17 @@ public class ItemComponent : ItemEquipment {
         BowBladeHeavy = 73
     };
 
-    public ItemComponent(string name, tEquipmentType itemtype) 
+    public ItemComponent(string name, tItemType itemtype) 
         : base(name, itemtype)
     {
         this.type = itemtype;
+        
     }
 
-    public ItemComponent(float damage, float atkspd, float armor, float health, string name, tComponentType itemtype, string description)
-        : base(damage,atkspd,armor,health,name,tEquipmentType.Component,description)
+    public ItemComponent(float damage, float atkspd, float armor, float health, string name, tComponentType itemtype, tOreType itemOreType, string description)
+        : base(damage,atkspd,armor,health,name,tItemType.Component,description)
 	{
         this.componentType = itemtype;
+        this.oreType = itemOreType;
 	}
 }

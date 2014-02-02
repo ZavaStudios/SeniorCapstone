@@ -7,24 +7,14 @@ public class ItemEquipment : ItemBase {
 	protected float _atkspd = 0.0f;
 	protected float _armor = 0.0f;
 	protected float _health = 0.0f;
-    public tEquipmentType type;
 
-
-    public enum tEquipmentType
-    {
-        Weapon,
-        Armor,
-        Component
-    }
-
-
-    public ItemEquipment(string name, tEquipmentType itemtype) 
+    public ItemEquipment(string name, tItemType itemtype) 
         : base(name)
     {
         this.type = itemtype;
     }
 
-    public ItemEquipment(float damage, float atkspd, float armor, float health, string name, tEquipmentType itemtype, string description)
+    public ItemEquipment(float damage, float atkspd, float armor, float health, string name, tItemType itemtype, string description)
         : base(name)
 	{
 		_damage = damage;

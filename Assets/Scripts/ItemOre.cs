@@ -7,6 +7,7 @@ public class ItemOre : ItemBase
         : base(getOreString(type))
     {
         oreType = type;
+        this.type = tItemType.Ore;
         _isStackable = true;
         _quantity = 1;
     }

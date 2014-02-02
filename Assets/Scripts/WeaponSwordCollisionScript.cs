@@ -11,9 +11,8 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
     {
         BoxCollider collider = gameObject.GetComponent<BoxCollider>();
         collider.isTrigger = true;
-        print(collider.name);
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 	
@@ -26,8 +25,6 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
 
             if (gameObject.animation.isPlaying && hitObject == false)
             {
-                print("WHEEE SWORD COLLISION!!!");
-                print(gameObject.animation["SwordSwing"].time);
                 hitObject = true;
 
                 Unit otherObject = other.gameObject.GetComponent<Unit>();

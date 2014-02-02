@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ItemFactory 
+public static class ItemFactory 
 {
     
-    static ItemComponent createComponent(ItemComponent.tComponentType componentType, ItemOre ore)
+    public static ItemComponent createComponent(ItemComponent.tComponentType componentType, ItemOre ore)
     {
         string oreString = ItemBase.getOreString(ore.oreType);
         string weaponString = getWeaponString(componentType);
@@ -18,7 +18,7 @@ public class ItemFactory
         float armor = 0;
         float health = 0;
 
-        return new ItemComponent (damage, speed, armor, health, itemName, componentType, itemDescription );
+        return new ItemComponent (damage, speed, armor, health, itemName, componentType, ore.oreType, itemDescription);
     }
 
     /// <summary>
@@ -27,12 +27,17 @@ public class ItemFactory
     /// <param name="blade"></param>
     /// <param name="handle"></param>
     /// <returns>Returns null on failure, if blade and handle type mismatch.</returns>
-    static ItemBase createWeapon(ItemComponent blade, ItemComponent handle)
+   public static ItemWeapon createWeapon(ItemComponent blade, ItemComponent handle)
     {
         int bladeType = (int) blade.componentType % 10;
         int handleType = (int) handle.componentType % 10;
 
-        if (bladeType != handleType) return null;
+
+        if (bladeType != handleType)
+        {
+            MonoBehaviour.print("I'm sorry children. Pig and elephant DNA just wont s(p)lice...");
+            return null;
+        } 
 
         float totalDmg = blade.damage + handle.damage;
         float totalSpeed = blade.atkspd + handle.atkspd;
@@ -43,10 +48,37 @@ public class ItemFactory
         string bladeOre = ItemBase.getOreString(blade.oreType);
         string weaponString = getWeaponString(blade.componentType);
 
+        ItemWeapon.tWeaponType wepType;
+        switch (bladeType)
+        {
+            case 0:
+            {
+                wepType = ItemWeapon.tWeaponType.WeaponSword;
+                break;
+            }
+            case 1:
+            {
+                wepType = ItemWeapon.tWeaponType.WeaponSword;
+                break;
+            }
+            case 2:
+            {
+                wepType = ItemWeapon.tWeaponType.WeaponSword;
+                break;
+            }
+            case 3:
+            {
+                wepType = ItemWeapon.tWeaponType.WeaponSword;
+                break;
+            }
+            default:
+                return null;
+        }
+
         string weaponName = handleOre + " handled " + bladeOre + " " + weaponString;
         string weaponDescription = "A fine " + bladeOre + " " + weaponString + ", crafted with a " + handleOre + getComponentString(handle.componentType) + ".";
 
-        return new ItemEquipment(totalDmg,totalSpeed,totalArmor,totalHealth,weaponName,ItemEquipment.tEquipmentType.Weapon,weaponDescription);
+        return new ItemWeapon(totalDmg,totalSpeed,totalArmor,totalHealth,weaponName,wepType,weaponDescription);
     }
 
 
@@ -79,7 +111,6 @@ public class ItemFactory
 
     static string getComponentString(ItemComponent.tComponentType componentType)
     {
-
         int weaponType = (int)componentType % 10;
         string componentString;
 
