@@ -45,16 +45,20 @@ public class WeaponModelSwitcher : MonoBehaviour
 		print ((Active == crappy_staff) ? "its the staff" : "something else");
         if (Active == crappy_sword)
         {
+            Active.animation["SwordSwing"].speed = 1.0f;
             Active.animation.Play("SwordSwing");
+
         }
         else if (Active == crappy_pickaxe )
         {
 			print("pickaxe animation!");
+            Active.animation["PickaxeSwing"].speed = 1.0f;
             Active.animation.Play("PickaxeSwing");
         }
 		else if (Active == crappy_staff )
         {
 			print("staff animation!");
+            Active.animation["StaffBlast"].speed = 1.0f;
             Active.animation.Play("StaffBlast");
         }
     }

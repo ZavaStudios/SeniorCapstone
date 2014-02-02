@@ -4,8 +4,9 @@ using System.Collections;
 public class UnitPlayer : Unit {
 	
 	//Not sure how time is measured, but 30 seems to be good. 
-	private float delay = 0f;
-	WeaponModelSwitcher wepSwitcher;
+	private float gameOverDelay = 0f;
+
+    WeaponModelSwitcher wepSwitcher;
 	int wep = 0;
 	
 	protected override void Start () 
@@ -23,7 +24,7 @@ public class UnitPlayer : Unit {
 		inventory.inventoryAddWeapon (wpnSword);
 
 		base.Start();
-                 
+        attackDamage = 20.0f;
         equipWeapon("WeaponPickaxe");
 	}
 
@@ -116,13 +117,13 @@ public class UnitPlayer : Unit {
 		GameOver.gameOver = true;
 		
 		//Set the length of time to display the game over tag.
-		if(delay == 0)
+		if(gameOverDelay == 0)
 		{
-			delay = Time.time + 5;
+			gameOverDelay = Time.time + 5;
 		}
 		
 		//Restart the application when the game is over.
-		if(Time.time >= delay)
+		if(Time.time >= gameOverDelay)
 		{
 			Application.LoadLevel(0);
 		}

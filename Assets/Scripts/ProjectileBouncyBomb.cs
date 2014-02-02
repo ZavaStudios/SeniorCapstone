@@ -4,7 +4,6 @@ using System.Collections;
 public class ProjectileBouncyBomb : MonoBehaviour {
 	
 	public float damage = 0;
-	private bool hit = false;
 	private int BOOMcount = 0;
 	// Use this for initialization
 	void Start () 
@@ -14,7 +13,6 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		hit = false;
 	}
 	
 	 void OnCollisionEnter(Collision other)

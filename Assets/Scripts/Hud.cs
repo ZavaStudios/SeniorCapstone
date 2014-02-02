@@ -93,6 +93,13 @@ public class Hud : MonoBehaviour
 		}
     }
 
+
+    private void layoutItemCraftingGUI()
+    {
+
+
+    }
+
 	private void layoutInventoryGrid()
 	{
 		//Declare the options in laying out the grid
