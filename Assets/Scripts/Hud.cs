@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class Hud : MonoBehaviour 
@@ -38,6 +39,7 @@ public class Hud : MonoBehaviour
         intSlotHeight = 100;
         intItemsPerRow = Screen.width / intSlotWidth;
         intItemsPerCol = Screen.height / intSlotHeight;
+
 	}
 
 	protected void Update()
@@ -67,9 +69,97 @@ public class Hud : MonoBehaviour
         }
 	}
 
+	//Indexes for the selections
+	int intCompTypeGrid = 0;
+	int intLightenedGrid = 1;
+	int intNormalGrid = -1;
+	int intHeavyGrid = -1;
+
+	//Current value of the scroll bar
+	float vSbarValue = 0;
 
     void OnGUI () 
     {
+
+		string[] arrComponents = new string[] {"Sword Handle", "Sword Blade", "Bow", "Bow String"};
+
+		//TODO May have to enumerate All components first and keep all the arrays around to update later. That or bookeeping
+		string[] arrLightHandles = new string[]{"?", "Lightened Gold Handle", "Lightened Silver Handle", "Lightened Copper Handle"};
+		string[] arrNormalHandles = new string[]{"", 		"",							"?",					"Normal Copper Handle"};
+		string[] arrHeavyHandles = new string[]{"", 		"?",						"Heavy Silver Handle", "Heavy Copper Handle"};
+		
+		Texture2D tex2dButtonPassiveBack = new Texture2D(4,4);
+		Texture2D tex2dButtonActiveBack = new Texture2D(4,4);
+
+		//Set the style for selection screens
+		//TODO Currently, can't initialize a style outside of On GUI. Find a  way to call this outside of OnGUI for efficiency
+		UnityEngine.GUIStyle style = new GUIStyle (GUI.skin.button);
+		tex2dButtonPassiveBack = (Texture2D)Resources.Load ("InventoryButtonBackground");
+		tex2dButtonActiveBack = (Texture2D)Resources.Load ("SelectedBackground");
+
+		//Backgrounds when I have an active selection
+		style.active.background = tex2dButtonActiveBack;
+		style.focused.background = tex2dButtonActiveBack;
+		style.onActive.background = tex2dButtonActiveBack;
+		style.onFocused.background = tex2dButtonActiveBack;
+		style.onNormal.background = tex2dButtonActiveBack;
+
+		//Backgrounds for non-active items
+		style.normal.background = tex2dButtonPassiveBack;
+		style.hover.background = tex2dButtonPassiveBack;
+		style.onHover.background = tex2dButtonPassiveBack;
+
+		//Draw background for menu
+//		GUI.Box (new Rect (0, 0, Screen.width, Screen.height), (Texture2D)Resources.Load("SelectedBackground"), style);
+
+		//Grid for component options
+		string[][] arrAllComponents = {arrLightHandles, arrNormalHandles, arrHeavyHandles};
+		string[] arrAll = new string[arrAllComponents[0].Length + arrAllComponents[1].Length + arrAllComponents[2].Length] ;
+
+		//NOTE: All component arrays should be the same length
+		//For the one layer undiscovered items, show a "?", for undiscovered layers above that, put ""
+		int intArrAllIndex = 0;
+		for (int i = 0; i < arrLightHandles.Length; i++) 
+		{
+			arrAll[intArrAllIndex] = arrAllComponents[0][i];
+			arrAll[intArrAllIndex + 1] = arrAllComponents[1][i];
+			arrAll[intArrAllIndex + 2] = arrAllComponents[2][i];
+
+			intArrAllIndex += 3;
+
+		}
+				
+
+		intCompTypeGrid = GUI.SelectionGrid (new Rect (25, 100, 100, 100), intCompTypeGrid, arrComponents, 1, style);
+		intLightenedGrid = GUI.SelectionGrid (new Rect (25, 300, 500, 500), intLightenedGrid, arrAll, 3, style);
+
+
+		//Grid for the types of components
+//		intLightenedGrid = GUI.SelectionGrid (new Rect (125, 100, 200, 400), intLightenedGrid, arrAllComponents[1], 1, style);
+//		intNormalGrid = GUI.SelectionGrid (new Rect (325, 100, 200, 400), intNormalGrid, arrAllComponents[2], 1, style);
+//		intHeavyGrid = GUI.SelectionGrid (new Rect (525, 100, 200, 400), intHeavyGrid, arrAllComponents[3], 1, style);
+
+
+		//TODO This is a test implementation of a scroll bar that will give values from 0(top) to 9(bottom)
+//		GUI.Label (new Rect(300, 100, 50, 20), Math.Floor(vSbarValue).ToString());
+//		vSbarValue = GUI.VerticalScrollbar(new Rect (100, 100, 100, 100), vSbarValue, 1.0f, 0.0f, 10.0f);
+//
+//		if(GUI.Button(new Rect(250, 250, 50, 50), "Up"))
+//			vSbarValue += 1;
+//
+//		if(GUI.Button(new Rect(250, 350, 50, 50), "Down"))
+//			vSbarValue -= 1;
+
+
+
+
+
+
+
+
+
+
+
         // Make a health bar
         GUI.Box(new Rect(10,10,100,30), player.Health + "/" + player.MaxHealth);
 		GUI.Box (new Rect (10, 40, 100, 30), "Score: " + player.Score);
@@ -77,7 +167,7 @@ public class Hud : MonoBehaviour
 		// TODO Show the Inventory and disable other controls such as the crosshair and attacking
 		if(boolInventory)
 		{
-			layoutInventoryGrid();
+			//layoutInventoryGrid();
 
 			//TODO Add some textures
 //			if(GUI.Button (new Rect (0, 0, 100, 100), "Equip Pickaxe"))
