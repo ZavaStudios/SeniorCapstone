@@ -17,7 +17,7 @@ public class UnitEnemy : Unit
 		control = gameObject.GetComponent<CharacterController>();
 		sphere = gameObject.GetComponent<SphereCollider>();
 		sphere.isTrigger = true;
-		sphere.radius = 10;
+		sphere.radius = 20;
 		moveSpeed = 5.0f;
 
         base.Start(); //gets reference to weapon, among other things.
@@ -27,7 +27,7 @@ public class UnitEnemy : Unit
 	void OnTriggerStay(Collider other)
 	{		
 		//Player has walked into the sphere collider. 
-		if(other.CompareTag("Player")&& weapon.attack != true)
+		if(other.CompareTag("Player") && distance > weapon.attackRange)
 		{
 			//Move toward the player. 
 			enemyMovement();			
@@ -36,15 +36,16 @@ public class UnitEnemy : Unit
 	
 	protected override void Update ()
 	{	
-		distance = Mathf.Abs(Player.position.z - transform.position.z);
+		distance = Vector3.Distance(transform.position, Player.position);
 
 		//Determine whether to attack or not.
-		if(weapon && distance < weapon.attackRange)
+		if(weapon && distance <= weapon.attackRange)
 		{
 			weapon.attack = true;
        		animation.Play("idle");
 			
 		}
+		
 		//Makes sure that the zombie (construction worker mesh) is dropped in from the sky correctly. 
 		control.SimpleMove(Vector3.zero);
 		

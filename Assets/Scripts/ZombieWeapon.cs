@@ -27,7 +27,7 @@ public class ZombieWeapon : WeaponBase
 		Vector3 PlayerPosition = Player.position;
 		Vector3 dir = PlayerPosition - transform.position;
 		
-		if(Physics.Raycast(transform.position, dir, out rayHit, attackRange)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
+		if(Physics.Raycast(transform.position, dir, out rayHit, attackRange))
 		{
 			print ("Raycast hit");
 			if(rayHit.collider.gameObject.CompareTag("Player"))

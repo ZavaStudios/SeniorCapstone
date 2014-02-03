@@ -29,7 +29,7 @@ public class ProjectileFireball : MonoBehaviour {
 			
 			if(otherObject != null)
 			{
-		        if(otherObject.GetType() == typeof(UnitEnemy))
+		        if(otherObject.GetType() == typeof(Unit))
 		        {
 	                otherObject.doDamage(damage);
 	                explode();
