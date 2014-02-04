@@ -69,6 +69,7 @@ public class Unit : MonoBehaviour
 	public void doDamage(float amount)
 	{
 		this.health -=  amount;
+		print ("health decreased.");
 		
 		if (health <= 0)
 		{

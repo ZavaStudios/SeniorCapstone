@@ -21,7 +21,8 @@ public class ProjectileFireball : MonoBehaviour {
 	
 	 void OnTriggerEnter(Collider other)
     {
-		print("collision");
+		print (other);
+		//print("collision");
 		if(hit == false)
 		{
 			
@@ -29,8 +30,9 @@ public class ProjectileFireball : MonoBehaviour {
 			
 			if(otherObject != null)
 			{
-		        if(otherObject.GetType() == typeof(Unit))
+		        if(otherObject is Unit)
 		        {
+					
 	                otherObject.doDamage(damage);
 	                explode();
 		        }
