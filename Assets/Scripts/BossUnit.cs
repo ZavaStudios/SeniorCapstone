@@ -18,6 +18,7 @@ public class BossUnit : UnitEnemy
 	{
 		base.Start ();
 
+
 		//This is a boss, so lets make it a little harder ;) 
 		Health = 50;
 		weapon.weaponDamage = 20;
