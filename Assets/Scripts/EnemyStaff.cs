@@ -2,7 +2,7 @@
 using System.Collections;
 
 
-public class WeaponStaff : WeaponBase
+public class EnemyStaff : WeaponBase
 {
 	public GameObject Fireball;
 	
