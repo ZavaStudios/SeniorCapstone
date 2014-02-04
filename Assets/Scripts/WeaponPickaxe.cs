@@ -29,7 +29,7 @@ public class WeaponPickaxe : WeaponBase
         print("mining..");
         //LayerMask mask = LayerMask.NameToLayer("world");// | LayerMask.NameToLayer("enemy");
 
-        if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange, 3<<8)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
+        if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange, 1<<10)) //layer mask looks at 'world' only on raycast.
         {
             if(rayHit.collider.gameObject.CompareTag("Enemy"))
             {  
@@ -38,7 +38,10 @@ public class WeaponPickaxe : WeaponBase
             if(rayHit.collider.gameObject.CompareTag("Ore"))
             {
                 MineableBlock resource = rayHit.collider.GetComponent<MineableBlock>();
-                resource.doDamage(1);
+
+                WeaponPickaxeBlockDestroyerScript s = gameObject.GetComponentInChildren<WeaponPickaxeBlockDestroyerScript>();
+                s.damage = 1;
+                s.hitBlock = resource;
 
                 print ("Mining for treasure...");
             }

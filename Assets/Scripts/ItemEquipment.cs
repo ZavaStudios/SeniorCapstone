@@ -3,24 +3,26 @@ using System.Collections;
 
 public class ItemEquipment : ItemBase {
  
-	private bool _isCompleteEquipment;
-	
 	protected float _damage = 0.0f;
 	protected float _atkspd = 0.0f;
 	protected float _armor = 0.0f;
 	protected float _health = 0.0f;
-	
-    public ItemEquipment(string name):base(name)
+
+    public ItemEquipment(string name, tItemType itemtype) 
+        : base(name)
     {
-        
+        this.type = itemtype;
     }
-	
-	public ItemEquipment(float damage, float atkspd, float armor, float health, string name, string description):base(name)
+
+    public ItemEquipment(float damage, float atkspd, float armor, float health, string name, tItemType itemtype, string description)
+        : base(name)
 	{
 		_damage = damage;
 		_atkspd = atkspd;
 		_armor = armor;
 		_health = health;
+        this.type = itemtype;
+        
 	}
 	
 	public float damage
@@ -46,14 +48,5 @@ public class ItemEquipment : ItemBase {
         set { this._health = value; }
         get { return this._health; }
     }
-	
-	public bool isEquipable
-    {
-        set { this._isCompleteEquipment = value; }
-        get { return this._isCompleteEquipment; }
-    }
-	
-	
-	
-	
+
 }

@@ -62,7 +62,7 @@ public class UnitEnemy : Unit
 		GameObject player = GameObject.FindGameObjectWithTag ("Player");
 		player.transform.SendMessage ("incrementScore", 1);
 	}
-	
+
 	public override Vector3 getLookDirection()
 	{
 		return base.getLookDirection();

@@ -1,32 +1,100 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class Inventory
 {
-    private ArrayList weapons = new ArrayList();
-    private ArrayList ores = new ArrayList();
-    
+    private ArrayList weapons;
+    private ArrayList armors;
+    private ArrayList components;
+    private ArrayList items;
+    private ArrayList ores;
+
+    private static Inventory _instance = null;
+
     // Use this for initialization
-    public Inventory()
+    private Inventory()
     {
+        weapons = new ArrayList();
+        armors = new ArrayList();
+        components = new ArrayList();
+        items = new ArrayList();
+        ores = new ArrayList();
+    }
+
+    public static Inventory getInstance()
+    {
+        if(_instance == null)
+            _instance = new Inventory();
+        
+        return _instance;
     }
  
 	/// <summary>
-	/// Add a weapon to the inventory by string.
+	/// Add an item to the inventory.
 	/// </summary>
 	/// <param name="weaponBase">Weapon base.</param>
-    public void inventoryAddWeapon(WeaponBase weaponBase)
-	{
-		weapons.Add (weaponBase);
-	}
+    public void inventoryAddItem(ItemWeapon newItem)
+    {
+                weapons.Add((ItemWeapon)newItem);
+    }
+
+    public void inventoryAddItem(ItemEquipment newItem)
+    {
+        switch (newItem.type)
+        {
+            case ItemBase.tItemType.Armor:
+                armors.Add(newItem);
+                break;
+
+            case ItemBase.tItemType.Component:
+                components.Add(newItem);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void inventoryAddItem(ItemOre newItem)
+    {
+        ores.Add(newItem);
+    }
+
+
+    public void inventoryAddItem(ItemBase newItem)
+    {
+        items.Add(newItem);
+    }
     
 	/// <summary>
 	/// Remove an item from the inventory by string.
 	/// </summary>
 	/// <param name="weaponBase">Weapon base.</param>
-	public void inventoryRemoveWeapon(WeaponBase weaponBase)
+    public void inventoryRemoveItem(ItemBase itemToRemove)
 	{
-		weapons.Remove(weaponBase);
+        switch (itemToRemove.type)
+        {
+            case ItemBase.tItemType.Weapon:
+                weapons.Remove(itemToRemove);
+                break;
+
+            case ItemBase.tItemType.Armor:
+                armors.Remove(itemToRemove);
+                break;
+
+            case ItemBase.tItemType.Component:
+                components.Remove(itemToRemove);
+                break;
+
+            case ItemBase.tItemType.Ore:
+                components.Remove(itemToRemove);
+                break;
+
+            default:
+                //Defaults are just generic items
+                items.Remove(itemToRemove);
+                break;
+        }
 	}
 
 	/// <summary>
@@ -34,9 +102,9 @@ public class Inventory
 	/// </summary>
 	/// <returns>The <see cref="System.String"/>.</returns>
 	/// <param name="index">Index.</param>
-    public WeaponBase getInventoryWeaponAt(int index)
+    public ItemWeapon getInventoryWeaponAt(int index)
 	{
-		return (WeaponBase)weapons[index];
+		return (ItemWeapon)weapons[index];
 	}
 
     /// <summary>
@@ -44,13 +112,18 @@ public class Inventory
     /// </summary>
     /// <returns>The inventory weapon index.</returns>
     /// <param name="name">Name.</param>
-	public int getInventoryWeaponIndex(string name)
+    public int getInventoryWeaponIndex(ItemWeapon itemToFind)
 	{
-		return weapons.IndexOf (name);
+        return weapons.IndexOf(itemToFind);
 	}
 
 	public ArrayList getInventoryWeapons()
 	{
 		return weapons;
 	}
+
+    public ArrayList getInventoryComponents()
+    {
+        return components;
+    }
 }

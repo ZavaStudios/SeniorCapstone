@@ -15,43 +15,53 @@ public class WeaponModelSwitcher : MonoBehaviour
 		crappy_staff.SetActive(false);
     }
     
-    public void SwitchWeapon(string WeaponType)
+    public void SwitchWeapon(string newWeapon)
     {
-        if (WeaponType == "WeaponSword")
-        {
-			crappy_staff.SetActive(false);
-            crappy_sword.SetActive(true);
-            crappy_pickaxe.SetActive(false);
-            Active = crappy_sword;
-        }
-        else if (WeaponType == "WeaponPickaxe")
-        {
-			crappy_staff.SetActive(false);
-		    crappy_sword.SetActive(false);
-			crappy_pickaxe.SetActive(true);
-            Active = crappy_pickaxe;
-        }
-		else if (WeaponType == "WeaponStaff")
-		{
-			crappy_staff.SetActive(true);
-            crappy_sword.SetActive(false);
-			crappy_pickaxe.SetActive(false);
-			Active = null;
-		}
+
+        crappy_sword.SetActive(false);
+        crappy_pickaxe.SetActive(false);
+		crappy_staff.SetActive(false);
         
+            if (newWeapon == "WeaponSword")
+            {
+                crappy_sword.SetActive(true);
+                Active = crappy_sword;
+            }
+        
+            else if (newWeapon == "WeaponPickaxe")
+            {
+			    crappy_pickaxe.SetActive(true);
+                Active = crappy_pickaxe;
+            }
+            
+            else if (newWeapon == "WeaponStaff")
+		    {
+			    crappy_staff.SetActive(true);
+			    Active = crappy_staff;
+		    }   
+            
+            else
+            {
+                print("ERROR MOTHAFUCKAAAA WHAT YOU THINKINNNN.");
+                Active = null;
+            }
     }
     
     public void playAnimation()
     {
-
         if (Active == crappy_sword)
         {
+            Active.animation["SwordSwing"].speed = 1.0f; //animation speed was set to negative by sword collision detection.
             Active.animation.Play("SwordSwing");
+
         }
         else if (Active == crappy_pickaxe )
         {
-			print("animation!");
             Active.animation.Play("PickaxeSwing");
+        }
+		else if (Active == crappy_staff )
+        {
+            Active.animation.Play("StaffBlast");
         }
     }
 }

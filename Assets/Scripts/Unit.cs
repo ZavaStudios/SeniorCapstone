@@ -7,7 +7,11 @@ using System.Collections;
 public class Unit : MonoBehaviour 
 {
     public Inventory inventory;
-    
+
+
+    protected float attackDamage;
+    protected float attackDelay;
+    protected float armor;
 	protected float health = 100.0f;
     protected float maxHealth = 100.0f;
 	protected float moveSpeed = 10.0f;
@@ -30,6 +34,25 @@ public class Unit : MonoBehaviour
         get { return maxHealth; }
         set { maxHealth = value; }
     }
+
+    public float AttackDamage
+    {
+        get { return attackDamage; }
+        set { attackDamage = value; }
+    }
+
+
+    public float AttackDelay
+    {
+        get { return attackDelay; }
+        set { attackDelay = value; }
+    }
+
+    public float Armor
+    {
+        get { return armor; }
+        set { armor = value; }
+    }    
     
     //////////////////////////////////
 	

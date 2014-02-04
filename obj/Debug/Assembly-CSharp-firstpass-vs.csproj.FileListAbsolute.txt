@@ -1,0 +1,10 @@
+D:\Documents\Github\SeniorCapstone\Temp\bin\Debug\Assembly-CSharp-firstpass.dll
+D:\Documents\Github\SeniorCapstone\Temp\bin\Debug\Assembly-CSharp-firstpass.pdb
+D:\Documents\Github\SeniorCapstone\Temp\bin\Debug\UnityEditor.dll
+D:\Documents\Github\SeniorCapstone\Temp\bin\Debug\UnityEngine.dll
+D:\Documents\Github\SeniorCapstone\Temp\bin\Debug\Mono.Cecil.dll
+D:\Documents\Github\SeniorCapstone\Temp\bin\Debug\nunit.framework.dll
+D:\Documents\Github\SeniorCapstone\Temp\bin\Debug\ICSharpCode.NRefactory.dll
+D:\Documents\Github\SeniorCapstone\obj\Debug\Assembly-CSharp-firstpass.dll
+D:\Documents\Github\SeniorCapstone\obj\Debug\Assembly-CSharp-firstpass.pdb
+D:\Documents\Github\SeniorCapstone\obj\Debug\Assembly-CSharp-firstpass-vs.csprojResolveAssemblyReference.cache
