@@ -17,8 +17,10 @@ namespace MazeGeneration
 		public const int RIGHT_DOOR_MASK = 0x08;
 
 		public const int CEILING_HEIGHT = 5;
-
-		public Transform enemy;
+		
+		public Transform skeleton;
+		public Transform zombie;
+		public Transform spider;
 		public Transform floor_tile;
 		public Transform wall_tile;
 		public Transform mine_cube;
@@ -330,11 +332,18 @@ namespace MazeGeneration
 			// ENEMIES / ETC.
 			if (Type == RoomType.enemy)
 			{
-				// TODO: this won't be how enemies work long term, but for now just spawn it from count
-				for (int i = 0; i < EnemyCount; i++)
+				//Generate a random enemy in the maze based on what the generate enemy function returns.
+				//Need to store the enemies into a list to be used if we need to reload the room. 
+				foreach(GenerateEnemies.enemy e in GenerateEnemies.generateEnemies(5))
 				{
-					InstantiateEnemy(center);
+					InstantiateEnemy(center, e);
 				}
+				
+				// TODO: this won't be how enemies work long term, but for now just spawn it from count
+//				for (int i = 0; i < EnemyCount; i++)
+//				{
+//					InstantiateEnemy(center);
+//				}
 			}
 		}
 
@@ -397,11 +406,28 @@ namespace MazeGeneration
 		/// accomodate for that.
 		/// </summary>
 		/// <param name="position">Floor position to place enemy at.</param>
-		private void InstantiateEnemy(Vector3 position)
+		private void InstantiateEnemy(Vector3 position, GenerateEnemies.enemy e)
 		{
-			MonoBehaviour.Instantiate(enemy,
-			                          position + new Vector3(0.0f, enemy.collider.bounds.center.y, 0.0f),
-			                          Quaternion.identity);
+			switch(e)
+			{
+			case GenerateEnemies.enemy.skeleton:
+				MonoBehaviour.Instantiate(skeleton,
+				                          position + new Vector3(0.0f, skeleton.collider.bounds.center.y, 0.0f),
+				                          Quaternion.identity);
+				break;
+				
+			case GenerateEnemies.enemy.spider:
+				MonoBehaviour.Instantiate(spider,
+				                          position + new Vector3(0.0f, spider.collider.bounds.center.y, 0.0f),
+				                          Quaternion.identity);
+				break;
+				
+			case GenerateEnemies.enemy.zombie:
+				MonoBehaviour.Instantiate(zombie,
+				                          position + new Vector3(0.0f, zombie.collider.bounds.center.y, 0.0f),
+				                          Quaternion.identity);
+				break;
+			}
 		}
 
 		/// <summary>

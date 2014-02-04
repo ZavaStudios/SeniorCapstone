@@ -127,19 +127,17 @@ public class UnitPlayer : Unit {
 		//Draws the gameover GUI to the screen. 
 		GameOver.gameOver = true;
 		
-		//Set the length of time to display the game over tag.
-		if(gameOverDelay == 0)
-		{
-			gameOverDelay = Time.time + 5;
-		}
+		//Wait for 5 seconds.
+		StartCoroutine(wait(5));
 		
-		//Restart the application when the game is over.
-		if(Time.time >= gameOverDelay)
-		{
-			Application.LoadLevel(0);
-		}
+		Application.LoadLevel(0);
 	}
     
+	//A function that is a wrapper to get a yield return from WaitForSeconds. 
+	private IEnumerator wait(int seconds)
+	{
+		yield return new WaitForSeconds(seconds);
+	}
     public override void playAttackAnimation()
     {
         wepSwitcher.playAnimation();

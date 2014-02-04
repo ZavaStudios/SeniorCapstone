@@ -8,40 +8,46 @@ public class UnitEnemy : Unit
 	protected Vector3 PlayerPosition;
 	protected Vector3 dir;
 	protected float distance;
+	protected SphereCollider sphere;
 	
 	protected override void Start ()
 	{
 
 		Player = GameObject.FindGameObjectWithTag("Player").transform; 
 		control = gameObject.GetComponent<CharacterController>();
+		sphere = gameObject.GetComponent<SphereCollider>();
+		sphere.isTrigger = true;
+		sphere.radius = 20;
 		moveSpeed = 5.0f;
 
         base.Start(); //gets reference to weapon, among other things.
 	}
 	
+	//Is called when another collider hits the sphere collider.
+	void OnTriggerStay(Collider other)
+	{		
+		//Player has walked into the sphere collider. 
+		if(other.CompareTag("Player") && distance > weapon.attackRange)
+		{
+			//Move toward the player. 
+			enemyMovement();			
+		}
+	}
+	
 	protected override void Update ()
 	{	
-		PlayerPosition = Player.position;
-		dir = PlayerPosition - transform.position;
-		distance = dir.sqrMagnitude;
+		distance = Vector3.Distance(transform.position, Player.position);
 
 		//Determine whether to attack or not.
-		if(weapon && distance < weapon.attackRange)
+		if(weapon && distance <= weapon.attackRange)
 		{
 			weapon.attack = true;
-            animation.Play("idle");
+       		animation.Play("idle");
+			
 		}
-        //If the player is within a certain distance then execute move code
-		else if(distance < 700f)
-		{
-			enemyMovement();		
-		}
-		else //Doesn't move the enemy, but applies the physics affects of SimpleMove on the enemy.
-		{
-            control.SimpleMove(Vector3.zero);
-		}
-
-
+		
+		//Makes sure that the zombie (construction worker mesh) is dropped in from the sky correctly. 
+		control.SimpleMove(Vector3.zero);
 		
 	}
 		
@@ -51,7 +57,7 @@ public class UnitEnemy : Unit
 	{
 
 	}
-
+	
 	//Kills the unit by removing the enemy from the screen and give credit to the player.
 	protected override void killUnit ()
 	{

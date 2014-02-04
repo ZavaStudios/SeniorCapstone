@@ -4,14 +4,16 @@ using System.Collections;
 public class ZombieAI : UnitEnemy
 {
 	float turnSpeed = 90;
+	
 	// Use this for initialization
 	protected override void Start () 
 	{
 		//Choose which weapon to give the Zombie. This must occur before the call to base.Start().
-		equipWeapon("WeaponMonster"); 
+		equipWeapon("ZombieWeapon"); 
 		base.Start(); //Call the base class to set up the basic enemy and unit class.
-		maxHealth = 50; //Set the health of the zombie.
-		health = 50; 
+		maxHealth = 100; //Set the health of the zombie.
+		health = 100;
+		moveSpeed = 5; //Move half as fast as the player. 
 	}
 	
 	// Update is called once per frame
@@ -26,7 +28,6 @@ public class ZombieAI : UnitEnemy
 		//move
 		PlayerPosition = Player.position;
 		dir = PlayerPosition - transform.position;
-		distance = dir.sqrMagnitude;
 		dir.y = transform.position.y;
 		dir.Normalize();
 		

@@ -1,17 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeaponMonster : WeaponBase
+public class ZombieWeapon : WeaponBase
 {
-    public override string strWeaponName {get{return "Pickaxe";}}
-    public override string strWeaponType {get{return "WeaponPickaxe";}}
 
 	// Use this for initialization
 	protected override void Start ()
 	{
-		attackRange = 100f;
-		weaponDamage = 10.0f;
-		attackDelay = 2.0f;
+		attackRange = 2.5f;
+		weaponDamage = 40.0f;
+		attackDelay = 4.0f;
 		base.Start();
 	}
 	
@@ -20,7 +18,7 @@ public class WeaponMonster : WeaponBase
 	{
 		base.Update();
 	}
-	
+		
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
 		print("attacking..");
@@ -29,7 +27,7 @@ public class WeaponMonster : WeaponBase
 		Vector3 PlayerPosition = Player.position;
 		Vector3 dir = PlayerPosition - transform.position;
 		
-		if(Physics.Raycast(transform.position, dir, out rayHit, attackRange)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
+		if(Physics.Raycast(transform.position, dir, out rayHit, attackRange))
 		{
 			print ("Raycast hit");
 			if(rayHit.collider.gameObject.CompareTag("Player"))
