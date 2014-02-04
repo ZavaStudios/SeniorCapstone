@@ -8,7 +8,8 @@ public class SkeletonAI : UnitEnemy
 	// Use this for initialization
 	protected override void Start () 
 	{
-		equipWeapon("WeaponStaff");
+//		gameObject.layer = 30;
+		equipWeapon("EnemyStaff");
 		base.Start();
 		moveSpeed = 10; //Moves the same speed as a player. 
 		maxHealth = 50; // Half the health as a zombie and player.
