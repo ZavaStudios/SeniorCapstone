@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace MazeGeneration
 {
@@ -89,11 +90,13 @@ namespace MazeGeneration
 			set;
 		}
 
-		// TODO: list of enemies in the room. For now, placeholder with just a counter
-		public int EnemyCount
+		/// <summary>
+		/// Stores the types of enemies held in this room.
+		/// </summary>
+		public List<EnemyGenerator.EnemyType> Enemies
 		{
 			get;
-			set;
+			private set;
 		}
 
 		/// <summary>
@@ -107,7 +110,7 @@ namespace MazeGeneration
 		public void AssignEnemies(int enemyScore)
 		{
 			// For now, just assign one "enemy" per enemy score:
-			EnemyCount = enemyScore;
+			Enemies = EnemyGenerator.generateEnemies(enemyScore);
 		}
 
 		/// <summary>
@@ -324,26 +327,34 @@ namespace MazeGeneration
 			Vector3 cubeStart = center - 
 								new Vector3((float)Width * 0.5f, 0.0f, (float)Height * 0.5f) +
 								new Vector3(0.5f, 0.5f, 0.5f);
+			/*
 			foreach (RoomCubes.Cube cube in Cubes.EnumerateCubes())
 			{
 				InstantiateCube(cube, cubeStart);
-			}
+			}*/
 
 			// ENEMIES / ETC.
+			Debug.Log("Center: " + center.x + ", " + center.z);
 			if (Type == RoomType.enemy)
 			{
+				System.Random enemyPosGen = new System.Random();
 				//Generate a random enemy in the maze based on what the generate enemy function returns.
 				//Need to store the enemies into a list to be used if we need to reload the room. 
-				foreach(GenerateEnemies.enemy e in GenerateEnemies.generateEnemies(5))
+				foreach(EnemyGenerator.EnemyType enemy in Enemies)
 				{
-					InstantiateEnemy(center, e);
+					// TODO: check if collides with ore pillar, if those get added
+
+					// Explanation: generate first random
+					float posX = center.x +
+								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+						 		 ((float)(Width * 0.5) - RoomCubes.CORNER_WIDTH));
+					float posY = center.z +
+								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+						 		 ((float)(Height * 0.5) - RoomCubes.CORNER_LENGTH));
+					Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
+					//Debug.Log("EnemyPos: " + posX + ", " + posY);
+					InstantiateEnemy(enemyPos, enemy);
 				}
-				
-				// TODO: this won't be how enemies work long term, but for now just spawn it from count
-//				for (int i = 0; i < EnemyCount; i++)
-//				{
-//					InstantiateEnemy(center);
-//				}
 			}
 		}
 
@@ -406,23 +417,23 @@ namespace MazeGeneration
 		/// accomodate for that.
 		/// </summary>
 		/// <param name="position">Floor position to place enemy at.</param>
-		private void InstantiateEnemy(Vector3 position, GenerateEnemies.enemy e)
+		private void InstantiateEnemy(Vector3 position, EnemyGenerator.EnemyType e)
 		{
 			switch(e)
 			{
-			case GenerateEnemies.enemy.skeleton:
+			case EnemyGenerator.EnemyType.skeleton:
 				MonoBehaviour.Instantiate(skeleton,
 				                          position + new Vector3(0.0f, skeleton.collider.bounds.center.y, 0.0f),
 				                          Quaternion.identity);
 				break;
 				
-			case GenerateEnemies.enemy.spider:
+			case EnemyGenerator.EnemyType.spider:
 				MonoBehaviour.Instantiate(spider,
 				                          position + new Vector3(0.0f, spider.collider.bounds.center.y, 0.0f),
 				                          Quaternion.identity);
 				break;
 				
-			case GenerateEnemies.enemy.zombie:
+			case EnemyGenerator.EnemyType.zombie:
 				MonoBehaviour.Instantiate(zombie,
 				                          position + new Vector3(0.0f, zombie.collider.bounds.center.y, 0.0f),
 				                          Quaternion.identity);

@@ -77,8 +77,8 @@ namespace MazeGeneration
 			}
 		}
 
-		private const int CORNER_WIDTH = 8;
-		private const int CORNER_LENGTH = 8;
+		public const int CORNER_WIDTH = 8;
+		public const int CORNER_LENGTH = 8;
 		private int ROOM_HEIGHT;
 
 		private Cube.CubeType[,,] tlCorner;

@@ -160,7 +160,7 @@ namespace MazeGeneration
 					// For enemy rooms, initialize enemy list.
 					// TODO: smarter distribution of enemy points. For now, just give same value to each room.
 					if (type == RogueRoom.RoomType.enemy)
-						newRoom.AssignEnemies(1);
+						newRoom.AssignEnemies(5);
 					
                     Map[x, y] = newRoom;
                 }

@@ -1,21 +1,21 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GenerateEnemies
+public class EnemyGenerator
 {
 	static Random rand = new Random();
 
-	public enum enemy
+	public enum EnemyType
 	{
 		spider, skeleton, zombie
 	}
 
 	//Generates enemies at random based on the number of points that are allocated to that room.
 	// Returns an ArrayList of type enemy with the enemies that should be contained in any given room.
-	public static List<enemy> generateEnemies(int points)
+	public static List<EnemyType> generateEnemies(int points)
 	{
-		List<enemy> enemyList = new List<enemy>();		//Fuck you Victor. Here's a comment for you! :) PS Angel Beats is the best! :DDDD 
+		List<EnemyType> enemyList = new List<EnemyType>();		//Fuck you Victor. Here's a comment for you! :) PS Angel Beats is the best! :DDDD 
 		int mod = points%5;
 
 		//Check to see if we have an exact number of points.
@@ -40,20 +40,20 @@ public class GenerateEnemies
 			switch(rand.Next(3))
 			{
 				case 0: 				
-					enemyList.Add(enemy.skeleton);
+					enemyList.Add(EnemyType.skeleton);
 					break;
 				
 				case 1:				
 					//Add 5 spiders. :)
-					enemyList.Add (enemy.spider);
-					enemyList.Add (enemy.spider);
-					enemyList.Add (enemy.spider);
-					enemyList.Add (enemy.spider);
-					enemyList.Add (enemy.spider);
+					enemyList.Add (EnemyType.spider);
+					enemyList.Add (EnemyType.spider);
+					enemyList.Add (EnemyType.spider);
+					enemyList.Add (EnemyType.spider);
+					enemyList.Add (EnemyType.spider);
 					break;
 				
 				case 2:				
-					enemyList.Add(enemy.zombie);
+					enemyList.Add(EnemyType.zombie);
 					break;					
 			}
 		}
