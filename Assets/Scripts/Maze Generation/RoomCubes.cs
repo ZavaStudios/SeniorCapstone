@@ -1,9 +1,34 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MazeGeneration
 {
+	/// <summary>
+	/// Data object used to represent a single cube in the maze.
+	/// </summary>
+	public struct Cube
+	{
+		public enum CubeType
+		{
+			Air, Stone, Iron, Silver, Gold, Platinum, // other ore types...
+		}
+		
+		public CubeType Type { get; set; }
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Z { get; set; }
+		
+		public Cube(CubeType _type, int _x, int _y, int _z) : this()
+		{
+			Type = _type;
+			X = _x;
+			Y = _y;
+			Z = _z;
+		}
+	}
+	
 	/// <summary>
 	/// Data structure denoting all of the cubes for a single room in the maze.
 	/// For external users, this is effectively just an enumerable list: you ask
@@ -56,41 +81,17 @@ namespace MazeGeneration
 		//	* Corridors (are we putting blocks in corridors? probably, but not now)
 		//	* Other possible things
 
-		public struct Cube
-		{
-			public enum CubeType
-			{
-				Air, Stone, Iron, Silver, Gold, Platinum, // other ore types...
-			}
-
-			public CubeType Type { get; set; }
-			public int X { get; set; }
-			public int Y { get; set; }
-			public int Z { get; set; }
-
-			public Cube(CubeType _type, int _x, int _y, int _z) : this()
-			{
-				Type = _type;
-				X = _x;
-				Y = _y;
-				Z = _z;
-			}
-		}
-
-		public const int CORNER_WIDTH = 8;
-		public const int CORNER_LENGTH = 8;
-		private int ROOM_HEIGHT;
-
-		private Cube.CubeType[,,] tlCorner;
-		private Cube.CubeType[,,] trCorner;
-		private Cube.CubeType[,,] blCorner;
-		private Cube.CubeType[,,] brCorner;
-		private LinkedList<Cube.CubeType>[,] lSide;
-		private LinkedList<Cube.CubeType>[,] rSide;
-		private LinkedList<Cube.CubeType>[,] tSide;
-		private LinkedList<Cube.CubeType>[,] bSide;
+		private WallCubes L_Wall;
+		private WallCubes R_Wall;
+		private WallCubes T_Wall;
+		private WallCubes B_Wall;
+		private InsideCornerCubes TL_Corner;
+		private InsideCornerCubes TR_Corner;
+		private InsideCornerCubes BL_Corner;
+		private InsideCornerCubes BR_Corner;
 
 		private int Width { get; set; }
+		private int Depth { get; set; }
 		private int Height { get; set; }
 
 		/// <summary>
@@ -102,465 +103,30 @@ namespace MazeGeneration
 		/// <param name="ceilingHeight">Height of the ceiling</param>
 		public RoomCubes(int roomWidth, int roomHeight, int doorCode, int ceilingHeight)
 		{
-			ROOM_HEIGHT = ceilingHeight;
 			Width = roomWidth;
-			Height = roomHeight;
+			Depth = roomHeight;
+			Height = ceilingHeight;
 
-			// Code to indicate which type of initialization we're performing
-			int initCode = 0;
-
-			// If the room is small enough that our corners would fill it up, we
-			// gain nothing from our system, so just use one corner as the whole
-			// room:
-			if (Width <= CORNER_WIDTH * 2 && Height <= CORNER_LENGTH * 2)
-			{
-				tlCorner = new Cube.CubeType[Width, ROOM_HEIGHT, Height];
-				trCorner = new Cube.CubeType[0,0,0];
-				blCorner = new Cube.CubeType[0,0,0];
-				brCorner = new Cube.CubeType[0,0,0];
-				tSide = new LinkedList<Cube.CubeType>[0,0];
-				bSide = new LinkedList<Cube.CubeType>[0,0];
-				lSide = new LinkedList<Cube.CubeType>[0,0];
-				rSide = new LinkedList<Cube.CubeType>[0,0];
-				initCode = 1;
-			}
-			// If we're too thin, merge top and bottom, but keep other sides:
-			else if (Width <= CORNER_WIDTH * 2)
-			{
-				tlCorner = new Cube.CubeType[Width, ROOM_HEIGHT, CORNER_LENGTH];
-				trCorner = new Cube.CubeType[0,0,0];
-				blCorner = new Cube.CubeType[Width, ROOM_HEIGHT, CORNER_LENGTH];
-				brCorner = new Cube.CubeType[0,0,0];
-				tSide = new LinkedList<Cube.CubeType>[0,0];
-				bSide = new LinkedList<Cube.CubeType>[0,0];
-				lSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,Height - (CORNER_LENGTH * 2)];
-				rSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,Height - (CORNER_LENGTH * 2)];
-				initCode = 2;
-			}
-			// If were too short, merge left and right, but keep other sides:
-			else if (Height <= CORNER_LENGTH * 2)
-			{
-				tlCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, Height];
-				blCorner = new Cube.CubeType[0,0,0];
-				trCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, Height];
-				brCorner = new Cube.CubeType[0,0,0];
-				tSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,Width - (CORNER_WIDTH * 2)];
-				bSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT,Width - (CORNER_WIDTH * 2)];
-				lSide = new LinkedList<Cube.CubeType>[0,0];
-				rSide = new LinkedList<Cube.CubeType>[0,0];
-				initCode = 3;
-			}
-			// Otherwise, we're all good to do our usual thing:
-			else
-			{
-				tlCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
-				trCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
-				blCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
-				brCorner = new Cube.CubeType[CORNER_WIDTH, ROOM_HEIGHT, CORNER_LENGTH];
-				tSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, Width - (CORNER_WIDTH * 2)];
-				bSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, Width - (CORNER_WIDTH * 2)];
-				lSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, Height - (CORNER_LENGTH * 2)];
-				rSide = new LinkedList<Cube.CubeType>[ROOM_HEIGHT, Height - (CORNER_LENGTH * 2)];
-				initCode = 0;
-			}
-
-			// Fill in linkedLists into sides:
-			// left:
-			for (int z = 0; z < lSide.GetLength(0); z++)
-			{
-				for (int y = 0; y < lSide.GetLength(1); y++)
-				{
-					lSide[z,y] = new LinkedList<Cube.CubeType>();
-				}
-			}
-			// right:
-			for (int z = 0; z < rSide.GetLength(0); z++)
-			{
-				for (int y = 0; y < rSide.GetLength(1); y++)
-				{
-					rSide[z,y] = new LinkedList<Cube.CubeType>();
-				}
-			}
-			// top:
-			for (int z = 0; z < tSide.GetLength(0); z++)
-			{
-				for (int x = 0; x < tSide.GetLength(1); x++)
-				{
-					tSide[z,x] = new LinkedList<Cube.CubeType>();
-				}
-			}
-			// bottom:
-			for (int z = 0; z < bSide.GetLength(0); z++)
-			{
-				for (int x = 0; x < bSide.GetLength(1); x++)
-				{
-					bSide[z,x] = new LinkedList<Cube.CubeType>();
-				}
-			}
+			// TODO: something smarter than a fixed value
+			int CORNER_DIM = 8;
+			int wallDepth = (Depth - (CORNER_DIM * 2)) < 0 ? 0 : (Depth - (CORNER_DIM * 2));
+			int wallWidth = (Width - (CORNER_DIM * 2)) < 0 ? 0 : (Width - (CORNER_DIM * 2));
+			L_Wall = new WallCubes(wallDepth, Height, CORNER_DIM,
+			                       (doorCode & RogueRoom.LEFT_DOOR_MASK) != 0);
+			R_Wall = new WallCubes(wallDepth, Height, CORNER_DIM,
+			                       (doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0);
+			T_Wall = new WallCubes(wallWidth, Height, CORNER_DIM,
+			                       (doorCode & RogueRoom.UP_DOOR_MASK) != 0);
+			B_Wall = new WallCubes(wallWidth, Height, CORNER_DIM,
+			                       (doorCode & RogueRoom.DOWN_DOOR_MASK) != 0);
 			
-			// Initialize some cube values!
-			InitializeCubes(doorCode, initCode);
+			TL_Corner = new InsideCornerCubes(L_Wall, T_Wall);
+			BL_Corner = new InsideCornerCubes(B_Wall, L_Wall);
+			TR_Corner = new InsideCornerCubes(T_Wall, R_Wall);
+			BR_Corner = new InsideCornerCubes(R_Wall, B_Wall);
 		}
 
-		/// <summary>
-		/// Forwards our init request to the appropriate helper function, based on
-		/// which case of initialization we are in.
-		/// 
-		/// Init codes are as follows:
-		/// 	0 -- Standard case (4 corners, 4 walls)
-		/// 	1 -- Smallest case (1 corner, nothing else)
-		/// 	2 -- Thin case (Top and Bottom merge, Left and Right sides exist)
-		/// 	3 -- Short case (Left and Right merge, Top and Bottom sides exist)
-		/// </summary>
-		/// <param name="doorCode">Door code.</param>
-		/// <param name="initCode">Init code.</param>
-		public void InitializeCubes(int doorCode, int initCode)
-		{
-			switch(initCode)
-			{
-			case 0:
-				InitializeCubes0(doorCode);
-				break;
-			case 1:
-				InitializeCubes1(doorCode);
-				break;
-			case 2:
-				InitializeCubes2(doorCode);
-				break;
-			case 3:
-			default:
-				InitializeCubes3(doorCode);
-				break;
-			}
-		}
-
-		/// <summary>
-		/// Determines initial setup of the cubes in the room, assuming we are in
-		/// the case where only one corner (top-right) is being used to store cubes.
-		/// </summary>
-		/// <param name="doorCode">Door code.</param>
-		private void InitializeCubes1(int doorCode)
-		{
-			// TODO: something reasonable. For now, just don't place anything
-			for (int z = 0; z < trCorner.GetLength(1); z++)
-			{
-				for (int x = 0; x < trCorner.GetLength(0); x++)
-				{
-					for (int y = 0; y < trCorner.GetLength(2); y++)
-					{
-						trCorner[x,z,y] = Cube.CubeType.Air;
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Determines initial setup of the cubes in the room, assuming we are in
-		/// the case where the Top and Bottom are merged into one corner (top-right
-		/// and bottom-right, respectively), and Left and Right sides exist.
-		/// </summary>
-		/// <param name="doorCode">Door code.</param>
-		private void InitializeCubes2(int doorCode)
-		{
-			// TODO: anything. I'm actually pretty sure we guarantee this case never happens for now,
-			// so I'm willing to let this code hang out for now
-		}
-
-		/// <summary>
-		/// Determines initial setup of the cubes in the room, assuming we are in
-		/// the case where the Left and Right are merged into one corner (top-left
-		/// and top-right, respectively), and Top and Bottom sides exist.
-		/// </summary>
-		/// <param name="doorCode">Door code.</param>
-		private void InitializeCubes3(int doorCode)
-		{
-			// TODO: anything. I'm actually pretty sure we guarantee this case never happens for now,
-			// so I'm willing to let this code hang out for now
-		}
-
-		/// <summary>
-		/// Determines the initial setup of cubes in the room, assuming we are in our
-		/// standard case (4 corners, 4 sides).
-		/// </summary>
-		/// <param name="doorCode">Door code.</param>
-		private void InitializeCubes0(int doorCode)
-		{
-			// Randomizer:
-			Random r = new Random();
-
-			// Sides:
-				// left:
-			int[,] noise = PerlinNoise.GenerateNoise128();
-			for (int z = 0; z < lSide.GetLength(0); z++)
-			{
-				for (int y = 0; y < lSide.GetLength(1); y++)
-				{
-					// Don't place if it's in the doorway:
-					int modX = 0;
-					int modY = y + tlCorner.GetLength(2);
-					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
-						if (inLeftCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
-						if (inUpCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
-						if (inRightCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
-						if (inDownCorridor(modX, modY))
-							continue;
-
-					// TODO: better indexing. We could average nearby values or something.
-					int zIndex = (int)(((float)z / (float)lSide.GetLength(0)) * 127.0f);
-					int yIndex = (int)(((float)y / (float)lSide.GetLength(1)) * 127.0f);
-					int depth = (int)((float)noise[zIndex,yIndex] * 0.01f * (float)CORNER_WIDTH);
-					// HACK: for now, perlin noise is still busted. We don't want to get more than
-					// our corner sizes (or bad things happen), so clamp the value:
-					depth = (depth > CORNER_WIDTH) ? CORNER_WIDTH : depth;
-					for (int x = 0; x < depth; x++)
-					{
-						lSide[z,y].AddLast(Cube.CubeType.Silver);
-					}
-				}
-			}
-				// right:
-			noise = PerlinNoise.GenerateNoise128();
-			for (int z = 0; z < rSide.GetLength(0); z++)
-			{
-				for (int y = 0; y < rSide.GetLength(1); y++)
-				{
-					// Don't place if it's in the doorway:
-					int modX = tlCorner.GetLength(0) + tSide.GetLength(1) + trCorner.GetLength(0);
-					int modY = y + tlCorner.GetLength(2);
-					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
-						if (inLeftCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
-						if (inUpCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
-						if (inRightCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
-						if (inDownCorridor(modX, modY))
-							continue;
-
-					// TODO: better indexing. We could average nearby values or something.
-					int zIndex = (int)(((float)z / (float)rSide.GetLength(0)) * 127.0f);
-					int yIndex = (int)(((float)y / (float)rSide.GetLength(1)) * 127.0f);
-					int depth = (int)((float)noise[zIndex,yIndex] * 0.01f * (float)CORNER_WIDTH);
-					// HACK: for now, perlin noise is still busted. We don't want to get more than
-					// our corner sizes (or bad things happen), so clamp the value:
-					depth = (depth > CORNER_WIDTH) ? CORNER_WIDTH : depth;
-					for (int x = 0; x < depth; x++)
-					{
-						rSide[z,y].AddLast(Cube.CubeType.Stone);
-					}
-				}
-			}
-				// top:
-			noise = PerlinNoise.GenerateNoise128();
-			for (int z = 0; z < tSide.GetLength(0); z++)
-			{
-				for (int x = 0; x < tSide.GetLength(1); x++)
-				{
-					// Don't place if it's in the doorway:
-					int modX = x + tlCorner.GetLength(0);
-					int modY = 0;
-					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
-						if (inLeftCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
-						if (inUpCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
-						if (inRightCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
-						if (inDownCorridor(modX, modY))
-							continue;
-					
-					// TODO: better indexing. We could average nearby values or something.
-					int zIndex = (int)(((float)z / (float)tSide.GetLength(0)) * 127.0f);
-					int xIndex = (int)(((float)x / (float)tSide.GetLength(1)) * 127.0f);
-					int depth = (int)((float)noise[zIndex,xIndex] * 0.01f * (float)CORNER_WIDTH);
-					// HACK: for now, perlin noise is still busted. We don't want to get more than
-					// our corner sizes (or bad things happen), so clamp the value:
-					depth = (depth > CORNER_LENGTH) ? CORNER_LENGTH : depth;
-					for (int y = 0; y < depth; y++)
-					{
-						tSide[z,x].AddLast(Cube.CubeType.Stone);
-					}
-				}
-			}
-			// bottom:
-			for (int z = 0; z < bSide.GetLength(0); z++)
-			{
-				for (int x = 0; x < bSide.GetLength(1); x++)
-				{
-					// Don't place if it's in the doorway:
-					int modX = x + tlCorner.GetLength(0);
-					int modY = tlCorner.GetLength(2) + lSide.GetLength(1) + blCorner.GetLength(2);
-					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
-						if (inLeftCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
-						if (inUpCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
-						if (inRightCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
-						if (inDownCorridor(modX, modY))
-							continue;
-
-					// TODO: better indexing. We could average nearby values or something.
-					int zIndex = (int)(((float)z / (float)bSide.GetLength(0)) * 127.0f);
-					int xIndex = (int)(((float)x / (float)bSide.GetLength(1)) * 127.0f);
-					int depth = (int)((float)noise[zIndex,xIndex] * 0.01f * (float)CORNER_WIDTH);
-					// HACK: for now, perlin noise is still busted. We don't want to get more than
-					// our corner sizes (or bad things happen), so clamp the value:
-					depth = (depth > CORNER_LENGTH) ? CORNER_LENGTH : depth;
-					for (int y = 0; y < depth; y++)
-					{
-						bSide[z,x].AddLast(Cube.CubeType.Stone);
-					}
-				}
-			}
-
-			// Corners:
-				// top-left:
-			for (int z = 0; z < tlCorner.GetLength(1); z++)
-			{
-				// Quadrants: Only one is interesting
-				int quadX = lSide[z, 0].Count;
-				int quadY = tSide[z, 0].Count;
-				// Quadrants 1 and 2 (merged for convenience)
-				for (int x = 0; x < CORNER_WIDTH; x++)
-				{
-					for (int y = 0; y < quadY; y++)
-					{
-						tlCorner[x,z,y] = Cube.CubeType.Iron;
-					}
-				}
-				// Quadrant 3
-				for (int x = 0; x < quadX; x++)
-				{
-					for (int y = quadY; y < CORNER_LENGTH; y++)
-					{
-						tlCorner[x,z,y] = Cube.CubeType.Gold;
-					}
-				}
-				// Quadrant 4
-				for (int x = quadX; x < CORNER_WIDTH; x++)
-				{
-					for (int y = quadY; y < CORNER_LENGTH; y++)
-					{
-						// TODO
-						tlCorner[x,z,y] = Cube.CubeType.Air;
-					}
-				}
-			}
-
-				// top-right:
-			for (int z = 0; z < trCorner.GetLength(1); z++)
-			{
-				// Quadrants: Only one is interesting
-				int quadX = rSide[z, 0].Count;
-				int quadY = tSide[z, tSide.GetLength(1)-1].Count;
-				// Quadrants 1 and 2 (merged for convenience)
-				for (int x = 0; x < CORNER_WIDTH; x++)
-				{
-					for (int y = 0; y < quadY; y++)
-					{
-						trCorner[CORNER_WIDTH-1-x,z,y] = Cube.CubeType.Iron;
-					}
-				}
-				// Quadrant 3
-				for (int x = 0; x < quadX; x++)
-				{
-					for (int y = quadY; y < CORNER_LENGTH; y++)
-					{
-						trCorner[CORNER_WIDTH-1-x,z,y] = Cube.CubeType.Gold;
-					}
-				}
-				// Quadrant 4
-				for (int x = quadX; x < CORNER_WIDTH; x++)
-				{
-					for (int y = quadY; y < CORNER_LENGTH; y++)
-					{
-						// TODO
-						trCorner[CORNER_WIDTH-1-x,z,y] = Cube.CubeType.Air;
-					}
-				}
-			}
-				// bottom-left:
-			for (int z = 0; z < blCorner.GetLength(1); z++)
-			{
-				// Quadrants: Only one is interesting
-				int quadX = lSide[z, lSide.GetLength(1)-1].Count;
-				int quadY = bSide[z, 0].Count;
-				// Quadrants 1 and 2 (merged for convenience)
-				for (int x = 0; x < CORNER_WIDTH; x++)
-				{
-					for (int y = 0; y < quadY; y++)
-					{
-						blCorner[x,z,CORNER_LENGTH-1-y] = Cube.CubeType.Iron;
-					}
-				}
-				// Quadrant 3
-				for (int x = 0; x < quadX; x++)
-				{
-					for (int y = quadY; y < CORNER_LENGTH; y++)
-					{
-						blCorner[x,z,CORNER_LENGTH-1-y] = Cube.CubeType.Gold;
-					}
-				}
-				// Quadrant 4
-				for (int x = quadX; x < CORNER_WIDTH; x++)
-				{
-					for (int y = quadY; y < CORNER_LENGTH; y++)
-					{
-						// TODO
-						blCorner[x,z,CORNER_LENGTH-1-y] = Cube.CubeType.Air;
-					}
-				}
-			}
-				// bottom-right:
-			for (int z = 0; z < brCorner.GetLength(1); z++)
-			{
-				// Quadrants: Only one is interesting
-				int quadX = rSide[z, rSide.GetLength(1)-1].Count;
-				int quadY = bSide[z, bSide.GetLength(1)-1].Count;
-				// Quadrants 1 and 2 (merged for convenience)
-				for (int x = 0; x < CORNER_WIDTH; x++)
-				{
-					for (int y = 0; y < quadY; y++)
-					{
-						brCorner[CORNER_WIDTH-1-x,z,CORNER_LENGTH-1-y] = Cube.CubeType.Iron;
-					}
-				}
-				// Quadrant 3
-				for (int x = 0; x < quadX; x++)
-				{
-					for (int y = quadY; y < CORNER_LENGTH; y++)
-					{
-						brCorner[CORNER_WIDTH-1-x,z,CORNER_LENGTH-1-y] = Cube.CubeType.Gold;
-					}
-				}
-				// Quadrant 4
-				for (int x = quadX; x < CORNER_WIDTH; x++)
-				{
-					for (int y = quadY; y < CORNER_LENGTH; y++)
-					{
-						// TODO
-						brCorner[CORNER_WIDTH-1-x,z,CORNER_LENGTH-1-y] = Cube.CubeType.Air;
-					}
-				}
-			}
-		}
-
+		/*
 		private bool inLeftCorridor(int x, int y)
 		{
 			int corMinPos = (Height - RogueDungeon.CORRIDOR_WIDTH) / 2;
@@ -592,6 +158,7 @@ namespace MazeGeneration
 
 			return ((x < corMaxPos) && (x >= corMinPos) && (y > Height / 2));
 		}
+		*/
 
 		/// <summary>
 		/// Enumerates all cubes in the data structure. There are no guarantees in what
@@ -602,108 +169,286 @@ namespace MazeGeneration
 		{
 			// Corners:
 				// top-left:
-			for (int x = 0; x < tlCorner.GetLength(0); x++)
+			foreach (Cube c in TL_Corner.EnumerateCubes())
 			{
-				for (int z = 0; z < tlCorner.GetLength(1); z++)
-				{
-					for (int y = 0; y < tlCorner.GetLength(2); y++)
-					{
-						yield return new Cube(tlCorner[x,z,y], x, y, z);
-					}
-				}
+				// TL_Corner X coordinate is c.X
+				//           Y coordinate is c.Z
+				//           Z coordinate is c.Y
+				yield return new Cube(c.Type, c.X, c.Z, c.Y);
 			}
 				// top-right:
-			for (int x = 0; x < trCorner.GetLength(0); x++)
+			foreach (Cube c in TR_Corner.EnumerateCubes())
 			{
-				for (int z = 0; z < trCorner.GetLength(1); z++)
-				{
-					for (int y = 0; y < trCorner.GetLength(2); y++)
-					{
-						yield return new Cube(trCorner[x,z,y],
-						                      x + tlCorner.GetLength(0) + tSide.GetLength(1), y, z);
-					}
-				}
+				// TR_Corner X coordinate is Width - c.Y - 1
+				//           Y coordinate is c.Z
+				//           Z coordinate is c.X
+				yield return new Cube(c.Type, Width - c.Y - 1, c.Z, c.X);
 			}
-			// bottom-left:
-			for (int x = 0; x < blCorner.GetLength(0); x++)
+
+				// bottom-left:
+			foreach (Cube c in BL_Corner.EnumerateCubes())
 			{
-				for (int z = 0; z < blCorner.GetLength(1); z++)
-				{
-					for (int y = 0; y < blCorner.GetLength(2); y++)
-					{
-						yield return new Cube(blCorner[x,z,y],
-						                      x, y + tlCorner.GetLength(2) + lSide.GetLength(1), z);
-					}
-				}
+				// BL_Corner X coordinate is c.Y
+				//           Y coordinate is c.Z
+				//           Z coordinate is Depth - c.X - 1
+				yield return new Cube(c.Type, c.Y, c.Z, Depth - c.X - 1);
 			}
 				// bottom-right:
-			for (int x = 0; x < brCorner.GetLength(0); x++)
+			foreach (Cube c in BR_Corner.EnumerateCubes())
 			{
-				for (int z = 0; z < brCorner.GetLength(1); z++)
-				{
-					for (int y = 0; y < brCorner.GetLength(2); y++)
-					{
-						yield return new Cube(brCorner[x,z,y],
-						                      x + tlCorner.GetLength(0) + tSide.GetLength(1),
-						                      y + tlCorner.GetLength(2) + lSide.GetLength(1), z);
-					}
-				}
+				// BR_Corner X coordinate is Width - c.X - 1
+				//           Y coordinate is c.Z
+				//           Z coordinate is Depth - c.Y - 1
+				yield return new Cube(c.Type, Width - c.X - 1, c.Z, Depth - c.Y - 1);
 			}
 
 			// Sides:
 				// left:
-			for (int z = 0; z < lSide.GetLength(0); z++)
+			foreach (Cube c in L_Wall.EnumerateCubes())
 			{
-				for (int y = 0; y < lSide.GetLength(1); y++)
-				{
-					int x = 0;
-					foreach (Cube.CubeType type in lSide[z,y])
-					{
-						yield return new Cube(type,
-						                      x, y + tlCorner.GetLength(2), z);
-						x++;
-					}
-				}
+				// Left wall's X coordinate is equal to c.Z
+				//             Y coordinate is equal to c.Y
+				//             Z coordinate is equal to Depth - BL_Corner.Width - c.X - 1
+				yield return new Cube(c.Type, c.Z, c.Y, Depth - BL_Corner.Width - c.X - 1);
 			}
 				// right:
-			for (int z = 0; z < rSide.GetLength(0); z++)
+			foreach (Cube c in R_Wall.EnumerateCubes())
 			{
-				for (int y = 0; y < rSide.GetLength(1); y++)
-				{
-					int x = tlCorner.GetLength(0) + tSide.GetLength(1) + trCorner.GetLength(0) - 1;
-					foreach (Cube.CubeType type in rSide[z,y])
-					{
-						yield return new Cube(type,
-						                      x, y + trCorner.GetLength(2), z);
-						x--;
-					}
-				}
+				// Right wall's X coordinate is equal to Width - c.Z - 1
+				//              Y coordinate is equal to c.Y
+				//              Z coordinate is equal to c.X + TR_Corner.Width
+				yield return new Cube(c.Type, Width - c.Z - 1, c.Y, c.X + TR_Corner.Width);
 			}
 				// top:
-			for (int z = 0; z < tSide.GetLength(0); z++)
+			foreach (Cube c in T_Wall.EnumerateCubes())
 			{
-				for (int x = 0; x < tSide.GetLength(1); x++)
+				// Top wall's X coordinate is equal to c.X + TL_Corner.Width
+				//            Y coordinate is equal to c.Y
+				//            Z coordinate is equal to c.Z
+				yield return new Cube(c.Type, c.X + TL_Corner.Width, c.Y, c.Z);
+			}
+				// bottom:
+			foreach (Cube c in B_Wall.EnumerateCubes())
+			{
+				// Bottom wall's X coordinate is equal to Width - BR_Corner.Width - c.X - 1
+				//               Y coordinate is equal to c.Y
+				//               Z coordinate is equal to Depth - c.Z - 1
+				yield return new Cube(c.Type, Width - BR_Corner.Width - c.X - 1, c.Y, Depth - c.Z - 1);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Describes cubes placed along a wall in a room. Allows the user to
+	/// create a wall with arbitrary width and height, as well as a custom
+	/// cap on how far out from the wall cubes are allowed to be placed.
+	/// </summary>
+	public class WallCubes
+	{
+		private LinkedList<Cube.CubeType>[,] Cubes { get; set; }
+		private bool HasDoor { get; set; }
+
+		public int MaxDepth { get; private set; }
+		public int Width
+		{
+			get { return Cubes.GetLength(0); }
+		}
+		public int Height
+		{
+			get { return Cubes.GetLength(1); }
+		}
+
+		public WallCubes(int width, int height, int maxDepth, bool hasDoor)
+		{
+			MaxDepth = maxDepth;
+			HasDoor = hasDoor;
+			Cubes = new LinkedList<Cube.CubeType>[width,height];
+			for (int x = 0; x < width; x++)
+			{
+				for (int y = 0; y < height; y++)
 				{
-					int y = 0;
-					foreach (Cube.CubeType type in tSide[z,x])
+					Cubes[x,y] = new LinkedList<Cube.CubeType>();
+				}
+			}
+
+			InitializeCubes();
+		}
+
+		private void InitializeCubes()
+		{
+			// Randomizer:
+			System.Random r = new System.Random();
+			
+			// Setup noise seeds: TODO
+			int[,] seed = null;
+			if (HasDoor)
+			{
+				// TODO
+			}
+
+			int[,] noise = PerlinNoise.GenerateNoise128(seed);
+			for (int x = 0; x < Cubes.GetLength(0); x++)
+			{
+				for (int y = 0; y < Cubes.GetLength(1); y++)
+				{
+					// Don't place if it's in the doorway:
+					/*
+					int modX = 0;
+					int modY = y + tlCorner.GetLength(2);
+					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+						if (inLeftCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
+						if (inUpCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
+						if (inRightCorridor(modX, modY))
+							continue;
+					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
+						if (inDownCorridor(modX, modY))
+							continue;
+							*/
+
+					if (HasDoor) 
+						Debug.Log("Is left!");
+					
+					// TODO: better indexing. We could average nearby values or something.
+					int xIndex = (int)(((float)x / (float)Cubes.GetLength(0)) * 127.0f);
+					int yIndex = (int)(((float)y / (float)Cubes.GetLength(1)) * 127.0f);
+					int depth = (int)((float)noise[xIndex,yIndex] * 0.01f * (float)MaxDepth);
+					// HACK: for now, perlin noise is still busted. We don't want to get more than
+					// our corner sizes (or bad things happen), so clamp the value:
+					depth = (depth > MaxDepth) ? MaxDepth : depth;
+					for (int z = 0; z < depth; z++)
 					{
-						yield return new Cube(type,
-						                      x + tlCorner.GetLength(0), y, z);
-						y++;
+						// TODO: generate cube type more nicely
+						Cubes[x,y].AddLast(Cube.CubeType.Silver);
 					}
 				}
 			}
-				// bottom:
-			for (int z = 0; z < bSide.GetLength(0); z++)
+		}
+
+		/// <summary>
+		/// Returns the depth of the buffer at the specified location.
+		/// </summary>
+		/// <returns>Depth of the buffer at [x,y].</returns>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
+		public int GetDepthAt(int x, int y)
+		{
+			// If we have no cubes in our grid (one of the dims is 0), just return 0
+			if (Width == 0 || Height == 0)
+				return 0;
+			return Cubes[x,y].Count;
+		}
+
+		public IEnumerable<Cube> EnumerateCubes()
+		{
+			for (int x = 0; x < Width; x++)
 			{
-				for (int x = 0; x < bSide.GetLength(1); x++)
+				for (int y = 0; y < Height; y++)
 				{
-					int y = tlCorner.GetLength(2) + lSide.GetLength(1) + blCorner.GetLength(2) - 1;
-					foreach (Cube.CubeType type in bSide[z,x])
+					int z = 0;
+					foreach (Cube.CubeType type in Cubes[x,y])
 					{
-						yield return new Cube(type,
-						                      x + blCorner.GetLength(0), y, z);
-						y--;
+						yield return new Cube(type, x, y, z);
+						z++;
+					}
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Decribes cubes held in this room in corners between walls, on
+	/// the inside of the room. This class will initialize its own
+	/// entries, but to be able to do so, it requires knowledge of the
+	/// two walls on either side of the corner. If there is not a wall
+	/// on the other side of the corner, this is not the right class
+	/// to use.
+	/// 
+	/// Determines dimensions of the corners based on dimensions of the
+	/// neighboring walls. It is assumed that each wall has the same
+	/// height - if this constraint is not followed, behavior is not
+	/// defined.
+	/// </summary>
+	public class InsideCornerCubes
+	{
+		private WallCubes DownWall;
+		private WallCubes RightWall;
+		private Cube.CubeType[,,] Cubes;
+
+		public int Width
+		{
+			get { return Cubes.GetLength(0); }
+		}
+		public int Height
+		{
+			get { return Cubes.GetLength(2); }
+		}
+		public int Depth
+		{
+			get { return Cubes.GetLength(1); }
+		}
+
+		public InsideCornerCubes(WallCubes downWall, WallCubes rightWall)
+		{
+			DownWall = downWall;
+			RightWall = rightWall;
+
+			int width = DownWall.MaxDepth;
+			int height = DownWall.Height;
+			int depth = RightWall.MaxDepth;
+			Cubes = new Cube.CubeType[width, depth, height];
+
+			InitializeCubes();
+		}
+
+		private void InitializeCubes()
+		{
+			for (int z = 0; z < Height; z++)
+			{
+				// Quadrants: Only one is interesting
+				int quadX = DownWall.GetDepthAt(DownWall.Width-1, z);
+				int quadY = RightWall.GetDepthAt(0, z);
+				// Quadrants 1 and 2 (merged for convenience)
+				for (int x = 0; x < Width; x++)
+				{
+					for (int y = 0; y < quadY; y++)
+					{
+						// TODO: smarter cube type selection
+						Cubes[x,y,z] = Cube.CubeType.Iron;
+					}
+				}
+				// Quadrant 3
+				for (int x = 0; x < quadX; x++)
+				{
+					for (int y = quadY; y < Depth; y++)
+					{
+						Cubes[x,y,z] = Cube.CubeType.Gold;
+					}
+				}
+				// Quadrant 4
+				for (int x = quadX; x < Width; x++)
+				{
+					for (int y = quadY; y < Depth; y++)
+					{
+						// TODO
+						Cubes[x,y,z] = Cube.CubeType.Air;
+					}
+				}
+			}
+		}
+
+		public IEnumerable<Cube> EnumerateCubes()
+		{
+			for (int x = 0; x < Width; x++)
+			{
+				for (int y = 0; y < Depth; y++)
+				{
+					for (int z = 0; z < Height; z++)
+					{
+						yield return new Cube(Cubes[x,y,z], x, y, z);
 					}
 				}
 			}

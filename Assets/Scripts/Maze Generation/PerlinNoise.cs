@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace MazeGeneration
 {
@@ -19,11 +20,34 @@ namespace MazeGeneration
 		/// Returns a 128x128 array with values ranging from 0 to 100. We recommend
 		/// using the values as percentages, and index into the array based on scaled
 		/// results, but YMMV.
+		/// 
+		/// Uses optional input array as a seed for the randomization. Negative values
+		/// are treated as arbitrary, and anything else is a forced value for those
+		/// locations in the array. The provided array must be 128 x 128 entries, or
+		/// it will be ignored. Passing null is allowed - this also means the value is
+		/// ignored.
 		/// </summary>
+		/// <param name="seedArray">Array describing seeded values for the generation
+		/// function. Null by default.</param>
 		/// <returns>Grid of noise.</returns>
-		public static int[,] GenerateNoise128()
+		public static int[,] GenerateNoise128(int[,] seedArray)
 		{
-			Random rnd = new Random();
+			int[,] seed;
+			if (seedArray != null && seedArray.GetLength(0) == 128 && seedArray.GetLength(1) == 128)
+				seed = seedArray;
+			else
+			{
+				seed = new int[128,128];
+				for (int x = 0; x < 128; x++)
+				{
+					for (int y = 0; y < 128; y++)
+					{
+						seed[x,y] = -1;
+					}
+				}
+			}
+
+			System.Random rnd = new System.Random();
 			int[,,] overlays = new int[128,128,OVERLAY_CNT];
 			FREQ = 64;
 
@@ -37,7 +61,26 @@ namespace MazeGeneration
 				{
 					for (int y = 0; y < NOISE.GetLength(1) - 1; y++)
 					{
-						NOISE[x,y] = rnd.Next (-50, 51);
+						// Check if we have a seed value:
+						int value = rnd.Next (-50, 51);
+						//Debug.Log("x: " + x*FREQ + ", y: " + y*FREQ);
+						//Debug.Log("maxX: " + (NOISE.GetLength(0) - 1) + ", maxY: " + (NOISE.GetLength(1) - 1));
+						int seedval = -1;
+
+						// HACK!!
+						try
+						{
+							seedval = seed[x*FREQ, y*FREQ];
+						}
+						catch (Exception)
+						{
+							// Do nothing: we may overflow the array, but if we do we just want to gen random
+						}
+
+						if (seedval >= 0)
+							value = seedval - 50;
+
+						NOISE[x,y] = value;
 					}
 				}
 

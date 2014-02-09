@@ -327,14 +327,13 @@ namespace MazeGeneration
 			Vector3 cubeStart = center - 
 								new Vector3((float)Width * 0.5f, 0.0f, (float)Height * 0.5f) +
 								new Vector3(0.5f, 0.5f, 0.5f);
-			/*
-			foreach (RoomCubes.Cube cube in Cubes.EnumerateCubes())
+
+			foreach (Cube cube in Cubes.EnumerateCubes())
 			{
 				InstantiateCube(cube, cubeStart);
-			}*/
+			}
 
 			// ENEMIES / ETC.
-			Debug.Log("Center: " + center.x + ", " + center.z);
 			if (Type == RoomType.enemy)
 			{
 				System.Random enemyPosGen = new System.Random();
@@ -344,16 +343,14 @@ namespace MazeGeneration
 				{
 					// TODO: check if collides with ore pillar, if those get added
 
-					// Explanation: generate first random
-					float posX = center.x +
-								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
-						 		 ((float)(Width * 0.5) - RoomCubes.CORNER_WIDTH));
-					float posY = center.z +
-								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
-						 		 ((float)(Height * 0.5) - RoomCubes.CORNER_LENGTH));
-					Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
-					//Debug.Log("EnemyPos: " + posX + ", " + posY);
-					InstantiateEnemy(enemyPos, enemy);
+					//float posX = center.x +
+					//			 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+					//	 		 ((float)(Width * 0.5) - RoomCubes.CORNER_WIDTH));
+					//float posY = center.z +
+					//			 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+					//	 		 ((float)(Height * 0.5) - RoomCubes.CORNER_LENGTH));
+					//Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
+					InstantiateEnemy(center, enemy);
 				}
 			}
 		}
@@ -382,32 +379,32 @@ namespace MazeGeneration
 		/// </summary>
 		/// <param name="cube">Cube object you would like to spawn.</param>
 		/// <param name="cubeStart">Offset of (0,0,0) in Unity space.</param>
-		private void InstantiateCube(RoomCubes.Cube cube, Vector3 cubeStart)
+		private void InstantiateCube(Cube cube, Vector3 cubeStart)
 		{
 			Transform toSpawn;
 			switch (cube.Type)
 			{
-			case RoomCubes.Cube.CubeType.Stone:
+			case Cube.CubeType.Stone:
 				toSpawn = mine_cube;
 				break;
-			case RoomCubes.Cube.CubeType.Iron:
+			case Cube.CubeType.Iron:
 				toSpawn = ore_cube;
 				break;
-			case RoomCubes.Cube.CubeType.Silver:
+			case Cube.CubeType.Silver:
 				toSpawn = ore2_cube;
 				break;
-			case RoomCubes.Cube.CubeType.Gold:
+			case Cube.CubeType.Gold:
 				toSpawn = ore3_cube;
 				break;
-			case RoomCubes.Cube.CubeType.Platinum:
+			case Cube.CubeType.Platinum:
 				toSpawn = ore4_cube;
 				break;
-			case RoomCubes.Cube.CubeType.Air:
+			case Cube.CubeType.Air:
 			default:
 				return;
 			}
 			MonoBehaviour.Instantiate(toSpawn,
-			                          (new Vector3(cube.X, cube.Z, cube.Y) + cubeStart),
+			                          (new Vector3(cube.X, cube.Y, cube.Z) + cubeStart),
 			                          Quaternion.identity);
 		}
 		
