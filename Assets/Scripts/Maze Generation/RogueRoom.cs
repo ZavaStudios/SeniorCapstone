@@ -46,7 +46,10 @@ namespace MazeGeneration
 			Width = width;
 			Height = height;
 			Doors = doors;
-			Cubes = new RoomCubes(width, height, Doors, CEILING_HEIGHT);
+
+			Cubes = Width > RogueDungeon.CORRIDOR_WIDTH ?
+				    (RoomCubes)new StandardRoomCubes(width, height, Doors, CEILING_HEIGHT) :
+					(RoomCubes)new SmallRoomCubes(width, height, Doors, CEILING_HEIGHT);
 		}
 		
 		/// <summary>

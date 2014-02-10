@@ -28,7 +28,12 @@ namespace MazeGeneration
 			Z = _z;
 		}
 	}
-	
+
+	public interface RoomCubes
+	{
+		IEnumerable<Cube> EnumerateCubes();
+	}
+
 	/// <summary>
 	/// Data structure denoting all of the cubes for a single room in the maze.
 	/// For external users, this is effectively just an enumerable list: you ask
@@ -40,7 +45,7 @@ namespace MazeGeneration
 	/// must simply request the list of cubes for their use, and tell the class
 	/// when a cube has been deleted.
 	/// </summary>
-	public class RoomCubes
+	public class StandardRoomCubes : RoomCubes
 	{
 		// Quick aside - how this actually works:
 		//-----------------------------------------
@@ -101,7 +106,7 @@ namespace MazeGeneration
 		/// <param name="roomWidth">Width of the room</param>
 		/// <param name="roomHeight">Height of the room</param>
 		/// <param name="ceilingHeight">Height of the ceiling</param>
-		public RoomCubes(int roomWidth, int roomHeight, int doorCode, int ceilingHeight)
+		public StandardRoomCubes(int roomWidth, int roomHeight, int doorCode, int ceilingHeight)
 		{
 			Width = roomWidth;
 			Depth = roomHeight;
@@ -111,54 +116,24 @@ namespace MazeGeneration
 			int CORNER_DIM = 8;
 			int wallDepth = (Depth - (CORNER_DIM * 2)) < 0 ? 0 : (Depth - (CORNER_DIM * 2));
 			int wallWidth = (Width - (CORNER_DIM * 2)) < 0 ? 0 : (Width - (CORNER_DIM * 2));
-			L_Wall = new WallCubes(wallDepth, Height, CORNER_DIM,
-			                       (doorCode & RogueRoom.LEFT_DOOR_MASK) != 0);
-			R_Wall = new WallCubes(wallDepth, Height, CORNER_DIM,
-			                       (doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0);
-			T_Wall = new WallCubes(wallWidth, Height, CORNER_DIM,
-			                       (doorCode & RogueRoom.UP_DOOR_MASK) != 0);
-			B_Wall = new WallCubes(wallWidth, Height, CORNER_DIM,
-			                       (doorCode & RogueRoom.DOWN_DOOR_MASK) != 0);
+			L_Wall = (doorCode & RogueRoom.LEFT_DOOR_MASK) == 0 ?
+                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM) :
+					 (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM);
+			R_Wall = (doorCode & RogueRoom.RIGHT_DOOR_MASK) == 0 ?
+                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM) :
+                     (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM);
+			T_Wall = (doorCode & RogueRoom.UP_DOOR_MASK) == 0 ?
+                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM) :
+                     (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM);
+			B_Wall = (doorCode & RogueRoom.DOWN_DOOR_MASK) == 0 ?
+                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM) :
+                     (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM);
 			
 			TL_Corner = new InsideCornerCubes(L_Wall, T_Wall);
 			BL_Corner = new InsideCornerCubes(B_Wall, L_Wall);
 			TR_Corner = new InsideCornerCubes(T_Wall, R_Wall);
 			BR_Corner = new InsideCornerCubes(R_Wall, B_Wall);
 		}
-
-		/*
-		private bool inLeftCorridor(int x, int y)
-		{
-			int corMinPos = (Height - RogueDungeon.CORRIDOR_WIDTH) / 2;
-			int corMaxPos = (Height + RogueDungeon.CORRIDOR_WIDTH) / 2;
-
-			return ((y < corMaxPos) && (y >= corMinPos) && (x <= Width / 2));
-		}
-
-		private bool inUpCorridor(int x, int y)
-		{
-			int corMinPos = (Width - RogueDungeon.CORRIDOR_WIDTH) / 2;
-			int corMaxPos = (Width + RogueDungeon.CORRIDOR_WIDTH) / 2;
-			
-			return ((x < corMaxPos) && (x >= corMinPos) && (y <= Height / 2));
-		}
-
-		private bool inRightCorridor(int x, int y)
-		{
-			int corMinPos = (Height - RogueDungeon.CORRIDOR_WIDTH) / 2;
-			int corMaxPos = (Height + RogueDungeon.CORRIDOR_WIDTH) / 2;
-			
-			return ((y < corMaxPos) && (y >= corMinPos) && (x > Width / 2));
-		}
-
-		private bool inDownCorridor(int x, int y)
-		{
-			int corMinPos = (Width - RogueDungeon.CORRIDOR_WIDTH) / 2;
-			int corMaxPos = (Width + RogueDungeon.CORRIDOR_WIDTH) / 2;
-
-			return ((x < corMaxPos) && (x >= corMinPos) && (y > Height / 2));
-		}
-		*/
 
 		/// <summary>
 		/// Enumerates all cubes in the data structure. There are no guarantees in what
@@ -239,14 +214,39 @@ namespace MazeGeneration
 	}
 
 	/// <summary>
+	/// Room cube setup for rooms too small for the typical RoomCubes structure.
+	/// </summary>
+	public class SmallRoomCubes : RoomCubes
+	{
+		public SmallRoomCubes(int width, int height, int doorCode, int ceilingHeight)
+		{
+			// TODO
+		}
+
+		public IEnumerable<Cube> EnumerateCubes()
+		{
+			// TODO
+			yield return new Cube(Cube.CubeType.Air, 1, 1, 1);
+		}
+	}
+
+	public interface WallCubes
+	{
+		int Width { get; }
+		int Height { get; }
+		int MaxDepth { get; }
+		int GetDepthAt(int x, int y);
+		IEnumerable<Cube> EnumerateCubes();
+	}
+
+	/// <summary>
 	/// Describes cubes placed along a wall in a room. Allows the user to
 	/// create a wall with arbitrary width and height, as well as a custom
 	/// cap on how far out from the wall cubes are allowed to be placed.
 	/// </summary>
-	public class WallCubes
+	public class StandardWallCubes : WallCubes
 	{
 		private LinkedList<Cube.CubeType>[,] Cubes { get; set; }
-		private bool HasDoor { get; set; }
 
 		public int MaxDepth { get; private set; }
 		public int Width
@@ -258,10 +258,9 @@ namespace MazeGeneration
 			get { return Cubes.GetLength(1); }
 		}
 
-		public WallCubes(int width, int height, int maxDepth, bool hasDoor)
+		public StandardWallCubes(int width, int height, int maxDepth)
 		{
 			MaxDepth = maxDepth;
-			HasDoor = hasDoor;
 			Cubes = new LinkedList<Cube.CubeType>[width,height];
 			for (int x = 0; x < width; x++)
 			{
@@ -279,39 +278,11 @@ namespace MazeGeneration
 			// Randomizer:
 			System.Random r = new System.Random();
 			
-			// Setup noise seeds: TODO
-			int[,] seed = null;
-			if (HasDoor)
-			{
-				// TODO
-			}
-
-			int[,] noise = PerlinNoise.GenerateNoise128(seed);
+			int[,] noise = PerlinNoise.GenerateNoise128();
 			for (int x = 0; x < Cubes.GetLength(0); x++)
 			{
 				for (int y = 0; y < Cubes.GetLength(1); y++)
 				{
-					// Don't place if it's in the doorway:
-					/*
-					int modX = 0;
-					int modY = y + tlCorner.GetLength(2);
-					if ((doorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
-						if (inLeftCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.UP_DOOR_MASK) != 0)
-						if (inUpCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
-						if (inRightCorridor(modX, modY))
-							continue;
-					if ((doorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
-						if (inDownCorridor(modX, modY))
-							continue;
-							*/
-
-					if (HasDoor) 
-						Debug.Log("Is left!");
-					
 					// TODO: better indexing. We could average nearby values or something.
 					int xIndex = (int)(((float)x / (float)Cubes.GetLength(0)) * 127.0f);
 					int yIndex = (int)(((float)y / (float)Cubes.GetLength(1)) * 127.0f);
@@ -356,6 +327,52 @@ namespace MazeGeneration
 					}
 				}
 			}
+		}
+	}
+
+	public class DoorWallCubes : WallCubes
+	{
+		private StandardWallCubes R_Side;
+		private StandardWallCubes L_Side;
+
+		public int Width
+		{
+			get { return R_Side.Width + L_Side.Width + RogueDungeon.CORRIDOR_WIDTH; }
+		}
+		public int Height
+		{
+			get { return R_Side.Height; }
+		}
+		public int MaxDepth
+		{
+			get { return R_Side.MaxDepth; }
+		}
+
+		public DoorWallCubes(int width, int height, int maxDepth)
+		{
+			int lWidth = (width - RogueDungeon.CORRIDOR_WIDTH) / 2;
+			int rWidth = width - lWidth - RogueDungeon.CORRIDOR_WIDTH;
+
+			R_Side = new StandardWallCubes(rWidth, height, maxDepth);
+			L_Side = new StandardWallCubes(lWidth, height, maxDepth);
+		}
+
+		public int GetDepthAt(int x, int y)
+		{
+			if (x < L_Side.Width)
+				return L_Side.GetDepthAt(x, y);
+			else if (x < L_Side.Width + RogueDungeon.CORRIDOR_WIDTH)
+				return 0;
+			else
+				return R_Side.GetDepthAt(x - L_Side.Width - RogueDungeon.CORRIDOR_WIDTH, y);
+		}
+
+		public IEnumerable<Cube> EnumerateCubes()
+		{
+			foreach (Cube c in R_Side.EnumerateCubes())
+				yield return c;
+			foreach (Cube c in L_Side.EnumerateCubes())
+				yield return new Cube(c.Type, c.X + L_Side.Width + RogueDungeon.CORRIDOR_WIDTH, c.Y, c.Z);
 		}
 	}
 
