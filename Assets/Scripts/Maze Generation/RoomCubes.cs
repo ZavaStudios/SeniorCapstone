@@ -117,17 +117,17 @@ namespace MazeGeneration
 			int wallDepth = (Depth - (CORNER_DIM * 2)) < 0 ? 0 : (Depth - (CORNER_DIM * 2));
 			int wallWidth = (Width - (CORNER_DIM * 2)) < 0 ? 0 : (Width - (CORNER_DIM * 2));
 			L_Wall = (doorCode & RogueRoom.LEFT_DOOR_MASK) == 0 ?
-                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM) :
-					 (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM);
+                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM, 3) :
+					 (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM, 3);
 			R_Wall = (doorCode & RogueRoom.RIGHT_DOOR_MASK) == 0 ?
-                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM) :
-                     (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM);
+                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM, 3) :
+                     (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM, 3);
 			T_Wall = (doorCode & RogueRoom.UP_DOOR_MASK) == 0 ?
-                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM) :
-                     (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM);
+                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM, 3) :
+                     (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM, 3);
 			B_Wall = (doorCode & RogueRoom.DOWN_DOOR_MASK) == 0 ?
-                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM) :
-                     (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM);
+                     (WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM, 3) :
+                     (WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM, 3);
 			
 			TL_Corner = new InsideCornerCubes(L_Wall, T_Wall);
 			BL_Corner = new InsideCornerCubes(B_Wall, L_Wall);
@@ -247,8 +247,9 @@ namespace MazeGeneration
 	public class StandardWallCubes : WallCubes
 	{
 		private LinkedList<Cube.CubeType>[,] Cubes { get; set; }
-
+		
 		public int MaxDepth { get; private set; }
+		public int MinDepth { get; private set; }
 		public int Width
 		{
 			get { return Cubes.GetLength(0); }
@@ -258,9 +259,10 @@ namespace MazeGeneration
 			get { return Cubes.GetLength(1); }
 		}
 
-		public StandardWallCubes(int width, int height, int maxDepth)
+		public StandardWallCubes(int width, int height, int maxDepth, int minDepth)
 		{
 			MaxDepth = maxDepth;
+			MinDepth = minDepth;
 			Cubes = new LinkedList<Cube.CubeType>[width,height];
 			for (int x = 0; x < width; x++)
 			{
@@ -286,7 +288,8 @@ namespace MazeGeneration
 					// TODO: better indexing. We could average nearby values or something.
 					int xIndex = (int)(((float)x / (float)Cubes.GetLength(0)) * 127.0f);
 					int yIndex = (int)(((float)y / (float)Cubes.GetLength(1)) * 127.0f);
-					int depth = (int)((float)noise[xIndex,yIndex] * 0.01f * (float)MaxDepth);
+					float tmpDepth =(float)noise[xIndex,yIndex] * 0.01f;
+					int depth = MinDepth + (int)((float)(MaxDepth - MinDepth) * tmpDepth);
 					// HACK: for now, perlin noise is still busted. We don't want to get more than
 					// our corner sizes (or bad things happen), so clamp the value:
 					depth = (depth > MaxDepth) ? MaxDepth : depth;
@@ -347,14 +350,18 @@ namespace MazeGeneration
 		{
 			get { return R_Side.MaxDepth; }
 		}
+		public int MinDepth
+		{
+			get { return R_Side.MinDepth; }
+		}
 
-		public DoorWallCubes(int width, int height, int maxDepth)
+		public DoorWallCubes(int width, int height, int maxDepth, int minDepth)
 		{
 			int lWidth = (width - RogueDungeon.CORRIDOR_WIDTH) / 2;
 			int rWidth = width - lWidth - RogueDungeon.CORRIDOR_WIDTH;
 
-			R_Side = new StandardWallCubes(rWidth, height, maxDepth);
-			L_Side = new StandardWallCubes(lWidth, height, maxDepth);
+			R_Side = new StandardWallCubes(rWidth, height, maxDepth, minDepth);
+			L_Side = new StandardWallCubes(lWidth, height, maxDepth, minDepth);
 		}
 
 		public int GetDepthAt(int x, int y)
@@ -369,9 +376,9 @@ namespace MazeGeneration
 
 		public IEnumerable<Cube> EnumerateCubes()
 		{
-			foreach (Cube c in R_Side.EnumerateCubes())
-				yield return c;
 			foreach (Cube c in L_Side.EnumerateCubes())
+				yield return c;
+			foreach (Cube c in R_Side.EnumerateCubes())
 				yield return new Cube(c.Type, c.X + L_Side.Width + RogueDungeon.CORRIDOR_WIDTH, c.Y, c.Z);
 		}
 	}
