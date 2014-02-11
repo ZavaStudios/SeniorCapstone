@@ -46,7 +46,7 @@ public class UnitPlayer : Unit {
 
 	protected override void Update () 
 	{
-		if(Input.GetKeyDown(KeyCode.Mouse0)) //or some other button on OUYA
+		if(Input.GetKeyDown(KeyCode.Mouse0) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_RT, OuyaExampleCommon.Player)) //or some other button on OUYA
 		{
 			print ("mouse clicked....");
 			if (weapon != null)
@@ -54,7 +54,7 @@ public class UnitPlayer : Unit {
 			else
 				print ("You cannot attack without a weapon!");
 		}
-		if(Input.GetKeyDown(KeyCode.Mouse1))
+		if(Input.GetKeyDown(KeyCode.Mouse1) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_LT, OuyaExampleCommon.Player))
 		{
 			print ("right clicked...");
 			
@@ -65,7 +65,7 @@ public class UnitPlayer : Unit {
 		}
 		
 		const int numWeapons = 3;
-		if(Input.GetKeyDown (KeyCode.Q))
+		if(Input.GetKeyDown (KeyCode.Q) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_U, OuyaExampleCommon.Player))
 		{
 			if (wep > (numWeapons-1))
 			{
@@ -91,12 +91,12 @@ public class UnitPlayer : Unit {
 			}
 		}
 		
-		if(Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift))
+		if(Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_LB, OuyaExampleCommon.Player))
 		{
 			moveSpeed = 20.0f;
 			setMaxSpeed ();
 		}
-		else if(Input.GetKeyUp (KeyCode.LeftShift) || Input.GetKeyUp (KeyCode.RightShift))
+		else if(Input.GetKeyUp (KeyCode.LeftShift) || Input.GetKeyUp (KeyCode.RightShift) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_LB, OuyaExampleCommon.Player))
 		{
 			moveSpeed = 10.0f;
 			setMaxSpeed ();

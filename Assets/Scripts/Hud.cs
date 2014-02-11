@@ -115,7 +115,7 @@ public class Hud : MonoBehaviour
     {
         //TODO Merge if statement code together to avoid duplication
         //Allow toggling of the inventory when the corresponding button has been pressed
-        if (Input.GetKeyUp(keyCodeInventory))
+		if (Input.GetKeyUp(keyCodeInventory) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_A, OuyaExampleCommon.Player))
         {
             if (menuCode == tMenuStates.MENU_NONE)
                 menuCode = tMenuStates.INVENTORY;
@@ -123,7 +123,7 @@ public class Hud : MonoBehaviour
                 menuCode = tMenuStates.MENU_NONE;
 
         }
-        else if(Input.GetKeyUp(keyCodeCrafting))
+		else if(Input.GetKeyUp(keyCodeCrafting) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_Y, OuyaExampleCommon.Player))
         {
             if (menuCode == tMenuStates.MENU_NONE)
                 menuCode = tMenuStates.CRAFTING;
@@ -142,33 +142,43 @@ public class Hud : MonoBehaviour
         {
             //If the inventory is open, process movement inside the inventory
             case tMenuStates.INVENTORY:
-                {
-                    //Process movement inside the inventory
-                    if (Input.GetKeyUp(keyCodeInventoryUp))
-                        moveSelectionUp();
-                    else if (Input.GetKeyUp(keyCodeInventoryDown))
-                        moveSelectionDown();
-                    else if (Input.GetKeyUp(keyCodeInventoryLeft))
-                        moveSelectionLeft();
-                    else if (Input.GetKeyUp(keyCodeInventoryRight))
-                        moveSelectionRight();
+        	{
+				//Process movement inside the inventory
+				if (Input.GetKeyUp(keyCodeInventoryUp) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_DPAD_UP, OuyaExampleCommon.Player))
+				{	
+					moveSelectionUp();
+				}
+				else if (Input.GetKeyUp(keyCodeInventoryDown) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_DPAD_DOWN, OuyaExampleCommon.Player))
+				{
+					moveSelectionDown();
+				}
+				else if (Input.GetKeyUp(keyCodeInventoryLeft) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_DPAD_LEFT, OuyaExampleCommon.Player))
+				{
+					moveSelectionLeft();
+				}
+				else if (Input.GetKeyUp(keyCodeInventoryRight) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_DPAD_RIGHT, OuyaExampleCommon.Player))
+				{
+					moveSelectionRight();
+				}
+				
+				//Process confirmations
+				if (Input.GetKeyUp(keyCodeConfirm))
+				boolEquipWeapon = true;
 
-                    //Process confirmations
-                    if (Input.GetKeyUp(keyCodeConfirm))
-                        boolEquipWeapon = true;
+				break;
+        	}
 
-                    break;
-                }
             case tMenuStates.CRAFTING:
-                {
-                    handleComponentMovement();
-                    break;
-                }
+	        {
+	            handleComponentMovement();
+	            break;
+	        }
+
             case tMenuStates.ASSEMBLING:
-                {
-                    //TODO make a button that combines all components if they can make a weapon.
-                    break;
-                }
+	        {
+	            //TODO make a button that combines all components if they can make a weapon.
+	            break;
+	        }
         }
     }
 
@@ -350,7 +360,7 @@ public class Hud : MonoBehaviour
     private void handleComponentMovement()
     {
         //Take care of menu navigation from the buttons
-        if (Input.GetKeyUp(keyCodeInventoryUp))
+		if (Input.GetKeyUp(keyCodeInventoryUp) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_DPAD_UP, OuyaExampleCommon.Player))
         {
             //moveUp in the respective menu
             if (intCompSelGrid > 0) //Component selection menu
@@ -367,7 +377,7 @@ public class Hud : MonoBehaviour
 
             }
         }
-        else if (Input.GetKeyUp(keyCodeInventoryRight))
+		else if (Input.GetKeyUp(keyCodeInventoryRight) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_DPAD_RIGHT, OuyaExampleCommon.Player))
         {
             //move right
             //if i'm in the component type menu, switch over to the components
@@ -384,7 +394,7 @@ public class Hud : MonoBehaviour
             }
             Debug.Log("KEYPRESS newIndex: " + intCompSelGrid);
         }
-        else if (Input.GetKeyUp(keyCodeInventoryDown))
+		else if (Input.GetKeyUp(keyCodeInventoryDown) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_DPAD_DOWN, OuyaExampleCommon.Player))
         {
             //Move down in the respective menu
             if (intCompSelGrid >= 0)
@@ -400,7 +410,7 @@ public class Hud : MonoBehaviour
                 intCompTypeGrid = Math.Min(intNewSelection, arrComponents.Length - 1);
             }
         }
-        else if (Input.GetKeyUp(keyCodeInventoryLeft))
+		else if (Input.GetKeyUp(keyCodeInventoryLeft) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_DPAD_LEFT, OuyaExampleCommon.Player))
         {
             //move left
             //if i'm in the components menu, switch over to the component type menu
@@ -416,7 +426,7 @@ public class Hud : MonoBehaviour
             }
 
         }
-        else if (Input.GetKeyUp(keyCodeConfirm))
+		else if (Input.GetKeyUp(keyCodeConfirm)|| OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_O, OuyaExampleCommon.Player))
         {
             //Assume we have ore
             ItemComponent cmpNew = ItemFactory.createComponent(ItemComponent.tComponentType.SwordBladeHeavy, new ItemOre(ItemBase.tOreType.Copper));
