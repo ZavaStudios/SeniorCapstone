@@ -5,9 +5,6 @@ ProjectSettings/
 *.userprefs
 bin/
 Temp/
-Assets/Ouya/
-Assets/Plugins/
-Assets/LitJson/
 *.apk
 *.unityproj
 *.csproj
