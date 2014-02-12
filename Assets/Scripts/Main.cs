@@ -4,9 +4,10 @@ using MazeGeneration;
 
 public class Main : MonoBehaviour
 {
-    private const int WIDTH  = 3;
-    private const int HEIGHT = 3;
+    private const int WIDTH  = 1;
+    private const int HEIGHT = 1;
 
+	private const float CUBE_SCALAR = 10.0f;
     private const float TILE_SCALAR = 1.0f;
     private const float CEILING_HEIGHT = 5.0f;
     private const float LIGHT_DISTANCE = 2.0f;
@@ -30,16 +31,6 @@ public class Main : MonoBehaviour
     {
         RogueDungeon dungeon = new RogueDungeon(WIDTH, HEIGHT);
 
-        // Build appropriate scalars
-        float dungeon_width  = WIDTH  * TILE_SCALAR * (RogueDungeon.MAX_ROOM_WIDTH  + 2);
-        float dungeon_height = HEIGHT * TILE_SCALAR * (RogueDungeon.MAX_ROOM_HEIGHT + 2);
-
-        // build walls
-        Rect room_bounds = new Rect(TILE_SCALAR - (dungeon_width  / 2.0f),
-                                    TILE_SCALAR - (dungeon_height / 2.0f),
-                                    RogueDungeon.MAX_ROOM_WIDTH  * TILE_SCALAR,
-                                    RogueDungeon.MAX_ROOM_HEIGHT * TILE_SCALAR);
-
         for (int roomX = 0; roomX < WIDTH; roomX++)
         {
             for (int roomY = 0; roomY < HEIGHT; roomY++)
@@ -60,14 +51,14 @@ public class Main : MonoBehaviour
 
 				room.LoadRoom(roomX, roomY,
 				              RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_HEIGHT,
-				              RogueDungeon.CORRIDOR_WIDTH);
+				              RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR);
 
 				if (room.Type == RogueRoom.RoomType.start)
 				{
-					player.transform.position = room.GetCenter(roomX, roomY,
+					player.transform.position = (room.GetCenter(roomX, roomY,
 					                                           RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_HEIGHT,
 					                                           RogueDungeon.CORRIDOR_WIDTH) +
-												new Vector3(0.0f, 1.5f, 0.0f);
+												new Vector3(0.0f, 1.5f, 0.0f)) * CUBE_SCALAR;
 				}
             }
         }
