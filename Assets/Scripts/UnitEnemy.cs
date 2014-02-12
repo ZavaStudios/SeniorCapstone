@@ -8,47 +8,48 @@ public class UnitEnemy : Unit
 	protected Vector3 PlayerPosition;
 	protected Vector3 dir;
 	protected float distance;
-	protected SphereCollider sphere;
+	float turnSpeed = 120;
+//	protected SphereCollider sphere;
 	
 	protected override void Start ()
 	{
 
 		Player = GameObject.FindGameObjectWithTag("Player").transform; 
-		control = gameObject.GetComponent<CharacterController>();
-		sphere = gameObject.GetComponent<SphereCollider>();
-		sphere.isTrigger = true;
-		sphere.radius = 20;
 		moveSpeed = 5.0f;
-
+		control = GetComponent<CharacterController>();
         base.Start(); //gets reference to weapon, among other things.
-	}
-	
-	//Is called when another collider hits the sphere collider.
-	void OnTriggerStay(Collider other)
-	{		
-		//Player has walked into the sphere collider. 
-		if(other.CompareTag("Player") && distance > weapon.attackRange)
-		{
-			//Move toward the player. 
-			enemyMovement();			
-		}
 	}
 	
 	protected override void Update ()
 	{	
 		distance = Vector3.Distance(transform.position, Player.position);
-
+		PlayerPosition = Player.position;
+		dir = PlayerPosition - transform.position;
+		dir.y = transform.position.y;
+		dir.Normalize();
+		
 		//Determine whether to attack or not.
 		if(weapon && distance <= weapon.attackRange)
 		{
 			weapon.attack = true;
-       		animation.Play("idle");
-			
+			float angleToTarget = Mathf.Atan2((PlayerPosition.x - transform.position.x), (PlayerPosition.z - transform.position.z)) * Mathf.Rad2Deg;
+			transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
 		}
-		
-		//Makes sure that the zombie (construction worker mesh) is dropped in from the sky correctly. 
-		control.SimpleMove(Vector3.zero);
-		
+		else if(distance <= 10.0f)
+		{
+			float angleToTarget = Mathf.Atan2((PlayerPosition.x - transform.position.x), (PlayerPosition.z - transform.position.z)) * Mathf.Rad2Deg;
+			transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
+			//transform.Rotate(-90,0,0);
+	
+			control.SimpleMove(dir * moveSpeed);
+			
+//			enemyMovement();
+		}
+		else
+		{
+			//Makes sure that the zombie (construction worker mesh) is dropped in from the sky correctly. 
+			control.SimpleMove(Vector3.zero);
+		}
 	}
 		
 	//A method for how the enemy should behave with their movement.

@@ -34,7 +34,9 @@ public class WeaponBase : MonoBehaviour
 	        {
 	            nextDamageEvent = Time.time + attackDelay;
        			attackRoutine(Character.getEyePosition(),Character.getLookDirection());
-                Character.playAttackAnimation();
+                
+				if(Character is UnitPlayer)
+					Character.playAttackAnimation();
 	        }
 		}
 		
