@@ -373,7 +373,7 @@ namespace MazeGeneration
 					//			 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
 					//	 		 ((float)(Height * 0.5) - RoomCubes.CORNER_LENGTH));
 					//Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
-					InstantiateEnemy(center, e, scalar);
+					InstantiateEnemy(center, enemy, scalar);
 				}
 			}
 		}
@@ -405,7 +405,7 @@ namespace MazeGeneration
 		/// <param name="cube">Cube object you would like to spawn.</param>
 		/// <param name="cubeStart">Offset of (0,0,0) in Unity space.</param>
 		/// <param name="scalar">Value to scale 1 block to.</param>
-		private void InstantiateCube(RoomCubes.Cube cube, Vector3 cubeStart, float scalar)
+		private void InstantiateCube(Cube cube, Vector3 cubeStart, float scalar)
 		{
 			Transform toSpawn;
 			switch (cube.Type)
