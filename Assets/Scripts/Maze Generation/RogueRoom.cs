@@ -393,7 +393,7 @@ namespace MazeGeneration
 			                                             ceilingHeight,
 			                                             1.0f) * scalar;
 			MonoBehaviour.Instantiate(wall_tile,
-			                          position + new Vector3(0.0f, ceilingHeight * 0.5f, 0.0f),
+			                          (position + new Vector3(0.0f, ceilingHeight * 0.5f, 0.0f)) * scalar,
 			            			  angle);
 		}
 
