@@ -9,7 +9,10 @@ public class BossUnit : UnitEnemy
 	private float spawnTimer = 0.0f;
 
 	//Caps the number of enemies that can be spawned to 3.
-	private float enemyCap = 0.0f;
+	private float enemyCap = 3.0f;
+
+	//The number of enemies to spawn. 
+	private int points = 5;
 
 	//ToDo: Once the enemies have been killed should we regenerate new ones? 
 
@@ -19,12 +22,10 @@ public class BossUnit : UnitEnemy
 		base.Start ();
 
 		//This is a boss, so lets make it a little harder ;) 
-		Health = 50;
+		Health = 100;
 		weapon.weaponDamage = 20;
 		weapon.attackDelay = 4;
 		weapon.attackRange = 5.0f;
-
-
 	}
 	
 	// Update is called once per frame
@@ -34,13 +35,17 @@ public class BossUnit : UnitEnemy
 		base.Update();
 
 		//First attack: Spawn an enemy every so often.
-		if (Time.time >= spawnTimer && enemyCap < 3) 
+		if (Time.time >= spawnTimer) 
 		{
-			spawnTimer += Time.time + 5;
-			enemyCap++;
+			//Spawn an enemy every 5 seconds. 
+			spawnTimer = Time.time + 10;
+//			enemyCap++;
 
-			//Spawn an enemy.
-			Instantiate(enemy, control.transform.position + Vector3.one, Quaternion.identity);
+			foreach(GenerateEnemies.enemy e in GenerateEnemies.generateEnemies(5))
+			{
+				//Spawn an enemy.
+				Instantiate(e, control.transform.position + Vector3.one, Quaternion.identity);
+			}
 		}
 
 
