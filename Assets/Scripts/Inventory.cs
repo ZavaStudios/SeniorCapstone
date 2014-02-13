@@ -36,7 +36,7 @@ public class Inventory
 	/// <param name="weaponBase">Weapon base.</param>
     public void inventoryAddItem(ItemWeapon newItem)
     {
-                weapons.Add((ItemWeapon)newItem);
+    	weapons.Add((ItemWeapon)newItem);
     }
 
     public void inventoryAddItem(ItemEquipment newItem)

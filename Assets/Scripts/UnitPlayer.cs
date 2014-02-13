@@ -48,7 +48,7 @@ public class UnitPlayer : Unit {
 	{
 		if(Input.GetKeyDown(KeyCode.Mouse0)) //or some other button on OUYA
 		{
-			print ("mouse clicked....");
+//			print ("mouse clicked....");
 			if (weapon != null)
 				weapon.attack = true;
 			else
@@ -56,7 +56,7 @@ public class UnitPlayer : Unit {
 		}
 		if(Input.GetKeyDown(KeyCode.Mouse1))
 		{
-			print ("right clicked...");
+//			print ("right clicked...");
 			
 			if (weapon != null)
 			{

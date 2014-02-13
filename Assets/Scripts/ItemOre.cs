@@ -3,6 +3,9 @@ using System.Collections;
 
 public class ItemOre : ItemBase
 {
+	//NOTE tOreType enum is in ItemBase Class
+
+
     public ItemOre(tOreType type)
         : base(getOreString(type))
     {

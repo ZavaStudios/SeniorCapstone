@@ -26,7 +26,7 @@ public class WeaponPickaxe : WeaponBase
     
     protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)	
     {
-        print("mining..");
+//        print("mining..");
         //LayerMask mask = LayerMask.NameToLayer("world");// | LayerMask.NameToLayer("enemy");
 
         if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange, 1<<10)) //layer mask looks at 'world' only on raycast.
