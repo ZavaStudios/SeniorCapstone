@@ -373,7 +373,7 @@ namespace MazeGeneration
 					//			 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
 					//	 		 ((float)(Height * 0.5) - RoomCubes.CORNER_LENGTH));
 					//Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
-					InstantiateEnemy(center, enemy, scalar);
+					//InstantiateEnemy(center, enemy, scalar);
 				}
 			}
 		}
