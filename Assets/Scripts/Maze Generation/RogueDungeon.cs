@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,25 +23,29 @@ namespace MazeGeneration
 		public const int CORRIDOR_WIDTH = 4;
 		public const int MIN_ROOM_WIDTH = CORRIDOR_WIDTH;
 		public const int MAX_ROOM_WIDTH = 60;
-		public const int MIN_ROOM_HEIGHT = CORRIDOR_WIDTH;
-		public const int MAX_ROOM_HEIGHT = 60;
+		public const int MIN_ROOM_DEPTH = CORRIDOR_WIDTH;
+		public const int MAX_ROOM_DEPTH = 60;
+		public const int MAX_ROOM_HEIGHT = 5;
+
 		// Enemy Rooms
 		public const int MIN_ENEMY_ROOM_WIDTH = 28;
 		public const int MAX_ENEMY_ROOM_WIDTH = 40;
-		public const int MIN_ENEMY_ROOM_HEIGHT = 28;
-		public const int MAX_ENEMY_ROOM_HEIGHT = 40;
+		public const int MIN_ENEMY_ROOM_DEPTH = 28;
+		public const int MAX_ENEMY_ROOM_DEPTH = 40;
 		// Starting / Shop Room
 		public const int MIN_SHOP_ROOM_WIDTH = 28;
 		public const int MAX_SHOP_ROOM_WIDTH = 30;
-		public const int MIN_SHOP_ROOM_HEIGHT = 28;
-		public const int MAX_SHOP_ROOM_HEIGHT = 30;
+		public const int MIN_SHOP_ROOM_DEPTH = 28;
+		public const int MAX_SHOP_ROOM_DEPTH = 30;
 		// Boss Room
 		public const int MIN_BOSS_ROOM_WIDTH = 50;
 		public const int MAX_BOSS_ROOM_WIDTH = 60;
-		public const int MIN_BOSS_ROOM_HEIGHT = 50;
-		public const int MAX_BOSS_ROOM_HEIGHT = 60;
+		public const int MIN_BOSS_ROOM_DEPTH = 50;
+		public const int MAX_BOSS_ROOM_DEPTH = 60;
 
-        /// <summary>
+		public RogueRoom[,] Map { get; private set; }
+		
+		/// <summary>
         /// Generates a new RogueDungeon of the specified width and height.
         /// In this case, "width" and "height" mean the number of potential
         /// rooms horizontally or vertically, respectively.
@@ -53,58 +57,50 @@ namespace MazeGeneration
             // Build a maze, which gives us door values
             bool[,] boolMap = Maze.GenerateMaze(width, height);
 
-			// Print boolMap to console for me to investigate:
-			string mapStr = "";
-			for (int y = 0; y < boolMap.GetLength(1); y++)
-			{
-				mapStr += "\n";
-				for (int x = 0; x < boolMap.GetLength(0); x++)
-				{
-					mapStr += boolMap[x,y] ? "_" : "X";
-				}
-			}
-
-            // Use the maze to fill in our map
-            Map = new RogueRoom[width, height];
+			// Use the maze to fill in our map
+			int newWidth = boolMap.GetLength(0) - 2;
+			int newHeight = boolMap.GetLength(1) - 2;
+            Map = new RogueRoom[newWidth, newHeight];
             Random r = new Random();
 
 			// Assign initial placements:
 				// Starting room
-			int startX = r.Next (width);
-			int startY = r.Next (height);
+			int startX = r.Next (width) * 2;
+			int startY = r.Next (height) * 2;
 				// Boss room
-			int bossX = width/2;
-			int bossY = height/2;
+			int bossX = (width/2)*2;
+			int bossY = (height/2)*2;
 			// Guarantee we don't overwrite the start room:
 			if (bossX == startX && bossY == startY)
 			{
 				// TODO: something better?
-				bossY += (r.Next (2) == 1 ? 1 : -1);
-				bossX += (r.Next (2) == 1 ? 1 : -1);
+				bossY += (r.Next (2) == 1 ? 2 : -2);
+				bossX += (r.Next (2) == 1 ? 2 : -2);
 			}
 				// TODO: further shops
 				// TODO: others?
 
-            for (int x = 0; x < width; x++)
+			// Instantiate between rooms:
+            for (int x = 0; x < newWidth; x += 2)
             {
-                for (int y = 0; y < height; y++)
+                for (int y = 0; y < newHeight; y += 2)
                 {
                     // Corridor room by default
                     int roomWidth = CORRIDOR_WIDTH;
-                    int roomHeight = CORRIDOR_WIDTH;
-                    RogueRoom.RoomType type = RogueRoom.RoomType.corridor;
+                    int roomDepth = CORRIDOR_WIDTH;
+					RogueRoom.RoomType type = RogueRoom.RoomType.corridorFork;
 
 					// If the x,y coordinate was one of our set aside vectors, use that type:
 					if (x == startX && y == startY)
 					{
 						roomWidth = r.Next(MIN_SHOP_ROOM_WIDTH, MAX_SHOP_ROOM_WIDTH-1);
-						roomHeight = r.Next (MIN_SHOP_ROOM_HEIGHT, MAX_SHOP_ROOM_HEIGHT-1);
+						roomDepth = r.Next (MIN_SHOP_ROOM_DEPTH, MAX_SHOP_ROOM_DEPTH-1);
 						type = RogueRoom.RoomType.start;
 					}
 					else if (x == bossX && y == bossY)
 					{
 						roomWidth = r.Next(MIN_BOSS_ROOM_WIDTH, MAX_BOSS_ROOM_WIDTH-1);
-						roomHeight = r.Next (MIN_BOSS_ROOM_HEIGHT, MAX_BOSS_ROOM_HEIGHT-1);
+						roomDepth = r.Next (MIN_BOSS_ROOM_DEPTH, MAX_BOSS_ROOM_DEPTH-1);
 						type = RogueRoom.RoomType.boss;
 					}
 					// TODO: others?
@@ -114,7 +110,7 @@ namespace MazeGeneration
                     else if (r.NextDouble() < ENEMY_ROOM_DENSITY)
                     {
 						roomWidth = r.Next(MIN_ENEMY_ROOM_WIDTH, MAX_ENEMY_ROOM_WIDTH-1);
-						roomHeight = r.Next(MIN_ENEMY_ROOM_HEIGHT, MAX_ENEMY_ROOM_HEIGHT-1);
+						roomDepth = r.Next(MIN_ENEMY_ROOM_DEPTH, MAX_ENEMY_ROOM_DEPTH-1);
 						type = RogueRoom.RoomType.enemy;
 
 						// TODO: handle enemy score distribution
@@ -127,45 +123,165 @@ namespace MazeGeneration
 					// Adjust accordingly:
 					if ((roomWidth - CORRIDOR_WIDTH) % 2 == 1)
 						roomWidth++;
-					if ((roomHeight - CORRIDOR_WIDTH) % 2 == 1)
-						roomHeight++;
+					if ((roomDepth - CORRIDOR_WIDTH) % 2 == 1)
+						roomDepth++;
 
                     // Determine what the door code should be, by checking the map:
-                    int mapCoordX = (2 * x) + 1;
-                    int mapCoordY = (2 * y) + 1;
+                    int mapCoordX = x + 1;
+                    int mapCoordY = y + 1;
                     int doorCode = 0x0;
 
                     // NOTE: the below operations are safe, because the Maze class guarantees
                     // that the map will have a buffer of false values around where the rooms are.
                     // Left:
                     if (boolMap[mapCoordX - 1, mapCoordY])
-                        doorCode |= RogueRoom.LEFT_DOOR_MASK;
+						doorCode |= RogueRoom.LEFT_DOOR_MASK;
 
                     // Right:
                     if (boolMap[mapCoordX + 1, mapCoordY])
-                        doorCode |= RogueRoom.RIGHT_DOOR_MASK;
+						doorCode |= RogueRoom.RIGHT_DOOR_MASK;
 
                     // Up:
                     if (boolMap[mapCoordX, mapCoordY - 1])
-                        doorCode |= RogueRoom.UP_DOOR_MASK;
+						doorCode |= RogueRoom.UP_DOOR_MASK;
 
                     // Down:
                     if (boolMap[mapCoordX, mapCoordY + 1])
-                        doorCode |= RogueRoom.DOWN_DOOR_MASK;
+						doorCode |= RogueRoom.DOWN_DOOR_MASK;
 
                     // Create the room, and insert it into the map:
-                    RogueRoom newRoom = new RogueRoom(roomWidth, roomHeight, doorCode);
+					RogueRoom newRoom;
+					switch (type)
+					{
+					case RogueRoom.RoomType.start:
+					case RogueRoom.RoomType.shop:
+					case RogueRoom.RoomType.empty:
+					case RogueRoom.RoomType.enemy:
+					case RogueRoom.RoomType.boss:
+						newRoom = new GeneralRoom(roomWidth, roomDepth, MAX_ROOM_HEIGHT, x, y, doorCode);
+						break;
+					case RogueRoom.RoomType.corridorFork:
+					default:
+						newRoom = new CorridorBranchRoom(roomWidth, roomDepth, MAX_ROOM_HEIGHT, x, y, doorCode);
+						break;
+					// This case can't happen:
+					//case RogueRoom.RoomType.corridor:
+					}
                     newRoom.Type = type;
 
 					// For enemy rooms, initialize enemy list.
 					// TODO: smarter distribution of enemy points. For now, just give same value to each room.
 					if (type == RogueRoom.RoomType.enemy)
-						newRoom.AssignEnemies(5);
+						((GeneralRoom)newRoom).AssignEnemies(5);
 					
                     Map[x, y] = newRoom;
                 }
             }
+
+			// Instantiate corridors:
+			// Left-Right:
+			for (int x = 1; x < newWidth; x += 2)
+			{
+				for (int y = 0; y < newHeight; y += 2)
+				{
+					// Determine door codes, and attach relationships:
+					int mapCoordX = x + 1;
+					int mapCoordY = y + 1;
+					int doorCode = 0x0;
+					RogueRoom lftNbr = null,
+							  rgtNbr = null;
+					
+					int corridorWidth = CORRIDOR_WIDTH;
+					int corridorDepth = CORRIDOR_WIDTH;
+					CorridorRoom corridor;
+					
+					// Confirm this corridor is actually in the maze:
+					if (boolMap[mapCoordX, mapCoordY])
+					{
+						doorCode |= RogueRoom.LEFT_DOOR_MASK;
+						lftNbr = Map[x-1, y];
+						doorCode |= RogueRoom.RIGHT_DOOR_MASK;
+						rgtNbr = Map[x+1,y];
+						
+						// Determine correct width for this corridor:
+						corridorWidth = MAX_ROOM_WIDTH +
+										((MAX_ROOM_WIDTH - lftNbr.Width) / 2) +
+										((MAX_ROOM_WIDTH - rgtNbr.Width) / 2);
+						
+						// Instantiate & hookup neighbors:
+						corridor = new CorridorRoom(corridorWidth, corridorDepth, MAX_ROOM_HEIGHT, x, y, doorCode);
+						lftNbr.RightNeighbor = corridor;
+						rgtNbr.LeftNeighbor = corridor;
+						corridor.LeftNeighbor = lftNbr;
+						corridor.RightNeighbor = rgtNbr;
+						
+						// Put it in the map:
+						Map[x,y] = corridor;
+					}
+					else
+					{
+						Map[x,y] = null;
+					}
+				}
+			}
+
+				// Up-Down:
+			for (int x = 0; x < newWidth; x += 2)
+			{
+				for (int y = 1; y < newHeight; y += 2)
+				{
+					// Determine door codes, and attach relationships:
+					int mapCoordX = x + 1;
+					int mapCoordY = y + 1;
+					int doorCode = 0x0;
+					RogueRoom upNbr  = null,
+							  dwnNbr = null;
+					
+					int corridorWidth = CORRIDOR_WIDTH;
+					int corridorDepth = CORRIDOR_WIDTH;
+					CorridorRoom corridor;
+					
+					// Confirm this corridor is actually in the maze:
+					if (boolMap[mapCoordX, mapCoordY])
+					{
+						doorCode |= RogueRoom.UP_DOOR_MASK;
+						upNbr = Map[x, y-1];
+						doorCode |= RogueRoom.DOWN_DOOR_MASK;
+						dwnNbr = Map[x,y+1];
+						
+						// Determine correct width for this corridor:
+						corridorDepth = MAX_ROOM_DEPTH +
+										((MAX_ROOM_DEPTH - upNbr.Depth) / 2) +
+										((MAX_ROOM_DEPTH - dwnNbr.Depth) / 2);
+						
+						// Instantiate & hookup neighbors:
+						corridor = new CorridorRoom(corridorWidth, corridorDepth, MAX_ROOM_HEIGHT, x, y, doorCode);
+						upNbr.DownNeighbor = corridor;
+						dwnNbr.UpNeighbor = corridor;
+						corridor.UpNeighbor = upNbr;
+						corridor.DownNeighbor = dwnNbr;
+						
+						// Put it in the map:
+						Map[x,y] = corridor;
+					}
+					else
+					{
+						Map[x,y] = null;
+					}
+				}
+			}
+			
+			// Initialize cubes:
+			foreach (RogueRoom room in EnumerateRooms())
+				room.InitializeCubes();
         }
+
+		public IEnumerable<RogueRoom> EnumerateRooms()
+		{
+			foreach (RogueRoom room in Map)
+				if (room != null)
+					yield return room;
+		}
 
         /// <summary>
         /// Creates a boolean grid view for the entire map, which is, at the very
@@ -193,7 +309,7 @@ namespace MazeGeneration
                     RogueRoom room = Map[x, y];
                     // Note: we pad lengths by 2 so we can ensure some walls between rooms
                     maxWidths[x] = (maxWidths[x] < room.Width + 2) ? room.Width + 2 : maxWidths[x];
-                    maxHeights[y] = (maxHeights[y] < room.Height + 2) ? room.Height + 2 : maxHeights[y];
+                    maxHeights[y] = (maxHeights[y] < room.Depth + 2) ? room.Depth + 2 : maxHeights[y];
                 }
             }
 
@@ -226,7 +342,7 @@ namespace MazeGeneration
                     // First, fill out grid square based on room size
                     for (int x0 = xOffset; x0 < xOffset + room.Width; x0++)
                     {
-                        for (int y0 = yOffset; y0 < yOffset + room.Height; y0++)
+                        for (int y0 = yOffset; y0 < yOffset + room.Depth; y0++)
                         {
                             grid[x0, y0] = true;
                         }
@@ -245,7 +361,7 @@ namespace MazeGeneration
                             grid[x0, yOffset] = true;
                     }
                      */
-                    if ((room.Doors & RogueRoom.RIGHT_DOOR_MASK) != 0)
+					if ((room.DoorCode & RogueRoom.RIGHT_DOOR_MASK) != 0)
                     {
                         for (int x0 = xOffset; x0 < xOffset + maxWidths[x]; x0++)
                             grid[x0, yOffset] = true;
@@ -257,7 +373,7 @@ namespace MazeGeneration
                             grid[xOffset, y0] = true;
                     }
                      */
-                    if ((room.Doors & RogueRoom.DOWN_DOOR_MASK) != 0)
+					if ((room.DoorCode & RogueRoom.DOWN_DOOR_MASK) != 0)
                     {
                         for (int y0 = yOffset; y0 < yOffset + maxHeights[y]; y0++)
                             grid[xOffset, y0] = true;
@@ -270,12 +386,6 @@ namespace MazeGeneration
             }
 
             return grid;
-        }
-
-        public RogueRoom[,] Map
-        {
-            get;
-            private set;
         }
     }
 }
