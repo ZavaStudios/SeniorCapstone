@@ -29,15 +29,15 @@ namespace MazeGeneration
 			// Left & Right adjustment:
 			if ((DoorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
 			{
-				center += new Vector3((maxWidth - LeftNeighbor.Width) / 2, 0, 0);
-				center -= new Vector3((maxWidth - RightNeighbor.Width) / 2, 0, 0);
+				center.x = (LeftNeighbor.GetCenter(maxWidth, maxDepth).x + (LeftNeighbor.Width / 2.0f) +
+				            RightNeighbor.GetCenter(maxWidth, maxDepth).x - (RightNeighbor.Width / 2.0f)) / 2.0f;
 			}
 
 			// Up and Down adjustment:
 			else // if ((DoorCode & RogueRoom.UP_DOOR_MASK) != 0)
 			{
-				center += new Vector3(0, 0, (maxDepth - UpNeighbor.Depth) / 2);
-				center -= new Vector3(0, 0, (maxDepth - DownNeighbor.Depth) / 2);
+				center.z = (UpNeighbor.GetCenter(maxWidth, maxDepth).z + (UpNeighbor.Depth / 2.0f) +
+				            DownNeighbor.GetCenter(maxWidth, maxDepth).z - (DownNeighbor.Depth / 2.0f)) / 2.0f;
 			}
 
 			return center;
