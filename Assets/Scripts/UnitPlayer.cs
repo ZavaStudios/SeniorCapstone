@@ -9,9 +9,11 @@ public class UnitPlayer : Unit {
     WeaponModelSwitcher wepSwitcher;
 	int wep = 0;
 	
+    private const float walkSpeedNormal = 10.0f;
+
 	protected override void Start () 
 	{
-		setMaxSpeed();
+		setMaxSpeed(walkSpeedNormal);
         wepSwitcher = gameObject.GetComponentInChildren<WeaponModelSwitcher>();
 
 		inventory = Inventory.getInstance();
@@ -46,7 +48,7 @@ public class UnitPlayer : Unit {
 
 	protected override void Update () 
 	{
-		if(Input.GetKeyDown(KeyCode.Mouse0) || OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_RT, OuyaExampleCommon.Player)) //or some other button on OUYA
+		if(InputContextManager.isATTACK()) //or some other button on OUYA
 		{
 			print ("mouse clicked....");
 			if (weapon != null)
@@ -54,7 +56,7 @@ public class UnitPlayer : Unit {
 			else
 				print ("You cannot attack without a weapon!");
 		}
-		if(Input.GetKeyDown(KeyCode.Mouse1) || OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_LT, OuyaExampleCommon.Player))
+		if(InputContextManager.isSPECIAL_ATTACK())
 		{
 			print ("right clicked...");
 			
@@ -65,7 +67,7 @@ public class UnitPlayer : Unit {
 		}
 		
 		const int numWeapons = 3;
-		if(Input.GetKeyDown (KeyCode.Q) || OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_U, OuyaExampleCommon.Player))
+		if(InputContextManager.isSWITCH_WEAPON())
 		{
 			if (wep > (numWeapons-1))
 			{
@@ -91,23 +93,22 @@ public class UnitPlayer : Unit {
 			}
 		}
 		
-		if(Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift) || OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_LB, OuyaExampleCommon.Player))
+		if(InputContextManager.isSPRINT())
 		{
-			moveSpeed = 20.0f;
-			setMaxSpeed ();
+			setMaxSpeed (walkSpeedNormal*1.6f);
 		}
-		else if(Input.GetKeyUp (KeyCode.LeftShift) || Input.GetKeyUp (KeyCode.RightShift) || OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_LB, OuyaExampleCommon.Player))
+		else
 		{
-			moveSpeed = 10.0f;
-			setMaxSpeed ();
+			setMaxSpeed (walkSpeedNormal);
 		}
 
 	}
 	
 	
 	//Gets reference to the character motor class, then sets the move speed
-	void setMaxSpeed()
+	void setMaxSpeed(float newSpeed)
 	{
+        moveSpeed = newSpeed;
 		CharacterMotor m = gameObject.GetComponent<CharacterMotor>();
 		m.movement.maxForwardSpeed = moveSpeed;
 		m.movement.maxSidewaysSpeed = moveSpeed;

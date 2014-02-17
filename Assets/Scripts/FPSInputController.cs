@@ -17,9 +17,11 @@ public class FPSInputController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+
+
 		
-		float horizontal = OuyaExampleCommon.GetAxis (OuyaSDK.KeyEnum.AXIS_LSTICK_X, OuyaExampleCommon.Player);
-		float forwards = -OuyaExampleCommon.GetAxis (OuyaSDK.KeyEnum.AXIS_LSTICK_Y, OuyaExampleCommon.Player);
+		float horizontal = InputContextManager.getMOVE_LR();
+		float forwards = InputContextManager.getMOVE_UD();
 		// Get the input vector from kayboard or analog stick
 		Vector3 directionVector = new Vector3 (horizontal, 0, forwards);
 		

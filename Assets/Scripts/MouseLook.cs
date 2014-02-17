@@ -32,8 +32,8 @@ public class MouseLook : MonoBehaviour {
 	
 	void Update ()
 	{
-		float xAxis = OuyaExampleCommon.GetAxis(OuyaSDK.KeyEnum.AXIS_RSTICK_X, OuyaExampleCommon.Player);
-		float yAxis = -OuyaExampleCommon.GetAxis(OuyaSDK.KeyEnum.AXIS_RSTICK_Y, OuyaExampleCommon.Player);
+		float xAxis = InputContextManager.getLOOK_LR();
+		float yAxis = InputContextManager.getLOOK_UD();
 		
 		if (axes == RotationAxes.MouseXAndY)
 		{
