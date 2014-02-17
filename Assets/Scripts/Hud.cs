@@ -76,6 +76,7 @@ public class Hud : MonoBehaviour
 
     protected void Start()
     {
+
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Unit>();
         unitPlayer = player.GetComponent<UnitPlayer>();
 
@@ -92,6 +93,7 @@ public class Hud : MonoBehaviour
 
 		arrComponents = new string[intNumWeapons * intNumParts];
 
+		//Find all the weapon categories and add them to an array
 		int index = 0;
 		foreach(ItemWeapon.tWeaponType wepType in (ItemWeapon.tWeaponType[]) Enum.GetValues(typeof(ItemWeapon.tWeaponType)))
 		{
@@ -113,7 +115,7 @@ public class Hud : MonoBehaviour
 
 
         //NOTE: All component arrays should be the same length
-        //For the one layer undiscovered items, show a "?", for undiscovered layers above that, put ""
+        //TODO For the one layer undiscovered items, show a "?", for undiscovered layers above that, put ""
         int intArrAllIndex = 0;
         for (int i = 0; i < arrLightHandles.Length; i++)
         {
@@ -218,7 +220,6 @@ public class Hud : MonoBehaviour
 			}
             case tMenuStates.INVENTORY:
 			{
-                // TODO Show the Inventory and disable other controls such as the crosshair and attacking
                 layoutInventoryGrid();
 
                 break;
@@ -241,6 +242,11 @@ public class Hud : MonoBehaviour
 
 	private void layoutAssembleGrid()
 	{
+		//TODO Make some actual dimensions
+
+		vec2CompTypeDimensions.x = 300;
+		vec2CompTypeDimensions.y = 200;
+
 		Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
 
 		//Set the style for selection screens
@@ -258,24 +264,43 @@ public class Hud : MonoBehaviour
 
 		//TODO Need some way of enumerating possible weapon build from the components in the inventory
 		//TODO Maybe for a given type, ask for the components
-		GetMakeableItems ();
+		ArrayList arrListAssemblable = GetMakeableItems ();
+		string[] arrAssembleStrings = new string[arrListAssemblable.Count];
+		for(int i = 0; i < arrListAssemblable.Count; i++)
+		{
+			arrAssembleStrings[i] = arrListAssemblable[i].ToString();
+		}
 
-//		intCompTypeGrid = GUI.SelectionGrid(new Rect(vec2CompTypeStart.x, vec2CompTypeStart.y,  vec2CompTypeDimensions.x, vec2CompTypeDimensions.y), intCompTypeGrid, arrComponents, 1, style);
-
-
+		intCompTypeGrid = GUI.SelectionGrid(new Rect(vec2CompTypeStart.x, vec2CompTypeStart.y,  vec2CompTypeDimensions.x, vec2CompTypeDimensions.y), 
+		                                    intAssemPossible, arrAssembleStrings, 1, style);
+	
 
 	}
 
-	private void GetMakeableItems()
+	/// <summary>
+	/// Get a list of ItemWeapons which can be made from the components in the inventory.
+	/// </summary>
+	/// <returns>The makeable items.</returns>
+	private ArrayList GetMakeableItems()
 	{
 		ArrayList arrListComponents = Inventory.getInstance ().getInventoryComponents();
+		ArrayList arrListResults = new ArrayList ();
 
+		//Loop through all pairs of items and see if they can be combined
 		for(int i = 0; i < arrListComponents.Count; i++)
 		{
-			for(int j = i; j < arrListComponents.Count; j++)
+			for(int j = i + 1; j < arrListComponents.Count; j++)
 			{
+				//Create weapon returns null when the components given are unable to form a proper weapon
+				ItemWeapon potentialWeapon = ItemFactory.createWeapon((ItemComponent)arrListComponents[i],(ItemComponent)arrListComponents[j]);
+				if(potentialWeapon != null)
+				{
+					arrListResults.Add(potentialWeapon);
+				}
 			}
 		}
+
+		return arrListResults;
 	}
 
     private void layoutCraftingGUI()
@@ -340,8 +365,8 @@ public class Hud : MonoBehaviour
     private void layoutInventoryGrid()
     {
         //Declare the options in laying out the grid
-        int intWidthPadding = Screen.width / 8;
-        int intHeightPadding = Screen.height / 8;
+//        int intWidthPadding = Screen.width / 8;
+//        int intHeightPadding = Screen.height / 8;
 
         //The starting position of the inventory
         Vector2 vec2CurrentPos = new Vector2(0, 100);
@@ -499,13 +524,15 @@ public class Hud : MonoBehaviour
         }
         else if (Input.GetKeyUp(keyCodeConfirm))
         {
-			//Make the button be selected
-			//HERE
-			SendMessage("onActive");
+			//Make the button be selected when the confirm key is pressed
+//			SendMessage("onActive");
 
             //Assume we have ore
-			//TODO Actually make the appropriate weapon making call
-            ItemComponent cmpNew = ItemFactory.createComponent(ItemComponent.tComponentType.SwordBladeHeavy, new ItemOre(ItemBase.tOreType.Copper));
+			//TODO Actually make the appropriate weapon making call. Outlined below, but not complete
+			//ItemComponent cmpnew = ItemFactory.createComponent( ((ItemComponent.tComponentType)getPart(code[grid])), getOre(code[grid])) 
+			string cmpNewCode = ItemComponent.generateComponentCode(ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Copper, ItemWeapon.tWeaponType.WeaponSword,
+			                                                        ItemComponent.tComponentPart.Blade);
+            ItemComponent cmpNew = ItemFactory.createComponent(cmpNewCode);
 
             Inventory inventory = Inventory.getInstance();
             inventory.inventoryAddItem(cmpNew);

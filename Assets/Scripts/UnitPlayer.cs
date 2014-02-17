@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class UnitPlayer : Unit {
@@ -24,18 +24,33 @@ public class UnitPlayer : Unit {
         //test of factory. Make a sword.
         ItemOre myOre = new ItemOre(ItemBase.tOreType.Steel);
 
-        ItemBase myBlade = ItemFactory.createComponent(ItemComponent.tComponentType.SwordBladeNormal, myOre);
-        ItemBase myHandle = ItemFactory.createComponent(ItemComponent.tComponentType.SwordHandleNormal, myOre);
+		string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Iron, ItemWeapon.tWeaponType.WeaponSword,
+		                                                       ItemComponent.tComponentPart.Blade);
+		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Iron, ItemWeapon.tWeaponType.WeaponSword,
+		                                                        ItemComponent.tComponentPart.Handle);
+
+        ItemBase myBlade = ItemFactory.createComponent(bladeCode);
+        ItemBase myHandle = ItemFactory.createComponent(handleCode);
 
         ItemWeapon myWeapon = ItemFactory.createWeapon((ItemComponent) myBlade, (ItemComponent) myHandle);
 
         inventory.inventoryAddItem(myWeapon);
 
+		//Add some components to test making items
+		string staffHandleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Copper, ItemWeapon.tWeaponType.WeaponStaff,
+		                                                             ItemComponent.tComponentPart.Handle);
+		string staffBladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Copper, ItemWeapon.tWeaponType.WeaponStaff,
+		                                                             ItemComponent.tComponentPart.Blade);
+
+		inventory.inventoryAddItem (ItemFactory.createComponent (staffHandleCode)); //Add a staff handle
+		inventory.inventoryAddItem (ItemFactory.createComponent (staffBladeCode)); //Add a staff blade
+
 		base.Start();
         attackDamage = 20.0f;
         equipWeapon(ItemWeapon.tWeaponType.WeaponPickaxe.ToString());
 
-        inventory.inventoryAddItem(ItemFactory.createComponent(ItemComponent.tComponentType.SwordBladeHeavy, new ItemOre(ItemBase.tOreType.Copper)));
+		inventory.inventoryAddItem (ItemFactory.createComponent (bladeCode));
+		inventory.inventoryAddItem (ItemFactory.createComponent (handleCode));
 
 	}
 
