@@ -4,7 +4,7 @@ using System.Collections;
 public class UnitPlayer : Unit {
 	
 	//Not sure how time is measured, but 30 seems to be good. 
-	private float gameOverDelay = 0f;
+//	private float gameOverDelay = 0f;
 
     WeaponModelSwitcher wepSwitcher;
 	int wep = 0;
