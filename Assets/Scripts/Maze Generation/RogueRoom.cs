@@ -87,10 +87,13 @@ namespace MazeGeneration
 			floor_tile.transform.localScale = new Vector3((float)Width,
 			                                              0.0f,
 			                                              (float)Depth) * scalar;
-			MonoBehaviour.Instantiate(floor_tile, center * scalar, Quaternion.identity);
-			MonoBehaviour.Instantiate(floor_tile,
-			                          (center + new Vector3(0.0f, Height, 0.0f)) * scalar,
-			                          Quaternion.AngleAxis (180.0f, Vector3.forward));
+			//floor_tile.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(Width, Depth));
+			Transform ft = (Transform)MonoBehaviour.Instantiate(floor_tile, center * scalar, Quaternion.identity);
+			Transform ct = (Transform)MonoBehaviour.Instantiate(floor_tile,
+			                          							(center + new Vector3(0.0f, Height, 0.0f)) * scalar,
+			                                                    Quaternion.AngleAxis (180.0f, Vector3.forward));
+			ft.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(Width, Depth));
+			ct.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(Width, Depth));
 
 			// Instantiate walls:
 			float wallHeight = (float)Height / 2.0f;
