@@ -214,8 +214,9 @@ namespace MazeGeneration
 					new Vector3((float)Width * 0.5f, 0.0f, (float)Depth * 0.5f) +
 					new Vector3(0.5f, 0.5f, 0.5f);
 
-			//foreach (Cube cube in Cubes.EnumerateCubes())
-			//	InstantiateCube(cube, cubeStart, scalar);
+			if (Cubes != null)
+				foreach (Cube cube in Cubes.EnumerateCubes())
+					InstantiateCube(cube, cubeStart, scalar);
 		}
 		
 		/// <summary>
@@ -231,9 +232,10 @@ namespace MazeGeneration
 			wall_tile.transform.localScale = new Vector3(wallWidth,
 			                                             Height,
 			                                             1.0f) * scalar;
-			MonoBehaviour.Instantiate(wall_tile,
-			                          position * scalar,
-			                          angle);
+			Transform wt = (Transform)MonoBehaviour.Instantiate(wall_tile,
+			                          							position * scalar,
+			                          							angle);
+			wt.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(wallWidth, Height));	
 		}
 
 		/// <summary>

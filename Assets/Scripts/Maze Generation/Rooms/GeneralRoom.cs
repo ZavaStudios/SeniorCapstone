@@ -32,10 +32,6 @@ namespace MazeGeneration
 			DoorCode = doors;
 			GridX = x;
 			GridY = y;
-
-			//Cubes = Width > RogueDungeon.CORRIDOR_WIDTH ?
-			//	    (RoomCubes)new StandardRoomCubes(width, height, Doors, CEILING_HEIGHT) :
-			//		(RoomCubes)new SmallRoomCubes(width, height, Doors, CEILING_HEIGHT);
 		}
 
 		/// <summary>
@@ -98,7 +94,9 @@ namespace MazeGeneration
 
 		public override void InitializeCubes ()
 		{
-			// TODO
+			Cubes = Width > RogueDungeon.CORRIDOR_WIDTH ?
+					    	(RoomCubes)new StandardRoomCubes(Width, Depth, DoorCode, Height) :
+							(RoomCubes)new SmallRoomCubes(Width, Depth, DoorCode, Height);
 		}
 		
 		/// <summary>

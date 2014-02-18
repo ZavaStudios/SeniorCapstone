@@ -45,7 +45,10 @@ namespace MazeGeneration
 
 		public override void InitializeCubes ()
 		{
-			// TODO
+			if ((DoorCode & RogueRoom.LEFT_DOOR_MASK) != 0)
+				Cubes = new LRCorridorCubes(Width, Depth, Height);
+			else // ((DoorCode & RogueRoom.UP_DOOR_MASK) != 0)
+				Cubes = new UDCorridorCubes(Width, Depth, Height);
 		}
 	}
 }

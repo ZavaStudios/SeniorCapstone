@@ -20,28 +20,28 @@ namespace MazeGeneration
 		// specific room types are constrained to.
 		//
         // Also, note that MIN is inclusive, MAX is exclusive
-		public const int CORRIDOR_WIDTH = 4;
+		public const int CORRIDOR_WIDTH = 16;
 		public const int MIN_ROOM_WIDTH = CORRIDOR_WIDTH;
-		public const int MAX_ROOM_WIDTH = 60;
+		public const int MAX_ROOM_WIDTH = CORRIDOR_WIDTH * 4;
 		public const int MIN_ROOM_DEPTH = CORRIDOR_WIDTH;
-		public const int MAX_ROOM_DEPTH = 60;
+		public const int MAX_ROOM_DEPTH = CORRIDOR_WIDTH * 4;
 		public const int MAX_ROOM_HEIGHT = 5;
 
 		// Enemy Rooms
-		public const int MIN_ENEMY_ROOM_WIDTH = 28;
-		public const int MAX_ENEMY_ROOM_WIDTH = 40;
-		public const int MIN_ENEMY_ROOM_DEPTH = 28;
-		public const int MAX_ENEMY_ROOM_DEPTH = 40;
+		public const int MIN_ENEMY_ROOM_WIDTH = CORRIDOR_WIDTH * 2;
+		public const int MAX_ENEMY_ROOM_WIDTH = CORRIDOR_WIDTH * 2 + (CORRIDOR_WIDTH / 2);
+		public const int MIN_ENEMY_ROOM_DEPTH = CORRIDOR_WIDTH * 2;
+		public const int MAX_ENEMY_ROOM_DEPTH = CORRIDOR_WIDTH * 2 + (CORRIDOR_WIDTH / 2);
 		// Starting / Shop Room
-		public const int MIN_SHOP_ROOM_WIDTH = 28;
-		public const int MAX_SHOP_ROOM_WIDTH = 30;
-		public const int MIN_SHOP_ROOM_DEPTH = 28;
-		public const int MAX_SHOP_ROOM_DEPTH = 30;
+		public const int MIN_SHOP_ROOM_WIDTH = MIN_ENEMY_ROOM_WIDTH;
+		public const int MAX_SHOP_ROOM_WIDTH = MAX_ENEMY_ROOM_WIDTH;
+		public const int MIN_SHOP_ROOM_DEPTH = MIN_ENEMY_ROOM_DEPTH;
+		public const int MAX_SHOP_ROOM_DEPTH = MAX_ENEMY_ROOM_DEPTH;
 		// Boss Room
-		public const int MIN_BOSS_ROOM_WIDTH = 50;
-		public const int MAX_BOSS_ROOM_WIDTH = 60;
-		public const int MIN_BOSS_ROOM_DEPTH = 50;
-		public const int MAX_BOSS_ROOM_DEPTH = 60;
+		public const int MIN_BOSS_ROOM_WIDTH = CORRIDOR_WIDTH * 3;
+		public const int MAX_BOSS_ROOM_WIDTH = MAX_ROOM_WIDTH;
+		public const int MIN_BOSS_ROOM_DEPTH = CORRIDOR_WIDTH * 3;
+		public const int MAX_BOSS_ROOM_DEPTH = MAX_ROOM_DEPTH;
 
 		public RogueRoom[,] Map { get; private set; }
 		
