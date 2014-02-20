@@ -24,10 +24,8 @@ public class ZombieWeapon : WeaponBase
 		print("attacking..");
 		
 		Transform Player = GameObject.FindGameObjectWithTag("Player").transform; 
-		Vector3 PlayerPosition = Player.position;
-		Vector3 dir = PlayerPosition - transform.position;
-		
-		if(Physics.Raycast(transform.position, dir, out rayHit, attackRange))
+			
+		if(Physics.Raycast(transform.position - new Vector3(0, 0.5f, 0), faceDir, out rayHit, attackRange))
 		{
 			print ("Raycast hit");
 			if(rayHit.collider.gameObject.CompareTag("Player"))

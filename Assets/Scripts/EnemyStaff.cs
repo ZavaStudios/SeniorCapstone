@@ -17,13 +17,12 @@ public class EnemyStaff : WeaponBase
 	{
 //		gameObject.layer = myLayer;
 //		Physics.IgnoreLayerCollision(30, 10, true);
-		attackRange = 10.0f;
+		attackRange = 5.0f;
 		weaponDamage = 20.0f;
 		attackDelay = 0.5f;
 		base.Start();
 		
 		enemyCollider = this.collider;
-		enemySphere = this.GetComponent<SphereCollider>();
 		Fireball = (GameObject)Resources.Load("Fireball");
 	}
 	
@@ -40,7 +39,6 @@ public class EnemyStaff : WeaponBase
     	GameObject clone = (GameObject)GameObject.Instantiate(Fireball, startPos - heightDifference,Character.getLookRotation());
 		clone.gameObject.AddComponent("ProjectileFireball");
 		Physics.IgnoreCollision(clone.collider, enemyCollider);
-		Physics.IgnoreCollision(clone.collider, enemySphere);
 		
 		p = clone.GetComponent<ProjectileFireball>();
 		p.damage = weaponDamage;

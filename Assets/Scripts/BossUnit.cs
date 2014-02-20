@@ -6,10 +6,13 @@ public class BossUnit : UnitEnemy
 	public Transform enemy;
 
 	//Every 5 seconds generate a new enemy.
-	private float spawnTimer = 0.0f;
+	protected float spawnTimer = 5.0f;
+	protected float delay = 0.0f;
 
-	//Caps the number of enemies that can be spawned to 3.
-	private float enemyCap = 0.0f;
+	//Caps the number of enemies that can be spawned.
+	protected float enemyCap = 0.0f;
+	private int numEnemies = 0;
+
 
 	//ToDo: Once the enemies have been killed should we regenerate new ones? 
 
@@ -20,12 +23,10 @@ public class BossUnit : UnitEnemy
 
 
 		//This is a boss, so lets make it a little harder ;) 
-		Health = 50;
+		Health = 100;
 		weapon.weaponDamage = 20;
 		weapon.attackDelay = 4;
 		weapon.attackRange = 5.0f;
-
-
 	}
 	
 	// Update is called once per frame
@@ -35,15 +36,19 @@ public class BossUnit : UnitEnemy
 		base.Update();
 
 		//First attack: Spawn an enemy every so often.
-		if (Time.time >= spawnTimer && enemyCap < 3) 
+		if (Time.time >= spawnTimer && numEnemies < enemyCap)
 		{
-			spawnTimer += Time.time + 5;
-			enemyCap++;
-
-			//Spawn an enemy.
-			Instantiate(enemy, control.transform.position + Vector3.one, Quaternion.identity);
+			//Spawn an enemy every delay seconds.  
+			spawnTimer = Time.time + delay;
+			numEnemies++;
 		}
+	}
 
+	//Spawns an enemy in the room. This function needs to be overriden by super classes. 
+	virtual protected void spawnEnemy()
+	{
 
 	}
+
+
 }
