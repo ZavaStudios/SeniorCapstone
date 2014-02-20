@@ -21,6 +21,19 @@ namespace MazeGeneration
 		//
         // Also, note that MIN is inclusive, MAX is exclusive
 		public const int CORRIDOR_WIDTH = 16;
+		public const int ROOM_CORNER_WIDTH = 8;
+		public const int ROOM_CORNER_DEPTH = 8;
+		
+		public const int ROOM_WIDTH = (ROOM_CORNER_WIDTH * 2) + CORRIDOR_WIDTH + (4 * 2);
+		public const int ROOM_DEPTH = (ROOM_CORNER_DEPTH * 2) + CORRIDOR_WIDTH + (4 * 2);
+		public const int BOSS_ROOM_WIDTH = (ROOM_CORNER_WIDTH * 2) + CORRIDOR_WIDTH + (10 * 2);
+		public const int BOSS_ROOM_DEPTH = (ROOM_CORNER_DEPTH * 2) + CORRIDOR_WIDTH + (10 * 2);
+		
+		public const int MAX_ROOM_WIDTH = BOSS_ROOM_WIDTH;
+		public const int MAX_ROOM_DEPTH = BOSS_ROOM_DEPTH;
+		public const int MAX_ROOM_HEIGHT = 5;
+
+		/*
 		public const int MIN_ROOM_WIDTH = CORRIDOR_WIDTH;
 		public const int MAX_ROOM_WIDTH = CORRIDOR_WIDTH * 4;
 		public const int MIN_ROOM_DEPTH = CORRIDOR_WIDTH;
@@ -42,6 +55,7 @@ namespace MazeGeneration
 		public const int MAX_BOSS_ROOM_WIDTH = MAX_ROOM_WIDTH;
 		public const int MIN_BOSS_ROOM_DEPTH = CORRIDOR_WIDTH * 3;
 		public const int MAX_BOSS_ROOM_DEPTH = MAX_ROOM_DEPTH;
+		*/
 
 		public RogueRoom[,] Map { get; private set; }
 		
@@ -93,14 +107,14 @@ namespace MazeGeneration
 					// If the x,y coordinate was one of our set aside vectors, use that type:
 					if (x == startX && y == startY)
 					{
-						roomWidth = r.Next(MIN_SHOP_ROOM_WIDTH, MAX_SHOP_ROOM_WIDTH-1);
-						roomDepth = r.Next (MIN_SHOP_ROOM_DEPTH, MAX_SHOP_ROOM_DEPTH-1);
+						roomWidth = ROOM_WIDTH;//r.Next(MIN_SHOP_ROOM_WIDTH, MAX_SHOP_ROOM_WIDTH-1);
+						roomDepth = ROOM_DEPTH;//r.Next (MIN_SHOP_ROOM_DEPTH, MAX_SHOP_ROOM_DEPTH-1);
 						type = RogueRoom.RoomType.start;
 					}
 					else if (x == bossX && y == bossY)
 					{
-						roomWidth = r.Next(MIN_BOSS_ROOM_WIDTH, MAX_BOSS_ROOM_WIDTH-1);
-						roomDepth = r.Next (MIN_BOSS_ROOM_DEPTH, MAX_BOSS_ROOM_DEPTH-1);
+						roomWidth = BOSS_ROOM_WIDTH;//r.Next(MIN_BOSS_ROOM_WIDTH, MAX_BOSS_ROOM_WIDTH-1);
+						roomDepth = BOSS_ROOM_DEPTH;//r.Next (MIN_BOSS_ROOM_DEPTH, MAX_BOSS_ROOM_DEPTH-1);
 						type = RogueRoom.RoomType.boss;
 					}
 					// TODO: others?
@@ -109,8 +123,8 @@ namespace MazeGeneration
                     // and height accordingly
                     else if (r.NextDouble() < ENEMY_ROOM_DENSITY)
                     {
-						roomWidth = r.Next(MIN_ENEMY_ROOM_WIDTH, MAX_ENEMY_ROOM_WIDTH-1);
-						roomDepth = r.Next(MIN_ENEMY_ROOM_DEPTH, MAX_ENEMY_ROOM_DEPTH-1);
+						roomWidth = ROOM_WIDTH;//r.Next(MIN_ENEMY_ROOM_WIDTH, MAX_ENEMY_ROOM_WIDTH-1);
+						roomDepth = ROOM_DEPTH;//r.Next(MIN_ENEMY_ROOM_DEPTH, MAX_ENEMY_ROOM_DEPTH-1);
 						type = RogueRoom.RoomType.enemy;
 
 						// TODO: handle enemy score distribution
@@ -121,10 +135,12 @@ namespace MazeGeneration
 					// of every door in the maze, so width-corridor_width as well as
 					// height-corridor_width must be even.
 					// Adjust accordingly:
+					/*
 					if ((roomWidth - CORRIDOR_WIDTH) % 2 == 1)
 						roomWidth++;
 					if ((roomDepth - CORRIDOR_WIDTH) % 2 == 1)
 						roomDepth++;
+						*/
 
                     // Determine what the door code should be, by checking the map:
                     int mapCoordX = x + 1;

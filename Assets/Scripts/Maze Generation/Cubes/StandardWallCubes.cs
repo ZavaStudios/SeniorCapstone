@@ -84,20 +84,77 @@ namespace MazeGeneration
 		
 		public IEnumerable<Cube> EnumerateCubes()
 		{
+			// Fencepost: Enumerate edges of the wall first:
+			// Left / Right:
+			for (int y = 0; y < Height; y++)
+			{
+				int z = 0;
+				foreach (Cube.CubeType type in Cubes[0,y])
+				{
+					yield return new Cube(type, 0, y, z);
+					z++;
+				}
+				z = 0;
+				foreach (Cube.CubeType type in Cubes[Width-1,y])
+				{
+					yield return new Cube(type, Width-1, y, z);
+					z++;
+				}
+			}
+			// Top / Bottom:
 			for (int x = 0; x < Width; x++)
 			{
-				for (int y = 0; y < Height; y++)
+				int z = 0;
+				foreach (Cube.CubeType type in Cubes[x,0])
 				{
-					/*
+					yield return new Cube(type, x, 0, z);
+					z++;
+				}
+				z = 0;
+				foreach (Cube.CubeType type in Cubes[x,Height-1])
+				{
+					yield return new Cube(type, x, Height-1, z);
+					z++;
+				}
+			}
+
+			// Main loop:
+			for (int x = 1; x < Width-1; x++)
+			{
+				for (int y = 1; y < Height-1; y++)
+				{
+					// We need to check neighboring lists, as well as this one.
+					// We initialize the iterators here:
+					LinkedListNode<Cube.CubeType> lftItr = Cubes[x-1,y].First;
+					LinkedListNode<Cube.CubeType> rgtItr = Cubes[x+1,y].First;
+					LinkedListNode<Cube.CubeType> topItr = Cubes[x,y-1].First;
+					LinkedListNode<Cube.CubeType> dwnItr = Cubes[x,y+1].First;
+					LinkedListNode<Cube.CubeType> curItr = Cubes[x,y].First;
+
 					int z = 0;
-					foreach (Cube.CubeType type in Cubes[x,y])
+					while(curItr != null)
 					{
-						yield return new Cube(type, x, y, z);
+						// Return this cube if and only if it is not obscured by adjacent cubes
+						// This means, to skip it,the following must hold:
+						//  1) We have a left, right, up, and down neighbor, each of which is not air
+						//  2) This block has another in front of it
+						if (!( /*LEFT:*/  (lftItr != null && lftItr.Value != Cube.CubeType.Air) &&
+						       /*RIGHT:*/ (rgtItr != null && rgtItr.Value != Cube.CubeType.Air) &&
+						       /*UP:*/    (topItr != null && topItr.Value != Cube.CubeType.Air) &&
+						       /*DOWN:*/  (dwnItr != null && dwnItr.Value != Cube.CubeType.Air) &&
+						       /*FRONT:*/ (curItr.Next != null)))
+						{
+							yield return new Cube(curItr.Value, x, y, z);
+						}
+
+						// Update iterators:
+						lftItr = (lftItr != null) ? lftItr.Next : null;
+						rgtItr = (rgtItr != null) ? rgtItr.Next : null;
+						topItr = (topItr != null) ? topItr.Next : null;
+						dwnItr = (dwnItr != null) ? dwnItr.Next : null;
+						curItr = curItr.Next;
 						z++;
 					}
-					*/
-
-					yield return new Cube(Cubes[x,y].Last.Value, x, y, Cubes[x,y].Count-1);
 				}
 			}
 		}

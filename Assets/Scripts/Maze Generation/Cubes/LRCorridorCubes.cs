@@ -14,8 +14,8 @@ namespace MazeGeneration
 
 		public LRCorridorCubes (int width, int depth, int height)
 		{
-			UpWall = new StandardWallCubes(width, height, depth / 3, Math.Min (1, depth / 3));
-			DownWall = new StandardWallCubes(width, height, depth / 3, Math.Min (1, depth / 3));
+			UpWall = new StandardWallCubes(width, height, depth / 2, 1);
+			DownWall = new StandardWallCubes(width, height, depth / 2, 1);
 
 			Width = width;
 			Height = height;
@@ -27,7 +27,7 @@ namespace MazeGeneration
 			foreach (Cube c in UpWall.EnumerateCubes())
 				yield return c;
 			foreach (Cube c in DownWall.EnumerateCubes())
-				yield return new Cube(c.Type, Width - c.X, c.Y, Depth - c.Z);
+				yield return new Cube(c.Type, Width - c.X - 1, c.Y, Depth - c.Z - 1);
 		}
 	}
 }
