@@ -36,7 +36,7 @@ public class MineableBlock : MonoBehaviour
 
 		void AddToPlayerInventory ()
 		{
-			GameObject player = GameObject.FindWithTag ("Player");
+//			GameObject player = GameObject.FindWithTag ("Player");
 
             //TODO Cast to a Player type and access the inventory
             //player.inventory.add(ore, quantity)

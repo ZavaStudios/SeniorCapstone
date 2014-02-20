@@ -22,7 +22,7 @@ public class ItemEquipment : ItemBase {
 		_armor = armor;
 		_health = health;
         this.type = itemtype;
-        
+
 	}
 	
 	public float damage
@@ -49,4 +49,8 @@ public class ItemEquipment : ItemBase {
         get { return this._health; }
     }
 
+	public string description
+	{
+		get{ return this._description; }
+	}
 }

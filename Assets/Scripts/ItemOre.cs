@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class ItemOre : ItemBase
 {
+	//NOTE tOreType enum is in ItemBase Class
+
+
     public ItemOre(tOreType type)
         : base(getOreString(type))
     {
@@ -12,9 +15,9 @@ public class ItemOre : ItemBase
         _quantity = 1;
     }
 
-    public override string toString()
+    public override string ToString()
     {
-        return description;
+        return _description;
     }
 	
 }

@@ -22,19 +22,19 @@ public class WeaponModelSwitcher : MonoBehaviour
         crappy_pickaxe.SetActive(false);
 		crappy_staff.SetActive(false);
         
-            if (newWeapon == "WeaponSword")
+            if (newWeapon == ItemWeapon.tWeaponType.WeaponSword.ToString())
             {
                 crappy_sword.SetActive(true);
                 Active = crappy_sword;
             }
         
-            else if (newWeapon == "WeaponPickaxe")
+            else if (newWeapon == ItemWeapon.tWeaponType.WeaponPickaxe.ToString())
             {
 			    crappy_pickaxe.SetActive(true);
                 Active = crappy_pickaxe;
             }
             
-            else if (newWeapon == "WeaponStaff")
+            else if (newWeapon == ItemWeapon.tWeaponType.WeaponStaff.ToString())
 		    {
 			    crappy_staff.SetActive(true);
 			    Active = crappy_staff;
