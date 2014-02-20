@@ -5,8 +5,8 @@ namespace MazeGeneration
 {
 	public class UDCorridorCubes : RoomCubes
 	{
-		private StandardWallCubes LeftWall { get; set; }
-		private StandardWallCubes RightWall { get; set; }
+		public StandardWallCubes LeftWall { get; private set; }
+		public StandardWallCubes RightWall { get; private set; }
 		
 		private int Width { get; set; }
 		private int Depth { get; set; }

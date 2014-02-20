@@ -94,8 +94,13 @@ namespace MazeGeneration
 
 		public override void InitializeCubes ()
 		{
+			RoomCubes lftCbes = (LeftNeighbor != null)  ? LeftNeighbor.Cubes  : null;
+			RoomCubes rgtCbes = (RightNeighbor != null) ? RightNeighbor.Cubes : null;
+			RoomCubes upCbes  = (UpNeighbor != null)    ? UpNeighbor.Cubes    : null;
+			RoomCubes dwnCbes = (DownNeighbor != null)  ? DownNeighbor.Cubes  : null;
 			Cubes = Width > RogueDungeon.CORRIDOR_WIDTH ?
-					    	(RoomCubes)new StandardRoomCubes(Width, Depth, DoorCode, Height) :
+					    	(RoomCubes)new StandardRoomCubes(Width, Depth, DoorCode, Height,
+				                                 			 lftCbes, rgtCbes, upCbes, dwnCbes) :
 							(RoomCubes)new SmallRoomCubes(Width, Depth, DoorCode, Height);
 		}
 		

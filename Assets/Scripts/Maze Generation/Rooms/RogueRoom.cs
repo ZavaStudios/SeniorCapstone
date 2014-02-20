@@ -36,7 +36,7 @@ namespace MazeGeneration
 		public int GridX { get; set; }
 		public int GridY { get; set; }
 		public RoomType Type { get; set; }
-		protected RoomCubes Cubes { get; set; }
+		public RoomCubes Cubes { get; set; }
 
 		// Room relationships:
 		public RogueRoom LeftNeighbor { get; set; }

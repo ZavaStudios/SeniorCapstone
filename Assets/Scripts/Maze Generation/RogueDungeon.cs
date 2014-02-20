@@ -230,7 +230,10 @@ namespace MazeGeneration
 						rgtNbr.LeftNeighbor = corridor;
 						corridor.LeftNeighbor = lftNbr;
 						corridor.RightNeighbor = rgtNbr;
-						
+
+						// Initialize cubes:
+						corridor.InitializeCubes();
+
 						// Put it in the map:
 						Map[x,y] = corridor;
 					}
@@ -276,7 +279,10 @@ namespace MazeGeneration
 						dwnNbr.UpNeighbor = corridor;
 						corridor.UpNeighbor = upNbr;
 						corridor.DownNeighbor = dwnNbr;
-						
+
+						// Initialize cubes:
+						corridor.InitializeCubes();
+
 						// Put it in the map:
 						Map[x,y] = corridor;
 					}
@@ -286,12 +292,17 @@ namespace MazeGeneration
 					}
 				}
 			}
-			
-			// Initialize cubes:
-			foreach (RogueRoom room in EnumerateRooms())
-				room.InitializeCubes();
-        }
 
+			// Initialize main rooms' cubes:
+			for (int x = 0; x < newWidth; x += 2)
+			{
+				for (int y = 0; y < newHeight; y += 2)
+				{
+					Map[x,y].InitializeCubes();
+				}
+			}
+		}
+				
 		public IEnumerable<RogueRoom> EnumerateRooms()
 		{
 			foreach (RogueRoom room in Map)

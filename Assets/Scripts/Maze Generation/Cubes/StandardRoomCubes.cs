@@ -75,7 +75,8 @@ namespace MazeGeneration
 		/// <param name="roomWidth">Width of the room</param>
 		/// <param name="roomHeight">Height of the room</param>
 		/// <param name="ceilingHeight">Height of the ceiling</param>
-		public StandardRoomCubes(int roomWidth, int roomHeight, int doorCode, int ceilingHeight)
+		public StandardRoomCubes(int roomWidth, int roomHeight, int doorCode, int ceilingHeight,
+		                         RoomCubes lftNbr, RoomCubes rgtNbr, RoomCubes upNbr, RoomCubes dwnNbr)
 		{
 			Width = roomWidth;
 			Depth = roomHeight;
@@ -87,16 +88,20 @@ namespace MazeGeneration
 			int wallWidth = (Width - (CORNER_DIM * 2)) < 0 ? 0 : (Width - (CORNER_DIM * 2));
 			L_Wall = (doorCode & RogueRoom.LEFT_DOOR_MASK) == 0 ?
 				(WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM, 3) :
-					(WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM, 3);
+					(WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM, 3,
+					                             RogueRoom.LEFT_DOOR_MASK, lftNbr);
 			R_Wall = (doorCode & RogueRoom.RIGHT_DOOR_MASK) == 0 ?
 				(WallCubes)new StandardWallCubes(wallDepth, Height, CORNER_DIM, 3) :
-					(WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM, 3);
+					(WallCubes)new DoorWallCubes(wallDepth, Height, CORNER_DIM, 3,
+					                             RogueRoom.RIGHT_DOOR_MASK, rgtNbr);
 			T_Wall = (doorCode & RogueRoom.UP_DOOR_MASK) == 0 ?
 				(WallCubes)new StandardWallCubes(wallWidth, Height, CORNER_DIM, 3) :
-					(WallCubes)new DoorWallCubes(wallWidth, Height, CORNER_DIM, 3);
+					(WallCubes)new DoorWallCubes(wallWidth, Height, CORNER_DIM, 3,
+					                             RogueRoom.UP_DOOR_MASK, upNbr);
 			B_Wall = (doorCode & RogueRoom.DOWN_DOOR_MASK) == 0 ?
 				(WallCubes)new StandardWallCubes(wallWidth, Height, CORNER_DIM, 3) :
-					(WallCubes)new DoorWallCubes(wallWidth, Height, CORNER_DIM, 3);
+					(WallCubes)new DoorWallCubes(wallWidth, Height, CORNER_DIM, 3,
+					                             RogueRoom.DOWN_DOOR_MASK, dwnNbr);
 			
 			TL_Corner = new InsideCornerCubes(L_Wall, T_Wall);
 			BL_Corner = new InsideCornerCubes(B_Wall, L_Wall);
@@ -153,7 +158,7 @@ namespace MazeGeneration
 				// Left wall's X coordinate is equal to c.Z
 				//             Y coordinate is equal to c.Y
 				//             Z coordinate is equal to Depth - BL_Corner.Width - c.X - 1
-				yield return new Cube(Cube.CubeType.Gold, c.Z, c.Y, Depth - BL_Corner.Width - c.X - 1);
+				yield return new Cube(c.Type, c.Z, c.Y, Depth - BL_Corner.Width - c.X - 1);
 			}
 			// right:
 			foreach (Cube c in R_Wall.EnumerateCubes())
@@ -161,7 +166,7 @@ namespace MazeGeneration
 				// Right wall's X coordinate is equal to Width - c.Z - 1
 				//              Y coordinate is equal to c.Y
 				//              Z coordinate is equal to c.X + TR_Corner.Width
-				yield return new Cube(Cube.CubeType.Silver, Width - c.Z - 1, c.Y, c.X + TR_Corner.Width);
+				yield return new Cube(c.Type, Width - c.Z - 1, c.Y, c.X + TR_Corner.Width);
 			}
 			// top:
 			foreach (Cube c in T_Wall.EnumerateCubes())
@@ -169,7 +174,7 @@ namespace MazeGeneration
 				// Top wall's X coordinate is equal to c.X + TL_Corner.Width
 				//            Y coordinate is equal to c.Y
 				//            Z coordinate is equal to c.Z
-				yield return new Cube(Cube.CubeType.Stone, c.X + TL_Corner.Width, c.Y, c.Z);
+				yield return new Cube(c.Type, c.X + TL_Corner.Width, c.Y, c.Z);
 			}
 			// bottom:
 			foreach (Cube c in B_Wall.EnumerateCubes())
@@ -177,7 +182,7 @@ namespace MazeGeneration
 				// Bottom wall's X coordinate is equal to Width - BR_Corner.Width - c.X - 1
 				//               Y coordinate is equal to c.Y
 				//               Z coordinate is equal to Depth - c.Z - 1
-				yield return new Cube(Cube.CubeType.Platinum, Width - BR_Corner.Width - c.X - 1, c.Y, Depth - c.Z - 1);
+				yield return new Cube(c.Type, Width - BR_Corner.Width - c.X - 1, c.Y, Depth - c.Z - 1);
 			}
 		}
 	}
