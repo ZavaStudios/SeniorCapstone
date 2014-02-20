@@ -11,13 +11,19 @@ public class SkeletonKingAI : BossUnit
 		equipWeapon("SkeletonWeapon");
 
 		//Set the enemy cap to be 5.
-		enemyCap = 5;
+		enemyCap = 3;
 	}
 	
 	// Update is called once per frame
 	protected override void Update () 
 	{
 		base.Update();
+
+	}
+
+	//Specifically spawns Skeletons for this boss.
+	protected override void spawnEnemy()
+	{
 		MonoBehaviour.Instantiate(skeleton,
 		                          this.transform.position + new Vector3(3.0f, skeleton.collider.bounds.center.y, 0.0f),
 		                          Quaternion.identity);

@@ -11,6 +11,8 @@ public class BossUnit : UnitEnemy
 
 	//Caps the number of enemies that can be spawned.
 	protected float enemyCap = 0.0f;
+	private int numEnemies = 0;
+
 
 	//ToDo: Once the enemies have been killed should we regenerate new ones? 
 
@@ -33,11 +35,11 @@ public class BossUnit : UnitEnemy
 		base.Update();
 
 		//First attack: Spawn an enemy every so often.
-		if (Time.time >= spawnTimer) 
+		if (Time.time >= spawnTimer && numEnemies < enemyCap)
 		{
 			//Spawn an enemy every delay seconds.  
 			spawnTimer = Time.time + delay;
-			enemyCap++;
+			numEnemies++;
 		}
 	}
 

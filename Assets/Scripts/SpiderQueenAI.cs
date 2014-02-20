@@ -19,14 +19,15 @@ public class SpiderQueenAI : BossUnit
 	{
 		base.Update();
 
-		MonoBehaviour.Instantiate(spider,
-		                          this.transform.position + new Vector3(3.0f, spider.collider.bounds.center.y, 0.0f),
-		                          Quaternion.identity);
+
 	}
 
 	//Spawns enemies of the type spider. 
 	protected override void spawnEnemy()
 	{
 
+		MonoBehaviour.Instantiate(spider,
+		                          this.transform.position + new Vector3(3.0f, spider.collider.bounds.center.y, 0.0f),
+		                          Quaternion.identity);
 	}
 }
