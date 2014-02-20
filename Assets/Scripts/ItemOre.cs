@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class ItemOre : ItemBase
@@ -15,9 +15,9 @@ public class ItemOre : ItemBase
         _quantity = 1;
     }
 
-    public override string toString()
+    public override string ToString()
     {
-        return description;
+        return _description;
     }
 	
 }

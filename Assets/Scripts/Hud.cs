@@ -8,12 +8,15 @@ public class Hud : MonoBehaviour
     public const KeyCode keyCodeInventory = KeyCode.I;
     public const KeyCode keyCodeCrafting = KeyCode.C;
     public const KeyCode keyCodeAssembleItems = KeyCode.U;
+	public const KeyCode keyCodeMenusMenu = KeyCode.O;
 
     //Up down left right a.k.a WASD
     public const KeyCode keyCodeInventoryUp = KeyCode.UpArrow;
     public const KeyCode keyCodeInventoryLeft = KeyCode.LeftArrow;
     public const KeyCode keyCodeInventoryDown = KeyCode.DownArrow;
     public const KeyCode keyCodeInventoryRight = KeyCode.RightArrow;
+	public const KeyCode keyCodeInventoryAltLeft = KeyCode.A;
+	public const KeyCode keyCodeInventoryAltRight = KeyCode.D;
     public const KeyCode keyCodeConfirm = KeyCode.J;
 
     //Declare instance variables
@@ -45,13 +48,12 @@ public class Hud : MonoBehaviour
 	//Grid for weapon types
 	string[] arrWeaponTypes;
 
+	tMenuStates[] arrMenusMenu = {tMenuStates.INVENTORY, tMenuStates.CRAFTING, tMenuStates.ASSEMBLING};
 
     //Options for laying out the grid
     //The measurements for the item slot representation
     int intSlotWidth;
     int intSlotHeight;
-
-
 
     int intCompTypeWidth;
     int intCompSelCols = 3;
@@ -60,6 +62,7 @@ public class Hud : MonoBehaviour
     Vector2 vec2CompTypeStart;
     Vector2 vec2CompTypeDimensions;
     //Indexes for the selections
+	int intMenusMenu = 0;
     int intCompTypeGrid = 0; //Index for the type of component
     int intCompSelGrid = 0; //Index for selecting different components
 	int intAssemType = 0; //Index for selecting which type of weapon to assemble
@@ -68,7 +71,7 @@ public class Hud : MonoBehaviour
 
 
     //Current value of the scroll bar
-    float vSbarValue = 0; //TODO Use the scroll bar to move through the inventory
+//    float vSbarValue = 0; //TODO Use the scroll bar to move through the inventory
 
     //How many items can fit on each row/column
     int intItemsPerRow;
@@ -129,12 +132,21 @@ public class Hud : MonoBehaviour
 		arrWeaponTypes = Enum.GetNames (typeof(ItemWeapon.tWeaponType));
     }
 
+	/// <summary>
+	/// Take care of switching through menus when keys are pressed and also moving inside of menus.
+	/// </summary>
     protected void Update()
     {
-        //TODO Merge if statement code together to avoid duplication
-
 		//Toggle the appropriate menu
-		if (Input.GetKeyUp(keyCodeInventory)) //Allow toggling of the inventory when the corresponding button has been pressed
+		if(Input.GetKeyUp(keyCodeMenusMenu))
+		{
+//			if(menuCode == tMenuStates.MENU_NONE)
+//				menuCode = tMenuStates.MENU_MAIN;
+//			else if (menuCode == tMenuStates.MENU_MAIN)
+//				menuCode = tMenuStates.MENU_NONE;
+		}
+
+		else if (Input.GetKeyUp(keyCodeInventory)) //Allow toggling of the inventory when the corresponding button has been pressed
         {
             if (menuCode == tMenuStates.MENU_NONE)
                 menuCode = tMenuStates.INVENTORY;
@@ -157,6 +169,15 @@ public class Hud : MonoBehaviour
         }
 
 		//Take care of movement inside menus
+		if(menuCode != tMenuStates.MENU_NONE) //Menu to select menues
+		{
+			if(Input.GetKeyUp(keyCodeInventoryAltRight))
+				intMenusMenu = (arrMenusMenu.Length + intMenusMenu + 1) % arrMenusMenu.Length;
+			else if(Input.GetKeyUp(keyCodeInventoryAltLeft))
+				intMenusMenu = Math.Max(intMenusMenu - 1, 0);
+
+			menuCode = arrMenusMenu[intMenusMenu];
+		}
         switch (menuCode)
         {
             //If the inventory is open, process movement inside the inventory
@@ -206,7 +227,10 @@ public class Hud : MonoBehaviour
         //		if(GUI.Button(new Rect(250, 350, 50, 50), "Down"))
         //			vSbarValue -= 1;
 
-
+		if(menuCode != tMenuStates.MENU_NONE)
+		{
+			showMenuStates();
+		}
 
         switch (menuCode)
         {
@@ -239,6 +263,17 @@ public class Hud : MonoBehaviour
         }
     }
 
+	private void showMenuStates()
+	{
+		UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
+		Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
+
+		tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryTypeBackground");
+		style.normal.background = tex2dButtonPassiveBack;
+
+		GUI.Label (new Rect (0, 0, 150, 50),arrMenusMenu[intMenusMenu].ToString(),style);
+	}
+
 
 	private void layoutAssembleGrid()
 	{
@@ -248,12 +283,28 @@ public class Hud : MonoBehaviour
 		vec2CompTypeDimensions.y = 200;
 
 		Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
+		Texture2D tex2dButtonActiveBack = new Texture2D (1, 1);
+		Texture2D tex2dButtonFlashBack = new Texture2D (1, 1);
+		UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
+
 
 		//Set the style for selection screens
 		//TODO Currently, can't initialize a style outside of On GUI. Find a  way to call this outside of OnGUI for efficiency
-		UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
-		tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryTypeBackground");
+		tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryButtonBackground");
+		tex2dButtonActiveBack = (Texture2D)Resources.Load("SelectedBackground");
+		tex2dButtonFlashBack = (Texture2D)Resources.Load("SelectedBackgroundFlash");
+		
+		//Backgrounds when I have an active selection
+		style.active.background = tex2dButtonActiveBack;
+		style.focused.background = tex2dButtonActiveBack;
+		style.onFocused.background = tex2dButtonActiveBack;
+		style.onNormal.background = tex2dButtonActiveBack;
+		
+		//Backgrounds for non-active items
 		style.normal.background = tex2dButtonPassiveBack;
+		style.hover.background = tex2dButtonPassiveBack;
+		style.onHover.background = tex2dButtonPassiveBack;
+
 
 		//Make a label to show which kind of weapon is being assembled
 		int intAssemWeaponLabelWidth = Screen.width / 4;
@@ -268,7 +319,7 @@ public class Hud : MonoBehaviour
 		string[] arrAssembleStrings = new string[arrListAssemblable.Count];
 		for(int i = 0; i < arrListAssemblable.Count; i++)
 		{
-			arrAssembleStrings[i] = arrListAssemblable[i].ToString();
+			arrAssembleStrings[i] = ((ItemWeapon)arrListAssemblable[i]).name;
 		}
 
 		intCompTypeGrid = GUI.SelectionGrid(new Rect(vec2CompTypeStart.x, vec2CompTypeStart.y,  vec2CompTypeDimensions.x, vec2CompTypeDimensions.y), 
@@ -398,7 +449,7 @@ public class Hud : MonoBehaviour
             //ItemWeapon wep = (ItemWeapon)arrListWeapons[i];
             ItemBase wep = (ItemBase)allItems[i];
             //Grab the names of the item associated with the weapon
-            arrStringWeapons[i] = wep.name; //To instead use pictures/textures, make an array of pictures/textures
+            arrStringWeapons[i] = wep.ToString(); //To instead use pictures/textures, make an array of pictures/textures
         }
 
         intSelectedWeapon = GUI.SelectionGrid(new Rect(vec2CurrentPos.x, vec2CurrentPos.y, Screen.width, intSlotHeight),

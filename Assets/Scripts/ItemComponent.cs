@@ -125,6 +125,10 @@ public class ItemComponent : ItemEquipment {
 		return strName;
 	}
 
+	public override string ToString()
+	{
+		return ItemComponent.getComponentName (this.strComponentCode);
+	}
 
     public ItemComponent(string name, tItemType itemtype) 
         : base(name, itemtype)
@@ -134,7 +138,7 @@ public class ItemComponent : ItemEquipment {
     }
 
     public ItemComponent(float damage, float atkspd, float armor, float health, string name, string componentCode, string description)
-        : base(damage,atkspd,armor,health,name,tItemType.Component,description)
+		: base(damage,atkspd,armor,health,ItemComponent.getComponentName(componentCode),tItemType.Component,description)
 	{
         this.oreType = ItemComponent.getComponentOre(componentCode);
 		this.strComponentCode = componentCode;
