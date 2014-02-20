@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace MazeGeneration
 {
@@ -20,10 +21,12 @@ namespace MazeGeneration
 		/// using the values as percentages, and index into the array based on scaled
 		/// results, but YMMV.
 		/// </summary>
+		/// <param name="seedArray">Array describing seeded values for the generation
+		/// function. Null by default.</param>
 		/// <returns>Grid of noise.</returns>
 		public static int[,] GenerateNoise128()
 		{
-			Random rnd = new Random();
+			System.Random rnd = new System.Random();
 			int[,,] overlays = new int[128,128,OVERLAY_CNT];
 			FREQ = 64;
 

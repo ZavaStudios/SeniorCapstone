@@ -4,9 +4,10 @@ using MazeGeneration;
 
 public class Main : MonoBehaviour
 {
-    private const int WIDTH  = 3;
+    private const int WIDTH  = 2;
     private const int HEIGHT = 3;
 
+	private const float CUBE_SCALAR = 1.0f;
     private const float TILE_SCALAR = 1.0f;
     private const float CEILING_HEIGHT = 5.0f;
     private const float LIGHT_DISTANCE = 2.0f;
@@ -30,46 +31,30 @@ public class Main : MonoBehaviour
     {
         RogueDungeon dungeon = new RogueDungeon(WIDTH, HEIGHT);
 
-        // Build appropriate scalars
-        float dungeon_width  = WIDTH  * TILE_SCALAR * (RogueDungeon.MAX_ROOM_WIDTH  + 2);
-        float dungeon_height = HEIGHT * TILE_SCALAR * (RogueDungeon.MAX_ROOM_HEIGHT + 2);
+		// TODO: FIX!
+		//room.enemy = enemy;
+		RogueRoom.skeleton = skeleton;
+		RogueRoom.spider = spider;
+		RogueRoom.zombie = zombie;
+		RogueRoom.floor_tile = floor_tile;
+		RogueRoom.wall_tile = wall_tile;
+		RogueRoom.mine_cube = mine_cube;
+		RogueRoom.ore_cube = ore_cube;
+		RogueRoom.ore2_cube = ore2_cube;
+		RogueRoom.ore3_cube = ore3_cube;
+		RogueRoom.ore4_cube = ore4_cube;
 
-        // build walls
-        Rect room_bounds = new Rect(TILE_SCALAR - (dungeon_width  / 2.0f),
-                                    TILE_SCALAR - (dungeon_height / 2.0f),
-                                    RogueDungeon.MAX_ROOM_WIDTH  * TILE_SCALAR,
-                                    RogueDungeon.MAX_ROOM_HEIGHT * TILE_SCALAR);
+        foreach (RogueRoom room in dungeon.EnumerateRooms())
+		{
+			room.LoadRoom(RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_DEPTH,
+			              RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR);
 
-        for (int roomX = 0; roomX < WIDTH; roomX++)
-        {
-            for (int roomY = 0; roomY < HEIGHT; roomY++)
-            {
-				RogueRoom room = dungeon.Map[roomX, roomY];
-				// TODO: FIX!
-				//room.enemy = enemy;
-				room.skeleton = skeleton;
-				room.spider = spider;
-				room.zombie = zombie;
-				room.floor_tile = floor_tile;
-				room.wall_tile = wall_tile;
-				room.mine_cube = mine_cube;
-				room.ore_cube = ore_cube;
-				room.ore2_cube = ore2_cube;
-				room.ore3_cube = ore3_cube;
-				room.ore4_cube = ore4_cube;
-
-				room.LoadRoom(roomX, roomY,
-				              RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_HEIGHT,
-				              RogueDungeon.CORRIDOR_WIDTH);
-
-				if (room.Type == RogueRoom.RoomType.start)
-				{
-					player.transform.position = room.GetCenter(roomX, roomY,
-					                                           RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_HEIGHT,
-					                                           RogueDungeon.CORRIDOR_WIDTH) +
-												new Vector3(0.0f, 1.5f, 0.0f);
-				}
-            }
+			if (room.Type == RogueRoom.RoomType.start)
+			{
+				player.transform.position = (room.GetCenter(RogueDungeon.MAX_ROOM_WIDTH,
+				                                            RogueDungeon.MAX_ROOM_DEPTH) +
+											new Vector3(0.0f, 1.5f, 0.0f)) * CUBE_SCALAR;
+			}
         }
 	}
 
