@@ -4,10 +4,10 @@ namespace MazeGeneration
 {
 	public class CorridorBranchRoom : RogueRoom
 	{
-		public CorridorBranchRoom (int width, int depth, int height, int x, int y, int doorCode)
+		public CorridorBranchRoom (int width, int height, int x, int y, int doorCode)
 		{
 			Width = width;
-			Depth = depth;
+			Depth = width;
 			Height = height;
 			GridX = x;
 			GridY = y;
@@ -18,7 +18,16 @@ namespace MazeGeneration
 
 		public override void InitializeCubes ()
 		{
-			// TODO
+			LRCorridorCubes lftNbr = (LeftNeighbor != null)  ? (LRCorridorCubes)LeftNeighbor.Cubes  : null;
+			LRCorridorCubes rgtNbr = (RightNeighbor != null) ? (LRCorridorCubes)RightNeighbor.Cubes : null;
+			UDCorridorCubes upNbr  = (UpNeighbor != null)    ? (UDCorridorCubes)UpNeighbor.Cubes    : null;
+			UDCorridorCubes dwnNbr = (DownNeighbor != null)  ? (UDCorridorCubes)DownNeighbor.Cubes  : null;
+
+			/*
+			Cubes = new SmallRoomCubes(Width, Depth, Height, DoorCode,
+			                           lftNbr, rgtNbr, upNbr, dwnNbr);
+			                           */
+			// TODO: actually spawn cubes
 		}
 	}
 }

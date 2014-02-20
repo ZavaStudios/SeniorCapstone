@@ -98,10 +98,8 @@ namespace MazeGeneration
 			RoomCubes rgtCbes = (RightNeighbor != null) ? RightNeighbor.Cubes : null;
 			RoomCubes upCbes  = (UpNeighbor != null)    ? UpNeighbor.Cubes    : null;
 			RoomCubes dwnCbes = (DownNeighbor != null)  ? DownNeighbor.Cubes  : null;
-			Cubes = Width > RogueDungeon.CORRIDOR_WIDTH ?
-					    	(RoomCubes)new StandardRoomCubes(Width, Depth, DoorCode, Height,
-				                                 			 lftCbes, rgtCbes, upCbes, dwnCbes) :
-							(RoomCubes)new SmallRoomCubes(Width, Depth, DoorCode, Height);
+			Cubes = new StandardRoomCubes(Width, Depth, DoorCode, Height,
+			                              lftCbes, rgtCbes, upCbes, dwnCbes);
 		}
 		
 		/// <summary>

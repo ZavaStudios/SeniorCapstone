@@ -79,6 +79,8 @@ namespace MazeGeneration
 			// If we have no cubes in our grid (one of the dims is 0), just return 0
 			if (Width == 0 || Height == 0)
 				return 0;
+			if (Cubes == null)
+				return -1;
 			return Cubes[x,y].Count;
 		}
 		
