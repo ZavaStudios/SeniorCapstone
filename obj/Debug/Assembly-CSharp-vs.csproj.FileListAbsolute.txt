@@ -10,3 +10,4 @@ D:\Documents\Github\SeniorCapstone\obj\Debug\Assembly-CSharp-vs.csprojResolveAss
 D:\Documents\Github\SeniorCapstone\obj\Debug\Assembly-CSharp.dll
 D:\Documents\Github\SeniorCapstone\obj\Debug\Assembly-CSharp.pdb
 D:\Documents\Github\SeniorCapstone\Temp\bin\Debug\Assembly-CSharp-firstpass.pdb
+D:\Documents\GitHub\SeniorCapstone\Temp\bin\Debug\Unity.DataContract.dll

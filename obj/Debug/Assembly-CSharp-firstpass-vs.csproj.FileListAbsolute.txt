@@ -8,3 +8,4 @@ D:\Documents\Github\SeniorCapstone\Temp\bin\Debug\ICSharpCode.NRefactory.dll
 D:\Documents\Github\SeniorCapstone\obj\Debug\Assembly-CSharp-firstpass.dll
 D:\Documents\Github\SeniorCapstone\obj\Debug\Assembly-CSharp-firstpass.pdb
 D:\Documents\Github\SeniorCapstone\obj\Debug\Assembly-CSharp-firstpass-vs.csprojResolveAssemblyReference.cache
+D:\Documents\GitHub\SeniorCapstone\Temp\bin\Debug\Unity.DataContract.dll
