@@ -18,8 +18,6 @@ namespace MazeGeneration
 	/// </summary>
 	public class InsideCornerCubes : RoomCubes
 	{
-		private WallCubes DownWall;
-		private WallCubes RightWall;
 		private Cube.CubeType[,,] Cubes;
 		
 		public int Width
@@ -35,26 +33,21 @@ namespace MazeGeneration
 			get { return Cubes.GetLength(1); }
 		}
 		
-		public InsideCornerCubes(WallCubes downWall, WallCubes rightWall)
+		public InsideCornerCubes(int width, int depth, int[] right, int[] down)
 		{
-			DownWall = downWall;
-			RightWall = rightWall;
-			
-			int width = DownWall.MaxDepth;
-			int height = DownWall.Height;
-			int depth = RightWall.MaxDepth;
+			int height = right.Length;
 			Cubes = new Cube.CubeType[width, depth, height];
 			
-			InitializeCubes();
+			InitializeCubes(right, down);
 		}
 		
-		private void InitializeCubes()
+		private void InitializeCubes(int[] right, int[] down)
 		{
 			for (int z = 0; z < Height; z++)
 			{
 				// Quadrants: Only one is interesting
-				int quadX = DownWall.GetDepthAt(DownWall.Width-1, z);
-				int quadY = RightWall.GetDepthAt(0, z);
+				int quadX = down[z];
+				int quadY = right[z];
 				// Quadrants 1 and 2 (merged for convenience)
 				for (int x = 0; x < Width; x++)
 				{

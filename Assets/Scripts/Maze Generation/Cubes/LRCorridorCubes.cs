@@ -27,7 +27,7 @@ namespace MazeGeneration
 			foreach (Cube c in UpWall.EnumerateCubes())
 				yield return c;
 			foreach (Cube c in DownWall.EnumerateCubes())
-				yield return new Cube(c.Type, Width - c.X - 1, c.Y, Depth - c.Z - 1);
+				yield return new Cube(c.Type, c.X, c.Y, Depth - c.Z - 1);
 		}
 	}
 }

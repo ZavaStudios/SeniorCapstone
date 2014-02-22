@@ -42,26 +42,34 @@ namespace MazeGeneration
 			if (doorCode == RogueRoom.LEFT_DOOR_MASK)
 			{
 				LRCorridorCubes corCubes = (LRCorridorCubes)neighborCubes;
-				L_Corner = new OutsideCornerCubes(corCubes.DownWall, L_Side);
-				R_Corner = new OutsideCornerCubes(R_Side, corCubes.UpWall);
+				L_Corner = new OutsideCornerCubes(corCubes.DownWall.MaxDepth, L_Side.MaxDepth,
+				                                  L_Side.GetRightEdge(), corCubes.DownWall.GetRightEdge());
+				R_Corner = new OutsideCornerCubes(R_Side.MaxDepth, corCubes.UpWall.MaxDepth,
+				                                  corCubes.UpWall.GetRightEdge(), R_Side.GetLeftEdge());
 			}
 			else if (doorCode == RogueRoom.RIGHT_DOOR_MASK)
 			{
 				LRCorridorCubes corCubes = (LRCorridorCubes)neighborCubes;
-				L_Corner = new OutsideCornerCubes(corCubes.UpWall, L_Side);
-				R_Corner = new OutsideCornerCubes(R_Side, corCubes.DownWall);
+				L_Corner = new OutsideCornerCubes(corCubes.UpWall.MaxDepth, L_Side.MaxDepth,
+				                                  L_Side.GetRightEdge(), corCubes.UpWall.GetLeftEdge());
+				R_Corner = new OutsideCornerCubes(R_Side.MaxDepth, corCubes.DownWall.MaxDepth,
+				                                  corCubes.DownWall.GetLeftEdge(), R_Side.GetLeftEdge());
 			}
 			else if (doorCode == RogueRoom.UP_DOOR_MASK)
 			{
 				UDCorridorCubes corCubes = (UDCorridorCubes)neighborCubes;
-				L_Corner = new OutsideCornerCubes(corCubes.LeftWall, L_Side);
-				R_Corner = new OutsideCornerCubes(R_Side, corCubes.RightWall);
+				L_Corner = new OutsideCornerCubes(corCubes.LeftWall.MaxDepth, L_Side.MaxDepth,
+				                                  L_Side.GetRightEdge(), corCubes.LeftWall.GetRightEdge());
+				R_Corner = new OutsideCornerCubes(R_Side.MaxDepth, corCubes.RightWall.MaxDepth,
+				                                  corCubes.RightWall.GetRightEdge(), R_Side.GetLeftEdge());
 			}
 			else if (doorCode == RogueRoom.DOWN_DOOR_MASK)
 			{
 				UDCorridorCubes corCubes = (UDCorridorCubes)neighborCubes;
-				L_Corner = new OutsideCornerCubes(corCubes.RightWall, L_Side);
-				R_Corner = new OutsideCornerCubes(R_Side, corCubes.LeftWall);
+				L_Corner = new OutsideCornerCubes(corCubes.RightWall.MaxDepth, L_Side.MaxDepth,
+				                                  L_Side.GetRightEdge(), corCubes.RightWall.GetLeftEdge());
+				R_Corner = new OutsideCornerCubes(R_Side.MaxDepth, corCubes.LeftWall.MaxDepth,
+				                                  corCubes.LeftWall.GetLeftEdge(), R_Side.GetLeftEdge());
 			}
 			else // ERROR!
 			{
@@ -77,6 +85,16 @@ namespace MazeGeneration
 				return 0;
 			else
 				return R_Side.GetDepthAt(x - L_Side.Width - RogueDungeon.CORRIDOR_WIDTH, y);
+		}
+
+		public int[] GetRightEdge()
+		{
+			return R_Side.GetRightEdge();
+		}
+
+		public int[] GetLeftEdge()
+		{
+			return L_Side.GetLeftEdge();
 		}
 		
 		public IEnumerable<Cube> EnumerateCubes()

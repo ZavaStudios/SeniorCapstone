@@ -40,6 +40,8 @@ namespace MazeGeneration
 		int Height { get; }
 		int MaxDepth { get; }
 		int GetDepthAt(int x, int y);
+		int[] GetRightEdge();
+		int[] GetLeftEdge();
 	}
 
 

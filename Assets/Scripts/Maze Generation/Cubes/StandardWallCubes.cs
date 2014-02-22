@@ -83,6 +83,30 @@ namespace MazeGeneration
 				return -1;
 			return Cubes[x,y].Count;
 		}
+
+		/// <summary>
+		/// Returns an array of depths representing the right-most edge of this wall.
+		/// </summary>
+		/// <returns>Depths along the right-most edge.</returns>
+		public int[] GetRightEdge()
+		{
+			int[] toRet = new int[Height];
+			for (int y = 0; y < Height; y++)
+				toRet[y] = GetDepthAt(Width-1, y);
+			return toRet;
+		}
+
+		/// <summary>
+		/// Returns an array of depths representing the left-most edge of this wall.
+		/// </summary>
+		/// <returns>Depths along the left-most edge.</returns>
+		public int[] GetLeftEdge()
+		{
+			int[] toRet = new int[Height];
+			for (int y = 0; y < Height; y++)
+				toRet[y] = GetDepthAt(0, y);
+			return toRet;
+		}
 		
 		public IEnumerable<Cube> EnumerateCubes()
 		{

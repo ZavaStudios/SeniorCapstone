@@ -103,10 +103,14 @@ namespace MazeGeneration
 					(WallCubes)new DoorWallCubes(wallWidth, Height, CORNER_DIM, 3,
 					                             RogueRoom.DOWN_DOOR_MASK, dwnNbr);
 			
-			TL_Corner = new InsideCornerCubes(L_Wall, T_Wall);
-			BL_Corner = new InsideCornerCubes(B_Wall, L_Wall);
-			TR_Corner = new InsideCornerCubes(T_Wall, R_Wall);
-			BR_Corner = new InsideCornerCubes(R_Wall, B_Wall);
+			TL_Corner = new InsideCornerCubes(L_Wall.MaxDepth, T_Wall.MaxDepth,
+			                                  T_Wall.GetLeftEdge(), L_Wall.GetRightEdge());
+			BL_Corner = new InsideCornerCubes(B_Wall.MaxDepth, L_Wall.MaxDepth,
+			                                  L_Wall.GetLeftEdge(), B_Wall.GetRightEdge());
+			TR_Corner = new InsideCornerCubes(T_Wall.MaxDepth, R_Wall.MaxDepth,
+			                                  R_Wall.GetLeftEdge(), T_Wall.GetRightEdge());
+			BR_Corner = new InsideCornerCubes(R_Wall.MaxDepth, B_Wall.MaxDepth,
+			                                  B_Wall.GetLeftEdge(), R_Wall.GetRightEdge());
 		}
 		
 		/// <summary>
