@@ -31,29 +31,21 @@ namespace MazeGeneration
 		private int Depth { get; set; }
 		private int Height { get; set; }
 		private Cube.CubeType[,,] Cubes;
-		
-		private LRCorridorCubes LeftNeighbor;
-		private LRCorridorCubes RightNeighbor;
-		private UDCorridorCubes UpNeighbor;
-		private UDCorridorCubes DownNeighbor;
 
 		public SmallRoomCubes(int width, int depth, int height, int doorCode,
-		                      LRCorridorCubes lftNbr, LRCorridorCubes rgtNbr,
-		                      UDCorridorCubes upNbr, UDCorridorCubes dwnNbr)
+		                      int[] lftNbrUp, int[] lftNbrDwn, int[] rgtNbrUp, int[] rgtNbrDwn,
+		                      int[] upNbrLft, int[] upNbrRgt, int[] dwnNbrLft, int[] dwnNbrRgt)
 		{
 			Width = width;
 			Depth = depth;
 			Height = height;
-			LeftNeighbor = lftNbr;
-			RightNeighbor = rgtNbr;
-			UpNeighbor = upNbr;
-			DownNeighbor = dwnNbr;
 			Cubes = new Cube.CubeType[width, depth, height];
 
-			InitializeCubes();
+			InitializeCubes(lftNbrUp, lftNbrDwn, rgtNbrUp, rgtNbrDwn, upNbrLft, upNbrRgt, dwnNbrLft, dwnNbrRgt);
 		}
 
-		private void InitializeCubes()
+		private void InitializeCubes(int[] lftNbrUp, int[] lftNbrDwn, int[] rgtNbrUp, int[] rgtNbrDwn,
+		                             int[] upNbrLft, int[] upNbrRgt, int[] dwnNbrLft, int[] dwnNbrRgt)
 		{
 			// Initial values:
 			for (int z = 0; z < Height; z++)
@@ -68,60 +60,78 @@ namespace MazeGeneration
 				{
 					for (int y = 0; y < Depth; y++)
 					{
+						/*
+						// Top half:
+						if (y <= Depth / 2)
+							if (upNbrLft != null && upNbrRgt != null)
+								if (x >= upNbrLft[z] && x <= Width - 1 - upNbrRgt[z])
+									Cubes[x,y,z] = Cube.CubeType.Air;
+
+						// Bottom half:
+						if (y >= Depth / 2)
+							if (dwnNbrLft != null && dwnNbrRgt != null)
+								if (x >= dwnNbrLft[z] && x <= Width - 1 - dwnNbrRgt[z])
+									Cubes[x,y,z] = Cube.CubeType.Air;
+
+						// Left half:
+						if (x <= Width / 2)
+							if (lftNbrUp != null && lftNbrDwn != null)
+								if (y >= lftNbrUp[z] && y <= Depth - 1 - lftNbrDwn[z])
+									Cubes[x,y,z] = Cube.CubeType.Air;
+
+						// Right half:
+						if (x >= Width / 2)
+							if (rgtNbrUp != null && rgtNbrDwn != null)
+								if (y >= rgtNbrUp[z] && y <= Depth - 1 - rgtNbrDwn[z])
+									Cubes[x,y,z] = Cube.CubeType.Air;
+									*/
+
 						// Quadrant 1:
 						if ((x <= y) && ((Width-x-1) >= y))
 						{
 							// If neighbor doesn't exist, just skip
-							if (LeftNeighbor == null)
-								continue;
-							if (LeftNeighbor.UpWall == null)
+							if (lftNbrUp == null || lftNbrDwn == null)
 								continue;
 
-							int w1 = LeftNeighbor.UpWall.GetDepthAt(LeftNeighbor.UpWall.Width-1, z);
-							int w2 = LeftNeighbor.DownWall.GetDepthAt(0, z);
-							if (y > w1 && y < (Depth - w2 - 1))
+							int w1 = lftNbrUp[z];
+							int w2 = lftNbrDwn[z];
+							if (y >= w1 && y <= (Depth - w2 - 1))
 								Cubes[x,y,z] = Cube.CubeType.Air;
 						}
 						// Quadrant 2:
 						if ((x >= y) && ((Width-x-1) >= y))
 						{
 							// If neighbor doesn't exist, just skip
-							if (UpNeighbor == null)
-								continue;
-							if (UpNeighbor.RightWall == null)
+							if (upNbrLft == null || upNbrRgt == null)
 								continue;
 
-							int w1 = UpNeighbor.RightWall.GetDepthAt(UpNeighbor.RightWall.Width-1, z);
-							int w2 = UpNeighbor.LeftWall.GetDepthAt(0, z);
-							if (x > w1 && x < (Depth - w2 - 1))
+							int w1 = upNbrLft[z];
+							int w2 = upNbrRgt[z];
+							if (x >= w1 && x <= (Depth - w2 - 1))
 								Cubes[x,y,z] = Cube.CubeType.Air;
 						}
 						// Quadrant 3:
 						if ((x >= y) && ((Width-x-1) <= y))
 						{
 							// If neighbor doesn't exist, just skip
-							if (RightNeighbor == null)
-								continue;
-							if (RightNeighbor.DownWall == null)
+							if (rgtNbrUp == null || rgtNbrDwn == null)
 								continue;
 
-							int w1 = RightNeighbor.DownWall.GetDepthAt(RightNeighbor.DownWall.Width-1, z);
-							int w2 = RightNeighbor.UpWall.GetDepthAt(0, z);
-							if (y > w1 && y < (Depth - w2 - 1))
+							int w1 = rgtNbrUp[z];
+							int w2 = rgtNbrDwn[z];
+							if (y >= w1 && y <= (Depth - w2 - 1))
 								Cubes[x,y,z] = Cube.CubeType.Air;
 						}
 						// Quadrant 4:
 						if ((x <= y) && ((Width-x-1) <= y))
 						{
 							// If neighbor doesn't exist, just skip
-							if (DownNeighbor == null)
-								continue;
-							if (DownNeighbor.LeftWall == null)
+							if (dwnNbrLft == null || dwnNbrRgt == null)
 								continue;
 
-							int w1 = DownNeighbor.LeftWall.GetDepthAt(UpNeighbor.LeftWall.Width-1, z);
-							int w2 = DownNeighbor.RightWall.GetDepthAt(0, z);
-							if (x > w1 && x < (Depth - w2 - 1))
+							int w1 = dwnNbrLft[z];
+							int w2 = dwnNbrRgt[z];
+							if (x >= w1 && x <= (Depth - w2 - 1))
 								Cubes[x,y,z] = Cube.CubeType.Air;
 						}
 					}
@@ -134,7 +144,7 @@ namespace MazeGeneration
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Depth; y++)
 					for (int z = 0; z < Height; z++)
-						yield return new Cube(Cubes[x,y,z], x, y, z);
+						yield return new Cube(Cubes[x,y,z], x, z, y);
 		}
 	}
 }
