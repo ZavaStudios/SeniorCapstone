@@ -4,8 +4,8 @@ using MazeGeneration;
 
 public class Main : MonoBehaviour
 {
-    private const int WIDTH  = 2;
-    private const int HEIGHT = 3;
+    private const int WIDTH  = 1;
+    private const int HEIGHT = 1;
 
 	private const float CUBE_SCALAR = 1.0f;
     private const float TILE_SCALAR = 1.0f;

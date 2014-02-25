@@ -51,7 +51,7 @@ namespace MazeGeneration
 			for (int z = 0; z < Height; z++)
 				for (int x = 0; x < Width; x++)
 					for (int y = 0; y < Depth; y++)
-						Cubes[x,y,z] = Cube.CubeType.Stone; // TODO: smarter
+						Cubes[x,y,z] = GetCubeType();
 
 			// "punch out" air blocks:
 			for (int z = 0; z < Height; z++)
@@ -139,7 +139,7 @@ namespace MazeGeneration
 			}
 		}
 
-		public IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Depth; y++)

@@ -22,7 +22,7 @@ namespace MazeGeneration
 			Depth = depth;
 		}
 
-		public IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			foreach (Cube c in UpWall.EnumerateCubes())
 				yield return c;

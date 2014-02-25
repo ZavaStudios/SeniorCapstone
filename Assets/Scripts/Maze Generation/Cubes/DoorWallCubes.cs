@@ -10,15 +10,15 @@ namespace MazeGeneration
 		private OutsideCornerCubes R_Corner;
 		private StandardWallCubes R_Side;
 		
-		public int Width
+		public override int Width
 		{
 			get { return R_Side.Width + L_Side.Width + RogueDungeon.CORRIDOR_WIDTH; }
 		}
-		public int Height
+		public override int Height
 		{
 			get { return R_Side.Height; }
 		}
-		public int MaxDepth
+		public override int MaxDepth
 		{
 			get { return R_Side.MaxDepth; }
 		}
@@ -77,7 +77,7 @@ namespace MazeGeneration
 			}
 		}
 		
-		public int GetDepthAt(int x, int y)
+		public override int GetDepthAt(int x, int y)
 		{
 			if (x < L_Side.Width)
 				return L_Side.GetDepthAt(x, y);
@@ -87,17 +87,17 @@ namespace MazeGeneration
 				return R_Side.GetDepthAt(x - L_Side.Width - RogueDungeon.CORRIDOR_WIDTH, y);
 		}
 
-		public int[] GetRightEdge()
+		public override int[] GetRightEdge()
 		{
 			return R_Side.GetRightEdge();
 		}
 
-		public int[] GetLeftEdge()
+		public override int[] GetLeftEdge()
 		{
 			return L_Side.GetLeftEdge();
 		}
 		
-		public IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			foreach (Cube c in L_Side.EnumerateCubes())
 				yield return c;

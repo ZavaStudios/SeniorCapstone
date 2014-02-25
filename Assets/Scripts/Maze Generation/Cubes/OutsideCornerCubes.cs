@@ -53,10 +53,7 @@ namespace MazeGeneration
 				{
 					for (int y = 0; y < quadY; y++)
 					{
-						// TODO: smarter cube type selection
-						// TODO
-						//Cubes[x,y,z] = Cube.CubeType.Air;
-						Cubes[x,y,z] = Cube.CubeType.Iron;
+						Cubes[x,y,z] = GetCubeType();
 					}
 				}
 				// Quadrant 2
@@ -90,7 +87,7 @@ namespace MazeGeneration
 			}
 		}
 		
-		public IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			for (int x = 0; x < Width; x++)
 			{

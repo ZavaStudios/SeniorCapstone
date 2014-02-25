@@ -11,21 +11,22 @@ namespace MazeGeneration
 	public class StandardWallCubes : WallCubes
 	{
 		private LinkedList<Cube.CubeType>[,] Cubes { get; set; }
-		
-		public int MaxDepth { get; private set; }
+		private int _maxDepth;
+
+		public override int MaxDepth { get { return _maxDepth; }}
 		public int MinDepth { get; private set; }
-		public int Width
+		public override int Width
 		{
 			get { return Cubes.GetLength(0); }
 		}
-		public int Height
+		public override int Height
 		{
 			get { return Cubes.GetLength(1); }
 		}
 		
 		public StandardWallCubes(int width, int height, int maxDepth, int minDepth)
 		{
-			MaxDepth = maxDepth;
+			_maxDepth = maxDepth;
 			MinDepth = minDepth;
 			Cubes = new LinkedList<Cube.CubeType>[width,height];
 			for (int x = 0; x < width; x++)
@@ -62,7 +63,7 @@ namespace MazeGeneration
 					for (int z = 0; z < depth; z++)
 					{
 						// TODO: generate cube type more nicely
-						Cubes[x,y].AddLast(Cube.CubeType.Silver);
+						Cubes[x,y].AddLast(GetCubeType());
 					}
 				}
 			}
@@ -74,7 +75,7 @@ namespace MazeGeneration
 		/// <returns>Depth of the buffer at [x,y].</returns>
 		/// <param name="x">The x coordinate.</param>
 		/// <param name="y">The y coordinate.</param>
-		public int GetDepthAt(int x, int y)
+		public override int GetDepthAt(int x, int y)
 		{
 			// If we have no cubes in our grid (one of the dims is 0), just return 0
 			if (Width == 0 || Height == 0)
@@ -88,7 +89,7 @@ namespace MazeGeneration
 		/// Returns an array of depths representing the right-most edge of this wall.
 		/// </summary>
 		/// <returns>Depths along the right-most edge.</returns>
-		public int[] GetRightEdge()
+		public override int[] GetRightEdge()
 		{
 			int[] toRet = new int[Height];
 			for (int y = 0; y < Height; y++)
@@ -100,7 +101,7 @@ namespace MazeGeneration
 		/// Returns an array of depths representing the left-most edge of this wall.
 		/// </summary>
 		/// <returns>Depths along the left-most edge.</returns>
-		public int[] GetLeftEdge()
+		public override int[] GetLeftEdge()
 		{
 			int[] toRet = new int[Height];
 			for (int y = 0; y < Height; y++)
@@ -108,7 +109,7 @@ namespace MazeGeneration
 			return toRet;
 		}
 		
-		public IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			// Fencepost: Enumerate edges of the wall first:
 			// Left / Right:

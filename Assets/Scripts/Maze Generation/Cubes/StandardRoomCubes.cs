@@ -118,7 +118,7 @@ namespace MazeGeneration
 		/// order the cubes will be returned - just that each cube will appear exactly once.
 		/// </summary>
 		/// <returns>Enumeration of cubes in hte data structure</returns>
-		public IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			// Corners:
 			// top-left:
