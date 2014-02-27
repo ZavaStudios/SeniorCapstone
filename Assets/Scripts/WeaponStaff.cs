@@ -23,7 +23,6 @@ public class WeaponStaff : WeaponBase
 	// Update is called once per frame
 	protected override void Update ()
 	{
-		base.Update();
 	}
 	
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
@@ -42,7 +41,6 @@ public class WeaponStaff : WeaponBase
     	// Add force to the cloned object in the object's forward direction
     	clone.rigidbody.AddForce(clone.transform.forward * bulletSpeed);
 
-		attack = false;
 	}
 	
 	public override void attackSpecial ()

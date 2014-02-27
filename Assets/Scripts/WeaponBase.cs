@@ -15,8 +15,6 @@ public class WeaponBase : MonoBehaviour
 	public float weaponDamage = 0f;
 	public float attackDelay = 2.0f; //default 2 second attack delay.
 	
-	public bool attack = false;
-	
 	private float nextDamageEvent = 0.0f;
 
 	// Use this for initialization
@@ -28,20 +26,22 @@ public class WeaponBase : MonoBehaviour
 	// Update is called once per frame
 	virtual protected void Update ()
 	{
-		if (attack)
-		{
-			if (Time.time >= nextDamageEvent)
-	        {
-	            nextDamageEvent = Time.time + attackDelay;
-       			attackRoutine(Character.getEyePosition(),Character.getLookDirection());
-                
-				if(Character is UnitPlayer)
-					Character.playAttackAnimation();
-	        }
-		}
 		
 	}
-	
+
+
+    virtual public void attack()
+    {
+        if (Time.time >= nextDamageEvent)
+	    {
+	        nextDamageEvent = Time.time + attackDelay;
+       		attackRoutine(Character.getEyePosition(),Character.getLookDirection());
+                
+			if(Character is UnitPlayer)
+				Character.playAttackAnimation();
+	    }
+    }
+
 	virtual protected void attackRoutine(Vector3 startPos, Vector3 faceDir)
 	{
 

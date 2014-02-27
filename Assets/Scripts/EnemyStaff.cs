@@ -29,7 +29,7 @@ public class EnemyStaff : WeaponBase
 	// Update is called once per frame
 	protected override void Update ()
 	{
-		base.Update();
+
 	}
 	
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
@@ -47,6 +47,5 @@ public class EnemyStaff : WeaponBase
     	// Add force to the cloned object in the object's forward direction
     	clone.rigidbody.AddForce(clone.transform.forward * bulletSpeed);
 
-		attack = false;
 	}
 }

@@ -17,9 +17,7 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 	
 	 void OnCollisionEnter(Collision other)
     {
-		print("Y U NO");
 		BOOMcount++;
-		print(BOOMcount);
 		Unit otherObject = other.gameObject.GetComponent<Unit>();
 		
 		if(otherObject != null && otherObject.GetType() == typeof(UnitEnemy))
@@ -37,8 +35,8 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 	void explode()
 	{
 		float radius = 50.0f;
-		float power = 10.0f;
-		print ("BOOM!!!!!!!!");
+		float power = 100.0f;
+		//print ("BOOM!!!!!!!!");
 		GameObject sparks = (GameObject)Instantiate(Resources.Load("FireballSparks"), transform.position, transform.rotation);
 
 		Collider[] colliders = Physics.OverlapSphere (transform.position, radius);
@@ -46,8 +44,8 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 		foreach ( Collider hit in colliders) {
 			if (hit && hit.rigidbody && hit.rigidbody != this.rigidbody)
 			{
-				print("Make The Little Man FLY!!!"); power += 1000;
-				print(hit.name);
+				//print("Make The Little Man FLY!!!"); power += 1000;
+				//print(hit.name);
 				hit.rigidbody.AddExplosionForce(power, transform.position, radius, 3.0f);
 			}
 		}

@@ -21,7 +21,6 @@ public class WeaponPickaxe : WeaponBase
     // Update is called once per frame
     protected override void Update ()
     {
-        base.Update();
     }
     
     protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)	
@@ -29,7 +28,7 @@ public class WeaponPickaxe : WeaponBase
 //        print("mining..");
         //LayerMask mask = LayerMask.NameToLayer("world");// | LayerMask.NameToLayer("enemy");
 
-        if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange, 1<<10)) //layer mask looks at 'world' only on raycast.
+        if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange))
         {
             if(rayHit.collider.gameObject.CompareTag("Enemy"))
             {  
@@ -47,6 +46,5 @@ public class WeaponPickaxe : WeaponBase
             }
         }
         
-        attack = false;
     }
 }

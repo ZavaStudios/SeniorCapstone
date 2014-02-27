@@ -7,7 +7,7 @@ public class UnitPlayer : Unit {
 //	private float gameOverDelay = 0f;
 
     WeaponModelSwitcher wepSwitcher;
-	int wep = 0;
+	int wep = 1;
 	
     private const float walkSpeedNormal = 10.0f;
 
@@ -67,7 +67,7 @@ public class UnitPlayer : Unit {
 		{
 //			print ("mouse clicked....");
 			if (weapon != null)
-				weapon.attack = true;
+				weapon.attack();
 			else
 				print ("You cannot attack without a weapon!");
 		}
@@ -81,7 +81,7 @@ public class UnitPlayer : Unit {
 			}
 		}
 		
-		const int numWeapons = 3;
+		const int numWeapons = 4;
 		if(InputContextManager.isSWITCH_WEAPON())
 		{
 			if (wep > (numWeapons-1))
@@ -105,6 +105,10 @@ public class UnitPlayer : Unit {
 					equipWeapon ("WeaponStaff");
 					wep++;
 					break;
+                case 3:
+                    equipWeapon ("WeaponToolbox");
+                    wep++;
+                    break;
 			}
 		}
 		

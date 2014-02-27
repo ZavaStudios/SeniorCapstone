@@ -22,7 +22,6 @@ public class WeaponSword : WeaponBase
 	// Update is called once per frame
 	protected override void Update ()
 	{
-		base.Update();
 	}
 	
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
@@ -48,6 +47,5 @@ public class WeaponSword : WeaponBase
         //    }
         //}
         
-        attack = false;
 	}
 }

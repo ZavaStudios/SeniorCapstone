@@ -12,7 +12,7 @@ namespace MazeGeneration
     {
         // Approximate number of slots in the dungeon to be filled with enemy rooms,
         // with 1.0f being 100% of the rooms, and 0.0f being (probably) none of them.
-		private const float ENEMY_ROOM_DENSITY = 0.0f; // 0.5f;
+		private const float ENEMY_ROOM_DENSITY = 0.6f; // 0.5f;
 
         // Values deciding how large rooms can be. Specifically,
 		// main min/max values describe what the sizes of any room

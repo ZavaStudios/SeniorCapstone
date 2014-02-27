@@ -13,7 +13,6 @@ public class UnitEnemy : Unit
 	
 	protected override void Start ()
 	{
-
 		Player = GameObject.FindGameObjectWithTag("Player").transform; 
 		moveSpeed = 5.0f;
 		control = GetComponent<CharacterController>();
@@ -31,7 +30,7 @@ public class UnitEnemy : Unit
 		//Determine whether to attack or not.
 		if(weapon && distance <= weapon.attackRange)
 		{
-			weapon.attack = true;
+			weapon.attack();
 			float angleToTarget = Mathf.Atan2((PlayerPosition.x - transform.position.x), (PlayerPosition.z - transform.position.z)) * Mathf.Rad2Deg;
 			transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
 		}
