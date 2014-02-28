@@ -90,15 +90,15 @@ namespace MazeGeneration
 		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			for (int x = 0; x < Width; x++)
-			{
 				for (int y = 0; y < Depth; y++)
-				{
 					for (int z = 0; z < Height; z++)
-					{
-						yield return new Cube(Cubes[x,y,z], x, y, z);
-					}
-				}
-			}
+						yield return new Cube(this, Cubes[x,y,z], x, y, z);
+		}
+
+		public override IEnumerable<Cube> DestroyCube(Cube c)
+		{
+			Cubes[c.X, c.Y, c.Z] = Cube.CubeType.Air;
+			return new List<Cube>();	// Return nothing, since we always show everything
 		}
 	}
 }

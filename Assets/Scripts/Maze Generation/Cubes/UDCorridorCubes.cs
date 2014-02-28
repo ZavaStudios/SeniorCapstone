@@ -25,9 +25,31 @@ namespace MazeGeneration
 		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			foreach (Cube c in LeftWall.EnumerateCubes())
-				yield return new Cube(c.Type, c.Z, c.Y, c.X);
+				yield return new Cube(this, c.Type, c.Z, c.Y, c.X);
 			foreach (Cube c in RightWall.EnumerateCubes())
-				yield return new Cube(c.Type, Width - c.Z - 1, c.Y, c.X);
+				yield return new Cube(this, c.Type, Width - c.Z - 1, c.Y, c.X);
+		}
+
+		public override IEnumerable<Cube> DestroyCube(Cube c)
+		{
+			if (c.Z < Width / 2)
+			{
+				int tmp = c.Z;
+				c.Z = c.X;
+				c.X = c.Z;
+				foreach (Cube uncovered in LeftWall.DestroyCube(c))
+					yield return new Cube(this, uncovered.Type,
+					                      uncovered.Z, uncovered.Y, uncovered.X);
+			}
+			else
+			{
+				int tmp = c.Z;
+				c.Z = Width - 1 - c.X;
+				c.X = c.Z;
+				foreach (Cube uncovered in RightWall.DestroyCube(c))
+					yield return new Cube(this, uncovered.Type,
+					                      Width - 1 - uncovered.Z, uncovered.Y, uncovered.X);
+			}
 		}
 	}
 }

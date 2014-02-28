@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MazeGeneration
 {
-	public abstract class RogueRoom
+	public abstract class RogueRoom : CubeTracker
 	{
 		public const int UP_DOOR_MASK = 0x01;
 		public const int DOWN_DOOR_MASK = 0x02;
@@ -22,6 +23,10 @@ namespace MazeGeneration
 		public static Transform ore2_cube;
 		public static Transform ore3_cube;
 		public static Transform ore4_cube;
+
+		// Cached values so we can spawn new cubes during runtime
+		private float _scalar;
+		private Vector3 _cubeStart;
 		
 		public enum RoomType
 		{
@@ -217,6 +222,9 @@ namespace MazeGeneration
 			if (Cubes != null)
 				foreach (Cube cube in Cubes.EnumerateCubes())
 					InstantiateCube(cube, cubeStart, scalar);
+
+			_scalar = scalar;
+			_cubeStart = cubeStart;
 		}
 		
 		/// <summary>
@@ -271,9 +279,21 @@ namespace MazeGeneration
 				return;
 			}
 			toSpawn.transform.localScale = Vector3.one * scalar;
-			MonoBehaviour.Instantiate(toSpawn,
-			                          (new Vector3(cube.X, cube.Y, cube.Z) + cubeStart) * scalar,
-			                          Quaternion.identity);
+			Transform spawned = (Transform)
+				MonoBehaviour.Instantiate(toSpawn,
+			                          	  (new Vector3(cube.X, cube.Y, cube.Z) + cubeStart) * scalar,
+			                          	  Quaternion.identity);
+			cube.Parent = this;
+			spawned.GetComponent<MineableBlock>()._cube = cube;
+		}
+
+		public IEnumerable<Cube> DestroyCube(Cube c)
+		{
+			foreach (Cube uncovered in Cubes.DestroyCube(c))
+				InstantiateCube(uncovered, _cubeStart, _scalar);
+
+			// We have no reason to return anything, so don't
+			return new List<Cube>();
 		}
 	}
 }

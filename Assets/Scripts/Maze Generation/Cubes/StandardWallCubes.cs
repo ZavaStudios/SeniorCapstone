@@ -8,7 +8,7 @@ namespace MazeGeneration
 	/// create a wall with arbitrary width and height, as well as a custom
 	/// cap on how far out from the wall cubes are allowed to be placed.
 	/// </summary>
-	public class StandardWallCubes : WallCubes
+	public class StandardWallCubes : WallCubes, CubeTracker
 	{
 		private LinkedList<Cube.CubeType>[,] Cubes { get; set; }
 		private int _maxDepth;
@@ -118,13 +118,13 @@ namespace MazeGeneration
 				int z = 0;
 				foreach (Cube.CubeType type in Cubes[0,y])
 				{
-					yield return new Cube(type, 0, y, z);
+					yield return new Cube(this, type, 0, y, z);
 					z++;
 				}
 				z = 0;
 				foreach (Cube.CubeType type in Cubes[Width-1,y])
 				{
-					yield return new Cube(type, Width-1, y, z);
+					yield return new Cube(this, type, Width-1, y, z);
 					z++;
 				}
 			}
@@ -134,13 +134,13 @@ namespace MazeGeneration
 				int z = 0;
 				foreach (Cube.CubeType type in Cubes[x,0])
 				{
-					yield return new Cube(type, x, 0, z);
+					yield return new Cube(this, type, x, 0, z);
 					z++;
 				}
 				z = 0;
 				foreach (Cube.CubeType type in Cubes[x,Height-1])
 				{
-					yield return new Cube(type, x, Height-1, z);
+					yield return new Cube(this, type, x, Height-1, z);
 					z++;
 				}
 			}
@@ -171,7 +171,7 @@ namespace MazeGeneration
 						       /*DOWN:*/  (dwnItr != null && dwnItr.Value != Cube.CubeType.Air) &&
 						       /*FRONT:*/ (curItr.Next != null)))
 						{
-							yield return new Cube(curItr.Value, x, y, z);
+							yield return new Cube(this, curItr.Value, x, y, z);
 						}
 
 						// Update iterators:
@@ -183,6 +183,61 @@ namespace MazeGeneration
 						z++;
 					}
 				}
+			}
+		}
+
+		public override IEnumerable<Cube> DestroyCube(Cube c)
+		{
+			// Delete appropriate spot:
+			LinkedListNode<Cube.CubeType> toDel = Cubes[c.X, c.Y].First;
+			for (int z = 1; z < c.Z; z++)
+				toDel = toDel.Next;
+
+			if (toDel.Next == null)
+				Cubes[c.X, c.Y].Remove(toDel);
+			else
+				toDel.Value = Cube.CubeType.Air;
+
+			// Reveal neighbors if they weren't already:
+			if (toDel.Next != null)
+				yield return new Cube(this, toDel.Next.Value, c.X, c.Y, c.Z + 1);
+			if (toDel.Previous != null)
+				yield return new Cube(this, toDel.Previous.Value, c.X, c.Y, c.Z - 1);
+			if (c.X > 0)
+			{
+				LinkedListNode<Cube.CubeType> itr = Cubes[c.X-1, c.Y].First;
+				for (int z = 0; z < c.Z; z++)
+					itr = (itr == null) ? null : itr.Next;
+
+				if (itr != null)
+					yield return new Cube(this, itr.Value, c.X-1, c.Y, c.Z);
+			}
+			if (c.X < Width)
+			{
+				LinkedListNode<Cube.CubeType> itr = Cubes[c.X+1, c.Y].First;
+				for (int z = 0; z < c.Z; z++)
+					itr = (itr == null) ? null : itr.Next;
+				
+				if (itr != null)
+					yield return new Cube(this, itr.Value, c.X+1, c.Y, c.Z);
+			}
+			if (c.Y > 0)
+			{
+				LinkedListNode<Cube.CubeType> itr = Cubes[c.X, c.Y-1].First;
+				for (int z = 0; z < c.Z; z++)
+					itr = (itr == null) ? null : itr.Next;
+				
+				if (itr != null)
+					yield return new Cube(this, itr.Value, c.X, c.Y-1, c.Z);
+			}
+			if (c.Y < Height)
+			{
+				LinkedListNode<Cube.CubeType> itr = Cubes[c.X, c.Y+1].First;
+				for (int z = 0; z < c.Z; z++)
+					itr = (itr == null) ? null : itr.Next;
+				
+				if (itr != null)
+					yield return new Cube(this, itr.Value, c.X, c.Y+1, c.Z);
 			}
 		}
 	}

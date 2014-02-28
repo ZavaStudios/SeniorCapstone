@@ -127,7 +127,7 @@ namespace MazeGeneration
 				// TL_Corner X coordinate is c.X
 				//           Y coordinate is c.Z
 				//           Z coordinate is c.Y
-				yield return new Cube(c.Type, c.X, c.Z, c.Y);
+				yield return new Cube(this, c.Type, c.X, c.Z, c.Y);
 			}
 			// top-right:
 			foreach (Cube c in TR_Corner.EnumerateCubes())
@@ -135,7 +135,7 @@ namespace MazeGeneration
 				// TR_Corner X coordinate is Width - c.Y - 1
 				//           Y coordinate is c.Z
 				//           Z coordinate is c.X
-				yield return new Cube(c.Type, Width - c.Y - 1, c.Z, c.X);
+				yield return new Cube(this, c.Type, Width - c.Y - 1, c.Z, c.X);
 			}
 			
 			// bottom-left:
@@ -144,7 +144,7 @@ namespace MazeGeneration
 				// BL_Corner X coordinate is c.Y
 				//           Y coordinate is c.Z
 				//           Z coordinate is Depth - c.X - 1
-				yield return new Cube(c.Type, c.Y, c.Z, Depth - c.X - 1);
+				yield return new Cube(this, c.Type, c.Y, c.Z, Depth - c.X - 1);
 			}
 			// bottom-right:
 			foreach (Cube c in BR_Corner.EnumerateCubes())
@@ -152,7 +152,7 @@ namespace MazeGeneration
 				// BR_Corner X coordinate is Width - c.X - 1
 				//           Y coordinate is c.Z
 				//           Z coordinate is Depth - c.Y - 1
-				yield return new Cube(c.Type, Width - c.X - 1, c.Z, Depth - c.Y - 1);
+				yield return new Cube(this, c.Type, Width - c.X - 1, c.Z, Depth - c.Y - 1);
 			}
 			
 			// Sides:
@@ -162,7 +162,7 @@ namespace MazeGeneration
 				// Left wall's X coordinate is equal to c.Z
 				//             Y coordinate is equal to c.Y
 				//             Z coordinate is equal to Depth - BL_Corner.Width - c.X - 1
-				yield return new Cube(c.Type, c.Z, c.Y, Depth - BL_Corner.Width - c.X - 1);
+				yield return new Cube(this, c.Type, c.Z, c.Y, Depth - BL_Corner.Width - c.X - 1);
 			}
 			// right:
 			foreach (Cube c in R_Wall.EnumerateCubes())
@@ -170,7 +170,7 @@ namespace MazeGeneration
 				// Right wall's X coordinate is equal to Width - c.Z - 1
 				//              Y coordinate is equal to c.Y
 				//              Z coordinate is equal to c.X + TR_Corner.Width
-				yield return new Cube(c.Type, Width - c.Z - 1, c.Y, c.X + TR_Corner.Width);
+				yield return new Cube(this, c.Type, Width - c.Z - 1, c.Y, c.X + TR_Corner.Width);
 			}
 			// top:
 			foreach (Cube c in T_Wall.EnumerateCubes())
@@ -178,7 +178,7 @@ namespace MazeGeneration
 				// Top wall's X coordinate is equal to c.X + TL_Corner.Width
 				//            Y coordinate is equal to c.Y
 				//            Z coordinate is equal to c.Z
-				yield return new Cube(c.Type, c.X + TL_Corner.Width, c.Y, c.Z);
+				yield return new Cube(this, c.Type, c.X + TL_Corner.Width, c.Y, c.Z);
 			}
 			// bottom:
 			foreach (Cube c in B_Wall.EnumerateCubes())
@@ -186,7 +186,100 @@ namespace MazeGeneration
 				// Bottom wall's X coordinate is equal to Width - BR_Corner.Width - c.X - 1
 				//               Y coordinate is equal to c.Y
 				//               Z coordinate is equal to Depth - c.Z - 1
-				yield return new Cube(c.Type, Width - BR_Corner.Width - c.X - 1, c.Y, Depth - c.Z - 1);
+				yield return new Cube(this, c.Type, Width - BR_Corner.Width - c.X - 1, c.Y, Depth - c.Z - 1);
+			}
+		}
+
+		public override IEnumerable<Cube> DestroyCube (Cube c)
+		{
+			// Left side:
+			if (c.X < L_Wall.MaxDepth)
+			{
+				// Top:
+				if (c.Z < TL_Corner.Depth)
+				{
+					foreach (Cube uncovered in TL_Corner.DestroyCube(c))
+						yield return new Cube(this, uncovered.Type,
+						                      uncovered.X, uncovered.Y, uncovered.Z);
+				}
+				// Center:
+				else if (c.Z < TL_Corner.Depth + L_Wall.Width)
+				{
+					int tmp = c.Z;
+					c.Z = c.X;
+					c.X = Depth - BL_Corner.Width - 1 - tmp;
+					foreach (Cube uncovered in L_Wall.DestroyCube(c))
+						yield return new Cube(this, uncovered.Type,
+						                      uncovered.Z, uncovered.Y, Depth - BL_Corner.Width - 1 - uncovered.X);
+				}
+				// Bottom:
+				else
+				{
+					int tmp = c.Z;
+					c.Z = c.Y;
+					c.Y = Depth - 1 - c.X;
+					c.X = tmp;
+					foreach (Cube uncovered in TR_Corner.DestroyCube(c))
+						yield return new Cube(this, uncovered.Type,
+						                      Depth - 1 - uncovered.Y, uncovered.Z, uncovered.X);
+				}
+			}
+			// Center:
+			if (c.X < L_Wall.MaxDepth + T_Wall.Width)
+			{
+				// Top:
+				if (c.Z < TL_Corner.Depth)
+				{
+					c.X -= L_Wall.MaxDepth;
+					foreach (Cube uncovered in T_Wall.DestroyCube(c))
+						yield return new Cube(this, uncovered.Type,
+						                      uncovered.X + L_Wall.MaxDepth, uncovered.Y, uncovered.Z);
+				}
+				// Bottom:
+				else
+				{
+					c.X = Width - BR_Corner.Width - 1 - c.X;
+					c.Z = Depth - 1 - c.Z;
+					foreach (Cube uncovered in B_Wall.DestroyCube(c))
+						yield return new Cube(this, uncovered.Type,
+						                      Width - BR_Corner.Width - 1 - uncovered.X, uncovered.Y, Depth - 1 - uncovered.Z);
+				}
+			}
+			// Right side:
+			else
+			{
+				// Top:
+				if (c.Z < TL_Corner.Depth)
+				{
+					int tmp = c.Z;
+					c.Z = c.Y;
+					c.Y = Width - 1 - c.X;
+					c.X = tmp;
+					foreach (Cube uncovered in TR_Corner.DestroyCube(c))
+						yield return new Cube(this, uncovered.Type,
+						                      Width - uncovered.Y - 1, uncovered.Z, uncovered.X);
+				}
+				// Center:
+				else if (c.Z < TL_Corner.Depth + L_Wall.Width)
+				{
+					int tmp = c.Z;
+					c.Z = Width - 1 - c.X;
+					c.X = TR_Corner.Width - tmp;
+					foreach (Cube uncovered in R_Wall.DestroyCube(c))
+						yield return new Cube(this, uncovered.Type,
+						                      Width - 1 - uncovered.Z, uncovered.Y, TR_Corner.Width - uncovered.X);
+				}
+				// Bottom:
+				else
+				{
+					int tmp = c.Z;
+					c.Z = c.Y;
+					c.Y = Depth - 1 - tmp;
+					c.X = Width - 1 - c.X;
+					foreach (Cube uncovered in BR_Corner.DestroyCube(c))
+						yield return new Cube(this, uncovered.Type,
+						                      Width - 1 - uncovered.X, uncovered.Z, Depth - 1 - uncovered.Y);
+				}
 			}
 		}
 	}

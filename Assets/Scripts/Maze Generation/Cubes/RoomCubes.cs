@@ -14,14 +14,16 @@ namespace MazeGeneration
 		{
 			Air, Stone, Iron, Silver, Gold, Platinum, // other ore types...
 		}
-		
+
+		public CubeTracker Parent { get; set; }
 		public CubeType Type { get; set; }
 		public int X { get; set; }
 		public int Y { get; set; }
 		public int Z { get; set; }
 		
-		public Cube(CubeType _type, int _x, int _y, int _z) : this()
+		public Cube(CubeTracker _parent, CubeType _type, int _x, int _y, int _z) : this()
 		{
+			Parent = _parent;
 			Type = _type;
 			X = _x;
 			Y = _y;
@@ -29,9 +31,15 @@ namespace MazeGeneration
 		}
 	}
 
-	public abstract class RoomCubes
+	public interface CubeTracker
+	{
+		IEnumerable<Cube> DestroyCube(Cube c);
+	}
+
+	public abstract class RoomCubes : CubeTracker
 	{
 		public abstract IEnumerable<Cube> EnumerateCubes();
+		public abstract IEnumerable<Cube> DestroyCube(Cube c);
 
 		// Placeholder thresholds:
 		protected const float STONE_FREQ    = 0.80f;

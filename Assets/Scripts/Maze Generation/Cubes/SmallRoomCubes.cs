@@ -144,7 +144,13 @@ namespace MazeGeneration
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Depth; y++)
 					for (int z = 0; z < Height; z++)
-						yield return new Cube(Cubes[x,y,z], x, z, y);
+						yield return new Cube(this, Cubes[x,y,z], x, z, y);
+		}
+
+		public override IEnumerable<Cube> DestroyCube(Cube c)
+		{
+			Cubes[c.X, c.Z, c.Y] = Cube.CubeType.Air;
+			return new List<Cube>(); // Return empty list, since we currently show everything
 		}
 	}
 }
