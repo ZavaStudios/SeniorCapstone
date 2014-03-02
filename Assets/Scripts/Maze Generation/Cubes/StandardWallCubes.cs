@@ -10,7 +10,7 @@ namespace MazeGeneration
 	/// </summary>
 	public class StandardWallCubes : WallCubes, CubeTracker
 	{
-		private LinkedList<Cube.CubeType>[,] Cubes { get; set; }
+		private Cube.CubeType[,,] Cubes { get; set; }
 		private int _maxDepth;
 
 		public override int MaxDepth { get { return _maxDepth; }}
@@ -28,14 +28,11 @@ namespace MazeGeneration
 		{
 			_maxDepth = maxDepth;
 			MinDepth = minDepth;
-			Cubes = new LinkedList<Cube.CubeType>[width,height];
+			Cubes = new Cube.CubeType[width,height,MaxDepth];
 			for (int x = 0; x < width; x++)
-			{
 				for (int y = 0; y < height; y++)
-				{
-					Cubes[x,y] = new LinkedList<Cube.CubeType>();
-				}
-			}
+					for (int z = 0; z < MaxDepth; z++)
+						Cubes[x,y,z] = Cube.CubeType.Air;
 			
 			InitializeCubes();
 		}
@@ -62,8 +59,7 @@ namespace MazeGeneration
 					depth = (depth < MinDepth) ? MinDepth : depth;
 					for (int z = 0; z < depth; z++)
 					{
-						// TODO: generate cube type more nicely
-						Cubes[x,y].AddLast(GetCubeType());
+						Cubes[x,y,z] = GetCubeType();
 					}
 				}
 			}
@@ -82,7 +78,13 @@ namespace MazeGeneration
 				return 0;
 			if (Cubes == null)
 				return -1;
-			return Cubes[x,y].Count;
+
+			for (int z = MaxDepth - 1; z > 0; z--)
+				if (Cubes[x,y,z] != Cube.CubeType.Air)
+					return z + 1;
+
+			// If all the blocks were air, then we don't have any blocks in this section:
+			return 0;
 		}
 
 		/// <summary>
@@ -111,135 +113,76 @@ namespace MazeGeneration
 		
 		public override IEnumerable<Cube> EnumerateCubes()
 		{
-			// Fencepost: Enumerate edges of the wall first:
-			// Left / Right:
+			// Fencepost: draw left and right edges always
 			for (int y = 0; y < Height; y++)
 			{
-				int z = 0;
-				foreach (Cube.CubeType type in Cubes[0,y])
+				for (int z = 0; z < MaxDepth; z++)
 				{
-					yield return new Cube(this, type, 0, y, z);
-					z++;
-				}
-				z = 0;
-				foreach (Cube.CubeType type in Cubes[Width-1,y])
-				{
-					yield return new Cube(this, type, Width-1, y, z);
-					z++;
-				}
-			}
-			// Top / Bottom:
-			for (int x = 0; x < Width; x++)
-			{
-				int z = 0;
-				foreach (Cube.CubeType type in Cubes[x,0])
-				{
-					yield return new Cube(this, type, x, 0, z);
-					z++;
-				}
-				z = 0;
-				foreach (Cube.CubeType type in Cubes[x,Height-1])
-				{
-					yield return new Cube(this, type, x, Height-1, z);
-					z++;
+					yield return new Cube(this, Cubes[0,y,z], 0, y, z);
+					yield return new Cube(this, Cubes[Width-1,y,z], Width-1, y, z);
 				}
 			}
 
-			// Main loop:
+			// Return remainder only if they are uncovered somewhere:
 			for (int x = 1; x < Width-1; x++)
 			{
-				for (int y = 1; y < Height-1; y++)
+				for (int y = 0; y < Height; y++)
 				{
-					// We need to check neighboring lists, as well as this one.
-					// We initialize the iterators here:
-					LinkedListNode<Cube.CubeType> lftItr = Cubes[x-1,y].First;
-					LinkedListNode<Cube.CubeType> rgtItr = Cubes[x+1,y].First;
-					LinkedListNode<Cube.CubeType> topItr = Cubes[x,y-1].First;
-					LinkedListNode<Cube.CubeType> dwnItr = Cubes[x,y+1].First;
-					LinkedListNode<Cube.CubeType> curItr = Cubes[x,y].First;
-
-					int z = 0;
-					while(curItr != null)
+					for (int z = 0; z < MaxDepth; z++)
 					{
-						// Return this cube if and only if it is not obscured by adjacent cubes
-						// This means, to skip it,the following must hold:
-						//  1) We have a left, right, up, and down neighbor, each of which is not air
-						//  2) This block has another in front of it
-						if (!( /*LEFT:*/  (lftItr != null && lftItr.Value != Cube.CubeType.Air) &&
-						       /*RIGHT:*/ (rgtItr != null && rgtItr.Value != Cube.CubeType.Air) &&
-						       /*UP:*/    (topItr != null && topItr.Value != Cube.CubeType.Air) &&
-						       /*DOWN:*/  (dwnItr != null && dwnItr.Value != Cube.CubeType.Air) &&
-						       /*FRONT:*/ (curItr.Next != null && curItr.Next.GetType != Cube.CubeType.Air) &&
-						       /*BACK:*/  (curItr.Previous != null && curItr.Previous.GetType != Cube.CubeType.Air)))
-						{
-							yield return new Cube(this, curItr.Value, x, y, z);
-						}
-
-						// Update iterators:
-						lftItr = (lftItr != null) ? lftItr.Next : null;
-						rgtItr = (rgtItr != null) ? rgtItr.Next : null;
-						topItr = (topItr != null) ? topItr.Next : null;
-						dwnItr = (dwnItr != null) ? dwnItr.Next : null;
-						curItr = curItr.Next;
-						z++;
+						if (IsUncovered(x,y,z))
+							yield return new Cube(this, Cubes[x,y,z], x, y, z);
 					}
 				}
 			}
 		}
 
+		private bool IsUncovered(int x, int y, int z)
+		{
+			return ((z == MaxDepth-1) ||
+					((x > 0) && (Cubes[x-1,y,z] == Cube.CubeType.Air)) ||
+			        ((x < Width-1) && (Cubes[x+1,y,z] == Cube.CubeType.Air)) ||
+			        ((y > 0) && (Cubes[x,y-1,z] == Cube.CubeType.Air)) ||
+			        ((y < Height-1) && (Cubes[x,y+1,z] == Cube.CubeType.Air)) ||
+			        ((z > 0) && (Cubes[x,y,z-1] == Cube.CubeType.Air)) ||
+			        ((Cubes[x,y,z+1] == Cube.CubeType.Air)));
+		}
+
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{
-			// Delete appropriate spot:
-			LinkedListNode<Cube.CubeType> toDel = Cubes[c.X, c.Y].First;
-			for (int z = 1; z < c.Z; z++)
-				toDel = toDel.Next;
-
-			if (toDel.Next == null)
-				Cubes[c.X, c.Y].Remove(toDel);
+			List<Cube> toRet = new List<Cube>();
+			// If we are on one of the edges, don't check neighbors in the plane:
+			// we know that those are already displayed
+			if (c.X == 0)
+			{
+				if (!IsUncovered(c.X+1, c.Y, c.Z))
+				    toRet.Add(new Cube(this, Cubes[c.X+1, c.Y, c.Z], c.X+1, c.Y, c.Z));
+			}
+			else if (c.X == Width-1)
+			{
+				if (!IsUncovered(c.X-1, c.Y, c.Z))
+					toRet.Add(new Cube(this, Cubes[c.X-1, c.Y, c.Z], c.X-1, c.Y, c.Z));
+			}
 			else
-				toDel.Value = Cube.CubeType.Air;
+			{
+				if (!IsUncovered(c.X-1, c.Y, c.Z))
+					toRet.Add(new Cube(this, Cubes[c.X-1, c.Y, c.Z], c.X-1, c.Y, c.Z));
+				if (!IsUncovered(c.X+1, c.Y, c.Z))
+					toRet.Add(new Cube(this, Cubes[c.X+1, c.Y, c.Z], c.X+1, c.Y, c.Z));
 
-			// Reveal neighbors if they weren't already:
-			if (toDel.Next != null)
-				yield return new Cube(this, toDel.Next.Value, c.X, c.Y, c.Z + 1);
-			if (toDel.Previous != null)
-				yield return new Cube(this, toDel.Previous.Value, c.X, c.Y, c.Z - 1);
-			if (c.X > 0)
-			{
-				LinkedListNode<Cube.CubeType> itr = Cubes[c.X-1, c.Y].First;
-				for (int z = 0; z < c.Z; z++)
-					itr = (itr == null) ? null : itr.Next;
+				if (c.Y > 0 && !IsUncovered(c.X, c.Y-1, c.Z))
+					toRet.Add(new Cube(this, Cubes[c.X, c.Y-1, c.Z], c.X, c.Y-1, c.Z));
+				if (c.Y < Height-1 && !IsUncovered(c.X, c.Y+1, c.Z))
+					toRet.Add(new Cube(this, Cubes[c.X, c.Y+1, c.Z], c.X, c.Y+1, c.Z));
 
-				if (itr != null)
-					yield return new Cube(this, itr.Value, c.X-1, c.Y, c.Z);
+				if (c.Z > 0 && !IsUncovered(c.X, c.Y, c.Z-1))
+					toRet.Add(new Cube(this, Cubes[c.X, c.Y, c.Z-1], c.X, c.Y, c.Z-1));
+				if (c.Z < MaxDepth-1 && !IsUncovered(c.X, c.Y, c.Z+1))
+					toRet.Add(new Cube(this, Cubes[c.X, c.Y, c.Z+1], c.X, c.Y, c.Z+1));
 			}
-			if (c.X < Width)
-			{
-				LinkedListNode<Cube.CubeType> itr = Cubes[c.X+1, c.Y].First;
-				for (int z = 0; z < c.Z; z++)
-					itr = (itr == null) ? null : itr.Next;
-				
-				if (itr != null)
-					yield return new Cube(this, itr.Value, c.X+1, c.Y, c.Z);
-			}
-			if (c.Y > 0)
-			{
-				LinkedListNode<Cube.CubeType> itr = Cubes[c.X, c.Y-1].First;
-				for (int z = 0; z < c.Z; z++)
-					itr = (itr == null) ? null : itr.Next;
-				
-				if (itr != null)
-					yield return new Cube(this, itr.Value, c.X, c.Y-1, c.Z);
-			}
-			if (c.Y < Height)
-			{
-				LinkedListNode<Cube.CubeType> itr = Cubes[c.X, c.Y+1].First;
-				for (int z = 0; z < c.Z; z++)
-					itr = (itr == null) ? null : itr.Next;
-				
-				if (itr != null)
-					yield return new Cube(this, itr.Value, c.X, c.Y+1, c.Z);
-			}
+
+			Cubes[c.X, c.Y, c.Z] = Cube.CubeType.Air;
+			return toRet;
 		}
 	}
 }

@@ -225,12 +225,12 @@ namespace MazeGeneration
 				}
 			}
 			// Center:
-			if (c.X < L_Wall.MaxDepth + T_Wall.Width)
+			else if (c.X < L_Wall.MaxDepth + T_Wall.Width)
 			{
 				// Top:
 				if (c.Z < TL_Corner.Depth)
 				{
-					c.X -= L_Wall.MaxDepth;
+					c.X -= TL_Corner.Depth;
 					foreach (Cube uncovered in T_Wall.DestroyCube(c))
 						yield return new Cube(this, uncovered.Type,
 						                      uncovered.X + L_Wall.MaxDepth, uncovered.Y, uncovered.Z);
@@ -264,10 +264,10 @@ namespace MazeGeneration
 				{
 					int tmp = c.Z;
 					c.Z = Width - 1 - c.X;
-					c.X = TR_Corner.Width - tmp;
+					c.X = tmp - TR_Corner.Width;
 					foreach (Cube uncovered in R_Wall.DestroyCube(c))
 						yield return new Cube(this, uncovered.Type,
-						                      Width - 1 - uncovered.Z, uncovered.Y, TR_Corner.Width - uncovered.X);
+						                      Width - 1 - uncovered.Z, uncovered.Y, TR_Corner.Width + uncovered.X);
 				}
 				// Bottom:
 				else
