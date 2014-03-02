@@ -169,7 +169,8 @@ namespace MazeGeneration
 						       /*RIGHT:*/ (rgtItr != null && rgtItr.Value != Cube.CubeType.Air) &&
 						       /*UP:*/    (topItr != null && topItr.Value != Cube.CubeType.Air) &&
 						       /*DOWN:*/  (dwnItr != null && dwnItr.Value != Cube.CubeType.Air) &&
-						       /*FRONT:*/ (curItr.Next != null)))
+						       /*FRONT:*/ (curItr.Next != null && curItr.Next.GetType != Cube.CubeType.Air) &&
+						       /*BACK:*/  (curItr.Previous != null && curItr.Previous.GetType != Cube.CubeType.Air)))
 						{
 							yield return new Cube(this, curItr.Value, x, y, z);
 						}

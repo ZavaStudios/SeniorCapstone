@@ -284,7 +284,7 @@ namespace MazeGeneration
 			                          	  (new Vector3(cube.X, cube.Y, cube.Z) + cubeStart) * scalar,
 			                          	  Quaternion.identity);
 			cube.Parent = this;
-			spawned.GetComponent<MineableBlock>()._cube = cube;
+			spawned.FindChild("Plane").GetComponent<MineableBlock>()._cube = cube;
 		}
 
 		public IEnumerable<Cube> DestroyCube(Cube c)
