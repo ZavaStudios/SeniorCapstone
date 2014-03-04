@@ -35,16 +35,21 @@ public class Hud : MonoBehaviour
     Unit player;
     UnitPlayer unitPlayer;
 
-    //TODO Temporary arrays to hold components
-    //TODO May have to enumerate All components first and keep all the arrays around to update later. That or bookeeping
-	//TODO Start here and combine possible weapons
-    string[] arrComponents;
-    string[] arrLightHandles ;
-    string[] arrNormalHandles;
-    string[] arrHeavyHandles ;
+	//TODO Clean up all this code. Maybe separate into different classes.
+    //Enumerate All components first and keep all the arrays around to update later.
+	ItemComponent[,] arrMakeableComps;
+    string[] arrWepPartNames;
+
+    string[] arrLightComponentsStrings ;
+    string[] arrNormalComponentsStrings;
+    string[] arrHeavyComponentsStrings ;
+	ItemComponent[][,] arrComponentGrids; //An array that holds 2d arrays of itemcomponents. These 2d arrays are the tiered components that the play sees
+
     //Grid for component options
-    string[][] arrAllComponents ;
-    string[] arrAll;
+	ItemComponent[] arrAllComponents;
+    string[][] arrAllComponentStrings ;
+    string[] arrSelctedComponentNames;
+
 	//Grid for weapon types
 	string[] arrWeaponTypes;
 
@@ -63,7 +68,7 @@ public class Hud : MonoBehaviour
     Vector2 vec2CompTypeDimensions;
     //Indexes for the selections
 	int intMenusMenu = 0;
-    int intCompTypeGrid = 0; //Index for the type of component
+    int intCompTypeGrid = 0; //Index for the type(category) of component
     int intCompSelGrid = 0; //Index for selecting different components
 	int intAssemType = 0; //Index for selecting which type of weapon to assemble
 	int intAssemPossible = 0; //Index for selecting which weapon to assemble
@@ -79,7 +84,6 @@ public class Hud : MonoBehaviour
 
     protected void Start()
     {
-
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Unit>();
         unitPlayer = player.GetComponent<UnitPlayer>();
 
@@ -94,41 +98,57 @@ public class Hud : MonoBehaviour
 		int intNumWeapons = Enum.GetNames(typeof(ItemWeapon.tWeaponType)).Length;
 		int intNumParts = Enum.GetNames (typeof(ItemComponent.tComponentPart)).Length;
 
-		arrComponents = new string[intNumWeapons * intNumParts];
+		arrWepPartNames = new string[intNumWeapons * intNumParts];
+
+		int intNumOres = Enum.GetNames (typeof(ItemComponent.tOreType)).Length;
+		int intNumAtts = Enum.GetNames (typeof(ItemComponent.tAttributeType)).Length;
+
+		arrAllComponents = new ItemComponent[intNumOres * intNumAtts];
 
 		//Find all the weapon categories and add them to an array
-		int index = 0;
+		arrComponentGrids= new ItemComponent[arrWepPartNames.Length][,];
+		int intWepCategoryindex = 0;
 		foreach(ItemWeapon.tWeaponType wepType in (ItemWeapon.tWeaponType[]) Enum.GetValues(typeof(ItemWeapon.tWeaponType)))
 		{
+			//Weapon categories are a combination of the Weapon type and the weapon part e.g. sword blade and staff arrow
 			foreach(ItemComponent.tComponentPart partType in (ItemComponent.tComponentPart[]) Enum.GetValues(typeof(ItemComponent.tComponentPart)))
 			{
 				string code = ItemComponent.getComponentCategoryCode(wepType, partType);
 				string name = ItemComponent.getComponentName(code);
 
-				arrComponents[index] = name;
-				index += 1;
+				arrWepPartNames[intWepCategoryindex] = name; //An array to store the names for the weapon parts
+
+
+				//Get the craftable components based on which category we're in e.g. Lightened copper sword handle
+				arrMakeableComps = new ItemComponent[intNumAtts,intNumOres - 1]; //Account for NOT_ORE type
+				int intAttIndex = 0;
+				foreach(ItemComponent.tAttributeType attType in (ItemComponent.tAttributeType[])Enum.GetValues(typeof(ItemComponent.tAttributeType)))
+				{
+					//Components will be a combination of the attribute, ore, weapon, and the part
+					int intOreIndex = 0;
+					foreach(ItemComponent.tOreType oreType in (ItemComponent.tOreType[])Enum.GetValues(typeof(ItemComponent.tOreType)))
+					{
+						//Ignore NOT_ORE types
+						if(oreType.Equals(ItemComponent.tOreType.NOT_ORE))
+							continue;
+
+						string newCompCode = ItemComponent.generateComponentCode(attType, oreType, wepType, partType);
+						ItemComponent newComponent = ItemFactory.createComponent(newCompCode);
+						arrMakeableComps[intAttIndex, intOreIndex] = newComponent;
+
+						intOreIndex++;
+					}
+					intAttIndex++;
+				}
+
+				arrComponentGrids[intWepCategoryindex] = arrMakeableComps;
+				intWepCategoryindex++; //The weapon category index is needed since crafting is done by selecting category and then attribute+ore
 			}
 		}
 
-        arrLightHandles = new string[] { "", "", "", "", "", "?", "Lightened Copper Handle" };
-        arrNormalHandles = new string[] { "", "", "", "", "", "?", "Normal Copper Handle" };
-        arrHeavyHandles = new string[] { "", "", "", "", "", "?", "Heavy Copper Handle" };
-        arrAllComponents = new string[][]{ arrLightHandles, arrNormalHandles, arrHeavyHandles };
-        arrAll = new string[arrAllComponents[0].Length + arrAllComponents[1].Length + arrAllComponents[2].Length];
-
-
-        //NOTE: All component arrays should be the same length
         //TODO For the one layer undiscovered items, show a "?", for undiscovered layers above that, put ""
-        int intArrAllIndex = 0;
-        for (int i = 0; i < arrLightHandles.Length; i++)
-        {
-            arrAll[intArrAllIndex] = arrAllComponents[0][i];
-            arrAll[intArrAllIndex + 1] = arrAllComponents[1][i];
-            arrAll[intArrAllIndex + 2] = arrAllComponents[2][i];
 
-            intArrAllIndex += 3;
-        }
-
+		//Get a list of weapon types to cycle through during assembling
 		arrWeaponTypes = Enum.GetNames (typeof(ItemWeapon.tWeaponType));
     }
 
@@ -146,7 +166,8 @@ public class Hud : MonoBehaviour
 //				menuCode = tMenuStates.MENU_NONE;
 		}
 
-		else if (Input.GetKeyUp(keyCodeInventory)) //Allow toggling of the inventory when the corresponding button has been pressed
+		else if(Input.GetKeyUp(keyCodeInventory))
+//		else if (InputContextManager.isMENU_LEFT()) //Allow toggling of the inventory when the corresponding button has been pressed
         {
             if (menuCode == tMenuStates.MENU_NONE)
                 menuCode = tMenuStates.INVENTORY;
@@ -206,7 +227,6 @@ public class Hud : MonoBehaviour
                 }
             case tMenuStates.ASSEMBLING:
                 {
-                    //TODO make a button that combines all components if they can make a weapon.
 					handleAssembleMovement();
                     break;
                 }
@@ -250,7 +270,7 @@ public class Hud : MonoBehaviour
 			}
             case tMenuStates.CRAFTING:
 			{
-                layoutCraftingGUI();
+                layoutCraftingGrid();
 
 				break;
 			}
@@ -313,7 +333,6 @@ public class Hud : MonoBehaviour
 		int intAssemWeaponLabelY = (Screen.height / 20);
 		GUI.Label (new Rect (intAssemWeaponLabelX, intAssemWeaponLabelY, intAssemWeaponLabelWidth, intAssemWeaponLabelHeight), arrWeaponTypes [intAssemType], style);
 
-		//TODO Need some way of enumerating possible weapon build from the components in the inventory
 		//TODO Maybe for a given type, ask for the components
 		ArrayList arrListAssemblable = GetMakeableItems ();
 		string[] arrAssembleStrings = new string[arrListAssemblable.Count];
@@ -324,7 +343,6 @@ public class Hud : MonoBehaviour
 
 		intCompTypeGrid = GUI.SelectionGrid(new Rect(vec2CompTypeStart.x, vec2CompTypeStart.y,  vec2CompTypeDimensions.x, vec2CompTypeDimensions.y), 
 		                                    intAssemPossible, arrAssembleStrings, 1, style);
-	
 
 	}
 
@@ -354,14 +372,14 @@ public class Hud : MonoBehaviour
 		return arrListResults;
 	}
 
-    private void layoutCraftingGUI()
+    private void layoutCraftingGrid()
     {
         Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
         Texture2D tex2dButtonActiveBack = new Texture2D(1, 1);
         Texture2D tex2dButtonFlashBack = new Texture2D(1, 1);
 
         //Set the style for selection screens
-        //TODO Currently, can't initialize a style outside of On GUI. Find a  way to call this outside of OnGUI for efficiency
+        //Currently, can't initialize a style outside of On GUI. Find a  way to call this outside of OnGUI for efficiency
         UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
         tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryButtonBackground");
         tex2dButtonActiveBack = (Texture2D)Resources.Load("SelectedBackground");
@@ -396,22 +414,55 @@ public class Hud : MonoBehaviour
 //		                                    intCompTypeGrid, arrComponents, 1, style);
 		//List of categories
 		intCompTypeGrid = GUI.SelectionGrid(new Rect(vec2CompTypeStart.x, vec2CompTypeStart.y,  vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
-		                                    intCompTypeGrid, arrComponents, 1, style);
+		                                    intCompTypeGrid, arrWepPartNames, 1, style);
 
 		//List of components
-        intCompSelGrid = GUI.SelectionGrid(new Rect(4.5f * intWidthPadding, intHeightPadding,
+		ItemComponent[,] selectedComponents = arrComponentGrids [intCompTypeGrid];
+		int intNumItems = selectedComponents.Length;
+		int intNumAtts = selectedComponents.GetLength (0);
+		int intNumOres = selectedComponents.GetLength (1);
+
+		//Loop through our 2d array of components and store the names in a 1d arary to display
+		arrSelctedComponentNames = new string[intNumItems];
+
+		for(int i = 0; i < intNumAtts; i++)
+		{
+			for(int j=0; j < intNumOres; j++)
+			{
+				//Do a little math to translate from (0,0) in the top left and indexes increasing right to
+				//	(0,0) in botton left and indexes increasing up. In other words, rotate the array ccw by 90.
+
+				arrSelctedComponentNames[getIndexFromCoordinate(i,j,intNumItems, intNumAtts)] = selectedComponents[i,j].ToString();
+//				arrSelctedComponentNames[intNumItems - (j * intNumAtts) - (intNumAtts - i)] = selectedComponents[i,j].ToString();
+
+			}
+		}
+
+		//Handle selection grid stuff
+		intCompSelGrid = GUI.SelectionGrid(new Rect(4.5f * intWidthPadding, intHeightPadding,
 		                                            (6f * intWidthPadding), Screen.height - (2*intHeightPadding)),
-		                                   intCompSelGrid, arrAll,  intCompSelCols, style);
+		                                   intCompSelGrid, arrSelctedComponentNames,  intNumAtts, style);
+
+
 		//Description Menu
 		GUI.Label(new Rect(11 * intWidthPadding, vec2CompTypeStart.y,
 		                   	vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
-		          "[Insert Requirement Here]", style);
-
-        //Grid for the types of components
-        //		intLightenedGrid = GUI.SelectionGrid (new Rect (125, 100, 200, 400), intLightenedGrid, arrAllComponents[1], 1, style);
-        //		intNormalGrid = GUI.SelectionGrid (new Rect (325, 100, 200, 400), intNormalGrid, arrAllComponents[2], 1, style);
-        //		intHeavyGrid = GUI.SelectionGrid (new Rect (525, 100, 200, 400), intHeavyGrid, arrAllComponents[3], 1, style);
+		          "[Insert Requirements Here]", style);
     }
+	private Vector2 getComponentCoordinateFromIndex(int index)
+	{
+		//Assume that all weapon types have the same # of cols a.k.a same # of attributes
+		int cols = (Enum.GetNames (typeof(ItemComponent.tAttributeType))).Length;
+		int tiers = (Enum.GetNames (typeof(ItemComponent.tOreType))).Length - 2; //-1 for the NOT_ORE, -1 to translated to 0 based indexing
+		int x = index % cols;
+		int y = (tiers - (int)(index / cols));
+
+		return new Vector2 (x, y);
+	}
+	private int getIndexFromCoordinate(int x, int y, int intNumItems, int intNumCols)
+	{
+		return (intNumItems - (y * intNumCols) - (intNumCols - x));
+	}
 
     private void layoutInventoryGrid()
     {
@@ -510,6 +561,14 @@ public class Hud : MonoBehaviour
 
 			intAssemType = (intNewType > arrWeaponTypes.Length - 1 ? 0 : intNewType);
 		}
+		else if (Input.GetKeyUp(keyCodeInventoryUp))
+		{
+
+		}
+		else if (Input.GetKeyUp(keyCodeInventoryDown))
+		{
+
+		}
 	}
 
     private void handleComponentMovement()
@@ -537,7 +596,7 @@ public class Hud : MonoBehaviour
             if (intCompSelGrid >= 0)
             {
                 int intNewSelection = intCompSelGrid + 1;
-                intCompSelGrid = Math.Min(intNewSelection, arrAll.Length - 1);
+                intCompSelGrid = Math.Min(intNewSelection, arrSelctedComponentNames.Length - 1);
             }
             else //I'm in the component type menu
             {
@@ -550,12 +609,12 @@ public class Hud : MonoBehaviour
             if (intCompSelGrid >= 0)
             {
                 int intNewSelection = intCompSelGrid + intCompSelCols;
-                intCompSelGrid = Math.Min(arrAll.Length - 1, intNewSelection);
+                intCompSelGrid = Math.Min(arrSelctedComponentNames.Length - 1, intNewSelection);
             }
             else //I'm in the component type menu
             {
                 int intNewSelection = intCompTypeGrid + 1;
-                intCompTypeGrid = Math.Min(intNewSelection, arrComponents.Length - 1);
+                intCompTypeGrid = Math.Min(intNewSelection, arrWepPartNames.Length - 1);
             }
         }
         else if (Input.GetKeyUp(keyCodeInventoryLeft))
@@ -575,15 +634,21 @@ public class Hud : MonoBehaviour
         }
         else if (Input.GetKeyUp(keyCodeConfirm))
         {
-			//Make the button be selected when the confirm key is pressed
+			//TODO Make the button be selected when the confirm key is pressed
 //			SendMessage("onActive");
 
-            //Assume we have ore
-			//TODO Actually make the appropriate weapon making call. Outlined below, but not complete
-			//ItemComponent cmpnew = ItemFactory.createComponent( ((ItemComponent.tComponentType)getPart(code[grid])), getOre(code[grid])) 
-			string cmpNewCode = ItemComponent.generateComponentCode(ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Copper, ItemWeapon.tWeaponType.WeaponSword,
-			                                                        ItemComponent.tComponentPart.Blade);
-            ItemComponent cmpNew = ItemFactory.createComponent(cmpNewCode);
+            //TODO Assuming that we have right amounts of ore right now
+//			string cmpNewCode = ItemComponent.generateComponentCode(ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Copper, ItemWeapon.tWeaponType.WeaponSword,
+//			                                                        ItemComponent.tComponentPart.Blade);
+			Vector2 vec2SelectedComponent = getComponentCoordinateFromIndex(intCompSelGrid);
+
+//			Debug.Log("Index: " + intCompSelGrid);
+//			Debug.Log("X: " + vec2SelectedComponent.x);
+//			Debug.Log("Y: " + vec2SelectedComponent.y);
+
+			//TODO Start here and select the correct menu
+			Debug.Log("Selected Comp: " + intCompTypeGrid);
+			ItemComponent cmpNew = arrComponentGrids[intCompTypeGrid][(int)vec2SelectedComponent.x, (int)vec2SelectedComponent.y];
 
             Inventory inventory = Inventory.getInstance();
             inventory.inventoryAddItem(cmpNew);

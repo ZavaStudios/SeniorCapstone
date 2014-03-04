@@ -44,15 +44,14 @@ public class UnitPlayer : Unit {
 		string staffBladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Copper, ItemWeapon.tWeaponType.WeaponStaff,
 		                                                             ItemComponent.tComponentPart.Blade);
 
-		inventory.inventoryAddItem (ItemFactory.createComponent (staffHandleCode)); //Add a staff handle
-		inventory.inventoryAddItem (ItemFactory.createComponent (staffBladeCode)); //Add a staff blade
-
 		base.Start();
         attackDamage = 20.0f;
         equipWeapon(ItemWeapon.tWeaponType.WeaponPickaxe.ToString());
 
-		inventory.inventoryAddItem (ItemFactory.createComponent (bladeCode));
-		inventory.inventoryAddItem (ItemFactory.createComponent (handleCode));
+//		inventory.inventoryAddItem (ItemFactory.createComponent (staffHandleCode)); //Add a staff handle
+//		inventory.inventoryAddItem (ItemFactory.createComponent (staffBladeCode)); //Add a staff blade
+//		inventory.inventoryAddItem (ItemFactory.createComponent (bladeCode));
+//		inventory.inventoryAddItem (ItemFactory.createComponent (handleCode));
 
 	}
 
