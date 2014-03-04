@@ -193,9 +193,9 @@ public class Hud : MonoBehaviour
 		if(menuCode != tMenuStates.MENU_NONE) //Menu to select menues
 		{
 			if(Input.GetKeyUp(keyCodeInventoryAltRight))
-				intMenusMenu = (arrMenusMenu.Length + intMenusMenu + 1) % arrMenusMenu.Length;
+				intMenusMenu = (arrMenusMenu.Length + intMenusMenu + 1) % arrMenusMenu.Length; //Loop to the beginning if we're at the end
 			else if(Input.GetKeyUp(keyCodeInventoryAltLeft))
-				intMenusMenu = Math.Max(intMenusMenu - 1, 0);
+				intMenusMenu = intMenusMenu - 1 < 0 ? arrMenusMenu.Length - 1 : intMenusMenu - 1; //Loop to the end if we're at the beginning
 
 			menuCode = arrMenusMenu[intMenusMenu];
 		}

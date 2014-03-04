@@ -44,6 +44,8 @@ public class FPSInputController : MonoBehaviour
 		
 		// Apply the direction to the CharacterMotorasa
 		motor.inputMoveDirection = transform.rotation * directionVector;
-		motor.inputJump = OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_O, OuyaExampleCommon.Player);
+//		motor.inputJump = OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_O, OuyaExampleCommon.Player);
+		//TODO replace KeyCode.Space to the prooper Input manager control
+		motor.inputJump = Input.GetKeyDown (KeyCode.Space);
 	}
 }
