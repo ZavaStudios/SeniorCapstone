@@ -23,6 +23,9 @@ namespace MazeGeneration
 		public static Transform ore2_cube;
 		public static Transform ore3_cube;
 		public static Transform ore4_cube;
+		public static Transform zombieBoss;
+		public static Transform skeletonBoss;
+		public static Transform spiderBoss;
 
 		// Cached values so we can spawn new cubes during runtime
 		private float _scalar;

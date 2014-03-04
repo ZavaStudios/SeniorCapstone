@@ -8,7 +8,8 @@ public class EnemyGenerator
 
 	public enum EnemyType
 	{
-		spider, skeleton, zombie
+		spider, skeleton, zombie,
+		spiderBoss, skeletonBoss, zombieBoss,
 	}
 
 	//Generates enemies at random based on the number of points that are allocated to that room.

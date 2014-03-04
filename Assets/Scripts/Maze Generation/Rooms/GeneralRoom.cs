@@ -86,8 +86,13 @@ namespace MazeGeneration
 								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
 						 		 ((float)(Height * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
 					Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
-					InstantiateEnemy(center, enemy, scalar);
+					InstantiateEnemy(enemyPos, enemy, scalar);
 				}
+			}
+			else if (Type == RoomType.boss)
+			{
+				// TODO: proper boss allocation
+				InstantiateEnemy(center, EnemyGenerator.EnemyType.zombieBoss, scalar);
 			}
 		}
 
@@ -111,8 +116,8 @@ namespace MazeGeneration
 	    /// <param name="scalar">Value to scale 1 block size to.</param>
 		private void InstantiateEnemy(Vector3 position, EnemyGenerator.EnemyType e, float scalar)
 		{
-			Transform enemy;
-			Vector3 enemy_pos;
+			Transform enemy = null;
+			Vector3 enemy_pos = Vector3.zero;
 			switch(e)
 			{
 			case EnemyGenerator.EnemyType.skeleton:
@@ -126,9 +131,23 @@ namespace MazeGeneration
 				break;
 				
 			case EnemyGenerator.EnemyType.zombie:
-			default:
 				enemy = zombie;
 				enemy_pos = position + new Vector3(0.0f, zombie.collider.bounds.center.y, 0.0f);
+				break;
+			case EnemyGenerator.EnemyType.skeletonBoss:
+				enemy = skeletonBoss;
+				enemy_pos = position + new Vector3(0.0f, skeletonBoss.collider.bounds.center.y, 0.0f);
+				break;
+			case EnemyGenerator.EnemyType.spiderBoss:
+				enemy = spiderBoss;
+				enemy_pos = position + new Vector3(0.0f, spiderBoss.collider.bounds.center.y, 0.0f);
+				break;
+			case EnemyGenerator.EnemyType.zombieBoss:
+				enemy = zombieBoss;
+				enemy_pos = position + new Vector3(0.0f, zombieBoss.collider.bounds.center.y, 0.0f);
+				break;
+			default:
+				Debug.Log ("ERROR!");
 				break;
 			}
 

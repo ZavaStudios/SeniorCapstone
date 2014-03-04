@@ -50,9 +50,13 @@ public class Hud : MonoBehaviour
     string[][] arrAllComponentStrings ;
     string[] arrSelctedComponentNames;
 
+	//Grid for possible assembled items
+	ItemComponent[][] arrAssembleWeapons;
+
 	//Grid for weapon types
 	string[] arrWeaponTypes;
 
+	//The available options for selecting menus
 	tMenuStates[] arrMenusMenu = {tMenuStates.INVENTORY, tMenuStates.CRAFTING, tMenuStates.ASSEMBLING};
 
     //Options for laying out the grid
@@ -70,8 +74,8 @@ public class Hud : MonoBehaviour
 	int intMenusMenu = 0;
     int intCompTypeGrid = 0; //Index for the type(category) of component
     int intCompSelGrid = 0; //Index for selecting different components
-	int intAssemType = 0; //Index for selecting which type of weapon to assemble
-	int intAssemPossible = 0; //Index for selecting which weapon to assemble
+	int intAssembleType = 0; //Index for selecting which type of weapon to assemble
+	int intAssembleWeapon = 0; //Index for selecting which weapon to assemble
     private int intSelectedWeapon = 0; //The index of the selected weapon
 
 
@@ -297,10 +301,8 @@ public class Hud : MonoBehaviour
 
 	private void layoutAssembleGrid()
 	{
-		//TODO Make some actual dimensions
-
-		vec2CompTypeDimensions.x = 300;
-		vec2CompTypeDimensions.y = 200;
+		int intAssembleWidthPadding = Screen.width / 8;
+		int intAssembleHeightPadding = Screen.height / 8;
 
 		Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
 		Texture2D tex2dButtonActiveBack = new Texture2D (1, 1);
@@ -327,22 +329,37 @@ public class Hud : MonoBehaviour
 
 
 		//Make a label to show which kind of weapon is being assembled
-		int intAssemWeaponLabelWidth = Screen.width / 4;
-		int intAssemWeaponLabelHeight = Screen.height / 8;
+		int intAssemWeaponLabelWidth = 2 * intAssembleWidthPadding;
+		int intAssemWeaponLabelHeight = intAssembleHeightPadding;
 		int intAssemWeaponLabelX = (Screen.width / 2) - (intAssemWeaponLabelWidth / 2); //Start the label at half the screen shifted by half the label width
 		int intAssemWeaponLabelY = (Screen.height / 20);
-		GUI.Label (new Rect (intAssemWeaponLabelX, intAssemWeaponLabelY, intAssemWeaponLabelWidth, intAssemWeaponLabelHeight), arrWeaponTypes [intAssemType], style);
 
-		//TODO Maybe for a given type, ask for the components
+		GUI.Label (new Rect (intAssemWeaponLabelX, intAssemWeaponLabelY, intAssemWeaponLabelWidth, intAssemWeaponLabelHeight), arrWeaponTypes [intAssembleType], style);
+
 		ArrayList arrListAssemblable = GetMakeableItems ();
-		string[] arrAssembleStrings = new string[arrListAssemblable.Count];
+		ArrayList temp =  new ArrayList();
+
+		//Filter the makeable items by their type
 		for(int i = 0; i < arrListAssemblable.Count; i++)
 		{
-			arrAssembleStrings[i] = ((ItemWeapon)arrListAssemblable[i]).name;
+			ItemWeapon wepCurrent = ItemFactory.createWeapon(((ItemComponent [])arrListAssemblable[i])[0], ((ItemComponent [])arrListAssemblable[i])[1]);
+
+			if(wepCurrent.weaponType.ToString().Equals(arrWeaponTypes[intAssembleType]))
+				temp.Add(arrListAssemblable[i]);
 		}
 
-		intCompTypeGrid = GUI.SelectionGrid(new Rect(vec2CompTypeStart.x, vec2CompTypeStart.y,  vec2CompTypeDimensions.x, vec2CompTypeDimensions.y), 
-		                                    intAssemPossible, arrAssembleStrings, 1, style);
+		//Copy the valid items into an array
+		string[] arrAssembleStrings = new string[temp.Count];
+		arrAssembleWeapons = new ItemComponent[temp.Count][];
+		for(int i = 0; i < temp.Count; i ++)
+		{
+			arrAssembleWeapons[i] = (ItemComponent[])temp[i];
+			arrAssembleStrings[i] = ItemFactory.createWeapon(arrAssembleWeapons[i][0], arrAssembleWeapons[i][1]).name;
+		}
+
+		intCompTypeGrid = GUI.SelectionGrid(new Rect(intAssembleWidthPadding, intAssemWeaponLabelY + intAssemWeaponLabelHeight + 10,
+		                                             6 * intAssembleWidthPadding, 6 * intAssembleHeightPadding), 
+		                                    intAssembleWeapon, arrAssembleStrings, 3, style);
 
 	}
 
@@ -364,7 +381,8 @@ public class Hud : MonoBehaviour
 				ItemWeapon potentialWeapon = ItemFactory.createWeapon((ItemComponent)arrListComponents[i],(ItemComponent)arrListComponents[j]);
 				if(potentialWeapon != null)
 				{
-					arrListResults.Add(potentialWeapon);
+					//TODO Use a tuple instead of an array w/ 2 items. I think the compiler won't compile against .net 4.0+
+					arrListResults.Add(new ItemComponent[2]{(ItemComponent)arrListComponents[i],(ItemComponent)arrListComponents[j]});
 				}
 			}
 		}
@@ -551,23 +569,33 @@ public class Hud : MonoBehaviour
 		//Left and right change the type being assembled. (With wraparound)
 		if(Input.GetKeyUp (keyCodeInventoryLeft)) 
 		{
-			int intNewType = intAssemType - 1;
+			int intNewType = intAssembleType - 1;
 
-			intAssemType = (intNewType < 0 ? arrWeaponTypes.Length - 1 : intNewType);
+			intAssembleType = (intNewType < 0 ? arrWeaponTypes.Length - 1 : intNewType);
 		}
 		else if (Input.GetKeyUp (keyCodeInventoryRight))
 		{
-			int intNewType = intAssemType + 1;
+			int intNewType = intAssembleType + 1;
 
-			intAssemType = (intNewType > arrWeaponTypes.Length - 1 ? 0 : intNewType);
+			intAssembleType = (intNewType > arrWeaponTypes.Length - 1 ? 0 : intNewType);
 		}
+		//Up and down change which item to assemble (without wraparound)
 		else if (Input.GetKeyUp(keyCodeInventoryUp))
 		{
-
+			intAssembleWeapon = Math.Max(intAssembleWeapon - 1, 0);
 		}
 		else if (Input.GetKeyUp(keyCodeInventoryDown))
 		{
+			intAssembleWeapon = Math.Min(arrAssembleWeapons.Length - 1, intAssembleWeapon + 1);
+		}
+		else if (Input.GetKeyUp(keyCodeConfirm))
+		{
+			//TODO remove required components from inventory
+			Inventory i = Inventory.getInstance();
 
+			i.inventoryAddItem(ItemFactory.createWeapon(arrAssembleWeapons[intAssembleWeapon][0],arrAssembleWeapons[intAssembleWeapon][1]));
+			i.inventoryRemoveItem(arrAssembleWeapons[intAssembleWeapon][0]);
+			i.inventoryRemoveItem(arrAssembleWeapons[intAssembleWeapon][1]);
 		}
 	}
 

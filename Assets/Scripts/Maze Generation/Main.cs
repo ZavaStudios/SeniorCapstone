@@ -25,6 +25,9 @@ public class Main : MonoBehaviour
 	public Transform zombie;
 	public Transform skeleton;
 	public Transform spider;
+	public Transform zombieBoss;
+	public Transform skeletonBoss;
+	public Transform spiderBoss;
 
 	// Use this for initialization
 	void Start ()
@@ -43,6 +46,9 @@ public class Main : MonoBehaviour
 		RogueRoom.ore2_cube = ore2_cube;
 		RogueRoom.ore3_cube = ore3_cube;
 		RogueRoom.ore4_cube = ore4_cube;
+		RogueRoom.zombieBoss = zombieBoss;
+		RogueRoom.skeletonBoss = skeletonBoss;
+		RogueRoom.spiderBoss = spiderBoss;
 
         foreach (RogueRoom room in dungeon.EnumerateRooms())
 		{
