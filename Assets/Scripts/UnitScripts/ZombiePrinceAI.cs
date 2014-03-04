@@ -3,14 +3,14 @@ using System.Collections;
 
 public class ZombiePrinceAI : BossUnit
 {
-	private Transform zombie = GameObject.Find("zombie").transform;
+	public Transform zombie; 
 
 
 	// Use this for initialization
 	protected override void Start ()
 	{
-		base.Start();
 		equipWeapon("ZombieWeapon");
+		base.Start();
 
 		//Cap the number of enemies to be 3.
 		enemyCap = 5;

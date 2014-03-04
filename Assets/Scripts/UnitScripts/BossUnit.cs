@@ -7,7 +7,7 @@ public class BossUnit : UnitEnemy
 
 	//Every 5 seconds generate a new enemy.
 	protected float spawnTimer = 5.0f;
-	protected float delay = 0.0f;
+	protected float delay = 2.0f;
 
 	//Caps the number of enemies that can be spawned.
 	protected float enemyCap = 0.0f;
@@ -38,7 +38,8 @@ public class BossUnit : UnitEnemy
 		//First attack: Spawn an enemy every so often.
 		if (Time.time >= spawnTimer && numEnemies < enemyCap)
 		{
-			//Spawn an enemy every delay seconds.  
+			//Spawn an enemy every delay seconds.
+			spawnEnemy();
 			spawnTimer = Time.time + delay;
 			numEnemies++;
 		}
