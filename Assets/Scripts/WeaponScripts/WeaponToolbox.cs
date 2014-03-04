@@ -57,9 +57,11 @@ public class WeaponToolbox : WeaponBase
         
         if(Physics.Raycast(Character.getEyePosition(), Character.getLookDirection(), out rayHit, attackRange))
         {
+            print(rayHit.collider.gameObject);
+            print("tag: " + rayHit.collider.gameObject.tag);
             if(rayHit.collider.gameObject.CompareTag("Floor"))
             {
-                currentTurret = (GameObject)GameObject.Instantiate(Resources.Load("Turret"), rayHit.point,Character.getLookRotation());
+                currentTurret = (GameObject)GameObject.Instantiate(Resources.Load("Turret"), rayHit.point,Character.transform.rotation);
             }
         }
 	}

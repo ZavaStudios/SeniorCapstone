@@ -92,8 +92,12 @@ namespace MazeGeneration
 			Transform ct = (Transform)MonoBehaviour.Instantiate(floor_tile,
 			                          							(center + new Vector3(0.0f, Height, 0.0f)) * scalar,
 			                                                    Quaternion.AngleAxis (180.0f, Vector3.forward));
-			ft.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(Width, Depth));
+   			ft.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(Width, Depth));
 			ct.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(Width, Depth));
+
+            //set the tag for raycast identification.
+            ft.FindChild("Plane").tag = "Floor"; 
+            ct.FindChild("Plane").tag = "Ceiling"; 
 
 			// Instantiate walls:
 			float wallHeight = (float)Height / 2.0f;

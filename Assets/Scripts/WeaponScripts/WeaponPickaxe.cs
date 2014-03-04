@@ -16,6 +16,12 @@ public class WeaponPickaxe : WeaponBase
         attackDelay = 1.2f;
 
         base.Start();
+
+        WeaponPickaxeBlockDestroyerScript s = gameObject.GetComponentInChildren<WeaponPickaxeBlockDestroyerScript>();
+        s.damage = 1;
+        s.Character = Character;
+        s.range = attackRange;
+
     }
     
     // Update is called once per frame
@@ -27,24 +33,5 @@ public class WeaponPickaxe : WeaponBase
     {
 //        print("mining..");
         //LayerMask mask = LayerMask.NameToLayer("world");// | LayerMask.NameToLayer("enemy");
-
-        if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange))
-        {
-            if(rayHit.collider.gameObject.CompareTag("Enemy"))
-            {  
-                print ("You can't attack enemies with a pickaxe!");
-            }
-            if(rayHit.collider.gameObject.CompareTag("Ore"))
-            {
-                MineableBlock resource = rayHit.collider.GetComponent<MineableBlock>();
-
-                WeaponPickaxeBlockDestroyerScript s = gameObject.GetComponentInChildren<WeaponPickaxeBlockDestroyerScript>();
-                s.damage = 1;
-                s.hitBlock = resource;
-
-                print ("Mining for treasure...");
-            }
-        }
-        
     }
 }

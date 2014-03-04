@@ -4,8 +4,6 @@ using System.Collections;
 
 public class WeaponStaff : WeaponBase
 {
-	public GameObject Fireball;
-	
 	float bulletSpeed =  1000.0f;
 	float specialSpeed = 2000.0f;
 	
@@ -16,8 +14,6 @@ public class WeaponStaff : WeaponBase
 		weaponDamage = 20.0f;
 		attackDelay = 0.5f;
 		base.Start();
-		
-		Fireball = (GameObject)Resources.Load("Fireball");
 	}
 	
 	// Update is called once per frame
@@ -29,9 +25,8 @@ public class WeaponStaff : WeaponBase
 	{
 		 // Instantiate the projectile at the position and rotation of this transform
     	ProjectileFireball p;
-    	GameObject clone = (GameObject)GameObject.Instantiate(Fireball, startPos,Character.getLookRotation());
+    	GameObject clone = (GameObject)GameObject.Instantiate(Resources.Load("Fireball"), startPos,Character.getLookRotation());
 		clone.gameObject.AddComponent("ProjectileFireball");
-		Physics.IgnoreCollision(clone.collider,Camera.main.collider);
 		Physics.IgnoreCollision(clone.collider,Character.collider);
 		
 		p = clone.GetComponent<ProjectileFireball>();
@@ -45,17 +40,14 @@ public class WeaponStaff : WeaponBase
 	
 	public override void attackSpecial ()
 	{
-		print("bouncebomb..");
-		ProjectileBouncyBomb p;
-    	GameObject clone = (GameObject)GameObject.Instantiate(Resources.Load("BouncingBomb"), Character.getEyePosition()+Vector3.down*0.25f,Character.getLookRotation());
-		clone.gameObject.AddComponent("ProjectileBouncyBomb");
-		Physics.IgnoreCollision(clone.collider,Camera.main.collider);
-		Physics.IgnoreCollision(clone.collider,Character.collider);
-		
-		p = clone.GetComponent<ProjectileBouncyBomb>();
-		p.damage = 5; //real damage later
-		
-    	// Add force to the cloned object in the object's forward direction
-    	clone.rigidbody.AddForce(clone.transform.forward * specialSpeed);
+        if(Physics.Raycast(Character.getEyePosition(), Character.getLookDirection(), out rayHit, attackRange))
+        {
+            print(rayHit.collider.gameObject);
+            print("tag: " + rayHit.collider.gameObject.tag);
+            if(rayHit.collider.gameObject.CompareTag("Floor"))
+            {
+                GameObject.Instantiate(Resources.Load("SnowburstTimer"), rayHit.point,Character.transform.rotation);
+            }
+        }
 	}
 }

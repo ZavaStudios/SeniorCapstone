@@ -8,6 +8,7 @@ public class WeaponModelSwitcher : MonoBehaviour
 	public GameObject crappy_staff;
     public GameObject crappy_toolbox;
     public GameObject crappy_wrench;
+    public GameObject crappy_bow;
     private GameObject Active;
     
     public void start()
@@ -17,6 +18,7 @@ public class WeaponModelSwitcher : MonoBehaviour
 		crappy_staff.SetActive(false);
         crappy_toolbox.SetActive(false);
         crappy_wrench.SetActive(false);
+        crappy_bow.SetActive(false);
     }
     
     public void SwitchWeapon(string newWeapon)
@@ -27,6 +29,7 @@ public class WeaponModelSwitcher : MonoBehaviour
 		crappy_staff.SetActive(false);
         crappy_toolbox.SetActive(false);
         crappy_wrench.SetActive(false);
+        crappy_bow.SetActive(false);
         
         if (newWeapon == ItemWeapon.tWeaponType.WeaponSword.ToString())
         {
@@ -52,6 +55,12 @@ public class WeaponModelSwitcher : MonoBehaviour
             crappy_wrench.SetActive(true);
             Active = crappy_toolbox;
         }
+
+        else if (newWeapon == ItemWeapon.tWeaponType.WeaponBow.ToString())
+        {
+            crappy_bow.SetActive(true);
+            Active = crappy_bow;
+        }
             
         else
         {
@@ -76,6 +85,11 @@ public class WeaponModelSwitcher : MonoBehaviour
         {
             Active.animation.Play("StaffBlast");
         }
+        else if (Active == crappy_bow )
+        {
+            Active.animation.Play("CrappyBowDraw");
+        }
+
         else
         {
             print ("no animation found");

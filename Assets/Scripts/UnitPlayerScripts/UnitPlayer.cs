@@ -71,6 +71,13 @@ public class UnitPlayer : Unit {
 			else
 				print ("You cannot attack without a weapon!");
 		}
+
+        if(InputContextManager.isATTACK_RELEASED())
+        {
+            if (weapon != null)
+                weapon.onAttackButtonReleased();
+        }
+
 		if(InputContextManager.isSPECIAL_ATTACK())
 		{
 //			print ("right clicked...");
@@ -81,7 +88,7 @@ public class UnitPlayer : Unit {
 			}
 		}
 		
-		const int numWeapons = 4;
+		const int numWeapons = 5;
 		if(InputContextManager.isSWITCH_WEAPON())
 		{
 			if (wep > (numWeapons-1))
@@ -107,6 +114,10 @@ public class UnitPlayer : Unit {
 					break;
                 case 3:
                     equipWeapon ("WeaponToolbox");
+                    wep++;
+                    break;
+                case 4:
+                    equipWeapon ("WeaponBow");
                     wep++;
                     break;
 			}

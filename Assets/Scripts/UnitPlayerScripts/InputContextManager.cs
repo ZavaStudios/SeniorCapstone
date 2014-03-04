@@ -118,10 +118,21 @@ public class InputContextManager : MonoBehaviour {
         return  OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_RT, OuyaExampleCommon.Player); 
     }
 
+    static public bool isATTACK_RELEASED()
+    { 
+        return  OuyaExampleCommon.GetButtonUp(OuyaSDK.KeyEnum.BUTTON_RT, OuyaExampleCommon.Player); 
+    }
+
     static public bool isSPECIAL_ATTACK()
     { 
         return  OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_LT, OuyaExampleCommon.Player); 
     }
+
+    static public bool isSPECIAL_ATTACK_RELEASED()
+    { 
+        return  OuyaExampleCommon.GetButtonUp(OuyaSDK.KeyEnum.BUTTON_LT, OuyaExampleCommon.Player); 
+    }
+
 
     static public bool isSWITCH_WEAPON()
     { 
@@ -209,9 +220,19 @@ public class InputContextManager : MonoBehaviour {
         return Input.GetKeyDown(KeyCode.Mouse0);
     }
 
+    static public bool isATTACK_RELEASED()
+    { 
+        return Input.GetKeyUp(KeyCode.Mouse0);
+    }
+
     static public bool isSPECIAL_ATTACK()
     { 
         return Input.GetKeyDown(KeyCode.Mouse1);
+    }
+
+    static public bool isSPECIAL_ATTACK_RELEASED()
+    { 
+        return Input.GetKeyUp(KeyCode.Mouse1);
     }
 
     static public bool isSWITCH_WEAPON()
