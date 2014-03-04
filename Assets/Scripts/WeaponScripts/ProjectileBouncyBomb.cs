@@ -42,15 +42,14 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 		Collider[] colliders = Physics.OverlapSphere (transform.position, radius);
 		
 		foreach ( Collider hit in colliders) {
-			if (hit && hit.rigidbody && hit.rigidbody != this.rigidbody)
-			{
 				Unit toDie = hit.gameObject.GetComponent<Unit>();
                 print(toDie);
-                toDie.doDamage(damage);
+
+				if(toDie)
+                	toDie.doDamage(damage);
                 //print("Make The Little Man FLY!!!"); power += 1000;
 				//print(hit.name);
 				//hit.rigidbody.AddExplosionForce(power, transform.position, radius, 3.0f);
-			}
 		}
 		
 		Destroy (gameObject);
