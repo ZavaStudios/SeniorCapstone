@@ -91,8 +91,6 @@ namespace MazeGeneration
 					dirCode |= (boolMap[x,y-1] ? 0x4 : 0x0);
 					dirCode |= (boolMap[x,y+1] ? 0x8 : 0x0);
 
-					Debug.Log(dirCode);
-
 					if (dirCode == 0x1)
 					{
 						bossX = x;
@@ -128,8 +126,6 @@ namespace MazeGeneration
 			bossY -= 1;
 			startX -= 1;
 			startY -= 1;
-			Debug.Log("BossX: " + bossX + ", BossY: " + bossY);
-			Debug.Log("StartX: " + startX + ", StartY: " + startY);
 
 			// Instantiate between rooms:
             for (int x = 0; x < newWidth; x += 2)
