@@ -73,21 +73,26 @@ public class WeaponModelSwitcher : MonoBehaviour
     {
         if (Active == crappy_sword)
         {
-            Active.animation["SwordSwing"].speed = 1.0f; //animation speed was set to negative by sword collision detection.
-            Active.animation.Play("SwordSwing");
+            //Active.animation["SwordSwing"].speed = 1.0f; //animation speed was set to negative by sword collision detection.
+            Active.animation.PlayQueued("SwordSwing");
 
         }
         else if (Active == crappy_pickaxe )
         {
-            Active.animation.Play("PickaxeSwing");
+            Active.animation.PlayQueued("PickaxeSwing");
         }
 		else if (Active == crappy_staff )
         {
-            Active.animation.Play("StaffBlast");
+            Active.animation.PlayQueued("StaffBlast");
         }
         else if (Active == crappy_bow )
         {
-            Active.animation.Play("CrappyBowDraw");
+            Active.animation.PlayQueued("CrappyBowDraw");
+        }
+        else if (Active == crappy_toolbox )
+        {
+            crappy_toolbox.animation.PlayQueued("ToolBoxSwing");
+            crappy_wrench.animation.PlayQueued("WrenchBonk");
         }
 
         else

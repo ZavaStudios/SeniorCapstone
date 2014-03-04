@@ -6,10 +6,13 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
 
     public bool hitObject = false;
     public float damage = 0.0f;
+    public float specialDamage = 0.0f;
+    private BoxCollider collider;
+
 	// Use this for initialization
 	void Start () 
     {
-        BoxCollider collider = gameObject.GetComponent<BoxCollider>();
+        collider = gameObject.GetComponent<BoxCollider>();
         collider.isTrigger = true;
 	}
 
@@ -20,31 +23,37 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-		print (other);
-        if (gameObject.animation["SwordSwing"].time <= 0.46)
+
+        Unit otherObject = other.gameObject.GetComponent<Unit>();
+        float damageToDo;
+        if (animation["SwordSwing"].time > 0)
         {
-			print ("first if");
-            if (gameObject.animation.isPlaying && hitObject == false)
+            damageToDo = damage;
+        }
+        else
+        {
+            damageToDo = specialDamage;
+        }
+
+
+        if (otherObject != null)
+        {
+		    if(otherObject is UnitEnemy)
             {
-				print ("second if");
-                hitObject = true;
-
-                Unit otherObject = other.gameObject.GetComponent<Unit>();
-
-                if (otherObject != null)
-                {
-					print ("third if");
-					print (otherObject);
-					
-                   	if(otherObject is UnitEnemy)
-                    {
-						print ("found enemy and doing damage.");
-                        otherObject.doDamage(damage);
-                    }
-                }
+				print ("found enemy and doing damage.");
+                otherObject.doDamage(damageToDo);
             }
-
-            gameObject.animation["SwordSwing"].speed = -0.25f;
         }
     }
+
+    void collisionEnable()
+    {
+        collider.enabled = true;
+    }
+
+    void collisionDisable()
+    {
+        collider.enabled = false;
+    }
 }
+

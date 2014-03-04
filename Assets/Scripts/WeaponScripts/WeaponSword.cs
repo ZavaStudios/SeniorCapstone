@@ -7,7 +7,7 @@ public class WeaponSword : WeaponBase
 	//TODO Instead of Using Strings, use an enum
 	public override string strWeaponName {get{return "Sword";}}
 	public override string strWeaponType {get{return "WeaponSword";}}
-
+    WeaponSwordCollisionScript s;
 
 	// Use this for initialization
 	protected override void Start ()
@@ -26,26 +26,16 @@ public class WeaponSword : WeaponBase
 	
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
-		print("attacking..");
-
-        WeaponSwordCollisionScript s = gameObject.GetComponentInChildren<WeaponSwordCollisionScript>();
-        s.hitObject = false;
-        s.damage = Character.AttackDamage;
-        //if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange,3<<8)) //layer mask looks at 'world' and 'enemy' layers only on raycast.
-        //{
-        //    if(rayHit.collider.gameObject.CompareTag("Enemy"))
-        //    {
-        //        Unit enemy = rayHit.collider.GetComponent<Unit>();
-        //        if(!enemy)
-        //            print ("that is not a real enemy");
-        //        else
-        //            enemy.doDamage(weaponDamage);
-        //    }
-        //    if(rayHit.collider.gameObject.CompareTag("Ore"))
-        //    {
-        //        print ("You can't mine with a sword");
-        //    }
-        //}
-        
+        s = gameObject.GetComponentInChildren<WeaponSwordCollisionScript>();
+        s.damage = 10;//Character.AttackDamage;
+        s.specialDamage = Character.AttackDamage + 100; //special gets moar
 	}
+
+    public override void attackSpecial ()
+    {
+        s = gameObject.GetComponentInChildren<WeaponSwordCollisionScript>();
+        s.damage = 10;//Character.AttackDamage;
+        s.specialDamage = Character.AttackDamage + 100; //special gets moar
+        s.animation.PlayQueued("SpecialSwordSwing");
+    }
 }
