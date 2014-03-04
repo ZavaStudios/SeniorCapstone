@@ -42,8 +42,8 @@ public class WeaponStaff : WeaponBase
 	{
         if(Physics.Raycast(Character.getEyePosition(), Character.getLookDirection(), out rayHit, attackRange))
         {
-            print(rayHit.collider.gameObject);
-            print("tag: " + rayHit.collider.gameObject.tag);
+            //print(rayHit.collider.gameObject);
+            //print("tag: " + rayHit.collider.gameObject.tag);
             if(rayHit.collider.gameObject.CompareTag("Floor"))
             {
                 GameObject.Instantiate(Resources.Load("SnowburstTimer"), rayHit.point,Character.transform.rotation);

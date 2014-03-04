@@ -34,7 +34,7 @@ public class WeaponBow : WeaponBase {
 
     public override void attackSpecial ()
     {
-        print ("ZOOM");
+        //print ("ZOOM");
 
 
         //Vector3 p1 = transform.position + capCollider.center + Vector3.up * -(capCollider.height*0.5f - capCollider.radius);
@@ -48,7 +48,7 @@ public class WeaponBow : WeaponBase {
 		// Cast character controller shape 10 meters forward, to see if it is about to hit anything
 		if (Physics.CapsuleCast (p1, p2, capCollider.radius, Character.getLookDirection(), out rayHit, specialRange, 1<<8 )) 
         {
-            print (rayHit.transform.gameObject);
+            //print (rayHit.transform.gameObject);
             
 			distance = rayHit.distance;
         }

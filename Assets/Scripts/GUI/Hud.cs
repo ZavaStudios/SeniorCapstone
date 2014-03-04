@@ -647,7 +647,7 @@ public class Hud : MonoBehaviour
 //			Debug.Log("Y: " + vec2SelectedComponent.y);
 
 			//TODO Start here and select the correct menu
-			Debug.Log("Selected Comp: " + intCompTypeGrid);
+			//Debug.Log("Selected Comp: " + intCompTypeGrid);
 			ItemComponent cmpNew = arrComponentGrids[intCompTypeGrid][(int)vec2SelectedComponent.x, (int)vec2SelectedComponent.y];
 
             Inventory inventory = Inventory.getInstance();

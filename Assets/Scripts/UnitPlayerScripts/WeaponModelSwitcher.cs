@@ -64,7 +64,7 @@ public class WeaponModelSwitcher : MonoBehaviour
             
         else
         {
-            print("ERRUHHH! WHAT YOU THINKIN? " + newWeapon + " isn't a weapon.");
+            //print("ERRUHHH! WHAT YOU THINKIN? " + newWeapon + " isn't a weapon.");
             Active = null;
         }
     }
@@ -97,7 +97,7 @@ public class WeaponModelSwitcher : MonoBehaviour
 
         else
         {
-            print ("no animation found");
+            //print ("no animation found");
         }
     }
 }

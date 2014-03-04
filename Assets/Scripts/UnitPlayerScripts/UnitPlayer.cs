@@ -67,8 +67,8 @@ public class UnitPlayer : Unit {
 //			print ("mouse clicked....");
 			if (weapon != null)
 				weapon.attack();
-			else
-				print ("You cannot attack without a weapon!");
+			//else
+			//	print ("You cannot attack without a weapon!");
 		}
 
         if(InputContextManager.isATTACK_RELEASED())
@@ -95,7 +95,7 @@ public class UnitPlayer : Unit {
 				wep = 0;
 			}
 			
-			print ("switch to wep: " + wep);
+			//print ("switch to wep: " + wep);
 			
 			switch (wep)
 			{
@@ -152,7 +152,7 @@ public class UnitPlayer : Unit {
         
 	protected override void killUnit ()
 	{
-		print ("How did you die...???");
+		//print ("How did you die...???");
 		
 		//Draws the gameover GUI to the screen. 
 		GameOver.gameOver = true;

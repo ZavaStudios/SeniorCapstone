@@ -69,7 +69,7 @@ public class Unit : MonoBehaviour
 	public void doDamage(float amount)
 	{
 		this.health -=  amount;
-		print ("health decreased.");
+		//print ("health decreased.");
 		
 		if (health <= 0)
 		{
@@ -80,12 +80,12 @@ public class Unit : MonoBehaviour
 	
     virtual public void equipWeapon(string newWeapon)
     {
-        Debug.Log("Equipping :" + newWeapon);
+        //Debug.Log("Equipping :" + newWeapon);
 
         GameObject.Destroy(weapon);
         weapon = (WeaponBase) gameObject.AddComponent(newWeapon);;
         
-        Debug.Log("Current Equipped: " + weapon.strWeaponType);
+        //Debug.Log("Current Equipped: " + weapon.strWeaponType);
        
     }   
     

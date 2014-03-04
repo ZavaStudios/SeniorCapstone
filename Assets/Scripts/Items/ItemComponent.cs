@@ -117,7 +117,7 @@ public class ItemComponent : ItemEquipment {
 		}
 		else
 		{
-			Debug.Log("Invalid component code. Code must be in the format [0-2][0-7][0-5][0-1]");
+			//Debug.Log("Invalid component code. Code must be in the format [0-2][0-7][0-5][0-1]");
 			strName = "N/A";
 		}
 

@@ -61,7 +61,7 @@ public class UnitEnemy : Unit
 	//Kills the unit by removing the enemy from the screen and give credit to the player.
 	protected override void killUnit ()
 	{
-		print ("Ow you kilt meh");
+		//print ("Ow you kilt meh");
 		Destroy (gameObject);
 
 		// Increment player's score
