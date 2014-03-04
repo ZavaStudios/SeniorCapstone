@@ -297,10 +297,8 @@ public class Hud : MonoBehaviour
 
 	private void layoutAssembleGrid()
 	{
-		//TODO Make some actual dimensions
-
-		vec2CompTypeDimensions.x = 300;
-		vec2CompTypeDimensions.y = 200;
+		int intAssembleWidthPadding = Screen.width / 8;
+		int intAssembleHeightPadding = Screen.height / 8;
 
 		Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
 		Texture2D tex2dButtonActiveBack = new Texture2D (1, 1);
@@ -327,8 +325,8 @@ public class Hud : MonoBehaviour
 
 
 		//Make a label to show which kind of weapon is being assembled
-		int intAssemWeaponLabelWidth = Screen.width / 4;
-		int intAssemWeaponLabelHeight = Screen.height / 8;
+		int intAssemWeaponLabelWidth = 2 * intAssembleWidthPadding;
+		int intAssemWeaponLabelHeight = intAssembleHeightPadding;
 		int intAssemWeaponLabelX = (Screen.width / 2) - (intAssemWeaponLabelWidth / 2); //Start the label at half the screen shifted by half the label width
 		int intAssemWeaponLabelY = (Screen.height / 20);
 		GUI.Label (new Rect (intAssemWeaponLabelX, intAssemWeaponLabelY, intAssemWeaponLabelWidth, intAssemWeaponLabelHeight), arrWeaponTypes [intAssemType], style);
@@ -341,8 +339,9 @@ public class Hud : MonoBehaviour
 			arrAssembleStrings[i] = ((ItemWeapon)arrListAssemblable[i]).name;
 		}
 
-		intCompTypeGrid = GUI.SelectionGrid(new Rect(vec2CompTypeStart.x, vec2CompTypeStart.y,  vec2CompTypeDimensions.x, vec2CompTypeDimensions.y), 
-		                                    intAssemPossible, arrAssembleStrings, 1, style);
+		intCompTypeGrid = GUI.SelectionGrid(new Rect(intAssembleWidthPadding, intAssemWeaponLabelY + intAssemWeaponLabelHeight + 10,
+		                                             6 * intAssembleWidthPadding, 6 * intAssembleHeightPadding), 
+		                                    intAssemPossible, arrAssembleStrings, 3, style);
 
 	}
 
