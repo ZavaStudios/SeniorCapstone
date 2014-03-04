@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
 guid: 8de285dec601b144a8f8693917221456
+=======
+guid: cb126cd93aef52945a6c9583221dad9a
+>>>>>>> Stashed changes
 TextureImporter:
   serializedVersion: 2
   mipmaps:
