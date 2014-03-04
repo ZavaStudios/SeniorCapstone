@@ -67,7 +67,6 @@ public class WeaponTurretAI : WeaponBase {
             ProjectileBouncyBomb p;
     	    GameObject clone = (GameObject)GameObject.Instantiate(Resources.Load("BouncingBomb", typeof(GameObject)), Character.getEyePosition(),Character.getLookRotation());
 		    clone.gameObject.AddComponent("ProjectileBouncyBomb");
-		    Physics.IgnoreCollision(clone.collider,Camera.main.collider);
 		    Physics.IgnoreCollision(clone.collider,Character.collider);
 		
 		    p = clone.GetComponent<ProjectileBouncyBomb>();
