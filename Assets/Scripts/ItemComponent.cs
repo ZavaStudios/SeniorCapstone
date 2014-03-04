@@ -41,7 +41,6 @@ public class ItemComponent : ItemEquipment {
 
 	public string strComponentCode;
 
-	//		Pending approval, change constructor etc. to use this code instead
 	//	NOTE New enum for componentType. Length 4 strings, abcd. a={Light=0, Normal=1, Heavy=2}, b=tOreType, c=tWeaponType d={handle=0, blade=1}.
 	//	Example: 0300 = Light iron sword handle
 	//	Example: 2731 = Heavy ethereal toolbox blade
