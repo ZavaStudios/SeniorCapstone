@@ -18,8 +18,6 @@ namespace MazeGeneration
 	/// </summary>
 	public class OutsideCornerCubes : RoomCubes
 	{
-		private WallCubes UpWall;
-		private WallCubes LeftWall;
 		private Cube.CubeType[,,] Cubes;
 		
 		public int Width
@@ -35,35 +33,27 @@ namespace MazeGeneration
 			get { return Cubes.GetLength(1); }
 		}
 		
-		public OutsideCornerCubes(WallCubes upWall, WallCubes leftWall)
+		public OutsideCornerCubes(int width, int depth, int[] left, int[] up)
 		{
-			UpWall = upWall;
-			LeftWall = leftWall;
-			
-			int width = UpWall.MaxDepth;
-			int height = UpWall.Height;
-			int depth = LeftWall.MaxDepth;
+			int height = up.Length;
 			Cubes = new Cube.CubeType[width, depth, height];
 			
-			InitializeCubes();
+			InitializeCubes(left, up);
 		}
 		
-		private void InitializeCubes()
+		private void InitializeCubes(int[] left, int[] up)
 		{
 			for (int z = 0; z < Height; z++)
 			{
 				// Quadrants: Only one is interesting
-				int quadX = UpWall.GetDepthAt(0, z);
-				int quadY = LeftWall.GetDepthAt(LeftWall.Width-1, z);
+				int quadX = up[z];
+				int quadY = left[z];
 				// Quadrant 1
 				for (int x = 0; x < quadX; x++)
 				{
 					for (int y = 0; y < quadY; y++)
 					{
-						// TODO: smarter cube type selection
-						// TODO
-						//Cubes[x,y,z] = Cube.CubeType.Air;
-						Cubes[x,y,z] = Cube.CubeType.Iron;
+						Cubes[x,y,z] = GetCubeType();
 					}
 				}
 				// Quadrant 2
@@ -97,18 +87,18 @@ namespace MazeGeneration
 			}
 		}
 		
-		public IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			for (int x = 0; x < Width; x++)
-			{
 				for (int y = 0; y < Depth; y++)
-				{
 					for (int z = 0; z < Height; z++)
-					{
-						yield return new Cube(Cubes[x,y,z], x, y, z);
-					}
-				}
-			}
+						yield return new Cube(this, Cubes[x,y,z], x, y, z);
+		}
+
+		public override IEnumerable<Cube> DestroyCube(Cube c)
+		{
+			Cubes[c.X, c.Y, c.Z] = Cube.CubeType.Air;
+			return new List<Cube>();	// Return nothing, since we always show everything
 		}
 	}
 }

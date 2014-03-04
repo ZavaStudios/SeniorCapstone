@@ -18,8 +18,6 @@ namespace MazeGeneration
 	/// </summary>
 	public class InsideCornerCubes : RoomCubes
 	{
-		private WallCubes DownWall;
-		private WallCubes RightWall;
 		private Cube.CubeType[,,] Cubes;
 		
 		public int Width
@@ -35,33 +33,27 @@ namespace MazeGeneration
 			get { return Cubes.GetLength(1); }
 		}
 		
-		public InsideCornerCubes(WallCubes downWall, WallCubes rightWall)
+		public InsideCornerCubes(int width, int depth, int[] right, int[] down)
 		{
-			DownWall = downWall;
-			RightWall = rightWall;
-			
-			int width = DownWall.MaxDepth;
-			int height = DownWall.Height;
-			int depth = RightWall.MaxDepth;
+			int height = right.Length;
 			Cubes = new Cube.CubeType[width, depth, height];
 			
-			InitializeCubes();
+			InitializeCubes(right, down);
 		}
 		
-		private void InitializeCubes()
+		private void InitializeCubes(int[] right, int[] down)
 		{
 			for (int z = 0; z < Height; z++)
 			{
 				// Quadrants: Only one is interesting
-				int quadX = DownWall.GetDepthAt(DownWall.Width-1, z);
-				int quadY = RightWall.GetDepthAt(0, z);
+				int quadX = down[z];
+				int quadY = right[z];
 				// Quadrants 1 and 2 (merged for convenience)
 				for (int x = 0; x < Width; x++)
 				{
 					for (int y = 0; y < quadY; y++)
 					{
-						// TODO: smarter cube type selection
-						Cubes[x,y,z] = Cube.CubeType.Iron;
+						Cubes[x,y,z] = GetCubeType();
 					}
 				}
 				// Quadrant 3
@@ -69,7 +61,7 @@ namespace MazeGeneration
 				{
 					for (int y = quadY; y < Depth; y++)
 					{
-						Cubes[x,y,z] = Cube.CubeType.Gold;
+						Cubes[x,y,z] = GetCubeType();
 					}
 				}
 				// Quadrant 4
@@ -84,18 +76,32 @@ namespace MazeGeneration
 			}
 		}
 		
-		public IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			for (int x = 0; x < Width; x++)
-			{
 				for (int y = 0; y < Depth; y++)
-				{
 					for (int z = 0; z < Height; z++)
-					{
-						yield return new Cube(Cubes[x,y,z], x, y, z);
-					}
-				}
-			}
+						yield return new Cube(this, Cubes[x,y,z], x, y, z);
+		}
+
+		public override IEnumerable<Cube> DestroyCube(Cube c)
+		{
+			Cubes[c.X, c.Y, c.Z] = Cube.CubeType.Air;
+			return new List<Cube>(); // Return empty list, since we always show everything
+			/*
+			if (c.X > 0)
+				yield return new Cube(this, Cubes[c.X-1, c.Y, c.Z], c.X-1, c.Y, c.Z);
+			if (c.X < Width)
+				yield return new Cube(this, Cubes[c.X+1, c.Y, c.Z], c.X-1, c.Y, c.Z);
+			if (c.Y > 0)
+				yield return new Cube(this, Cubes[c.X, c.Y-1, c.Z], c.X, c.Y-1, c.Z);
+			if (c.Y < Depth)
+				yield return new Cube(this, Cubes[c.X, c.Y+1, c.Z], c.X, c.Y+1, c.Z);
+			if (c.Z > 0)
+				yield return new Cube(this, Cubes[c.X, c.Y, c.Z-1], c.X, c.Y, c.Z-1);
+			if (c.Z < Height)
+				yield return new Cube(this, Cubes[c.X, c.Y, c.Z+1], c.X, c.Y, c.Z+1);
+				*/
 		}
 	}
 }
