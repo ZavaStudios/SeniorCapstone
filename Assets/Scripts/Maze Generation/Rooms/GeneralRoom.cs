@@ -79,14 +79,14 @@ namespace MazeGeneration
 				{
 					// TODO: check if collides with ore pillar, if those get added
 
-					//float posX = center.x +
-					//			 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
-					//	 		 ((float)(Width * 0.5) - RoomCubes.CORNER_WIDTH));
-					//float posY = center.z +
-					//			 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
-					//	 		 ((float)(Height * 0.5) - RoomCubes.CORNER_LENGTH));
-					//Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
-					//InstantiateEnemy(center, enemy, scalar);
+					float posX = center.x +
+								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+						 		 ((float)(Width * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
+					float posY = center.z +
+								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+						 		 ((float)(Height * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
+					Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
+					InstantiateEnemy(center, enemy, scalar);
 				}
 			}
 		}

@@ -58,7 +58,6 @@ namespace MazeGeneration
 		/// <returns>Cube type to be placed in the maze.</returns>
 		protected Cube.CubeType GetCubeType()
 		{
-			/*
 			if (r.NextDouble() <= STONE_FREQ)
 				return Cube.CubeType.Stone;
 			if (r.NextDouble() - STONE_FREQ <= IRON_FREQ)
@@ -69,7 +68,6 @@ namespace MazeGeneration
 				return Cube.CubeType.Gold;
 			if (r.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ - GOLD_FREQ <= PLATINUM_FREQ)
 				return Cube.CubeType.Platinum;
-				*/
 				
 			// None succeeded: return stone
 			return Cube.CubeType.Stone;

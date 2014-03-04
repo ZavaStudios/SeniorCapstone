@@ -67,6 +67,8 @@ namespace MazeGeneration
 		private int Width { get; set; }
 		private int Depth { get; set; }
 		private int Height { get; set; }
+
+		public int WallDepth { get { return L_Wall.MaxDepth; } }
 		
 		/// <summary>
 		/// Constructs a new instance of the RoomCubes data structure, given the dimensions of
