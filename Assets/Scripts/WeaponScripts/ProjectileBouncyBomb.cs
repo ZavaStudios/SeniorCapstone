@@ -34,7 +34,7 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 	
 	void explode()
 	{
-		float radius = 50.0f;
+		float radius = 1.0f;
 		float power = 100.0f;
 		//print ("BOOM!!!!!!!!");
 		GameObject sparks = (GameObject)Instantiate(Resources.Load("FireballSparks"), transform.position, transform.rotation);
@@ -44,9 +44,12 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 		foreach ( Collider hit in colliders) {
 			if (hit && hit.rigidbody && hit.rigidbody != this.rigidbody)
 			{
-				//print("Make The Little Man FLY!!!"); power += 1000;
+				Unit toDie = hit.gameObject.GetComponent<Unit>();
+                print(toDie);
+                toDie.doDamage(damage);
+                //print("Make The Little Man FLY!!!"); power += 1000;
 				//print(hit.name);
-				hit.rigidbody.AddExplosionForce(power, transform.position, radius, 3.0f);
+				//hit.rigidbody.AddExplosionForce(power, transform.position, radius, 3.0f);
 			}
 		}
 		
