@@ -12,7 +12,7 @@ namespace MazeGeneration
     {
         // Approximate number of slots in the dungeon to be filled with enemy rooms,
         // with 1.0f being 100% of the rooms, and 0.0f being (probably) none of them.
-		private const float ENEMY_ROOM_DENSITY = 0.0f; // 0.5f;
+		private const float ENEMY_ROOM_DENSITY = 0.5f;
 
         // Values deciding how large rooms can be. Specifically,
 		// main min/max values describe what the sizes of any room
@@ -78,6 +78,55 @@ namespace MazeGeneration
             Random r = new Random();
 
 			// Assign initial placements:
+			int bossX = 0, bossY = 0;
+			int startX = 0, startY = 0;
+			for (int x = 1; x < newWidth; x += 2)
+			{
+				for (int y = 1; y < newHeight; y += 2)
+				{
+					int dirCode = 0;
+					dirCode |= boolMap[x-1,y] ? 0x1 : 0x0;
+					dirCode |= boolMap[x+1,y] ? 0x2 : 0x0;
+					dirCode |= boolMap[x,y-1] ? 0x4 : 0x0;
+					dirCode |= boolMap[x,y+1] ? 0x8 : 0x0;
+
+					if (dirCode == 0x1)
+					{
+						bossX = x;
+						bossY = y;
+						startX = x-2;
+						startY = y;
+					}
+					else if (dirCode == 0x2)
+					{
+						bossX = x;
+						bossY = y;
+						startX = x+2;
+						startY = y;
+					}
+					else if (dirCode == 0x4)
+					{
+						bossX = x;
+						bossY = y;
+						startX = x;
+						startY = y-2;
+					}
+					else if (dirCode == 0x8)
+					{
+						bossX = x;
+						bossY = y;
+						startX = x;
+						startY = y+2;
+					}
+				}
+			}
+			// Account for coordinate offset:
+			bossX -= 1;
+			bossY -= 1;
+			startX -= 1;
+			startY -= 1;
+
+			/*
 				// Starting room
 			int startX = r.Next (width) * 2;
 			int startY = r.Next (height) * 2;
@@ -93,6 +142,7 @@ namespace MazeGeneration
 			}
 				// TODO: further shops
 				// TODO: others?
+				*/
 
 			// Instantiate between rooms:
             for (int x = 0; x < newWidth; x += 2)
