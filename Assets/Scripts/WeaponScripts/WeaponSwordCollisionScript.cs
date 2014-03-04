@@ -40,7 +40,7 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
         {
 		    if(otherObject is UnitEnemy)
             {
-				print ("found enemy and doing damage.");
+				//print ("found enemy and doing damage.");
                 otherObject.doDamage(damageToDo);
             }
         }

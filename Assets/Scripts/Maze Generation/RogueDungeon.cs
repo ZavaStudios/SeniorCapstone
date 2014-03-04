@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace MazeGeneration
 {
@@ -75,20 +76,22 @@ namespace MazeGeneration
 			int newWidth = boolMap.GetLength(0) - 2;
 			int newHeight = boolMap.GetLength(1) - 2;
             Map = new RogueRoom[newWidth, newHeight];
-            Random r = new Random();
+            System.Random r = new System.Random();
 
 			// Assign initial placements:
 			int bossX = 0, bossY = 0;
 			int startX = 0, startY = 0;
-			for (int x = 1; x < newWidth; x += 2)
+			for (int x = 1; x < boolMap.GetLength(0); x += 2)
 			{
-				for (int y = 1; y < newHeight; y += 2)
+				for (int y = 1; y < boolMap.GetLength(1); y += 2)
 				{
 					int dirCode = 0;
-					dirCode |= boolMap[x-1,y] ? 0x1 : 0x0;
-					dirCode |= boolMap[x+1,y] ? 0x2 : 0x0;
-					dirCode |= boolMap[x,y-1] ? 0x4 : 0x0;
-					dirCode |= boolMap[x,y+1] ? 0x8 : 0x0;
+					dirCode |= (boolMap[x-1,y] ? 0x1 : 0x0);
+					dirCode |= (boolMap[x+1,y] ? 0x2 : 0x0);
+					dirCode |= (boolMap[x,y-1] ? 0x4 : 0x0);
+					dirCode |= (boolMap[x,y+1] ? 0x8 : 0x0);
+
+					Debug.Log(dirCode);
 
 					if (dirCode == 0x1)
 					{
@@ -125,24 +128,8 @@ namespace MazeGeneration
 			bossY -= 1;
 			startX -= 1;
 			startY -= 1;
-
-			/*
-				// Starting room
-			int startX = r.Next (width) * 2;
-			int startY = r.Next (height) * 2;
-				// Boss room
-			int bossX = (width/2)*2;
-			int bossY = (height/2)*2;
-			// Guarantee we don't overwrite the start room:
-			if (bossX == startX && bossY == startY)
-			{
-				// TODO: something better?
-				bossY += (r.Next (2) == 1 ? 2 : -2);
-				bossX += (r.Next (2) == 1 ? 2 : -2);
-			}
-				// TODO: further shops
-				// TODO: others?
-				*/
+			Debug.Log("BossX: " + bossX + ", BossY: " + bossY);
+			Debug.Log("StartX: " + startX + ", StartY: " + startY);
 
 			// Instantiate between rooms:
             for (int x = 0; x < newWidth; x += 2)

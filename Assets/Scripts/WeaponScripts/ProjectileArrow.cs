@@ -23,13 +23,13 @@ public class ProjectileArrow : MonoBehaviour {
 	
 	 void OnTriggerEnter(Collider other)
     {
-        print (other);
+        //print (other);
         Unit otherUnit = other.GetComponent<Unit>();
         
-        print (other.transform);
+        //print (other.transform);
         rigidbody.isKinematic = true; // stop physics
         
-        print (otherUnit);
+        //print (otherUnit);
        			
         if(otherUnit != null)
         {

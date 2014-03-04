@@ -21,13 +21,13 @@ public class ZombieWeapon : WeaponBase
 		
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
-		print("attacking..");
+		//print("attacking..");
 		
 		Transform Player = GameObject.FindGameObjectWithTag("Player").transform; 
 			
 		if(Physics.Raycast(transform.position - new Vector3(0, 0.5f, 0), faceDir, out rayHit, attackRange))
 		{
-			print ("Raycast hit");
+			// print ("Raycast hit");
 			if(rayHit.collider.gameObject.CompareTag("Player"))
 			{
 				Unit enemy = rayHit.collider.GetComponent<Unit>();
