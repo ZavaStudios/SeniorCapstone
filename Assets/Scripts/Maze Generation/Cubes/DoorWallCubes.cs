@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace MazeGeneration
 {
-	public class DoorWallCubes : WallCubes, CubeTracker
+	public class DoorWallCubes : WallCubes
 	{
 		private StandardWallCubes L_Side;
 		private OutsideCornerCubes L_Corner;
@@ -99,23 +99,33 @@ namespace MazeGeneration
 		
 		public override IEnumerable<Cube> EnumerateCubes()
 		{
+			// L Side
 			foreach (Cube c in L_Side.EnumerateCubes())
-				yield return c;	// NOTE: optimization here. Since these cubes don't translate, we can just
-								// auto forward them, hence don't even change parent
+				yield return new Cube(this, c.Type, c.X, c.Y, c.Z);
+
+			// R Side
 			foreach (Cube c in R_Side.EnumerateCubes())
 				yield return new Cube(this, c.Type, c.X + L_Side.Width + RogueDungeon.CORRIDOR_WIDTH, c.Y, c.Z);
 
+			// L Corner
 			foreach (Cube c in L_Corner.EnumerateCubes())
 				yield return new Cube(this, c.Type, c.X + L_Side.Width, c.Z, c.Y);
+
+			// R Corner
 			foreach (Cube c in R_Corner.EnumerateCubes())
 				yield return new Cube(this, c.Type, Width - 1 - R_Side.Width - c.Y, c.Z, c.X);
 		}
 
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{
+			// L Side
 			if (c.X < L_Side.Width)
+			{
 				foreach (Cube uncovered in L_Side.DestroyCube(c))
-					yield return new Cube(this, uncovered.Type, c.X, c.Y, c.Z);
+					yield return new Cube(this, uncovered.Type,
+					                      uncovered.X, uncovered.Y, uncovered.Z);
+			}
+			// L Corner
 			else if (c.X < L_Side.Width + L_Corner.Width)
 			{
 				int tmp = c.Z;
@@ -123,8 +133,10 @@ namespace MazeGeneration
 				c.Y = tmp;
 				c.X -= L_Side.Width;
 				foreach (Cube uncovered in L_Corner.DestroyCube(c))
-					yield return new Cube(this, uncovered.Type, c.X + L_Side.Width, c.Z, c.Y);
+					yield return new Cube(this, uncovered.Type,
+					                      uncovered.X + L_Side.Width, uncovered.Z, uncovered.Y);
 			}
+			// R Corner
 			else if (c.X < L_Side.Width + L_Corner.Width + R_Corner.Depth)
 			{
 				int tmp = c.Z;
@@ -132,14 +144,17 @@ namespace MazeGeneration
 				c.Y = Width - 1 - R_Side.Width - c.X;
 				c.X = tmp;
 				foreach (Cube uncovered in R_Corner.DestroyCube(c))
-					yield return new Cube(this, uncovered.Type, Width - 1 - R_Side.Width - c.Y, c.Z, c.X);
+					yield return new Cube(this, uncovered.Type,
+					                      Width - 1 - R_Side.Width - uncovered.Y, uncovered.Z, uncovered.X);
 			}
+			//c.X + L_Side.Width + RogueDungeon.CORRIDOR_WIDTH, c.Y, c.Z
+			// R Side
 			else
 			{
 				c.X -= L_Side.Width + RogueDungeon.CORRIDOR_WIDTH;
 				foreach (Cube uncovered in R_Side.DestroyCube(c))
 					yield return new Cube(this, uncovered.Type,
-					                      c.X + L_Side.Width + RogueDungeon.CORRIDOR_WIDTH, c.Y, c.Z);
+					                      uncovered.X + L_Side.Width + RogueDungeon.CORRIDOR_WIDTH, uncovered.Y, uncovered.Z);
 			}
 		}
 	}
