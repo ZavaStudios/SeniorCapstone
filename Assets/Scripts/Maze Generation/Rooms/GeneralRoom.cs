@@ -122,30 +122,30 @@ namespace MazeGeneration
 			{
 			case EnemyGenerator.EnemyType.skeleton:
 				enemy = skeleton;
-				enemy_pos = position + new Vector3(0.0f, skeleton.collider.bounds.center.y, 0.0f);
+				enemy_pos = position + new Vector3(0.0f, skeleton.GetComponent<CharacterController>().height * skeleton.localScale.y, 0.0f);
 				break;
 				
 			case EnemyGenerator.EnemyType.spider:
 				enemy = spider;
-				enemy_pos = position + new Vector3(0.0f, spider.collider.bounds.center.y, 0.0f);
+				enemy_pos = position + new Vector3(0.0f, spider.GetComponent<CharacterController>().height * spider.localScale.y, 0.0f);
 				break;
 				
 			case EnemyGenerator.EnemyType.zombie:
 				enemy = zombie;
-				enemy_pos = position + new Vector3(0.0f, zombie.collider.bounds.center.y, 0.0f);
+				enemy_pos = position + new Vector3(0.0f, zombie.GetComponent<CharacterController>().height * zombie.localScale.y, 0.0f);
 				break;
 			case EnemyGenerator.EnemyType.skeletonBoss:
 				enemy = skeletonBoss;
-				enemy_pos = position + new Vector3(0.0f, skeletonBoss.collider.bounds.center.y, 0.0f);
+				enemy_pos = position + new Vector3(0.0f, skeletonBoss.GetComponent<CharacterController>().height * skeletonBoss.localScale.y, 0.0f);
 				break;
 			case EnemyGenerator.EnemyType.spiderBoss:
 				enemy = spiderBoss;
-				enemy_pos = position + new Vector3(0.0f, spiderBoss.collider.bounds.center.y, 0.0f);
+				enemy_pos = position + new Vector3(0.0f, spiderBoss.GetComponent<CharacterController>().height * spiderBoss.localScale.y, 0.0f);
 				break;
 			case EnemyGenerator.EnemyType.zombieBoss:
 				enemy = zombieBoss;
-				enemy_pos = position + new Vector3(0.0f, zombieBoss.collider.bounds.center.y, 0.0f);
-				break;
+				enemy_pos = position + new Vector3(0.0f, zombieBoss.GetComponent<CharacterController>().height * zombieBoss.localScale.y, 0.0f);
+				break; 
 			default:
 				Debug.Log ("ERROR!");
 				break;
