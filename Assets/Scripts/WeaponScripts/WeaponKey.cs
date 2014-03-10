@@ -34,7 +34,7 @@ public class WeaponKey : WeaponBase
 			{
 				Debug.Log (rayHit.collider.gameObject.name + " | "
 				           + rayHit.collider.gameObject.animation.GetClipCount());
-				rayHit.collider.gameObject.animation.PlayQueued("DoorDown");
+				rayHit.collider.gameObject.GetComponent<DoorScript>().Open();
 			}
 		}
 	}
