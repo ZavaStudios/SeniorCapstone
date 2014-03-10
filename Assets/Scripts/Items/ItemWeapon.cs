@@ -11,7 +11,8 @@ public class ItemWeapon : ItemEquipment {
         WeaponStaff = 1,
         WeaponBow = 2,
         WeaponToolbox = 3,
-        WeaponPickaxe = 4
+        WeaponPickaxe = 4,
+		WeaponKey = 5,
     };
 
     public ItemWeapon(string name, tWeaponType wepType)

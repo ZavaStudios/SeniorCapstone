@@ -174,6 +174,12 @@ public class InputContextManager : MonoBehaviour {
         return (OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_RB, OuyaExampleCommon.Player) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_LB, OuyaExampleCommon.Player)); 
     }
 
+	static public bool isACTIVATE()
+	{
+		// TODO
+		return false;
+	}
+
 #else
 
     //private functions to capture menu context switching
@@ -273,6 +279,11 @@ public class InputContextManager : MonoBehaviour {
     {
         return (Input.GetKey (KeyCode.LeftShift) || Input.GetKey (KeyCode.RightShift)) ; 
     }
+
+	static public bool isACTIVATE()
+	{
+		return (Input.GetKey (KeyCode.E));
+	}
 
 #endif
 
