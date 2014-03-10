@@ -32,8 +32,9 @@ public class WeaponKey : WeaponBase
 			Debug.Log ("hit");
 			if(rayHit.collider.gameObject.CompareTag("Door"))
 			{
-				Debug.Log ("isDoor");
-				rayHit.collider.gameObject.animation.PlayQueued("doorDown");
+				Debug.Log (rayHit.collider.gameObject.name + " | "
+				           + rayHit.collider.gameObject.animation.GetClipCount());
+				rayHit.collider.gameObject.animation.PlayQueued("DoorDown");
 			}
 		}
 	}
