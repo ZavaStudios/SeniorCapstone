@@ -13,6 +13,7 @@ public class Main : MonoBehaviour
     private const float LIGHT_DISTANCE = 2.0f;
     private const float ORE_DISTRIBUTION = 0.2f;
 
+	public Transform door;
 	public Transform floor_tile;
 	public Transform wall_tile;
 	public Transform mine_cube;
@@ -46,6 +47,7 @@ public class Main : MonoBehaviour
 		RogueRoom.ore2_cube = ore2_cube;
 		RogueRoom.ore3_cube = ore3_cube;
 		RogueRoom.ore4_cube = ore4_cube;
+		RogueRoom.door = door;
 		RogueRoom.zombieBoss = zombieBoss;
 		RogueRoom.skeletonBoss = skeletonBoss;
 		RogueRoom.spiderBoss = spiderBoss;

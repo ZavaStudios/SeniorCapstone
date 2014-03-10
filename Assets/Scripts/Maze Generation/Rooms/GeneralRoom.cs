@@ -93,7 +93,37 @@ namespace MazeGeneration
 			{
 				// TODO: proper boss allocation
 				InstantiateEnemy(center, EnemyGenerator.EnemyType.zombieBoss, scalar);
+
+				switch (DoorCode)
+				{
+				case RogueRoom.LEFT_DOOR_MASK:
+					InstantiateDoor((center + new Vector3(-(float)Width / 2.0f, 0.0f, 0.0f)),
+					                Quaternion.AngleAxis(90.0f, Vector3.up),
+					                scalar);
+					break;
+				case RogueRoom.RIGHT_DOOR_MASK:
+					InstantiateDoor((center + new Vector3((float)Width / 2.0f, 0.0f, 0.0f)),
+					                Quaternion.AngleAxis(270.0f, Vector3.up),
+					                scalar);
+					break;
+				case RogueRoom.UP_DOOR_MASK:
+					InstantiateDoor((center + new Vector3(0.0f, 0.0f, -(float)Depth / 2.0f)),
+					                Quaternion.identity,
+					                scalar);
+					break;
+				case RogueRoom.DOWN_DOOR_MASK:
+				default:
+					InstantiateDoor((center + new Vector3(0.0f, 0.0f, (float)Depth / 2.0f)),
+					                Quaternion.AngleAxis(180.0f, Vector3.up),
+					                scalar);
+					break;
+				}
 			}
+		}
+
+		private void InstantiateDoor(Vector3 position, Quaternion angle, float scalar)
+		{
+			MonoBehaviour.Instantiate(door, position * scalar, angle);	
 		}
 
 		public override void InitializeCubes ()

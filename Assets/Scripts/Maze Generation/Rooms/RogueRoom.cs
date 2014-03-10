@@ -26,6 +26,7 @@ namespace MazeGeneration
 		public static Transform zombieBoss;
 		public static Transform skeletonBoss;
 		public static Transform spiderBoss;
+		public static Transform door;
 
 		// Cached values so we can spawn new cubes during runtime
 		private float _scalar;
@@ -248,8 +249,8 @@ namespace MazeGeneration
 			                                             Height,
 			                                             1.0f) * scalar;
 			Transform wt = (Transform)MonoBehaviour.Instantiate(wall_tile,
-			                          							position * scalar,
-			                          							angle);
+			                                                    position * scalar,
+			                                                    angle);
 			wt.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(wallWidth, Height));	
 		}
 
