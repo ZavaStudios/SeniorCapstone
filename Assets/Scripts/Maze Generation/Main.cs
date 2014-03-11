@@ -14,6 +14,7 @@ public class Main : MonoBehaviour
     private const float ORE_DISTRIBUTION = 0.2f;
 
 	public Transform door;
+	public Transform key;
 	public Transform floor_tile;
 	public Transform wall_tile;
 	public Transform mine_cube;
@@ -51,6 +52,7 @@ public class Main : MonoBehaviour
 		RogueRoom.zombieBoss = zombieBoss;
 		RogueRoom.skeletonBoss = skeletonBoss;
 		RogueRoom.spiderBoss = spiderBoss;
+		RogueRoom.key = key;
 
         foreach (RogueRoom room in dungeon.EnumerateRooms())
 		{

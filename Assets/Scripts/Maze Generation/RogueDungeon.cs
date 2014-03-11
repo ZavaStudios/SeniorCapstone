@@ -80,6 +80,7 @@ namespace MazeGeneration
 
 			// Assign initial placements:
 			int bossX = 0, bossY = 0;
+			int keyX = 0, keyY = 0;
 			int startX = 0, startY = 0;
 			for (int x = 1; x < boolMap.GetLength(0); x += 2)
 			{
@@ -121,11 +122,17 @@ namespace MazeGeneration
 					}
 				}
 			}
+			// Find key room:
+			Maze.FindFarthest(boolMap, bossX, bossY, out keyX, out keyY);
+
 			// Account for coordinate offset:
 			bossX -= 1;
 			bossY -= 1;
 			startX -= 1;
 			startY -= 1;
+			keyX -= 1;
+			keyY -= 1;
+			Debug.Log ("keyX: " + keyX + " | keyY: " + keyY);
 
 			// Instantiate between rooms:
             for (int x = 0; x < newWidth; x += 2)
@@ -149,6 +156,12 @@ namespace MazeGeneration
 						roomWidth = BOSS_ROOM_WIDTH;//r.Next(MIN_BOSS_ROOM_WIDTH, MAX_BOSS_ROOM_WIDTH-1);
 						roomDepth = BOSS_ROOM_DEPTH;//r.Next (MIN_BOSS_ROOM_DEPTH, MAX_BOSS_ROOM_DEPTH-1);
 						type = RogueRoom.RoomType.boss;
+					}
+					else if (x == keyX && y == keyY)
+					{
+						roomWidth = ROOM_WIDTH;
+						roomDepth = ROOM_DEPTH;
+						type = RogueRoom.RoomType.keyRoom;
 					}
 					// TODO: others?
 
@@ -207,6 +220,7 @@ namespace MazeGeneration
 					case RogueRoom.RoomType.empty:
 					case RogueRoom.RoomType.enemy:
 					case RogueRoom.RoomType.boss:
+					case RogueRoom.RoomType.keyRoom:
 						newRoom = new GeneralRoom(roomWidth, roomDepth, MAX_ROOM_HEIGHT, x, y, doorCode);
 						break;
 					case RogueRoom.RoomType.corridorFork:

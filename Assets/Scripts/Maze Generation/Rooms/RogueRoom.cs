@@ -27,6 +27,7 @@ namespace MazeGeneration
 		public static Transform skeletonBoss;
 		public static Transform spiderBoss;
 		public static Transform door;
+		public static Transform key;
 
 		// Cached values so we can spawn new cubes during runtime
 		private float _scalar;
@@ -34,7 +35,7 @@ namespace MazeGeneration
 		
 		public enum RoomType
 		{
-			empty, enemy, start, corridor, boss, shop, corridorFork, // TODO: others?
+			empty, enemy, start, corridor, boss, shop, corridorFork, keyRoom // TODO: others?
 		}
 
 		// Room properties:

@@ -119,11 +119,20 @@ namespace MazeGeneration
 					break;
 				}
 			}
+			else if (Type == RoomType.keyRoom)
+			{
+				InstantiateKey (center + new Vector3(0.0f, Height / 2.0f, 0.0f), scalar);
+			}
 		}
 
 		private void InstantiateDoor(Vector3 position, Quaternion angle, float scalar)
 		{
 			MonoBehaviour.Instantiate(door, position * scalar, angle);	
+		}
+
+		private void InstantiateKey(Vector3 position, float scalar)
+		{
+			MonoBehaviour.Instantiate(key, position * scalar, Quaternion.identity);
 		}
 
 		public override void InitializeCubes ()
