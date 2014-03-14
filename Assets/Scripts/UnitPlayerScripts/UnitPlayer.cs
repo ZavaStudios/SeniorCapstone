@@ -10,6 +10,9 @@ public class UnitPlayer : Unit {
 	int wep = 1;
 	
     private const float walkSpeedNormal = 10.0f;
+	public bool cantMove;
+	private float delay;
+	private bool delaySet = false;
 
 	protected override void Start () 
 	{
@@ -137,11 +140,26 @@ public class UnitPlayer : Unit {
 	//Gets reference to the character motor class, then sets the move speed
 	void setMaxSpeed(float newSpeed)
 	{
-        moveSpeed = newSpeed;
-		CharacterMotor m = gameObject.GetComponent<CharacterMotor>();
-		m.movement.maxForwardSpeed = moveSpeed;
-		m.movement.maxSidewaysSpeed = moveSpeed;
-		m.movement.maxBackwardsSpeed = moveSpeed;
+		if(!cantMove)
+		{
+	        moveSpeed = newSpeed;
+			CharacterMotor m = gameObject.GetComponent<CharacterMotor>();
+			m.movement.maxForwardSpeed = moveSpeed;
+			m.movement.maxSidewaysSpeed = moveSpeed;
+			m.movement.maxBackwardsSpeed = moveSpeed;
+		}
+		else if(!delaySet)
+		{
+			delay = Time.time + 3;	
+			delaySet = true;
+		}
+		
+		if(delay < Time.time)
+		{
+			cantMove = false;
+			delaySet = false;
+		}
+		
 	}
     
 	public override void equipWeapon(string newWeapon)

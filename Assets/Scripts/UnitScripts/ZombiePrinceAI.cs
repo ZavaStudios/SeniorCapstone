@@ -3,9 +3,11 @@ using System.Collections;
 
 public class ZombiePrinceAI : BossUnit
 {
-	public Transform zombie; 
-
-
+	public static Transform zombie; 
+	
+	private float fearTimer;
+	private bool fearTimerSet;
+	
 	// Use this for initialization
 	protected override void Start ()
 	{
@@ -20,6 +22,56 @@ public class ZombiePrinceAI : BossUnit
 	protected override void Update () 
 	{
 		base.Update();
+		
+		if(health <= 75 && healthAt75 != true)
+		{
+			player.cantMove = true;
+			
+			if(!fearTimerSet)
+			{
+				fearTimer = Time.time + 3;
+			}
+			else if(fearTimer < Time.time)
+			{
+				healthAt75 = true;
+				fearTimerSet = false;
+			}
+			
+			//Force the player to walk toward the boss.
+			player.GetComponent<CharacterController>().SimpleMove(transform.position);
+		}
+		else if(health <= 50 && healthAt50 != true)
+		{
+			player.cantMove = true;
+			
+			if(!fearTimerSet)
+			{
+				fearTimer = Time.time + 3;
+			}
+			else if(fearTimer < Time.time)
+			{
+				healthAt50 = true;
+				fearTimerSet = false;
+			}
+			
+			player.GetComponent<CharacterController>().SimpleMove(transform.position);
+		}
+		else if(health <= 25 && healthAt25 != true)
+		{
+			player.cantMove = true;
+			
+			if(!fearTimerSet)
+			{
+				fearTimer = Time.time + 3;
+			}
+			else if(fearTimer < Time.time)
+			{
+				healthAt25 = true;
+				fearTimerSet = false;
+			}
+			
+			player.GetComponent<CharacterController>().SimpleMove(transform.position);
+		}
 	}
 
 	//Only spawns zombies from the ZombiePrince. 

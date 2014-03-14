@@ -3,7 +3,8 @@ using System.Collections;
 
 public class ZombieWeapon : WeaponBase
 {
-
+	public static Transform Player;
+	
 	// Use this for initialization
 	protected override void Start ()
 	{
@@ -23,10 +24,12 @@ public class ZombieWeapon : WeaponBase
 	{
 		//print("attacking..");
 		
-		Transform Player = GameObject.FindGameObjectWithTag("Player").transform; 
-			
-		if(Physics.Raycast(transform.position - new Vector3(0, 0.5f, 0), faceDir, out rayHit, attackRange))
+		 
+		print (faceDir.y);
+		
+		if(Physics.Raycast(new Vector3(transform.position.x, Player.position.y, transform.position.z), faceDir, out rayHit, attackRange))
 		{
+			
 			// print ("Raycast hit");
 			if(rayHit.collider.gameObject.CompareTag("Player"))
 			{

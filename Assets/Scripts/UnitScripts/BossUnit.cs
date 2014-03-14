@@ -3,8 +3,11 @@ using System.Collections;
 
 public class BossUnit : UnitEnemy 
 {
-	public Transform enemy;
-
+	public static UnitPlayer player;
+	protected bool healthAt25 = false;
+	protected bool healthAt50 = false;
+	protected bool healthAt75 = false;
+	
 	//Every 5 seconds generate a new enemy.
 	protected float spawnTimer = 5.0f;
 	protected float delay = 2.0f;

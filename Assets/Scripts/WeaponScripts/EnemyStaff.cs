@@ -29,14 +29,15 @@ public class EnemyStaff : WeaponBase
 	// Update is called once per frame
 	protected override void Update ()
 	{
-
+		
 	}
 	
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
 		 // Instantiate the projectile at the position and rotation of this transform
     	ProjectileFireball p;
-    	GameObject clone = (GameObject)GameObject.Instantiate(Fireball, startPos - heightDifference,Character.getLookRotation());
+    	GameObject clone = (GameObject)GameObject.Instantiate(Fireball, 
+			new Vector3(startPos.x, GameObject.FindGameObjectWithTag("Player").transform.position.y, startPos.z), Character.getLookRotation());
 		clone.gameObject.AddComponent("ProjectileFireball");
 		Physics.IgnoreCollision(clone.collider, enemyCollider);
 		

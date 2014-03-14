@@ -57,7 +57,27 @@ public class EnemyGenerator
 					enemyList.Add(EnemyType.zombie);
 					break;					
 			}
-		}
+		}		
+		return enemyList;
+	}
+	
+	public static List<EnemyType> generateBoss()
+	{
+		List<EnemyType> enemyList = new List<EnemyType>();
+		switch(rand.Next(3))
+			{
+				case 0: 				
+					enemyList.Add(EnemyType.skeletonBoss);
+					break;
+				
+				case 1:				
+					enemyList.Add (EnemyType.spiderBoss);
+					break;
+				
+				case 2:				
+					enemyList.Add(EnemyType.zombieBoss);
+					break;					
+			}
 		return enemyList;
 	}
 }

@@ -3,7 +3,8 @@ using System.Collections;
 
 public class SpiderQueenAI : BossUnit 
 {
-	private Transform spider = GameObject.Find("spider").transform;
+	public Transform spider;
+	
 	// Use this for initialization
 	protected override void Start () 
 	{
@@ -18,8 +19,22 @@ public class SpiderQueenAI : BossUnit
 	protected override void Update () 
 	{
 		base.Update();
-
-
+		
+		if(health <= 75 && healthAt75 != true)
+		{
+			player.cantMove = true;
+			healthAt75 = true;
+		}
+		else if(health <= 50 && healthAt50 != true)
+		{
+			player.cantMove = true;
+			healthAt50 = true;
+		}
+		else if(health <= 25 && healthAt25 != true)
+		{
+			player.cantMove = true;
+			healthAt25 = true;
+		}
 	}
 
 	//Spawns enemies of the type spider. 

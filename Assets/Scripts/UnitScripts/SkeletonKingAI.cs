@@ -3,7 +3,10 @@ using System.Collections;
 
 public class SkeletonKingAI : BossUnit
 {
-	private Transform skeleton = GameObject.Find("skeleton").transform;
+	public static Transform skeleton;
+	private float invulTime;
+	private bool invulTimeSet = false;
+	
 	// Use this for initialization
 	protected override void Start () 
 	{
@@ -18,7 +21,56 @@ public class SkeletonKingAI : BossUnit
 	protected override void Update () 
 	{
 		base.Update();
-
+		
+		if(health <= 75 && healthAt75 != true)
+		{
+			//Make the boss invulnerable (unable to take damage), and invisible.
+			vulnerable = false;
+			transform.renderer.enabled = false;
+			
+			if(!invulTimeSet)
+			{
+				invulTime = Time.time + 3;
+			}
+			else if(invulTime < Time.time)
+			{
+				healthAt75 = true;
+				invulTimeSet = false;
+			}
+			
+		}
+		else if(health <= 50 && healthAt50 != true)
+		{
+			vulnerable = false;
+			transform.renderer.enabled = false;
+			
+			if(!invulTimeSet)
+			{
+				invulTime = Time.time + 3;
+			}
+			else if(invulTime < Time.time)
+			{
+				healthAt50 = true;
+				invulTimeSet = false;
+			}
+			
+		}
+		else if(health <= 25 && healthAt25 != true)
+		{
+			vulnerable = false;
+			transform.renderer.enabled = false;
+			
+			if(!invulTimeSet)
+			{
+				invulTime = Time.time + 3;
+			}
+			else if(invulTime < Time.time)
+			{
+				healthAt25 = true;
+				invulTimeSet = false;
+			}
+			
+		}
 	}
 
 	//Specifically spawns Skeletons for this boss.

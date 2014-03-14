@@ -8,7 +8,7 @@ public class Unit : MonoBehaviour
 {
     public Inventory inventory;
 
-
+	public bool vulnerable = true;
     protected float attackDamage;
     protected float attackDelay;
     protected float armor;
@@ -68,7 +68,8 @@ public class Unit : MonoBehaviour
 	
 	public void doDamage(float amount)
 	{
-		this.health -=  amount;
+		if(vulnerable)
+			this.health -=  amount;
 		//print ("health decreased.");
 		
 		if (health <= 0)
