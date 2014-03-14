@@ -54,6 +54,9 @@ public class Main : MonoBehaviour
 		RogueRoom.spiderBoss = spiderBoss;
 		RogueRoom.key = key;
 
+		DoorScript.player = player;
+		KeyPickup.player = player;
+
         foreach (RogueRoom room in dungeon.EnumerateRooms())
 		{
 			room.LoadRoom(RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_DEPTH,

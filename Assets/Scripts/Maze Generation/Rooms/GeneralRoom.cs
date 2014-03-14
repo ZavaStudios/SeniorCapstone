@@ -127,7 +127,7 @@ namespace MazeGeneration
 
 		private void InstantiateDoor(Vector3 position, Quaternion angle, float scalar)
 		{
-			MonoBehaviour.Instantiate(door, position * scalar, angle);	
+			MonoBehaviour.Instantiate(door, position * scalar, angle);
 		}
 
 		private void InstantiateKey(Vector3 position, float scalar)

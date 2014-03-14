@@ -5,6 +5,7 @@ public class DoorScript : MonoBehaviour
 {
 	private float DOOR_CLOSE_DISTANCE = 5.0f;
 	private bool isOpen = false;
+	public static Transform player;
 
 	// Use this for initialization
 	void Start ()
@@ -16,8 +17,8 @@ public class DoorScript : MonoBehaviour
 	void Update ()
 	{
 		// TODO
-		//if (isOpen && (transform.position - player.position).magnitude > DOOR_CLOSE_DISTANCE)
-		//	Close();
+		if (isOpen && (transform.position - player.position).magnitude > DOOR_CLOSE_DISTANCE)
+			Close();
 	}
 	
 	public void Open()
