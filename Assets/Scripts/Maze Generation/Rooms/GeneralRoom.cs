@@ -12,6 +12,10 @@ namespace MazeGeneration
 	/// </summary>
 	public class GeneralRoom : RogueRoom
 	{
+        System.Random enemyPosGen = new System.Random();
+        private float _scalar;
+        private int _maxWidth;
+        private int _maxDepth;
 
 		/// <summary>
 		/// Stores the types of enemies held in this room.
@@ -39,12 +43,19 @@ namespace MazeGeneration
 		/// numbers of points. E.g., a spider may be worth 1 while a skeleton is worth 5.
 		/// This function randomly determines which type of enemies to spawn in the room
 		/// based on how many points are assigned to the room.
+        /// 
+        /// Note: If this is a boss room, the score is ignored and simply picks a boss to
+        /// place into the room randomly. Similarly, if this room is neither an enemy nor
+        /// a boss room, this function is completely unused.
 		/// </summary>
 		/// <param name="enemyScore">Number of enemy points allocated to this room</param>
 		public void AssignEnemies(int enemyScore)
 		{
 			// For now, just assign one "enemy" per enemy score:
-			Enemies = EnemyGenerator.generateEnemies(enemyScore);
+            if (Type == RoomType.enemy)
+                Enemies = EnemyGenerator.generateEnemies(enemyScore);
+            else if (Type == RoomType.boss)
+                Enemies = EnemyGenerator.generateBoss();
 		}
 
 		/// <summary>
@@ -65,36 +76,36 @@ namespace MazeGeneration
 		/// <param name="totalWidth">Width of surrounding space in block-lengths</param> 
 		public override void LoadRoom(int maxWidth, int maxDepth, int doorWidth, float scalar)
 		{
-			base.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
-
-			Vector3 center = GetCenter(maxWidth, maxDepth);
+            _scalar = scalar;
+            _maxDepth = maxDepth;
+            _maxWidth = maxWidth;
+            base.LoadRoom(_maxWidth, _maxDepth, doorWidth, _scalar);
 
 			// ENEMIES / ETC.
-			if (Type == RoomType.enemy)
+			if (Enemies != null)
 			{
-				System.Random enemyPosGen = new System.Random();
 				//Generate a random enemy in the maze based on what the generate enemy function returns.
 				//Need to store the enemies into a list to be used if we need to reload the room. 
 				foreach(EnemyGenerator.EnemyType enemy in Enemies)
 				{
 					// TODO: check if collides with ore pillar, if those get added
-
-					float posX = center.x +
-								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
-						 		 ((float)(Width * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
-					float posY = center.z +
-								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
-						 		 ((float)(Height * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
-					Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
-					InstantiateEnemy(enemyPos, enemy, scalar);
+                    SpawnEnemy(enemy);
 				}
 			}
-			else if (Type == RoomType.boss)
-			{
-				// TODO: proper boss allocation
-				InstantiateEnemy(center, EnemyGenerator.EnemyType.zombieBoss, scalar);
-			}
 		}
+
+        public void SpawnEnemy(EnemyGenerator.EnemyType enemy)
+        {
+            Vector3 center = GetCenter(_maxWidth, _maxDepth);
+            float posX = center.x +
+                                 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+                                 ((float)(Width * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
+            float posY = center.z +
+                         ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+                         ((float)(Height * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
+            Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
+            InstantiateEnemy(enemyPos, enemy, _scalar);
+        }
 
 		public override void InitializeCubes ()
 		{

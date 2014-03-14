@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using MazeGeneration;
 
 public class SkeletonKingAI : BossUnit
 {
-	public static Transform skeleton;
+    public static Transform skeleton;
+    public static GeneralRoom bossRoom;
 	private float invulTime;
 	private bool invulTimeSet = false;
 	

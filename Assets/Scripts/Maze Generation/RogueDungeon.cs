@@ -205,9 +205,14 @@ namespace MazeGeneration
 					case RogueRoom.RoomType.start:
 					case RogueRoom.RoomType.shop:
 					case RogueRoom.RoomType.empty:
-					case RogueRoom.RoomType.enemy:
+                    case RogueRoom.RoomType.enemy:
+                        newRoom = new GeneralRoom(roomWidth, roomDepth, MAX_ROOM_HEIGHT, x, y, doorCode);
+                        break;
 					case RogueRoom.RoomType.boss:
 						newRoom = new GeneralRoom(roomWidth, roomDepth, MAX_ROOM_HEIGHT, x, y, doorCode);
+                        SkeletonKingAI.bossRoom = (GeneralRoom)newRoom;
+                        ZombiePrinceAI.bossRoom = (GeneralRoom)newRoom;
+                        SpiderQueenAI.bossRoom = (GeneralRoom)newRoom;
 						break;
 					case RogueRoom.RoomType.corridorFork:
 					default:
@@ -218,9 +223,10 @@ namespace MazeGeneration
 					}
                     newRoom.Type = type;
 
-					// For enemy rooms, initialize enemy list.
+					// Initialize enemy list to a GeneralRoom. The GeneralRoom handles when it isn't an
+                    // enemy room, so we won't worry about that.
 					// TODO: smarter distribution of enemy points. For now, just give same value to each room.
-					if (type == RogueRoom.RoomType.enemy)
+					if (newRoom is GeneralRoom)
 						((GeneralRoom)newRoom).AssignEnemies(5);
 					
                     Map[x, y] = newRoom;

@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using MazeGeneration;
 
 public class SpiderQueenAI : BossUnit 
 {
-	public Transform spider;
+    public Transform spider;
+    public static GeneralRoom bossRoom;
 	
 	// Use this for initialization
 	protected override void Start () 

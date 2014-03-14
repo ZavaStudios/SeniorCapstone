@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using MazeGeneration;
 
 public class ZombiePrinceAI : BossUnit
 {
-	public static Transform zombie; 
+    public static Transform zombie;
+    public static GeneralRoom bossRoom;
 	
 	private float fearTimer;
 	private bool fearTimerSet;
