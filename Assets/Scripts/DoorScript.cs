@@ -26,7 +26,7 @@ public class DoorScript : MonoBehaviour
 		if (!isOpen)
 		{
 			isOpen = true;
-			animation.PlayQueued("DoorDown");
+			animation.PlayQueued("doorDown");
 		}
 	}
 	
@@ -35,7 +35,7 @@ public class DoorScript : MonoBehaviour
 		if (isOpen)
 		{
 			isOpen = false;
-			animation.PlayQueued("DoorUp");
+			animation.PlayQueued("doorUp");
 		}
 	}
 }
