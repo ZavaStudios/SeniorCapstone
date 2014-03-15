@@ -15,16 +15,21 @@ public class KeyPickup : MonoBehaviour
 	public void Update()
 	{
 		// TODO: better
+        /*
 		if (Physics.Raycast(transform.position, player.position, PICKUP_DISTANCE))
 		{
 			Inventory.getInstance().inventoryAddItem(new ItemKey("It's a key! :D"));
 			Destroy(gameObject);
-		}
+		}*/
 	}
 
 	public void OnTriggerEnter(Collider other)
 	{
-
+        if (other.transform == player)
+        {
+            Inventory.getInstance().inventoryAddItem(new ItemKey("this is a key bitch! :D"));
+            Destroy(gameObject);
+        }
 	}
 }
 

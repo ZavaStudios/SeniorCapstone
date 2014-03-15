@@ -3,7 +3,7 @@ using System.Collections;
 
 public class DoorScript : MonoBehaviour
 {
-	private float DOOR_CLOSE_DISTANCE = 5.0f;
+	private float DOOR_CLOSE_DISTANCE = 25.0f;
 	private bool isOpen = false;
 	public static Transform player;
 
@@ -17,7 +17,7 @@ public class DoorScript : MonoBehaviour
 	void Update ()
 	{
 		// TODO
-		if (isOpen && (transform.position - player.position).magnitude > DOOR_CLOSE_DISTANCE)
+		if (isOpen && (transform.position - player.position).sqrMagnitude > DOOR_CLOSE_DISTANCE)
 			Close();
 	}
 	
