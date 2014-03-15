@@ -10,7 +10,7 @@ namespace MazeGeneration
 	/// </summary>
 	public class StandardWallCubes : WallCubes, CubeTracker
 	{
-		private Cube.CubeType[,,] Cubes { get; set; }
+        private ItemBase.tOreType[, ,] Cubes { get; set; }
 		private int _maxDepth;
 
 		public override int MaxDepth { get { return _maxDepth; }}
@@ -28,11 +28,11 @@ namespace MazeGeneration
 		{
 			_maxDepth = maxDepth;
 			MinDepth = minDepth;
-			Cubes = new Cube.CubeType[width,height,MaxDepth];
+            Cubes = new ItemBase.tOreType[width, height, MaxDepth];
 			for (int x = 0; x < width; x++)
 				for (int y = 0; y < height; y++)
 					for (int z = 0; z < MaxDepth; z++)
-						Cubes[x,y,z] = Cube.CubeType.Air;
+                        Cubes[x, y, z] = ItemBase.tOreType.NOT_ORE;
 			
 			InitializeCubes();
 		}
@@ -80,7 +80,7 @@ namespace MazeGeneration
 				return -1;
 
 			for (int z = MaxDepth - 1; z > 0; z--)
-				if (Cubes[x,y,z] != Cube.CubeType.Air)
+                if (Cubes[x, y, z] != ItemBase.tOreType.NOT_ORE)
 					return z + 1;
 
 			// If all the blocks were air, then we don't have any blocks in this section:
@@ -140,12 +140,12 @@ namespace MazeGeneration
 		private bool IsUncovered(int x, int y, int z)
 		{
 			return ((z == MaxDepth-1) ||
-					((x > 0) && (Cubes[x-1,y,z] == Cube.CubeType.Air)) ||
-			        ((x < Width-1) && (Cubes[x+1,y,z] == Cube.CubeType.Air)) ||
-			        ((y > 0) && (Cubes[x,y-1,z] == Cube.CubeType.Air)) ||
-			        ((y < Height-1) && (Cubes[x,y+1,z] == Cube.CubeType.Air)) ||
-			        ((z > 0) && (Cubes[x,y,z-1] == Cube.CubeType.Air)) ||
-			        ((Cubes[x,y,z+1] == Cube.CubeType.Air)));
+                    ((x > 0) && (Cubes[x - 1, y, z] == ItemBase.tOreType.NOT_ORE)) ||
+                    ((x < Width - 1) && (Cubes[x + 1, y, z] == ItemBase.tOreType.NOT_ORE)) ||
+                    ((y > 0) && (Cubes[x, y - 1, z] == ItemBase.tOreType.NOT_ORE)) ||
+                    ((y < Height - 1) && (Cubes[x, y + 1, z] == ItemBase.tOreType.NOT_ORE)) ||
+                    ((z > 0) && (Cubes[x, y, z - 1] == ItemBase.tOreType.NOT_ORE)) ||
+                    ((Cubes[x, y, z + 1] == ItemBase.tOreType.NOT_ORE)));
 		}
 
 		public override IEnumerable<Cube> DestroyCube(Cube c)
@@ -181,7 +181,7 @@ namespace MazeGeneration
 					toRet.Add(new Cube(this, Cubes[c.X, c.Y, c.Z+1], c.X, c.Y, c.Z+1));
 			}
 
-			Cubes[c.X, c.Y, c.Z] = Cube.CubeType.Air;
+            Cubes[c.X, c.Y, c.Z] = ItemBase.tOreType.NOT_ORE;
 			return toRet;
 		}
 	}

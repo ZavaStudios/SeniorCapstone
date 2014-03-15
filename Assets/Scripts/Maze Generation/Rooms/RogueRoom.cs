@@ -268,22 +268,22 @@ namespace MazeGeneration
 			Transform toSpawn;
 			switch (cube.Type)
 			{
-			case Cube.CubeType.Stone:
+            case ItemBase.tOreType.Stone:
 				toSpawn = mine_cube;
 				break;
-			case Cube.CubeType.Iron:
+            case ItemBase.tOreType.Bone:
 				toSpawn = ore_cube;
 				break;
-			case Cube.CubeType.Silver:
+            case ItemBase.tOreType.Iron:
 				toSpawn = ore2_cube;
 				break;
-			case Cube.CubeType.Gold:
+            case ItemBase.tOreType.Steel:
 				toSpawn = ore3_cube;
 				break;
-			case Cube.CubeType.Platinum:
+            case ItemBase.tOreType.Mithril:
 				toSpawn = ore4_cube;
 				break;
-			case Cube.CubeType.Air:
+            case ItemBase.tOreType.NOT_ORE:
 			default:
 				return;
 			}

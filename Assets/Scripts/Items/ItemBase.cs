@@ -30,7 +30,8 @@ public class ItemBase
         Steel = 4,
         Mithril = 5,
         Dragon = 6,
-        Ethereal = 7
+        Ethereal = 7,
+        Stone = 8,  // probably not intended to be in the inventory, but needed elsewhere
     }
 
     static public string getOreString(tOreType ore)
