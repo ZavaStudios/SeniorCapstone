@@ -60,7 +60,6 @@ public class Inventory
         ores.Add(newItem);
     }
 
-
     public void inventoryAddItem(ItemBase newItem)
     {
         items.Add(newItem);
