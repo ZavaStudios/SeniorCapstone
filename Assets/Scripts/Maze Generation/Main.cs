@@ -4,7 +4,7 @@ using MazeGeneration;
 
 public class Main : MonoBehaviour
 {
-    private int WIDTH  = 3;
+    private int WIDTH  = 2;
     private int HEIGHT = 3;
 
 	private const float CUBE_SCALAR = 1.0f;
@@ -31,13 +31,19 @@ public class Main : MonoBehaviour
 	public Transform skeletonBoss;
 	public Transform spiderBoss;
 
+    private RogueDungeon dungeon;
+
+    // position tracking for loading/unloading rooms
+    private int gridX;
+	private int gridY;
+
 	// Use this for initialization
 	void Start ()
     {
 		//WIDTH = LevelHolder.Level + 2;
 		//HEIGHT = LevelHolder.Level + 2;
         Debug.Log("Level: " + LevelHolder.Level);
-        RogueDungeon dungeon = new RogueDungeon(WIDTH, HEIGHT);
+        dungeon = new RogueDungeon(WIDTH, HEIGHT);
 
 		// TODO: FIX!
 		//room.enemy = enemy;
@@ -61,23 +67,40 @@ public class Main : MonoBehaviour
 		KeyPickup.player = player;
 		PortalScript.player = player;
 
-        foreach (RogueRoom room in dungeon.EnumerateRooms())
-		{
-			room.LoadRoom(RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_DEPTH,
-			              RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR);
+        // Load start room and put player there:
+        RogueRoom start = dungeon.GetStartRoom();
+        start.LoadRoom(RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_DEPTH,
+                       RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR);
+        start.LoadNeighbors(RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_DEPTH,
+                            RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR);
+        player.transform.position = (start.GetCenter(RogueDungeon.MAX_ROOM_WIDTH,
+                                                     RogueDungeon.MAX_ROOM_DEPTH) +
+                                                     new Vector3(0.0f, 1.5f, 0.0f)) * CUBE_SCALAR;
 
-			if (room.Type == RogueRoom.RoomType.start)
-			{
-				player.transform.position = (room.GetCenter(RogueDungeon.MAX_ROOM_WIDTH,
-				                                            RogueDungeon.MAX_ROOM_DEPTH) +
-											new Vector3(0.0f, 1.5f, 0.0f)) * CUBE_SCALAR;
-			}
-        }
+		Vector3 playerPos = player.transform.position / CUBE_SCALAR;
+		gridX = (int)playerPos.x / RogueDungeon.MAX_ROOM_WIDTH;
+  		gridY = (int)playerPos.z / RogueDungeon.MAX_ROOM_DEPTH;
 	}
 
 	// Update is called once per frame
     void Update()
     {
-	
+		Vector3 playerPos = player.transform.position / CUBE_SCALAR;
+        int newGridX = (int)playerPos.x / RogueDungeon.MAX_ROOM_WIDTH;
+        int newGridY = (int)playerPos.z / RogueDungeon.MAX_ROOM_DEPTH;
+
+        if (newGridX != gridX || newGridY != gridY)
+        {
+            Debug.Log("oldX: " + gridX + " | oldY: " + gridY);
+            Debug.Log("newX: " + newGridX + " | newY: " + newGridY);
+            dungeon.Map[gridX, gridY].UnloadNeighbors(dungeon.Map[newGridX, newGridY]);
+            dungeon.Map[newGridX, newGridY].LoadNeighbors(RogueDungeon.MAX_ROOM_WIDTH,
+                                                          RogueDungeon.MAX_ROOM_DEPTH,
+                                                          RogueDungeon.CORRIDOR_WIDTH,
+                                                          CUBE_SCALAR);
+
+            gridX = newGridX;
+            gridY = newGridY;
+        }
 	}
 }

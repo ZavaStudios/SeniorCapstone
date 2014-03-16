@@ -126,12 +126,14 @@ namespace MazeGeneration
 
 		private void InstantiateDoor(Vector3 position, Quaternion angle, float scalar)
 		{
-			MonoBehaviour.Instantiate(door, position * scalar, angle);
+			Transform dt = (Transform)MonoBehaviour.Instantiate(door, position * scalar, angle);
+            dt.transform.parent = objHolder.transform;
 		}
 
 		private void InstantiateKey(Vector3 position, float scalar)
 		{
-			MonoBehaviour.Instantiate(key, position * scalar, Quaternion.identity);
+			Transform kt = (Transform)MonoBehaviour.Instantiate(key, position * scalar, Quaternion.identity);
+            kt.transform.parent = objHolder.transform;
 		}
 
 		public override void InitializeCubes ()
@@ -189,7 +191,9 @@ namespace MazeGeneration
 				break;
 			}
 
-			MonoBehaviour.Instantiate(enemy, enemy_pos * scalar, Quaternion.identity);
+			Transform et = (Transform)
+                MonoBehaviour.Instantiate(enemy, enemy_pos * scalar, Quaternion.identity);
+            et.transform.parent = objHolder.transform;
 		}
 	}
 }

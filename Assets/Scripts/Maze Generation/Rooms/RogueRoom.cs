@@ -32,6 +32,9 @@ namespace MazeGeneration
 		// Cached values so we can spawn new cubes during runtime
 		private float _scalar;
 		private Vector3 _cubeStart;
+
+        // Stores anything generated in this room so it can be destroyed on unload
+        protected GameObject objHolder;
 		
 		public enum RoomType
 		{
@@ -53,6 +56,9 @@ namespace MazeGeneration
 		public RogueRoom RightNeighbor { get; set; }
 		public RogueRoom UpNeighbor { get; set; }
 		public RogueRoom DownNeighbor { get; set; }
+
+        // Track whether this room is currently loaded:
+        protected bool isLoaded = false;
 
 		/// <summary>
 		/// Returns center coordinates of the floor of this room.
@@ -90,6 +96,11 @@ namespace MazeGeneration
 		/// <param name="scalar">1 cube -> scalar units in Unity.</param>
 		public virtual void LoadRoom(int maxWidth, int maxDepth, int doorWidth, float scalar)
 		{
+            if (isLoaded)
+                return;
+
+            isLoaded = true;
+            objHolder = new GameObject("Room_" + GridX + "-" + GridY);
 			// Helpful initial values:
 			Vector3 center = GetCenter(maxWidth, maxDepth);
 
@@ -108,6 +119,10 @@ namespace MazeGeneration
             //set the tag for raycast identification.
             ft.FindChild("Plane").tag = "Floor"; 
             ct.FindChild("Plane").tag = "Ceiling"; 
+
+            //assign parent:
+            ft.transform.parent = objHolder.transform;
+            ct.transform.parent = objHolder.transform;
 
 			// Instantiate walls:
 			float wallHeight = (float)Height / 2.0f;
@@ -235,7 +250,58 @@ namespace MazeGeneration
 			_scalar = scalar;
 			_cubeStart = cubeStart;
 		}
-		
+
+        /// <summary>
+        /// Informs this room's neighbors that they need to get themselves loaded into the
+        /// scene. Does NOT load this room itself! Also, will not load a room if that room
+        /// is already loaded.
+        /// </summary>
+        /// <param name="maxWidth">Maximum width a room can be in the maze, in cube units.</param>
+        /// <param name="maxDepth">Maximum depth a room can be in the maze, in cube units.</param>
+        /// <param name="doorWidth">How large the openings to the room need to be. Must be no more than Width or Depth.</param>
+        /// <param name="scalar">1 cube -> scalar units in Unity.</param>
+        public virtual void LoadNeighbors(int maxWidth, int maxDepth, int doorWidth, float scalar)
+        {
+            if (LeftNeighbor != null)
+                LeftNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
+            if (RightNeighbor != null)
+                RightNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
+            if (UpNeighbor != null)
+                UpNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
+            if (DownNeighbor != null)
+                DownNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
+        }
+
+        /// <summary>
+        /// Destroys all game objects loaded into Unity inside this room.
+        /// </summary>
+        public virtual void UnloadRoom()
+        {
+            if (!isLoaded)
+                return;
+
+            isLoaded = false;
+            UnityEngine.Object.Destroy(objHolder);
+            objHolder = null;
+        }
+
+        /// <summary>
+        /// Informs neighbors of this room to unload themselves. Does NOT unload
+        /// this room itself! Also, you may specify one neighbor not to despawn.
+        /// </summary>
+		/// <param name="dontDespawn">Room you would like to not unload</param>
+        public virtual void UnloadNeighbors(RogueRoom dontDespawn)
+        {
+			if (LeftNeighbor != null && LeftNeighbor != dontDespawn)
+                LeftNeighbor.UnloadRoom();
+			if (RightNeighbor != null && RightNeighbor != dontDespawn)
+                RightNeighbor.UnloadRoom();
+			if (UpNeighbor != null && UpNeighbor != dontDespawn)
+                UpNeighbor.UnloadRoom();
+			if (DownNeighbor != null && DownNeighbor != dontDespawn)
+                DownNeighbor.UnloadRoom();
+        }
+
 		/// <summary>
 		/// Spawns a wall in Unity given a position, width, height, and angle.
 		/// </summary>
@@ -252,8 +318,9 @@ namespace MazeGeneration
 			Transform wt = (Transform)MonoBehaviour.Instantiate(wall_tile,
 			                                                    position * scalar,
 			                                                    angle);
-			wt.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(wallWidth, Height));	
-		}
+			wt.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(wallWidth, Height));
+            wt.transform.parent = objHolder.transform;
+        }
 
 		/// <summary>
 		/// Spawns a cube in Unity given a Cube object (holding the type of cube, and (x,y,z)
@@ -294,6 +361,7 @@ namespace MazeGeneration
 			                          	  Quaternion.identity);
 			cube.Parent = this;
 			spawned.FindChild("Plane").GetComponent<MineableBlock>()._cube = cube;
+            spawned.transform.parent = objHolder.transform;
 		}
 
 		public IEnumerable<Cube> DestroyCube(Cube c)

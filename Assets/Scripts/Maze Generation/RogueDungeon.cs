@@ -59,7 +59,11 @@ namespace MazeGeneration
 		*/
 
 		public RogueRoom[,] Map { get; private set; }
-		
+
+        // Cache the start room
+        private int startRoomX;
+        private int startRoomY;
+
 		/// <summary>
         /// Generates a new RogueDungeon of the specified width and height.
         /// In this case, "width" and "height" mean the number of potential
@@ -80,7 +84,8 @@ namespace MazeGeneration
 			// Assign initial placements:
 			int bossX = 0, bossY = 0;
 			int keyX = 0, keyY = 0;
-			int startX = 0, startY = 0;
+            startRoomX = 0;
+            startRoomY = 0;
 			for (int x = 1; x < boolMap.GetLength(0); x += 2)
 			{
 				for (int y = 1; y < boolMap.GetLength(1); y += 2)
@@ -95,29 +100,29 @@ namespace MazeGeneration
 					{
 						bossX = x;
 						bossY = y;
-						startX = x-2;
-						startY = y;
+						startRoomX = x-2;
+						startRoomY = y;
 					}
 					else if (dirCode == 0x2)
 					{
 						bossX = x;
 						bossY = y;
-						startX = x+2;
-						startY = y;
+						startRoomX = x+2;
+						startRoomY = y;
 					}
 					else if (dirCode == 0x4)
 					{
 						bossX = x;
 						bossY = y;
-						startX = x;
-						startY = y-2;
+						startRoomX = x;
+						startRoomY = y-2;
 					}
 					else if (dirCode == 0x8)
 					{
 						bossX = x;
 						bossY = y;
-						startX = x;
-						startY = y+2;
+						startRoomX = x;
+						startRoomY = y+2;
 					}
 				}
 			}
@@ -127,8 +132,8 @@ namespace MazeGeneration
 			// Account for coordinate offset:
 			bossX -= 1;
 			bossY -= 1;
-			startX -= 1;
-			startY -= 1;
+			startRoomX -= 1;
+			startRoomY -= 1;
 			keyX -= 1;
 			keyY -= 1;
 			Debug.Log ("keyX: " + keyX + " | keyY: " + keyY);
@@ -144,7 +149,7 @@ namespace MazeGeneration
 					RogueRoom.RoomType type = RogueRoom.RoomType.corridorFork;
 
 					// If the x,y coordinate was one of our set aside vectors, use that type:
-					if (x == startX && y == startY)
+					if (x == startRoomX && y == startRoomY)
 					{
 						roomWidth = ROOM_WIDTH;//r.Next(MIN_SHOP_ROOM_WIDTH, MAX_SHOP_ROOM_WIDTH-1);
 						roomDepth = ROOM_DEPTH;//r.Next (MIN_SHOP_ROOM_DEPTH, MAX_SHOP_ROOM_DEPTH-1);
@@ -348,6 +353,11 @@ namespace MazeGeneration
 				}
 			}
 		}
+
+        public RogueRoom GetStartRoom()
+        {
+            return Map[startRoomX, startRoomY];
+        }
 				
 		public IEnumerable<RogueRoom> EnumerateRooms()
 		{
@@ -355,6 +365,33 @@ namespace MazeGeneration
 				if (room != null)
 					yield return room;
 		}
+
+        /// <summary>
+        /// Given a position, return the room containing that position.
+        /// Note: may give a faulty answer if the point doesn't actually lie
+        /// inside the maze.
+        /// </summary>
+        /// <param name="position">Position to search for.</param>
+        /// <returns>Room position lies in.</returns>
+        public RogueRoom GetCurrentRoom(float x, float y)
+        {
+            int roomX = (int)(x / MAX_ROOM_WIDTH);
+            int roomY = (int)(y / MAX_ROOM_DEPTH);
+
+            RogueRoom ckRm = Map[roomX, roomY];
+            Vector3 roomCenter = ckRm.GetCenter(MAX_ROOM_WIDTH, MAX_ROOM_DEPTH);
+            
+            float dx = roomCenter.x - x;
+            float dy = roomCenter.z - y;
+
+            int xAdj = Math.Sign(dx) * (Math.Abs(dx) <= (ckRm.Width * 0.5f) ? 0 : 1);
+            int yAdj = Math.Sign(dy) * (Math.Abs(dy) <= (ckRm.Depth * 0.5f) ? 0 : 1);
+
+            if (roomX + xAdj < 0 || roomX + xAdj > Map.GetLength(0) ||
+                roomY + yAdj < 0 || roomY + yAdj > Map.GetLength(1))
+                return null;
+            return Map[roomX + xAdj, roomY + yAdj];
+        }
 
         /// <summary>
         /// Creates a boolean grid view for the entire map, which is, at the very
