@@ -421,6 +421,9 @@ public class Hud : MonoBehaviour
 				style.hover.background = tex2dButtonPassiveBack;
 				style.onHover.background = tex2dButtonPassiveBack;
 
+				//Word wrap around inside of a box
+				style.wordWrap = true;
+
 				//Backgrounds for selecting an item while the button is still being pressed
 				style.onActive.background = tex2dButtonFlashBack;
 
@@ -472,9 +475,15 @@ public class Hud : MonoBehaviour
 
 
 				//Description Menu
+				Vector2 vec2Description = getComponentCoordinateFromIndex(intCompSelGrid);
+				//Only show the description if we've unlocked the item
+				string description = "Unlock me by crafting this component in a lower tier.";
+				if(selectedComponents[(int)vec2Description.x, (int)vec2Description.y].unlocked)
+					description = selectedComponents[(int)vec2Description.x, (int)vec2Description.y].item.getDescription();
+
 				GUI.Label (new Rect (11 * intWidthPadding, vec2CompTypeStart.y,
 		                   	vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
-		          "[Insert Requirements Here]", style);
+		           description, style);
 		}
 
 		private Vector2 getComponentCoordinateFromIndex (int index)
