@@ -630,6 +630,8 @@ public class Hud : MonoBehaviour
 			intAssembleWeapon = Math.Min (arrAssembleWeapons.Length - 1, intAssembleWeapon + 1);
 		} else if (Input.GetKeyUp (keyCodeConfirm))
 		{
+			//Time to craft an item
+
 			//TODO remove required components from inventory
 			Inventory i = Inventory.getInstance ();
 
