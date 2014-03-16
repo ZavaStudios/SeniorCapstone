@@ -498,6 +498,8 @@ public class Hud : MonoBehaviour
 
         ArrayList arrListWeapons = inventory.getInventoryWeapons();
         ArrayList arrComponents = inventory.getInventoryComponents();
+		ArrayList arrOres = inventory.getInventoryOres();
+
         //TODO only keep weapons
         ArrayList allItems = new ArrayList();
 
@@ -510,6 +512,10 @@ public class Hud : MonoBehaviour
         {
             allItems.Add(component);
         }
+		foreach(ItemOre ore in arrOres)
+		{
+			allItems.Add(ore);
+		}
 
         string[] arrStringWeapons = new string[allItems.Count];
 

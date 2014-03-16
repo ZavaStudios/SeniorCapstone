@@ -126,4 +126,9 @@ public class Inventory
     {
         return components;
     }
+
+	public ArrayList getInventoryOres()
+	{
+		return ores;
+	}
 }

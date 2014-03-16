@@ -17,7 +17,7 @@ public class ItemOre : ItemBase
 
     public override string ToString()
     {
-        return _description;
+        return oreType.ToString();
     }
 	
 }
