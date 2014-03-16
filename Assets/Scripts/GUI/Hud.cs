@@ -84,6 +84,9 @@ public class Hud : MonoBehaviour
 	private int intAssembleWeapon = 0; //Index for selecting which weapon to assemble
 	private int intSelectedWeapon = 0; //The index of the selected weapon
 
+	//Texture for the crosshair
+	public Texture2D crosshairTexture;
+
 
 	//Current value of the scroll bar
 //    float vSbarValue = 0; //TODO Use the scroll bar to move through the inventory
@@ -257,6 +260,13 @@ public class Hud : MonoBehaviour
 				// Make a health bar
 				GUI.Box (new Rect (10, 10, 100, 30), player.Health + "/" + player.MaxHealth);
 				GUI.Box (new Rect (10, 40, 100, 30), "Score: " + player.Score);
+
+				//Draw the crosshair
+				Rect center = new Rect((Screen.width - crosshairTexture.width) / 2,
+			                  (Screen.height - crosshairTexture.height) /2,
+			                  crosshairTexture.width,
+			                  crosshairTexture.height);
+				GUI.DrawTexture(center, crosshairTexture);
 
 				break;
 			}
@@ -709,7 +719,7 @@ public class Hud : MonoBehaviour
 			ArrayList arrListWeapons = inventory.getInventoryWeapons ();
 			
 			//Pressing right can wraparound to the next row if one exists
-			intSelectedWeapon = Mathf.Min (intNewSelected, arrListWeapons.Count - 1);
+			intSelectedWeapon = Mathf.Min(intNewSelected, arrListWeapons.Count - 1);
 		}
 	}
 
