@@ -52,6 +52,7 @@ public class Main : MonoBehaviour
 		ZombieWeapon.Player = player;
 		EnemyStaff.player = player;
 		UnitEnemy.player = player;
+		BossUnit.playercc = player.GetComponent<CharacterController>();
 
         foreach (RogueRoom room in dungeon.EnumerateRooms())
 		{

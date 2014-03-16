@@ -28,7 +28,7 @@ public class SpiderQueenAI : BossUnit
 		
 		if(health <= 75 && healthAt75 != true)
 		{
-			player.GetComponent<UnitPlayer>().setSpeed(0);
+			playercc.enabled = false;
 			
 			
 			if(!immobilizedSet)
@@ -38,14 +38,14 @@ public class SpiderQueenAI : BossUnit
 			}
 			else if(immobilizedTimer < Time.time)
 			{
-				player.GetComponent<UnitPlayer>().resetSpeed();
+				playercc.enabled = true;
 				immobilizedSet = false;
 				healthAt75 = true;
 			}
 		}
 		else if(health <= 50 && healthAt50 != true)
 		{
-			player.GetComponent<UnitPlayer>().setSpeed(0);
+			playercc.enabled = false;
 			
 			
 			if(!immobilizedSet)
@@ -55,14 +55,14 @@ public class SpiderQueenAI : BossUnit
 			}
 			else if(immobilizedTimer < Time.time)
 			{
-				player.GetComponent<UnitPlayer>().resetSpeed();
+				playercc.enabled = true;
 				immobilizedSet = false;
 				healthAt50 = true;
 			}
 		}
 		else if(health <= 25 && healthAt25 != true)
 		{
-			player.GetComponent<UnitPlayer>().setSpeed(0);
+			playercc.enabled = false;
 		
 			
 			if(!immobilizedSet)
@@ -72,7 +72,7 @@ public class SpiderQueenAI : BossUnit
 			}
 			else if(immobilizedTimer < Time.time)
 			{
-				player.GetComponent<UnitPlayer>().resetSpeed();
+				playercc.enabled = true;
 				immobilizedSet = false;
 				healthAt25 = true;
 			}

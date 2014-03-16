@@ -9,6 +9,7 @@ public class BossUnit : UnitEnemy
 	protected bool healthAt75 = false;
 	protected Transform spawnedEnemy;
 	public static GeneralRoom bossRoom;
+	public static CharacterController playercc;
 	
 	//Every 5 seconds generate a new enemy.
 	protected float spawnTimer = 10.0f;
