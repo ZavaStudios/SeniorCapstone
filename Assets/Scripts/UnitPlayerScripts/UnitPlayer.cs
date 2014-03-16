@@ -143,6 +143,24 @@ public class UnitPlayer : Unit {
 		m.movement.maxSidewaysSpeed = moveSpeed;
 		m.movement.maxBackwardsSpeed = moveSpeed;	
 	}
+	
+	public void setSpeed(float newSpeed)
+	{
+		moveSpeed = newSpeed;
+		CharacterMotor m = gameObject.GetComponent<CharacterMotor>();
+		m.movement.maxForwardSpeed = moveSpeed;
+		m.movement.maxSidewaysSpeed = moveSpeed;
+		m.movement.maxBackwardsSpeed = moveSpeed;
+	}
+	
+	public void resetSpeed()
+	{
+		moveSpeed = walkSpeedNormal;
+		CharacterMotor m = gameObject.GetComponent<CharacterMotor>();
+		m.movement.maxForwardSpeed = walkSpeedNormal;
+		m.movement.maxSidewaysSpeed = walkSpeedNormal;
+		m.movement.maxBackwardsSpeed = walkSpeedNormal;
+	}
     
 	public override void equipWeapon(string newWeapon)
     {

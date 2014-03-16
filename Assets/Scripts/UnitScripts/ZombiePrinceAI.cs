@@ -24,7 +24,7 @@ public class ZombiePrinceAI : BossUnit
 		
 		if(health <= 75 && healthAt75 != true)
 		{
-			playerMoveSpeed = 0;
+			player.GetComponent<UnitPlayer>().setSpeed(0);
 			
 			if(!fearTimerSet)
 			{
@@ -35,13 +35,13 @@ public class ZombiePrinceAI : BossUnit
 			{
 				healthAt75 = true;
 				fearTimerSet = false;
-				playerMoveSpeed = 10;
+				player.GetComponent<UnitPlayer>().resetSpeed();
 			}
 			
 		}
 		else if(health <= 50 && healthAt50 != true)
 		{
-			playerMoveSpeed = 0;
+			player.GetComponent<UnitPlayer>().setSpeed(0);
 			
 			if(!fearTimerSet)
 			{
@@ -52,13 +52,13 @@ public class ZombiePrinceAI : BossUnit
 			{
 				healthAt50 = true;
 				fearTimerSet = false;
-				playerMoveSpeed = 10;				
+				player.GetComponent<UnitPlayer>().resetSpeed();				
 			}
 			
 		}
 		else if(health <= 25 && healthAt25 != true)
 		{
-			playerMoveSpeed = 0;
+			player.GetComponent<UnitPlayer>().setSpeed(0);
 			
 			if(!fearTimerSet)
 			{
@@ -69,7 +69,7 @@ public class ZombiePrinceAI : BossUnit
 			{
 				healthAt25 = true;
 				fearTimerSet = false;
-				playerMoveSpeed = 10;
+				player.GetComponent<UnitPlayer>().resetSpeed();
 			}
 			
 		}

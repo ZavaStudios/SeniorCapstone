@@ -7,7 +7,6 @@ public class BossUnit : UnitEnemy
 	protected bool healthAt25 = false;
 	protected bool healthAt50 = false;
 	protected bool healthAt75 = false;
-	protected float playerMoveSpeed = player.GetComponent<UnitPlayer>().moveSpeed;
 	protected Transform spawnedEnemy;
 	public static GeneralRoom bossRoom;
 	
@@ -67,7 +66,7 @@ public class BossUnit : UnitEnemy
 	protected override void killUnit()
 	{
 		gameObject.SetActive(false);
-		playerMoveSpeed = 10;
+		player.GetComponent<UnitPlayer>().resetSpeed();
 		
 		if(numEnemies == 0)	
 			Debug.Log("You Win!");
