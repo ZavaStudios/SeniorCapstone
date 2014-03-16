@@ -1,8 +1,8 @@
 using System;
 
-public class ItemKey : ItemBase
+public class ItemKey : ItemWeapon
 {
-	public ItemKey (string name) : base(name)
+	public ItemKey (string name) : base(name, tWeaponType.WeaponKey)
 	{
 	}
 }

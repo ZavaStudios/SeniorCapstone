@@ -99,7 +99,7 @@ public class Hud : MonoBehaviour
 
 
         //Initialize component data structures
-		int intNumWeapons = Enum.GetNames(typeof(ItemWeapon.tWeaponType)).Length;
+		int intNumWeapons = Enum.GetNames(typeof(ItemWeapon.tWeaponType)).Length - 1;
 		int intNumParts = Enum.GetNames (typeof(ItemComponent.tComponentPart)).Length;
 
 		arrWepPartNames = new string[intNumWeapons * intNumParts];
@@ -114,6 +114,9 @@ public class Hud : MonoBehaviour
 		int intWepCategoryindex = 0;
 		foreach(ItemWeapon.tWeaponType wepType in (ItemWeapon.tWeaponType[]) Enum.GetValues(typeof(ItemWeapon.tWeaponType)))
 		{
+			if(wepType.Equals(ItemWeapon.tWeaponType.WeaponKey))
+			   continue;
+
 			//Weapon categories are a combination of the Weapon type and the weapon part e.g. sword blade and staff arrow
 			foreach(ItemComponent.tComponentPart partType in (ItemComponent.tComponentPart[]) Enum.GetValues(typeof(ItemComponent.tComponentPart)))
 			{
