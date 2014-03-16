@@ -497,7 +497,9 @@ public class Hud : MonoBehaviour
         //TODO Allow scrolling down when weapons don't all fit on the screen
 
         ArrayList arrListWeapons = inventory.getInventoryWeapons();
+		ArrayList arrArmors = inventory.getInventoryArmors();
         ArrayList arrComponents = inventory.getInventoryComponents();
+		ArrayList arrItems = inventory.getInventoryItems();
 		ArrayList arrOres = inventory.getInventoryOres();
 
         //TODO only keep weapons
@@ -507,11 +509,18 @@ public class Hud : MonoBehaviour
         {
             allItems.Add(weapon);
         }
-
-        foreach(ItemBase component in arrComponents)
+		foreach(ItemEquipment armor in arrArmors)
+		{
+			allItems.Add(armor);
+		}
+        foreach(ItemComponent component in arrComponents)
         {
             allItems.Add(component);
         }
+		foreach(ItemBase item in arrItems)
+		{
+			allItems.Add(item);
+		}
 		foreach(ItemOre ore in arrOres)
 		{
 			allItems.Add(ore);
