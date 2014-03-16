@@ -50,7 +50,8 @@ public class Main : MonoBehaviour
 		RogueRoom.skeletonBoss = skeletonBoss;
 		RogueRoom.spiderBoss = spiderBoss;
 		ZombieWeapon.Player = player;
-		BossUnit.player = player.GetComponent<UnitPlayer>();
+		EnemyStaff.player = player;
+		UnitEnemy.player = player;
 
         foreach (RogueRoom room in dungeon.EnumerateRooms())
 		{

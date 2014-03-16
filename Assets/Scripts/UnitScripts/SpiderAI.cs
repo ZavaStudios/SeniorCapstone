@@ -25,7 +25,7 @@ public class SpiderAI : UnitEnemy
 	protected override void enemyMovement()
 	{
 		//move
-		PlayerPosition = Player.position;
+		PlayerPosition = player.position;
 		dir = PlayerPosition - transform.position;
 		dir.y = transform.position.y;
 		dir.Normalize();

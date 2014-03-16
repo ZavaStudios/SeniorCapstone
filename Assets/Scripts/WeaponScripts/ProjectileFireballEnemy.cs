@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ProjectileFireball : MonoBehaviour 
+public class ProjectileFireballEnemy : MonoBehaviour 
 {
 	
 	public float damage = 0;
@@ -26,11 +26,12 @@ public class ProjectileFireball : MonoBehaviour
 		//print("collision");
 		if(hit == false)
 		{
-			Unit otherObject = other.gameObject.GetComponent<UnitEnemy>();
+			Debug.Log (this.transform.parent);
+			Unit otherObject = other.gameObject.GetComponent<UnitPlayer>();
 			
 			if(otherObject != null)
 			{					
-		        if(otherObject is UnitEnemy)
+		        if(otherObject is UnitPlayer)
 		        {
 					
 	                otherObject.doDamage(damage);

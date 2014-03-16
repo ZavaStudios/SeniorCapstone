@@ -94,7 +94,7 @@ namespace MazeGeneration
 			}
 		}
 
-        public void SpawnEnemy(EnemyGenerator.EnemyType enemy)
+        public Transform SpawnEnemy(EnemyGenerator.EnemyType enemy)
         {
             Vector3 center = GetCenter(_maxWidth, _maxDepth);
             float posX = center.x +
@@ -104,7 +104,7 @@ namespace MazeGeneration
                          ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
                          ((float)(Height * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
             Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
-            InstantiateEnemy(enemyPos, enemy, _scalar);
+            return InstantiateEnemy(enemyPos, enemy, _scalar);
         }
 
 		public override void InitializeCubes ()
@@ -125,7 +125,7 @@ namespace MazeGeneration
 		/// <param name="position">Floor position to place enemy at.</param>
 		/// <param name="e">Type of enemy to spawn</param>
 	    /// <param name="scalar">Value to scale 1 block size to.</param>
-		private void InstantiateEnemy(Vector3 position, EnemyGenerator.EnemyType e, float scalar)
+		private Transform InstantiateEnemy(Vector3 position, EnemyGenerator.EnemyType e, float scalar)
 		{
 			Transform enemy = null;
 			Vector3 enemy_pos = Vector3.zero;
@@ -163,6 +163,8 @@ namespace MazeGeneration
 			}
 
 			MonoBehaviour.Instantiate(enemy, enemy_pos * scalar, Quaternion.identity);
+			
+			return enemy;
 		}
 	}
 }

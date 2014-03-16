@@ -8,9 +8,9 @@ public class SpiderWeapon : ZombieWeapon
 	new void Start () 
 	{
 		base.Start();
-		attackRange = 1;
+		attackRange = 2;
 		weaponDamage = 1;
-		attackDelay = 0.5f;
+		attackDelay = 1f;
 		
 	}
 	
