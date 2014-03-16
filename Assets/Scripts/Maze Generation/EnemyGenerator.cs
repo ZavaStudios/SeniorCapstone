@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MazeGeneration;
 
 public class EnemyGenerator
 {
-	static Random rand = new Random();
-
 	public enum EnemyType
 	{
 		spider, skeleton, zombie,
@@ -23,7 +22,7 @@ public class EnemyGenerator
 		if(mod != 0)
 		{
 			//Round up if we get a value greater than our threshold.
-			if(mod > rand.Next(5))
+            if (mod > Maze.rnd.Next(5))
 			{
 				points += (5 - mod);
 			}
@@ -38,7 +37,7 @@ public class EnemyGenerator
 		//Fill in the remaining points with random enemies.
 		for(int i = 0; i < points; i += 5)
 		{
-			switch(rand.Next(3))
+            switch (Maze.rnd.Next(3))
 			{
 				case 0: 				
 					enemyList.Add(EnemyType.skeleton);

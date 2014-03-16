@@ -34,8 +34,9 @@ public class Main : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-		WIDTH = LevelHolder.Level + 2;
-		HEIGHT = LevelHolder.Level + 2;
+		//WIDTH = LevelHolder.Level + 2;
+		//HEIGHT = LevelHolder.Level + 2;
+        Debug.Log("Level: " + LevelHolder.Level);
         RogueDungeon dungeon = new RogueDungeon(WIDTH, HEIGHT);
 
 		// TODO: FIX!

@@ -7,6 +7,9 @@ namespace MazeGeneration
 {
     class Maze
     {
+        // Shared random object:
+        public static Random rnd = new Random();
+
         // Width and height of the map, stored as global values to be used
         // in helper functions easily. Admittedly not the best design, but
         // it's by far the easiest setup for getting this to work.
@@ -62,9 +65,6 @@ namespace MazeGeneration
                 }
             }
 
-            // Our random generator. :)
-            Random r = new Random();
-
             // Start in room (0, 0). TODO: consider changing this to a random room
             int startX = (2 * 0) + 1;   // Yes, I know these computations are not necessary.
             int startY = (2 * 0) + 1;   // They'll get compiled out. Just making it clear we're starting
@@ -80,7 +80,7 @@ namespace MazeGeneration
             while (wallList.Count > 0)
             {
                 // Pop a random wall off our wall tracker:
-                Wall wall = wallList.ElementAt(r.Next(wallList.Count));
+                Wall wall = wallList.ElementAt(rnd.Next(wallList.Count));
                 wallList.Remove(wall);
 
                 // Get coordinates for the adjacent room:

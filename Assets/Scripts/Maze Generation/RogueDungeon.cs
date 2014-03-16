@@ -76,7 +76,6 @@ namespace MazeGeneration
 			int newWidth = boolMap.GetLength(0) - 2;
 			int newHeight = boolMap.GetLength(1) - 2;
             Map = new RogueRoom[newWidth, newHeight];
-            System.Random r = new System.Random();
 
 			// Assign initial placements:
 			int bossX = 0, bossY = 0;
@@ -167,7 +166,7 @@ namespace MazeGeneration
 
                     // If we decide to place a room here, adjust the width
                     // and height accordingly
-                    else if (r.NextDouble() < ENEMY_ROOM_DENSITY)
+                    else if (Maze.rnd.NextDouble() < ENEMY_ROOM_DENSITY)
                     {
 						roomWidth = ROOM_WIDTH;//r.Next(MIN_ENEMY_ROOM_WIDTH, MAX_ENEMY_ROOM_WIDTH-1);
 						roomDepth = ROOM_DEPTH;//r.Next(MIN_ENEMY_ROOM_DEPTH, MAX_ENEMY_ROOM_DEPTH-1);

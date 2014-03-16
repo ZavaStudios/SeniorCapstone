@@ -72,7 +72,6 @@ namespace MazeGeneration
 			// ENEMIES / ETC.
 			if (Type == RoomType.enemy)
 			{
-				System.Random enemyPosGen = new System.Random();
 				//Generate a random enemy in the maze based on what the generate enemy function returns.
 				//Need to store the enemies into a list to be used if we need to reload the room. 
 				foreach(EnemyGenerator.EnemyType enemy in Enemies)
@@ -80,10 +79,10 @@ namespace MazeGeneration
 					// TODO: check if collides with ore pillar, if those get added
 
 					float posX = center.x +
-								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+                                 ((float)((Maze.rnd.NextDouble() - 0.5) * 2.0) *
 						 		 ((float)(Width * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
 					float posY = center.z +
-								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+                                 ((float)((Maze.rnd.NextDouble() - 0.5) * 2.0) *
 						 		 ((float)(Height * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
 					Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
 					InstantiateEnemy(enemyPos, enemy, scalar);

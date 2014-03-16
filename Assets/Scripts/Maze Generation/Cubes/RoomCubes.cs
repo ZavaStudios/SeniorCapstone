@@ -44,7 +44,6 @@ namespace MazeGeneration
 		protected const float SILVER_FREQ   = 0.05f;
 		protected const float GOLD_FREQ     = 0.005f;
 		protected const float PLATINUM_FREQ = 0.005f;
-		private System.Random r = new System.Random();
 
 		/// <summary>
 		/// Retruns a type of cube for placement in the maze.
@@ -55,15 +54,15 @@ namespace MazeGeneration
 		/// <returns>Cube type to be placed in the maze.</returns>
         protected ItemBase.tOreType GetCubeType()
 		{
-			if (r.NextDouble() <= STONE_FREQ)
+			if (Maze.rnd.NextDouble() <= STONE_FREQ)
                 return ItemBase.tOreType.Stone;
-			if (r.NextDouble() - STONE_FREQ <= IRON_FREQ)
+            if (Maze.rnd.NextDouble() - STONE_FREQ <= IRON_FREQ)
                 return ItemBase.tOreType.Bone;
-			if (r.NextDouble() - STONE_FREQ - IRON_FREQ <= SILVER_FREQ)
+            if (Maze.rnd.NextDouble() - STONE_FREQ - IRON_FREQ <= SILVER_FREQ)
                 return ItemBase.tOreType.Iron;
-			if (r.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ <= GOLD_FREQ)
+            if (Maze.rnd.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ <= GOLD_FREQ)
                 return ItemBase.tOreType.Steel;
-			if (r.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ - GOLD_FREQ <= PLATINUM_FREQ)
+            if (Maze.rnd.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ - GOLD_FREQ <= PLATINUM_FREQ)
                 return ItemBase.tOreType.Mithril;
 			
 	        // TODO: more

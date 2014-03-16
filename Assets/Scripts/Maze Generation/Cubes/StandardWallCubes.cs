@@ -39,18 +39,18 @@ namespace MazeGeneration
 		
 		private void InitializeCubes()
 		{
-			// Randomizer:
-			System.Random r = new System.Random();
-			
-			int[,] noise = PerlinNoise.GenerateNoise128();
+            int[,] noise = PerlinNoise.GenerateNoise128();
 			for (int x = 0; x < Cubes.GetLength(0); x++)
 			{
 				for (int y = 0; y < Cubes.GetLength(1); y++)
 				{
 					// TODO: better indexing. We could average nearby values or something.
-					int xIndex = (int)(((float)x / (float)Cubes.GetLength(0)) * 127.0f);
-					int yIndex = (int)(((float)y / (float)Cubes.GetLength(1)) * 127.0f);
-					float tmpDepth =(float)noise[xIndex,yIndex] * 0.01f;
+					int xIndex = (int)(((float)x / (float)Cubes.GetLength(0)) *
+                                       ((float)(noise.GetLength(0)-1)));
+					int yIndex = (int)(((float)y / (float)Cubes.GetLength(1)) * 
+                                       ((float)(noise.GetLength(1)-1)));
+
+                    float tmpDepth =(float)noise[xIndex,yIndex] * 0.01f;
 					int depth = MinDepth + (int)((float)(MaxDepth - MinDepth) * tmpDepth);
 					// HACK: for now, perlin noise is still busted. We don't want to get more than
 					// our corner sizes (or bad things happen), so clamp the value:
