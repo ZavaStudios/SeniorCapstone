@@ -2,8 +2,24 @@
 using System;
 using System.Collections;
 
+
 public class Hud : MonoBehaviour
 {
+	//A private struct to hold represent an inventory slot
+	private class ItemSlot
+	{
+		public ItemBase item;
+		public bool unlocked;
+		public int quantity;
+
+		public ItemSlot()
+		{
+			item = null;
+			unlocked = false;
+			quantity = 0;
+		}
+	}
+
 	//Declare public constants
 	public const KeyCode keyCodeInventory = KeyCode.I;
 	public const KeyCode keyCodeCrafting = KeyCode.C;
@@ -37,14 +53,14 @@ public class Hud : MonoBehaviour
 	Unit player;
 	UnitPlayer unitPlayer;
 
-	//Keep a reference of the inventory
+	//Keep a reference to the inventory
 	Inventory inventory = Inventory.getInstance ();
 
 	//TODO Clean up all this code. Maybe separate into different classes.
 	//Enumerate All components first and keep all the arrays around to update later.
-	ItemComponent[,] arrMakeableComps;
+	ItemSlot[,] arrMakeableComps;
 	string[] arrWepPartNames;
-	ItemComponent[][,] arrComponentGrids; //An array that holds 2d arrays of itemcomponents. These 2d arrays are the tiered components that the player sees
+	ItemSlot[][,] arrComponentGrids; //An array that holds 2d arrays of itemcomponents. These 2d arrays are the tiered components that the player sees
 
 	//Grid for component options
 	ItemComponent[] arrAllComponents;
@@ -120,7 +136,7 @@ public class Hud : MonoBehaviour
 		arrAllComponents = new ItemComponent[intNumOres * intNumAtts];
 
 		//Find all the weapon categories and add them to an array
-		arrComponentGrids = new ItemComponent[arrWepPartNames.Length][,];
+		arrComponentGrids = new ItemSlot[arrWepPartNames.Length][,];
 		int intWepCategoryindex = 0;
 		foreach (ItemWeapon.tWeaponType wepType in (ItemWeapon.tWeaponType[]) Enum.GetValues(typeof(ItemWeapon.tWeaponType)))
 		{
@@ -133,7 +149,7 @@ public class Hud : MonoBehaviour
 				arrWepPartNames [intWepCategoryindex] = name; //An array to store the names for the weapon parts
 
 				//Get the craftable components based on which category we're in e.g. Lightened copper sword handle
-				arrMakeableComps = new ItemComponent[intNumAtts, intNumOres - 1]; //Account for NOT_ORE type
+				arrMakeableComps = new ItemSlot[intNumAtts, intNumOres - 1]; //Account for NOT_ORE type
 				int intAttIndex = 0;
 				foreach (ItemComponent.tAttributeType attType in (ItemComponent.tAttributeType[])Enum.GetValues(typeof(ItemComponent.tAttributeType)))
 				{
@@ -147,7 +163,13 @@ public class Hud : MonoBehaviour
 
 						string newCompCode = ItemComponent.generateComponentCode (attType, oreType, wepType, partType);
 						ItemComponent newComponent = ItemFactory.createComponent (newCompCode);
-						arrMakeableComps [intAttIndex, intOreIndex] = newComponent;
+
+						ItemSlot slot = new ItemSlot();
+						slot.item = newComponent;
+						slot.unlocked = false;
+						//Ignoring the quantity in the slot
+
+						arrMakeableComps [intAttIndex, intOreIndex] = slot;
 
 						intOreIndex++;
 					}
@@ -224,7 +246,7 @@ public class Hud : MonoBehaviour
 			}
 		case tMenuStates.CRAFTING:
 			{
-				handleComponentMovement ();
+				handleCraftingMovement ();
 				break;
 			}
 		case tMenuStates.ASSEMBLING:
@@ -250,7 +272,7 @@ public class Hud : MonoBehaviour
 
 		if (menuCode != tMenuStates.MENU_NONE)
 		{
-			showMenuStates ();
+			showMenuStates();
 		}
 
 		switch (menuCode)
@@ -439,7 +461,7 @@ public class Hud : MonoBehaviour
 		                                    intCompTypeGrid, arrWepPartNames, 1, style);
 
 		//List of components
-		ItemComponent[,] selectedComponents = arrComponentGrids [intCompTypeGrid];
+		ItemSlot[,] selectedComponents = arrComponentGrids [intCompTypeGrid];
 		int intNumItems = selectedComponents.Length;
 		int intNumAtts = selectedComponents.GetLength (0);
 		int intNumOres = selectedComponents.GetLength (1);
@@ -454,7 +476,7 @@ public class Hud : MonoBehaviour
 				//Do a little math to translate from (0,0) in the top left and indexes increasing right to
 				//	(0,0) in botton left and indexes increasing up. In other words, rotate the array ccw by 90.
 
-				arrSelctedComponentNames [getIndexFromCoordinate (i, j, intNumItems, intNumAtts)] = selectedComponents [i, j].ToString ();
+				arrSelctedComponentNames [getIndexFromCoordinate (i, j, intNumItems, intNumAtts)] = selectedComponents [i, j].item.ToString ();
 //				arrSelctedComponentNames[intNumItems - (j * intNumAtts) - (intNumAtts - i)] = selectedComponents[i,j].ToString();
 
 			}
@@ -617,7 +639,7 @@ public class Hud : MonoBehaviour
 		}
 	}
 
-	private void handleComponentMovement ()
+	private void handleCraftingMovement ()
 	{
 		//Take care of menu navigation from the buttons
 		if (Input.GetKeyUp (keyCodeInventoryUp))
@@ -655,7 +677,7 @@ public class Hud : MonoBehaviour
 			} else
 			{ //I'm in the component type menu
 				int intNewSelection = intCompTypeGrid + 1;
-				intCompTypeGrid = Math.Min (intNewSelection, arrWepPartNames.Length - 1);
+				intCompTypeGrid = intNewSelection % (arrWepPartNames.Length);
 			}
 		} else if (Input.GetKeyUp (keyCodeInventoryLeft))
 		{
@@ -664,6 +686,9 @@ public class Hud : MonoBehaviour
 			if (intCompSelGrid >= 0)
 			{
 				int intNewSelection = intCompSelGrid - 1;
+				if((intCompSelGrid + intCompSelCols) % intCompSelCols == 0)
+					intNewSelection = -1;
+
 				intCompSelGrid = intNewSelection;
 			} else
 			{ //I'm in the component type menu
@@ -679,7 +704,7 @@ public class Hud : MonoBehaviour
 //			string cmpNewCode = ItemComponent.generateComponentCode(ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Copper, ItemWeapon.tWeaponType.WeaponSword,
 //			                                                        ItemComponent.tComponentPart.Blade);
 			Vector2 vec2SelectedComponent = getComponentCoordinateFromIndex (intCompSelGrid);
-			ItemComponent cmpNew = arrComponentGrids [intCompTypeGrid] [(int)vec2SelectedComponent.x, (int)vec2SelectedComponent.y];
+			ItemComponent cmpNew = (ItemComponent)(arrComponentGrids [intCompTypeGrid] [(int)vec2SelectedComponent.x, (int)vec2SelectedComponent.y].item);
 
 			inventory.inventoryAddItem (cmpNew);
 		}
