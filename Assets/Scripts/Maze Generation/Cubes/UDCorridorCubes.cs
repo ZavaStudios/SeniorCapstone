@@ -32,11 +32,11 @@ namespace MazeGeneration
 
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{
-			if (c.Z < Width / 2)
+			if (c.X < Width / 2)
 			{
 				int tmp = c.Z;
 				c.Z = c.X;
-				c.X = c.Z;
+				c.X = tmp;
 				foreach (Cube uncovered in LeftWall.DestroyCube(c))
 					yield return new Cube(this, uncovered.Type,
 					                      uncovered.Z, uncovered.Y, uncovered.X);
@@ -45,7 +45,7 @@ namespace MazeGeneration
 			{
 				int tmp = c.Z;
 				c.Z = Width - 1 - c.X;
-				c.X = c.Z;
+				c.X = tmp;
 				foreach (Cube uncovered in RightWall.DestroyCube(c))
 					yield return new Cube(this, uncovered.Type,
 					                      Width - 1 - uncovered.Z, uncovered.Y, uncovered.X);

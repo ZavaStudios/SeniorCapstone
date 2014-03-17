@@ -18,7 +18,7 @@ namespace MazeGeneration
 	/// </summary>
 	public class OutsideCornerCubes : RoomCubes
 	{
-		private Cube.CubeType[,,] Cubes;
+        private ItemBase.tOreType[, ,] Cubes;
 		
 		public int Width
 		{
@@ -36,7 +36,7 @@ namespace MazeGeneration
 		public OutsideCornerCubes(int width, int depth, int[] left, int[] up)
 		{
 			int height = up.Length;
-			Cubes = new Cube.CubeType[width, depth, height];
+            Cubes = new ItemBase.tOreType[width, depth, height];
 			
 			InitializeCubes(left, up);
 		}
@@ -62,7 +62,7 @@ namespace MazeGeneration
 					for (int y = 0; y < quadY; y++)
 					{
 						// TODO
-						Cubes[x,y,z] = Cube.CubeType.Air;
+                        Cubes[x, y, z] = ItemBase.tOreType.NOT_ORE;
 					}
 				}
 				// Quadrant 3
@@ -71,7 +71,7 @@ namespace MazeGeneration
 					for (int y = quadY; y < Depth; y++)
 					{
 						// TODO
-						Cubes[x,y,z] = Cube.CubeType.Air;
+                        Cubes[x, y, z] = ItemBase.tOreType.NOT_ORE;
 						//Cubes[x,y,z] = Cube.CubeType.Gold;
 					}
 				}
@@ -81,7 +81,7 @@ namespace MazeGeneration
 					for (int y = quadY; y < Depth; y++)
 					{
 						// TODO smarter placement
-						Cubes[x,y,z] = Cube.CubeType.Air;
+                        Cubes[x, y, z] = ItemBase.tOreType.NOT_ORE;
 					}
 				}
 			}
@@ -97,7 +97,7 @@ namespace MazeGeneration
 
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{
-			Cubes[c.X, c.Y, c.Z] = Cube.CubeType.Air;
+            Cubes[c.X, c.Y, c.Z] = ItemBase.tOreType.NOT_ORE;
 			return new List<Cube>();	// Return nothing, since we always show everything
 		}
 	}

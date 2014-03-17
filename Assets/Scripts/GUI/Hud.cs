@@ -99,7 +99,7 @@ public class Hud : MonoBehaviour
 
 
         //Initialize component data structures
-		int intNumWeapons = Enum.GetNames(typeof(ItemWeapon.tWeaponType)).Length;
+		int intNumWeapons = Enum.GetNames(typeof(ItemWeapon.tWeaponType)).Length - 1;
 		int intNumParts = Enum.GetNames (typeof(ItemComponent.tComponentPart)).Length;
 
 		arrWepPartNames = new string[intNumWeapons * intNumParts];
@@ -114,6 +114,9 @@ public class Hud : MonoBehaviour
 		int intWepCategoryindex = 0;
 		foreach(ItemWeapon.tWeaponType wepType in (ItemWeapon.tWeaponType[]) Enum.GetValues(typeof(ItemWeapon.tWeaponType)))
 		{
+			if(wepType.Equals(ItemWeapon.tWeaponType.WeaponKey))
+			   continue;
+
 			//Weapon categories are a combination of the Weapon type and the weapon part e.g. sword blade and staff arrow
 			foreach(ItemComponent.tComponentPart partType in (ItemComponent.tComponentPart[]) Enum.GetValues(typeof(ItemComponent.tComponentPart)))
 			{
@@ -497,7 +500,11 @@ public class Hud : MonoBehaviour
         //TODO Allow scrolling down when weapons don't all fit on the screen
 
         ArrayList arrListWeapons = inventory.getInventoryWeapons();
+		ArrayList arrArmors = inventory.getInventoryArmors();
         ArrayList arrComponents = inventory.getInventoryComponents();
+		ArrayList arrItems = inventory.getInventoryItems();
+		ArrayList arrOres = inventory.getInventoryOres();
+
         //TODO only keep weapons
         ArrayList allItems = new ArrayList();
 
@@ -505,11 +512,22 @@ public class Hud : MonoBehaviour
         {
             allItems.Add(weapon);
         }
-
-        foreach(ItemBase component in arrComponents)
+		foreach(ItemEquipment armor in arrArmors)
+		{
+			allItems.Add(armor);
+		}
+        foreach(ItemComponent component in arrComponents)
         {
             allItems.Add(component);
         }
+		foreach(ItemBase item in arrItems)
+		{
+			allItems.Add(item);
+		}
+		foreach(ItemOre ore in arrOres)
+		{
+			allItems.Add(ore);
+		}
 
         string[] arrStringWeapons = new string[allItems.Count];
 

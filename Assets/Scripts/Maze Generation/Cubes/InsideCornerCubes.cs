@@ -18,7 +18,7 @@ namespace MazeGeneration
 	/// </summary>
 	public class InsideCornerCubes : RoomCubes
 	{
-		private Cube.CubeType[,,] Cubes;
+        private ItemBase.tOreType[, ,] Cubes;
 		
 		public int Width
 		{
@@ -36,7 +36,7 @@ namespace MazeGeneration
 		public InsideCornerCubes(int width, int depth, int[] right, int[] down)
 		{
 			int height = right.Length;
-			Cubes = new Cube.CubeType[width, depth, height];
+            Cubes = new ItemBase.tOreType[width, depth, height];
 			
 			InitializeCubes(right, down);
 		}
@@ -70,7 +70,7 @@ namespace MazeGeneration
 					for (int y = quadY; y < Depth; y++)
 					{
 						// TODO
-						Cubes[x,y,z] = Cube.CubeType.Air;
+                        Cubes[x, y, z] = ItemBase.tOreType.NOT_ORE;
 					}
 				}
 			}
@@ -86,7 +86,7 @@ namespace MazeGeneration
 
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{
-			Cubes[c.X, c.Y, c.Z] = Cube.CubeType.Air;
+            Cubes[c.X, c.Y, c.Z] = ItemBase.tOreType.NOT_ORE;
 			return new List<Cube>(); // Return empty list, since we always show everything
 			/*
 			if (c.X > 0)

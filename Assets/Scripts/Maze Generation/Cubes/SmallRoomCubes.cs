@@ -30,7 +30,7 @@ namespace MazeGeneration
 		private int Width { get; set; }
 		private int Depth { get; set; }
 		private int Height { get; set; }
-		private Cube.CubeType[,,] Cubes;
+		private ItemBase.tOreType[,,] Cubes;
 
 		public SmallRoomCubes(int width, int depth, int height, int doorCode,
 		                      int[] lftNbrUp, int[] lftNbrDwn, int[] rgtNbrUp, int[] rgtNbrDwn,
@@ -39,7 +39,7 @@ namespace MazeGeneration
 			Width = width;
 			Depth = depth;
 			Height = height;
-			Cubes = new Cube.CubeType[width, depth, height];
+            Cubes = new ItemBase.tOreType[width, depth, height];
 
 			InitializeCubes(lftNbrUp, lftNbrDwn, rgtNbrUp, rgtNbrDwn, upNbrLft, upNbrRgt, dwnNbrLft, dwnNbrRgt);
 		}
@@ -96,7 +96,7 @@ namespace MazeGeneration
 							int w1 = lftNbrUp[z];
 							int w2 = lftNbrDwn[z];
 							if (y >= w1 && y <= (Depth - w2 - 1))
-								Cubes[x,y,z] = Cube.CubeType.Air;
+                                Cubes[x, y, z] = ItemBase.tOreType.NOT_ORE;
 						}
 						// Quadrant 2:
 						if ((x >= y) && ((Width-x-1) >= y))
@@ -108,7 +108,7 @@ namespace MazeGeneration
 							int w1 = upNbrLft[z];
 							int w2 = upNbrRgt[z];
 							if (x >= w1 && x <= (Depth - w2 - 1))
-								Cubes[x,y,z] = Cube.CubeType.Air;
+                                Cubes[x, y, z] = ItemBase.tOreType.NOT_ORE;
 						}
 						// Quadrant 3:
 						if ((x >= y) && ((Width-x-1) <= y))
@@ -120,7 +120,7 @@ namespace MazeGeneration
 							int w1 = rgtNbrUp[z];
 							int w2 = rgtNbrDwn[z];
 							if (y >= w1 && y <= (Depth - w2 - 1))
-								Cubes[x,y,z] = Cube.CubeType.Air;
+                                Cubes[x, y, z] = ItemBase.tOreType.NOT_ORE;
 						}
 						// Quadrant 4:
 						if ((x <= y) && ((Width-x-1) <= y))
@@ -132,7 +132,7 @@ namespace MazeGeneration
 							int w1 = dwnNbrLft[z];
 							int w2 = dwnNbrRgt[z];
 							if (x >= w1 && x <= (Depth - w2 - 1))
-								Cubes[x,y,z] = Cube.CubeType.Air;
+                                Cubes[x, y, z] = ItemBase.tOreType.NOT_ORE;
 						}
 					}
 				}
@@ -149,7 +149,7 @@ namespace MazeGeneration
 
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{
-			Cubes[c.X, c.Z, c.Y] = Cube.CubeType.Air;
+            Cubes[c.X, c.Z, c.Y] = ItemBase.tOreType.NOT_ORE;
 			return new List<Cube>(); // Return empty list, since we currently show everything
 		}
 	}

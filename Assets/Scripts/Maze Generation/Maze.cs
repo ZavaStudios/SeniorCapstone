@@ -7,6 +7,9 @@ namespace MazeGeneration
 {
     class Maze
     {
+        // Shared random object:
+        public static Random rnd = new Random();
+
         // Width and height of the map, stored as global values to be used
         // in helper functions easily. Admittedly not the best design, but
         // it's by far the easiest setup for getting this to work.
@@ -62,9 +65,6 @@ namespace MazeGeneration
                 }
             }
 
-            // Our random generator. :)
-            Random r = new Random();
-
             // Start in room (0, 0). TODO: consider changing this to a random room
             int startX = (2 * 0) + 1;   // Yes, I know these computations are not necessary.
             int startY = (2 * 0) + 1;   // They'll get compiled out. Just making it clear we're starting
@@ -80,7 +80,7 @@ namespace MazeGeneration
             while (wallList.Count > 0)
             {
                 // Pop a random wall off our wall tracker:
-                Wall wall = wallList.ElementAt(r.Next(wallList.Count));
+                Wall wall = wallList.ElementAt(rnd.Next(wallList.Count));
                 wallList.Remove(wall);
 
                 // Get coordinates for the adjacent room:
@@ -103,6 +103,56 @@ namespace MazeGeneration
             // When we have finished that loop, our maze is complete!
             return map;
         }
+
+		/// <summary>
+		/// Finds a room farthest away from the specified point in the grid. Assumes the following:
+		/// 	1) Outer rim of grid is false
+		/// 	2) Each grid position where x and y are odd is true (e.g. room)
+		/// 	3) Each "room" is connected (more specifically, total graph is a tree)
+		/// 	4) startX and startY are a room
+		/// </summary>
+		/// <param name="maze">Maze to search over</param>
+		/// <param name="startX">X position of the starting room</param>
+		/// <param name="startY">Y position of the starting room</param>
+		/// <param name="endX">X position of the return room</param>
+		/// <param name="endY">Y position of the return room</param>
+		/// <returns>Distance from startX startY to endX endY</returns>
+		public static int FindFarthest(bool[,] maze, int startX, int startY, out int endX, out int endY)
+		{
+			endX = startX; endY = startY;
+			int max = 0;
+
+			// Left
+			if (maze[startX-1,startY])
+			{
+				maze[startX-1,startY] = false;
+				max = Math.Max (max, 1 + FindFarthest(maze, startX-2, startY, out endX, out endY));
+				maze[startX-1,startY] = true;
+			}
+			// Right
+			if (maze[startX+1,startY])
+			{
+				maze[startX+1,startY] = false;
+				max = Math.Max (max, 1 + FindFarthest(maze, startX+2, startY, out endX, out endY));
+				maze[startX+1,startY] = true;
+			}
+			// Up
+			if (maze[startX,startY-1])
+			{
+				maze[startX,startY-1] = false;
+				max = Math.Max (max, 1 + FindFarthest(maze, startX, startY-2, out endX, out endY));
+				maze[startX,startY-1] = true;
+			}
+			// Down
+			if (maze[startX,startY+1])
+			{
+				maze[startX,startY+1] = false;
+				max = Math.Max (max, 1 + FindFarthest(maze, startX, startY+2, out endX, out endY));
+				maze[startX,startY+1] = true;
+			}
+
+			return max;
+		}
 
         /// <summary>
         /// Returns a list of adjascent walls given a room's coordinates in the map.

@@ -72,7 +72,6 @@ namespace MazeGeneration
 			// ENEMIES / ETC.
 			if (Type == RoomType.enemy)
 			{
-				System.Random enemyPosGen = new System.Random();
 				//Generate a random enemy in the maze based on what the generate enemy function returns.
 				//Need to store the enemies into a list to be used if we need to reload the room. 
 				foreach(EnemyGenerator.EnemyType enemy in Enemies)
@@ -80,10 +79,10 @@ namespace MazeGeneration
 					// TODO: check if collides with ore pillar, if those get added
 
 					float posX = center.x +
-								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+                                 ((float)((Maze.rnd.NextDouble() - 0.5) * 2.0) *
 						 		 ((float)(Width * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
 					float posY = center.z +
-								 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+                                 ((float)((Maze.rnd.NextDouble() - 0.5) * 2.0) *
 						 		 ((float)(Height * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
 					Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
 					InstantiateEnemy(enemyPos, enemy, scalar);
@@ -93,7 +92,48 @@ namespace MazeGeneration
 			{
 				// TODO: proper boss allocation
 				InstantiateEnemy(center, EnemyGenerator.EnemyType.zombieBoss, scalar);
+
+				switch (DoorCode)
+				{
+				case RogueRoom.LEFT_DOOR_MASK:
+					InstantiateDoor((center + new Vector3(-(float)Width / 2.0f, 0.0f, 0.0f)),
+					                Quaternion.AngleAxis(90.0f, Vector3.up),
+					                scalar);
+					break;
+				case RogueRoom.RIGHT_DOOR_MASK:
+					InstantiateDoor((center + new Vector3((float)Width / 2.0f, 0.0f, 0.0f)),
+					                Quaternion.AngleAxis(270.0f, Vector3.up),
+					                scalar);
+					break;
+				case RogueRoom.UP_DOOR_MASK:
+					InstantiateDoor((center + new Vector3(0.0f, 0.0f, -(float)Depth / 2.0f)),
+					                Quaternion.identity,
+					                scalar);
+					break;
+				case RogueRoom.DOWN_DOOR_MASK:
+				default:
+					InstantiateDoor((center + new Vector3(0.0f, 0.0f, (float)Depth / 2.0f)),
+					                Quaternion.AngleAxis(180.0f, Vector3.up),
+					                scalar);
+					break;
+				}
 			}
+			else if (Type == RoomType.keyRoom)
+			{
+				InstantiateKey (center + new Vector3(0.0f, Height / 2.0f, 0.0f), scalar);
+			}
+		}
+
+		private void InstantiateDoor(Vector3 position, Quaternion angle, float scalar)
+		{
+			Transform dt = (Transform)MonoBehaviour.Instantiate(door, position * scalar, angle);
+            dt.transform.parent = objHolder.transform;
+		}
+
+		private void InstantiateKey(Vector3 position, float scalar)
+		{
+			Transform kt = (Transform)MonoBehaviour.Instantiate(key, position * scalar, Quaternion.identity);
+            kt.transform.parent = objHolder.transform;
 		}
 
 		public override void InitializeCubes ()
@@ -151,7 +191,9 @@ namespace MazeGeneration
 				break;
 			}
 
-			MonoBehaviour.Instantiate(enemy, enemy_pos * scalar, Quaternion.identity);
+			Transform et = (Transform)
+                MonoBehaviour.Instantiate(enemy, enemy_pos * scalar, Quaternion.identity);
+            et.transform.parent = objHolder.transform;
 		}
 	}
 }

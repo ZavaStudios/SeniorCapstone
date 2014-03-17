@@ -10,18 +10,15 @@ namespace MazeGeneration
 	/// </summary>
 	public struct Cube
 	{
-		public enum CubeType
-		{
-			Air, Stone, Iron, Silver, Gold, Platinum, // other ore types...
-		}
-
 		public CubeTracker Parent { get; set; }
-		public CubeType Type { get; set; }
+        public ItemBase.tOreType Type { get; set; }
 		public int X { get; set; }
 		public int Y { get; set; }
 		public int Z { get; set; }
-		
-		public Cube(CubeTracker _parent, CubeType _type, int _x, int _y, int _z) : this()
+
+        public Cube(CubeTracker _parent,
+                    ItemBase.tOreType _type,
+                    int _x, int _y, int _z) : this()
 		{
 			Parent = _parent;
 			Type = _type;
@@ -47,7 +44,6 @@ namespace MazeGeneration
 		protected const float SILVER_FREQ   = 0.05f;
 		protected const float GOLD_FREQ     = 0.005f;
 		protected const float PLATINUM_FREQ = 0.005f;
-		private System.Random r = new System.Random();
 
 		/// <summary>
 		/// Retruns a type of cube for placement in the maze.
@@ -56,21 +52,23 @@ namespace MazeGeneration
 		/// it just returns rarer materials at a much lower frequency.
 		/// </summary>
 		/// <returns>Cube type to be placed in the maze.</returns>
-		protected Cube.CubeType GetCubeType()
+        protected ItemBase.tOreType GetCubeType()
 		{
-			if (r.NextDouble() <= STONE_FREQ)
-				return Cube.CubeType.Stone;
-			if (r.NextDouble() - STONE_FREQ <= IRON_FREQ)
-				return Cube.CubeType.Iron;
-			if (r.NextDouble() - STONE_FREQ - IRON_FREQ <= SILVER_FREQ)
-				return Cube.CubeType.Silver;
-			if (r.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ <= GOLD_FREQ)
-				return Cube.CubeType.Gold;
-			if (r.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ - GOLD_FREQ <= PLATINUM_FREQ)
-				return Cube.CubeType.Platinum;
-				
+			if (Maze.rnd.NextDouble() <= STONE_FREQ)
+                return ItemBase.tOreType.Stone;
+            if (Maze.rnd.NextDouble() - STONE_FREQ <= IRON_FREQ)
+                return ItemBase.tOreType.Bone;
+            if (Maze.rnd.NextDouble() - STONE_FREQ - IRON_FREQ <= SILVER_FREQ)
+                return ItemBase.tOreType.Iron;
+            if (Maze.rnd.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ <= GOLD_FREQ)
+                return ItemBase.tOreType.Steel;
+            if (Maze.rnd.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ - GOLD_FREQ <= PLATINUM_FREQ)
+                return ItemBase.tOreType.Mithril;
+			
+	        // TODO: more
+
 			// None succeeded: return stone
-			return Cube.CubeType.Stone;
+			return ItemBase.tOreType.Stone;
 		}
 	}
 

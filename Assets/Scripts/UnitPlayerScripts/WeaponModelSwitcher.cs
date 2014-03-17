@@ -9,6 +9,7 @@ public class WeaponModelSwitcher : MonoBehaviour
     public GameObject crappy_toolbox;
     public GameObject crappy_wrench;
     public GameObject crappy_bow;
+	public GameObject crappy_key;
     private GameObject Active;
     
     public void start()
@@ -19,17 +20,18 @@ public class WeaponModelSwitcher : MonoBehaviour
         crappy_toolbox.SetActive(false);
         crappy_wrench.SetActive(false);
         crappy_bow.SetActive(false);
+		crappy_key.SetActive(false);
     }
     
     public void SwitchWeapon(string newWeapon)
     {
-
         crappy_sword.SetActive(false);
         crappy_pickaxe.SetActive(false);
 		crappy_staff.SetActive(false);
         crappy_toolbox.SetActive(false);
         crappy_wrench.SetActive(false);
         crappy_bow.SetActive(false);
+		crappy_key.SetActive(false);
         
         if (newWeapon == ItemWeapon.tWeaponType.WeaponSword.ToString())
         {
@@ -61,6 +63,12 @@ public class WeaponModelSwitcher : MonoBehaviour
             crappy_bow.SetActive(true);
             Active = crappy_bow;
         }
+
+		else if (newWeapon == ItemWeapon.tWeaponType.WeaponKey.ToString())
+		{
+			crappy_key.SetActive(true);
+			Active = crappy_key;
+		}
             
         else
         {

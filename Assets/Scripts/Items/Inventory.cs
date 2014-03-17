@@ -121,9 +121,24 @@ public class Inventory
 	{
 		return weapons;
 	}
+	public ArrayList getInventoryArmors()
+	{
+		return armors;
+	}
 
     public ArrayList getInventoryComponents()
     {
         return components;
     }
+
+	public ArrayList getInventoryItems()
+	{
+		return items;
+	}
+
+	public ArrayList getInventoryOres()
+	{
+		return ores;
+	}
+
 }

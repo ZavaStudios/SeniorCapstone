@@ -90,7 +90,7 @@ public class UnitPlayer : Unit {
 			}
 		}
 		
-		const int numWeapons = 5;
+		const int numWeapons = 6;
 		if(InputContextManager.isSWITCH_WEAPON())
 		{
 			if (wep > (numWeapons-1))
@@ -122,6 +122,10 @@ public class UnitPlayer : Unit {
                     equipWeapon ("WeaponBow");
                     wep++;
                     break;
+				case 5:
+					equipWeapon ("WeaponKey");
+					wep++;
+					break;
 			}
 		}
 		
@@ -133,7 +137,6 @@ public class UnitPlayer : Unit {
 		{
 			setMaxSpeed (walkSpeedNormal);
 		}
-
 	}
 	
 	
