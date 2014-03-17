@@ -31,7 +31,7 @@ public class WeaponSword : WeaponBase
         s.specialDamage = Character.AttackDamage + 100; //special gets moar
 	}
 
-    public override void attackSpecial ()
+    protected override void specialAttackRoutine ()
     {
         s = gameObject.GetComponentInChildren<WeaponSwordCollisionScript>();
         s.damage = 10;//Character.AttackDamage;

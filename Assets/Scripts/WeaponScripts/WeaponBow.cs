@@ -13,6 +13,7 @@ public class WeaponBow : WeaponBase {
         base.Start();
         capCollider = Character.GetComponent<CharacterController>();
         specialRange = 10;
+        specialDelay = 1.0f;
 	}
 	
 	// Update is called once per frame
@@ -32,7 +33,7 @@ public class WeaponBow : WeaponBase {
 	}
 
 
-    public override void attackSpecial ()
+    protected override void specialAttackRoutine ()
     {
         //print ("ZOOM");
 

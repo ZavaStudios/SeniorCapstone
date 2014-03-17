@@ -48,7 +48,7 @@ public class ProjectileFireball : MonoBehaviour {
 	
 	void explode()
 	{
-		GameObject sparks = (GameObject)Instantiate(Resources.Load("FireballSparks"), transform.position, transform.rotation);
+		GameObject sparks = (GameObject)Instantiate(Resources.Load("FireballSparks"), transform.position-transform.forward*0.75f, transform.rotation);
 		Destroy (gameObject);
 		Destroy (sparks,0.5f);
 		

@@ -8,9 +8,15 @@ public class Unit : MonoBehaviour
 {
     public Inventory inventory;
 
-	public bool vulnerable = true;
+    public bool vulnerable = true;
     protected float attackDamage;
     protected float attackDelay;
+
+    protected float primaryAttackDamage;
+    protected float primaryAttackDelay;
+    protected float secondaryAttackDamage;
+    protected float secondaryAttackDelay;
+
     protected float armor;
 	protected float health = 100.0f;
     protected float maxHealth = 100.0f;
@@ -37,15 +43,15 @@ public class Unit : MonoBehaviour
 
     public float AttackDamage
     {
-        get { return attackDamage; }
-        set { attackDamage = value; }
+        get { return primaryAttackDamage; }
+        set { primaryAttackDamage = value; }
     }
 
 
     public float AttackDelay
     {
-        get { return attackDelay; }
-        set { attackDelay = value; }
+        get { return primaryAttackDelay; }
+        set { primaryAttackDelay = value; }
     }
 
     public float Armor
@@ -84,8 +90,7 @@ public class Unit : MonoBehaviour
         //Debug.Log("Equipping :" + newWeapon);
 
         GameObject.Destroy(weapon);
-        weapon = (WeaponBase) gameObject.AddComponent(newWeapon);;
-        
+        weapon = (WeaponBase) gameObject.AddComponent(newWeapon);
         //Debug.Log("Current Equipped: " + weapon.strWeaponType);
        
     }   

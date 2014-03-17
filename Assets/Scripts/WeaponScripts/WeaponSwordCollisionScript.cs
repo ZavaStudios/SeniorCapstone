@@ -8,12 +8,16 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
     public float damage = 0.0f;
     public float specialDamage = 0.0f;
     private BoxCollider collider;
+    private TrailRenderer trail;
 
 	// Use this for initialization
 	void Start () 
     {
         collider = gameObject.GetComponent<BoxCollider>();
+        trail = gameObject.GetComponentInChildren<TrailRenderer>();
+               
         collider.isTrigger = true;
+        trail.enabled = false;
 	}
 
 	// Update is called once per frame
@@ -23,7 +27,6 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-
         Unit otherObject = other.gameObject.GetComponent<Unit>();
         float damageToDo;
         if (animation["SwordSwing"].time > 0)
@@ -49,11 +52,13 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
     void collisionEnable()
     {
         collider.enabled = true;
+        trail.enabled= true;
     }
 
     void collisionDisable()
     {
         collider.enabled = false;
+        trail.enabled = false;
     }
 }
 

@@ -20,6 +20,7 @@ public class WeaponToolbox : WeaponBase
 		weaponDamage = 20.0f;
 		attackDelay = 2.0f;
         attackRange = 5;
+        currentTurret = GameObject.FindGameObjectWithTag("PlayerTurret"); 
 		base.Start();
 	}
 	
@@ -48,12 +49,9 @@ public class WeaponToolbox : WeaponBase
 	}
 
 
-    public override void attackSpecial ()
+    protected override void specialAttackRoutine ()
 	{
-        if (currentTurret)
-        {
-            Destroy(currentTurret);
-        }
+
         
         if(Physics.Raycast(Character.getEyePosition(), Character.getLookDirection(), out rayHit, attackRange))
         {
@@ -61,9 +59,19 @@ public class WeaponToolbox : WeaponBase
             //print("tag: " + rayHit.collider.gameObject.tag);
             if(rayHit.collider.gameObject.CompareTag("Floor"))
             {
+
+                if (currentTurret)
+                {
+                    Destroy(currentTurret);
+                }
+                
                 currentTurret = (GameObject)GameObject.Instantiate(Resources.Load("Turret"), rayHit.point,Character.transform.rotation);
+                return;
             }
         }
+
+        nextSpecialAttack = 0.0f;
+
 	}
 
 }

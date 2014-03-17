@@ -3,9 +3,6 @@ using System.Collections;
 
 public class UnitPlayer : Unit {
 	
-	//Not sure how time is measured, but 30 seems to be good. 
-//	private float gameOverDelay = 0f;
-
     WeaponModelSwitcher wepSwitcher;
 	int wep = 1;
 	
@@ -24,11 +21,9 @@ public class UnitPlayer : Unit {
 		//Add the default weapons
 		//TODO Instead of using the weapon types, use the names. Need some way to map between the names back to the types
         ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.");
+        
         inventory.inventoryAddItem((ItemWeapon)myFirstPickaxe);
-
-        //test of factory. Make a sword.
-        ItemOre myOre = new ItemOre(ItemBase.tOreType.Steel);
-
+        
 		string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Iron, ItemWeapon.tWeaponType.WeaponSword,
 		                                                       ItemComponent.tComponentPart.Blade);
 		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Iron, ItemWeapon.tWeaponType.WeaponSword,
@@ -48,7 +43,7 @@ public class UnitPlayer : Unit {
 		                                                             ItemComponent.tComponentPart.Blade);
 
 		base.Start();
-        attackDamage = 20.0f;
+        primaryAttackDamage = 20.0f;
         equipWeapon(ItemWeapon.tWeaponType.WeaponPickaxe.ToString());
 
 //		inventory.inventoryAddItem (ItemFactory.createComponent (staffHandleCode)); //Add a staff handle

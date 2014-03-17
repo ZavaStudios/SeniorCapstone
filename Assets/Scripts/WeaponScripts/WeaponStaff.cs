@@ -13,6 +13,7 @@ public class WeaponStaff : WeaponBase
 		attackRange = 10.0f;
 		weaponDamage = 20.0f;
 		attackDelay = 0.5f;
+        specialDelay = 3.0f;
 		base.Start();
 	}
 	
@@ -38,7 +39,7 @@ public class WeaponStaff : WeaponBase
 
 	}
 	
-	public override void attackSpecial ()
+	protected override void specialAttackRoutine ()
 	{
         if(Physics.Raycast(Character.getEyePosition(), Character.getLookDirection(), out rayHit, attackRange))
         {
@@ -47,7 +48,11 @@ public class WeaponStaff : WeaponBase
             if(rayHit.collider.gameObject.CompareTag("Floor"))
             {
                 GameObject.Instantiate(Resources.Load("SnowburstTimer"), rayHit.point,Character.transform.rotation);
+                return;
             }
         }
+
+        nextSpecialAttack = 0.0f;
+
 	}
 }
