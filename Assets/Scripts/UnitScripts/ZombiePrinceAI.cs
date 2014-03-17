@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class ZombiePrinceAI : BossUnit
-{
-	public static Transform zombie; 
-	
+{	
 	private float fearTimer;
 	private bool fearTimerSet;
 	
@@ -14,8 +13,8 @@ public class ZombiePrinceAI : BossUnit
 		equipWeapon("ZombieWeapon");
 		base.Start();
 
-		//Cap the number of enemies to be 3.
-		enemyCap = 5;
+		//Cap the number of enemies to be 5.
+		enemyCap = 1;
 	}
 	
 	// Update is called once per frame
@@ -25,61 +24,60 @@ public class ZombiePrinceAI : BossUnit
 		
 		if(health <= 75 && healthAt75 != true)
 		{
-			player.cantMove = true;
+			playercc.enabled = false;
 			
 			if(!fearTimerSet)
 			{
-				fearTimer = Time.time + 3;
+				fearTimer = Time.time + 1f;
+				fearTimerSet = true;
 			}
 			else if(fearTimer < Time.time)
 			{
 				healthAt75 = true;
 				fearTimerSet = false;
+				playercc.enabled = true;
 			}
 			
-			//Force the player to walk toward the boss.
-			player.GetComponent<CharacterController>().SimpleMove(transform.position);
 		}
 		else if(health <= 50 && healthAt50 != true)
 		{
-			player.cantMove = true;
+			playercc.enabled = false;
 			
 			if(!fearTimerSet)
 			{
-				fearTimer = Time.time + 3;
+				fearTimer = Time.time + 1f;
+				fearTimerSet = true;
 			}
 			else if(fearTimer < Time.time)
 			{
 				healthAt50 = true;
 				fearTimerSet = false;
+				playercc.enabled = true;				
 			}
 			
-			player.GetComponent<CharacterController>().SimpleMove(transform.position);
 		}
 		else if(health <= 25 && healthAt25 != true)
 		{
-			player.cantMove = true;
+			playercc.enabled = false;
 			
 			if(!fearTimerSet)
 			{
-				fearTimer = Time.time + 3;
+				fearTimer = Time.time + 1f;
+				fearTimerSet = true;
 			}
 			else if(fearTimer < Time.time)
 			{
 				healthAt25 = true;
 				fearTimerSet = false;
+				playercc.enabled = true;
 			}
 			
-			player.GetComponent<CharacterController>().SimpleMove(transform.position);
 		}
 	}
 
 	//Only spawns zombies from the ZombiePrince. 
-	protected override void spawnEnemy ()
+	protected override Transform spawnEnemy ()
 	{
-
-		MonoBehaviour.Instantiate(zombie,
-		                          this.transform.position + new Vector3(3.0f, zombie.collider.bounds.center.y, 0.0f),
-		                          Quaternion.identity);
+		return bossRoom.SpawnEnemy(EnemyGenerator.EnemyType.zombie);
 	}
 }

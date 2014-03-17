@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using MazeGeneration;
 
 public class BossUnit : UnitEnemy 
 {
-	public static UnitPlayer player;
 	protected bool healthAt25 = false;
 	protected bool healthAt50 = false;
 	protected bool healthAt75 = false;
+	protected Transform spawnedEnemy;
+	public static GeneralRoom bossRoom;
+	public static CharacterController playercc;
 	
 	//Every 5 seconds generate a new enemy.
-	protected float spawnTimer = 5.0f;
+	protected float spawnTimer = 10.0f;
 	protected float delay = 2.0f;
 
 	//Caps the number of enemies that can be spawned.
@@ -27,9 +30,6 @@ public class BossUnit : UnitEnemy
 
 		//This is a boss, so lets make it a little harder ;) 
 		Health = 100;
-		weapon.weaponDamage = 20;
-		weapon.attackDelay = 4;
-		weapon.attackRange = 5.0f;
 	}
 	
 	// Update is called once per frame
@@ -42,17 +42,35 @@ public class BossUnit : UnitEnemy
 		if (Time.time >= spawnTimer && numEnemies < enemyCap)
 		{
 			//Spawn an enemy every delay seconds.
-			spawnEnemy();
+			spawnedEnemy = spawnEnemy();
+			spawnedEnemy.GetComponent<UnitEnemy>().boss = this; 
 			spawnTimer = Time.time + delay;
 			numEnemies++;
 		}
 	}
 
 	//Spawns an enemy in the room. This function needs to be overriden by super classes. 
-	virtual protected void spawnEnemy()
+	virtual protected Transform spawnEnemy()
 	{
-
+		return null;
 	}
 
-
+	public void decreaseEnemyCount()
+	{
+		numEnemies--;
+		Debug.Log(numEnemies);
+		if(numEnemies == 0 && !gameObject.activeSelf)
+			Debug.Log("You Win!");
+		spawnTimer = Time.time + delay;
+	}
+	
+	protected override void killUnit()
+	{
+		gameObject.SetActive(false);
+		playercc.enabled = true;
+		
+		if(numEnemies == 0)	
+			Debug.Log("You Win!");
+		//base.killUnit();
+	}
 }

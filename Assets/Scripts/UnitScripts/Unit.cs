@@ -20,7 +20,7 @@ public class Unit : MonoBehaviour
     protected float armor;
 	protected float health = 100.0f;
     protected float maxHealth = 100.0f;
-	protected float moveSpeed = 10.0f;
+	public float moveSpeed = 10.0f;
 	public WeaponBase weapon;
 
     public float Health

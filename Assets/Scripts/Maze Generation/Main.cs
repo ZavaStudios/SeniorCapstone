@@ -63,7 +63,9 @@ public class Main : MonoBehaviour
         RogueRoom.key = key;
 
 		ZombieWeapon.Player = player;
-		BossUnit.player = player.GetComponent<UnitPlayer>();
+		EnemyStaff.player = player;
+		UnitEnemy.player = player;
+		BossUnit.playercc = player.GetComponent<CharacterController>();
 
         DoorScript.player = player;
 		KeyPickup.player = player;

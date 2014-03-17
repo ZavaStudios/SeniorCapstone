@@ -5,6 +5,7 @@ using System.Collections;
 public class EnemyStaff : WeaponBase
 {
 	public GameObject Fireball;
+	public static Transform player;
 	
 	float bulletSpeed =  1000.0f;
 	private Collider enemyCollider;
@@ -35,13 +36,13 @@ public class EnemyStaff : WeaponBase
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
 		 // Instantiate the projectile at the position and rotation of this transform
-    	ProjectileFireball p;
+    	ProjectileFireballEnemy p;
     	GameObject clone = (GameObject)GameObject.Instantiate(Fireball, 
-			new Vector3(startPos.x, GameObject.FindGameObjectWithTag("Player").transform.position.y, startPos.z), Character.getLookRotation());
-		clone.gameObject.AddComponent("ProjectileFireball");
+			new Vector3(startPos.x, player.position.y, startPos.z), Character.getLookRotation());
+		clone.gameObject.AddComponent("ProjectileFireballEnemy");
 		Physics.IgnoreCollision(clone.collider, enemyCollider);
 		
-		p = clone.GetComponent<ProjectileFireball>();
+		p = clone.GetComponent<ProjectileFireballEnemy>();
 		p.damage = weaponDamage;
 		
 		

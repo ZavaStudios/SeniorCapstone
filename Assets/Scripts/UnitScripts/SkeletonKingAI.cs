@@ -1,20 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class SkeletonKingAI : BossUnit
 {
-	public static Transform skeleton;
 	private float invulTime;
 	private bool invulTimeSet = false;
 	
 	// Use this for initialization
 	protected override void Start () 
 	{
+		equipWeapon("EnemyStaff");
 		base.Start();
-		equipWeapon("SkeletonWeapon");
-
-		//Set the enemy cap to be 5.
-		enemyCap = 3;
+		
+		
+		//Set the enemy cap to be 3.
+		enemyCap = 1;
+		weapon.attackRange = 10;
 	}
 	
 	// Update is called once per frame
@@ -31,9 +33,12 @@ public class SkeletonKingAI : BossUnit
 			if(!invulTimeSet)
 			{
 				invulTime = Time.time + 3;
+				invulTimeSet = true;
 			}
 			else if(invulTime < Time.time)
 			{
+				vulnerable = true;
+				transform.renderer.enabled = true;
 				healthAt75 = true;
 				invulTimeSet = false;
 			}
@@ -47,9 +52,12 @@ public class SkeletonKingAI : BossUnit
 			if(!invulTimeSet)
 			{
 				invulTime = Time.time + 3;
+				invulTimeSet = true;
 			}
 			else if(invulTime < Time.time)
 			{
+				vulnerable = true;
+				transform.renderer.enabled = true;
 				healthAt50 = true;
 				invulTimeSet = false;
 			}
@@ -63,9 +71,12 @@ public class SkeletonKingAI : BossUnit
 			if(!invulTimeSet)
 			{
 				invulTime = Time.time + 3;
+				invulTimeSet = true;
 			}
 			else if(invulTime < Time.time)
 			{
+				vulnerable = true;
+				transform.renderer.enabled = true;
 				healthAt25 = true;
 				invulTimeSet = false;
 			}
@@ -74,10 +85,8 @@ public class SkeletonKingAI : BossUnit
 	}
 
 	//Specifically spawns Skeletons for this boss.
-	protected override void spawnEnemy()
+	protected override Transform spawnEnemy()
 	{
-		MonoBehaviour.Instantiate(skeleton,
-		                          this.transform.position + new Vector3(3.0f, skeleton.collider.bounds.center.y, 0.0f),
-		                          Quaternion.identity);
+		return bossRoom.SpawnEnemy(EnemyGenerator.EnemyType.skeleton);
 	}
 }
