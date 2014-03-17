@@ -78,7 +78,7 @@ public class Main : MonoBehaviour
         start.LoadRoom(RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_DEPTH,
                        RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR);
         start.LoadNeighbors(RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_DEPTH,
-                            RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR);
+                            RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR, null);
         player.transform.position = (start.GetCenter(RogueDungeon.MAX_ROOM_WIDTH,
                                                      RogueDungeon.MAX_ROOM_DEPTH) +
                                                      new Vector3(0.0f, 1.5f, 0.0f)) * CUBE_SCALAR;
@@ -101,7 +101,8 @@ public class Main : MonoBehaviour
             dungeon.Map[newGridX, newGridY].LoadNeighbors(RogueDungeon.MAX_ROOM_WIDTH,
                                                           RogueDungeon.MAX_ROOM_DEPTH,
                                                           RogueDungeon.CORRIDOR_WIDTH,
-                                                          CUBE_SCALAR);
+                                                          CUBE_SCALAR,
+                                                          dungeon.Map[gridX, gridY]);
 
             gridX = newGridX;
             gridY = newGridY;
