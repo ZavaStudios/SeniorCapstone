@@ -92,7 +92,8 @@ namespace MazeGeneration
 					SpawnEnemy(enemy);
 				}
 			}
-			else if (Type == RoomType.boss)
+			
+            if (Type == RoomType.boss)
 			{
 				switch (DoorCode)
 				{
@@ -119,7 +120,8 @@ namespace MazeGeneration
 					break;
 				}
 			}
-			else if (Type == RoomType.keyRoom)
+			
+            if (Type == RoomType.keyRoom)
 			{
 				InstantiateKey (center + new Vector3(0.0f, Height / 2.0f, 0.0f), scalar);
 			}
