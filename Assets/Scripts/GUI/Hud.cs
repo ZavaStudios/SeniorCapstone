@@ -481,6 +481,7 @@ public class Hud : MonoBehaviour
 				intCompTypeGrid = GUI.SelectionGrid (new Rect (vec2CompTypeStart.x, vec2CompTypeStart.y, vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
 		                                    intCompTypeGrid, arrWepPartNames, 1, style);
 
+				//TODO Index out of range?
 				//List of components
 				ItemSlot[,] selectedComponents = arrComponentGrids [intCompTypeGrid];
 				int intNumItems = selectedComponents.Length;
@@ -515,7 +516,8 @@ public class Hud : MonoBehaviour
 				Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
 				//Only show the description if we've unlocked the item
 				string description = "Unlock me by crafting this component in a lower tier.";
-				if (selectedComponents [(int)vec2Description.x, (int)vec2Description.y].unlocked)
+				if (vec2Description.x >= 0 && vec2Description.y >= 0 && 
+		    			selectedComponents [(int)vec2Description.x, (int)vec2Description.y].unlocked )
 						description = selectedComponents [(int)vec2Description.x, (int)vec2Description.y].item.getDescription ();
 
 				GUI.Label (new Rect (11 * intWidthPadding, vec2CompTypeStart.y,
