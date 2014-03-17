@@ -1,6 +1,5 @@
 Library/
 obj/
-ProjectSettings/
 *.suo
 *.sln
 *.userprefs
