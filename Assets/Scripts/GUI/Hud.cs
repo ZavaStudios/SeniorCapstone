@@ -192,9 +192,9 @@ public class Hud : MonoBehaviour
 				//Toggle the appropriate menu
 				if (InputContextManager.isMAIN_MENU_PUSHED ()) {
 						if (menuCode == tMenuStates.MENU_MAIN)
-							menuCode = tMenuStates.MENU_NONE;
+								menuCode = tMenuStates.MENU_NONE;
 						else
-							menuCode = tMenuStates.MENU_MAIN;
+								menuCode = tMenuStates.MENU_MAIN;
 
 
 				} else if (InputContextManager.isITEM_MENU_PUSHED ()) {
@@ -484,6 +484,7 @@ public class Hud : MonoBehaviour
 				//TODO Index out of range?
 				//List of components
 				ItemSlot[,] selectedComponents = arrComponentGrids [intCompTypeGrid];
+
 				int intNumItems = selectedComponents.Length;
 				int intNumAtts = selectedComponents.GetLength (0);
 				int intNumOres = selectedComponents.GetLength (1);
@@ -517,7 +518,7 @@ public class Hud : MonoBehaviour
 				//Only show the description if we've unlocked the item
 				string description = "Unlock me by crafting this component in a lower tier.";
 				if (vec2Description.x >= 0 && vec2Description.y >= 0 && 
-		    			selectedComponents [(int)vec2Description.x, (int)vec2Description.y].unlocked )
+						selectedComponents [(int)vec2Description.x, (int)vec2Description.y].unlocked)
 						description = selectedComponents [(int)vec2Description.x, (int)vec2Description.y].item.getDescription ();
 
 				GUI.Label (new Rect (11 * intWidthPadding, vec2CompTypeStart.y,
