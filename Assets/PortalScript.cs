@@ -23,7 +23,7 @@ public class PortalScript : MonoBehaviour
 	{
 		if(other.transform == player)
 		{
-			Debug.Log("Win!");
+			//Debug.Log("Win!");
 			LevelHolder.Level++;	// We're going to the next level guys! :D
 			Application.LoadLevel("mainGame");
 		}

@@ -25,15 +25,11 @@ public class WeaponKey : WeaponBase
     
     protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)	
     {
-		Debug.Log ("startPos: "+ startPos + " | faceDir: " + faceDir);
 		RaycastHit rayHit;
 		if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange))
 		{
-			Debug.Log ("hit");
 			if(rayHit.collider.gameObject.CompareTag("Door"))
 			{
-				Debug.Log (rayHit.collider.gameObject.name + " | "
-				           + rayHit.collider.gameObject.animation.GetClipCount());
 				rayHit.collider.gameObject.GetComponent<DoorScript>().Open();
 			}
 		}

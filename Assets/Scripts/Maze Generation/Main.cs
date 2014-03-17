@@ -4,7 +4,7 @@ using MazeGeneration;
 
 public class Main : MonoBehaviour
 {
-    private int WIDTH  = 2;
+    private int WIDTH  = 3;
     private int HEIGHT = 3;
 
 	private const float CUBE_SCALAR = 1.0f;
@@ -40,9 +40,8 @@ public class Main : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-		//WIDTH = LevelHolder.Level + 2;
-		//HEIGHT = LevelHolder.Level + 2;
-        Debug.Log("Level: " + LevelHolder.Level);
+		WIDTH = LevelHolder.Level + 2;
+		HEIGHT = LevelHolder.Level + 2;
         dungeon = new RogueDungeon(WIDTH, HEIGHT);
 
 		// TODO: FIX!
@@ -91,8 +90,6 @@ public class Main : MonoBehaviour
 
         if (newGridX != gridX || newGridY != gridY)
         {
-            Debug.Log("oldX: " + gridX + " | oldY: " + gridY);
-            Debug.Log("newX: " + newGridX + " | newY: " + newGridY);
             dungeon.Map[gridX, gridY].UnloadNeighbors(dungeon.Map[newGridX, newGridY]);
             dungeon.Map[newGridX, newGridY].LoadNeighbors(RogueDungeon.MAX_ROOM_WIDTH,
                                                           RogueDungeon.MAX_ROOM_DEPTH,

@@ -136,9 +136,8 @@ namespace MazeGeneration
 			startRoomY -= 1;
 			keyX -= 1;
 			keyY -= 1;
-			Debug.Log ("keyX: " + keyX + " | keyY: " + keyY);
-
-			// Instantiate between rooms:
+			
+            // Instantiate between rooms:
             for (int x = 0; x < newWidth; x += 2)
             {
                 for (int y = 0; y < newHeight; y += 2)
