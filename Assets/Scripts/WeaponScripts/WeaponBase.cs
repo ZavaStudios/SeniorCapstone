@@ -15,10 +15,11 @@ public class WeaponBase : MonoBehaviour
 	public float weaponDamage = 0f;
 	public float attackDelay = 2.0f; //default 2 second attack delay.
 	public float specialRange = 0f;
-    public float specialDelay = 2.0f;
+    public float specialDelay = 1.0f;
     public float specialDamage = 0f;
 
-	private float nextDamageEvent = 0.0f;
+	private float nextAttack = 0.0f;
+    protected float nextSpecialAttack = 0.0f;
     private bool attacking = false;
 
 	// Use this for initialization
@@ -36,9 +37,9 @@ public class WeaponBase : MonoBehaviour
 
     virtual public void attack()
     {
-        if (Time.time >= nextDamageEvent)
+        if (Time.time >= nextAttack)
 	    {
-	        nextDamageEvent = Time.time + attackDelay;
+	        nextAttack = Time.time + attackDelay;
        		attackRoutine(Character.getEyePosition(),Character.getLookDirection());
                 
 			if(Character is UnitPlayer)
@@ -55,6 +56,7 @@ public class WeaponBase : MonoBehaviour
         if (attacking)
         {
             releaseRoutine();
+            attacking = false;
         }
     }
 
@@ -67,7 +69,17 @@ public class WeaponBase : MonoBehaviour
 
 	}
 	
-	virtual public void attackSpecial ()
+	virtual protected void specialAttackRoutine ()
 	{
 	}
+
+    virtual public void attackSpecial ()
+    {
+        if (Time.time >= nextSpecialAttack)
+	    {
+	        nextSpecialAttack = Time.time + specialDelay;
+       		specialAttackRoutine();
+	    }
+
+    }
 }

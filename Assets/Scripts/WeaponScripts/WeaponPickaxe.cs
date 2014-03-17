@@ -31,7 +31,7 @@ public class WeaponPickaxe : WeaponBase
     
     protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)	
     {
-//        print("mining..");
-        //LayerMask mask = LayerMask.NameToLayer("world");// | LayerMask.NameToLayer("enemy");
+       //attack routine is handled by animation events on the pickaxe. This way we can remove ore when the pickaxe 'strikes.'
+       //see WeaponPickaxeBlockDestroyerScript
     }
 }
