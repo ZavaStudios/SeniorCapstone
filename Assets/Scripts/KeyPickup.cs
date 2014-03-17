@@ -27,7 +27,7 @@ public class KeyPickup : MonoBehaviour
 	{
         if (other.transform == player)
         {
-            Inventory.getInstance().inventoryAddItem(new ItemKey("this is a key bitch! :D"));
+            Inventory.getInstance().inventoryAddItem(new ItemKey("Key"));
             Destroy(gameObject);
         }
 	}

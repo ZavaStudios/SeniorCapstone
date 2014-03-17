@@ -63,7 +63,7 @@ public class EnemyGenerator
 	public static List<EnemyType> generateBoss()
 	{
 		List<EnemyType> enemyList = new List<EnemyType>();
-		switch(rand.Next(3))
+		switch(Maze.rnd.Next(3))
 			{
 				case 0: 				
 					enemyList.Add(EnemyType.skeletonBoss);
