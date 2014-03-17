@@ -22,6 +22,7 @@ public class Main : MonoBehaviour
 	public Transform ore2_cube;
 	public Transform ore3_cube;
 	public Transform ore4_cube;
+    public Transform endGamePortal;
 
 	public Transform player;
 	public Transform zombie;
@@ -66,6 +67,7 @@ public class Main : MonoBehaviour
 		EnemyStaff.player = player;
 		UnitEnemy.player = player;
 		BossUnit.playercc = player.GetComponent<CharacterController>();
+        BossUnit.endGamePortal = endGamePortal;
 
         DoorScript.player = player;
 		KeyPickup.player = player;
