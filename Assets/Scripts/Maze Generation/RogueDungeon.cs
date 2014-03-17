@@ -363,7 +363,14 @@ namespace MazeGeneration
         {
             return Map[startRoomX, startRoomY];
         }
-				
+
+        public void Update()
+        {
+            foreach (RogueRoom room in Map)
+                if (room != null)
+                    room.Update();
+        }
+        
 		public IEnumerable<RogueRoom> EnumerateRooms()
 		{
 			foreach (RogueRoom room in Map)

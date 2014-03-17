@@ -107,5 +107,7 @@ public class Main : MonoBehaviour
             gridX = newGridX;
             gridY = newGridY;
         }
+
+        dungeon.Update();
 	}
 }

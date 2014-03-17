@@ -59,6 +59,8 @@ namespace MazeGeneration
 
         // Track whether this room is currently loaded:
         protected bool isLoaded = false;
+        // Track whether this room is currently in the process of spawning cubes:
+        private bool isSpawningCubes = false;
 
 		/// <summary>
 		/// Returns center coordinates of the floor of this room.
@@ -244,13 +246,35 @@ namespace MazeGeneration
 					new Vector3(0.5f, 0.5f, 0.5f);
 
             // TODO: better
-			if (Cubes != null)
-				foreach (Cube cube in Cubes.EnumerateCubes(10))
-					InstantiateCube(cube, cubeStart, scalar);
+            if (Cubes != null)
+                isSpawningCubes = true;
 
 			_scalar = scalar;
 			_cubeStart = cubeStart;
 		}
+
+        public virtual void Update()
+        {
+            if (!isLoaded)
+                return;
+
+            if (isSpawningCubes)
+            {
+                int SPAWN_CNT = 50;
+                IEnumerable<Cube> cubes = Cubes.EnumerateCubes(SPAWN_CNT);
+                int cnt = 0;
+                foreach (Cube cube in cubes)
+                {
+                    InstantiateCube(cube, _cubeStart, _scalar);
+                    cnt++;
+                }
+                if (cnt < SPAWN_CNT)
+				{
+					Debug.Log ("Done!");
+                    isSpawningCubes = false;
+				}
+            }
+        }
 
         /// <summary>
         /// Informs this room's neighbors that they need to get themselves loaded into the
@@ -285,6 +309,8 @@ namespace MazeGeneration
                 return;
 
             isLoaded = false;
+            isSpawningCubes = false;
+            Cubes.ResetEnumeration();
             UnityEngine.Object.Destroy(objHolder);
             objHolder = null;
         }

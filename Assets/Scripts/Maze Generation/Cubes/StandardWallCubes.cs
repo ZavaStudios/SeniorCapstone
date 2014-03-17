@@ -112,56 +112,59 @@ namespace MazeGeneration
 				toRet[y] = GetDepthAt(0, y);
 			return toRet;
 		}
-		
+
         // Enumeration state:
-        private int enumEdgeY = 0;
-        private int enumEdgeZ = 0;
-        private int enumX = 1;
-        private int enumY = 0;
-        private int enumZ = 0;
+        private int itrEdge1 = 0;
+        private int itrEdge2 = 0;
+        private int itr = 0;
 
 		public override IEnumerable<Cube> EnumerateCubes(int count)
 		{
-			// Fencepost: draw left and right edges always
-			for (; enumEdgeY < Height; enumEdgeY++)
-			{
-				for (; enumEdgeZ < MaxDepth; enumEdgeZ++)
-				{
-					yield return new Cube(this, Cubes[0,enumEdgeY,enumEdgeZ], 0, enumEdgeY, enumEdgeZ);
-                    if (--count == 0)
-                        yield break;
+			// Fencepost: draw left edge always:
+			for (; itrEdge1 < Height * MaxDepth;)
+            {
+                int enumEdgeY = itrEdge1 / MaxDepth;
+                int enumEdgeZ = itrEdge1 % MaxDepth;
+				yield return new Cube(this, Cubes[0,enumEdgeY,enumEdgeZ], 0, enumEdgeY, enumEdgeZ);
+                itrEdge1++;
+                if (--count == 0)
+                    yield break;
+            }
 
-					yield return new Cube(this, Cubes[Width-1,enumEdgeY,enumEdgeZ], Width-1, enumEdgeY, enumEdgeZ);
-                    if (--count == 0)
-                        yield break;
-				}
+            // Other fencepost: draw right edge always:
+            for (; itrEdge2 < Height * MaxDepth;)
+            {
+                int enumEdgeY = itrEdge2 / MaxDepth;
+                int enumEdgeZ = itrEdge2 % MaxDepth;
+				yield return new Cube(this, Cubes[Width-1,enumEdgeY,enumEdgeZ], Width-1, enumEdgeY, enumEdgeZ);
+                itrEdge2++;
+                if (--count == 0)
+                    yield break;
 			}
 
 			// Return remainder only if they are uncovered somewhere:
-            for (; enumX < Width - 1; enumX++)
+            for (; itr < (Width - 2) * Height * MaxDepth;)
             {
-                for (; enumY < Height; enumY++)
+                int enumZ = itr % MaxDepth;
+                int enumY = (itr / MaxDepth) % Height;
+                int enumX = (itr / (MaxDepth * Height)) + 1;
+                if (IsUncovered(enumX, enumY, enumZ))
                 {
-                    for (; enumZ < MaxDepth; enumZ++)
-                    {
-                        if (IsUncovered(enumX, enumY, enumZ))
-                        {
-                            yield return new Cube(this, Cubes[enumX, enumY, enumZ], enumX, enumY, enumZ);
-                            if (--count == 0)
-                                yield break;
-                        }
-                    }
+					yield return new Cube(this, Cubes[enumX, enumY, enumZ], enumX, enumY, enumZ);
+					itr++;
+					if (--count == 0)
+                        yield break;
                 }
+				else
+					itr++;
             }
 		}
 
         public override void ResetEnumeration()
         {
-            enumEdgeY = 0;
-            enumEdgeZ = 0;
-            enumX = 1;
-            enumY = 0;
-            enumZ = 0;
+            itrEdge1 = 0;
+            itrEdge2 = 0;
+            itr = 0;
         }
 
 		private bool IsUncovered(int x, int y, int z)
