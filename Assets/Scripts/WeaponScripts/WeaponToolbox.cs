@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-using UnityEngine;
-using System.Collections;
-
 public class WeaponToolbox : WeaponBase
 {
 	//TODO Better way to override the base string?

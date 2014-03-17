@@ -33,12 +33,6 @@ public class UnitPlayer : Unit {
 
         inventory.inventoryAddItem(myWeapon);
 
-		//Add some components to test making items
-		string staffHandleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Copper, ItemWeapon.tWeaponType.WeaponStaff,
-		                                                             ItemComponent.tComponentPart.Handle);
-		string staffBladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Copper, ItemWeapon.tWeaponType.WeaponStaff,
-		                                                             ItemComponent.tComponentPart.Blade);
-
 		base.Start();
         primaryAttackDamage = 20.0f;
         equipWeapon(ItemWeapon.tWeaponType.WeaponPickaxe.ToString());

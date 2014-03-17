@@ -12,12 +12,18 @@ public static class ItemFactory
 	/// <returns>Returns null on failure, if blade and handle type mismatch.</returns>
 	public static ItemWeapon createWeapon(ItemComponent blade, ItemComponent handle)
 	{
+		//Since we only have 2 weapon parts now, just make sure they're not the same
+		bool haveBladeAndHandle = ItemComponent.getComponentPart(blade.strComponentCode) != ItemComponent.getComponentPart(handle.strComponentCode);
+
+		//If we don't have all the required parts, return null
+		if(!haveBladeAndHandle)
+			return null;
+
 		int bladeType = (int)ItemComponent.getComponentAttribute(blade.strComponentCode);
 		int handleType = (int)ItemComponent.getComponentAttribute(handle.strComponentCode);
 
 		int bladeWeaponType = (int)ItemComponent.getComponentWeaponType (blade.strComponentCode);
 		int handleWeaponType = (int)ItemComponent.getComponentWeaponType (handle.strComponentCode);
-		
 		
 		if (bladeType != handleType || bladeWeaponType != handleWeaponType) //Can't mix attributes(e.g. light and heavies) or weapon types(e.g. sword, bow)
 		{
@@ -35,7 +41,6 @@ public static class ItemFactory
 		string weaponString = ItemComponent.getComponentWeaponType(blade.strComponentCode).ToString();
 		
 		ItemWeapon.tWeaponType wepType = ItemComponent.getComponentWeaponType(blade.strComponentCode);
-
 		
 		string weaponName = handleOre + " handled " + bladeOre + " " + weaponString;
 		string weaponDescription = "A fine " + bladeOre + " " + weaponString + ", crafted with a " + handleOre + getComponentString(handle.strComponentCode) + ".";

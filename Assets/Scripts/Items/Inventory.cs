@@ -36,11 +36,17 @@ public class Inventory
 	/// <param name="weaponBase">Weapon base.</param>
     public void inventoryAddItem(ItemWeapon newItem)
     {
+		if(newItem == null)
+			return;
+
     	weapons.Add((ItemWeapon)newItem);
     }
 
     public void inventoryAddItem(ItemEquipment newItem)
     {
+		if(newItem == null)
+			return;
+
         switch (newItem.type)
         {
             case ItemBase.tItemType.Armor:
@@ -57,12 +63,17 @@ public class Inventory
 
     public void inventoryAddItem(ItemOre newItem)
     {
+		if(newItem == null)
+			return;
+
         ores.Add(newItem);
     }
 
-
     public void inventoryAddItem(ItemBase newItem)
     {
+		if(newItem == null)
+			return;
+
         items.Add(newItem);
     }
     
