@@ -75,14 +75,34 @@ namespace MazeGeneration
 				}
 			}
 		}
-		
-		public override IEnumerable<Cube> EnumerateCubes()
+
+        // Enumeration state:
+        private int enumX = 0;
+        private int enumY = 0;
+        private int enumZ = 0;
+
+		public override IEnumerable<Cube> EnumerateCubes(int count)
 		{
-			for (int x = 0; x < Width; x++)
-				for (int y = 0; y < Depth; y++)
-					for (int z = 0; z < Height; z++)
-						yield return new Cube(this, Cubes[x,y,z], x, y, z);
+            for (; enumX < Width; enumX++)
+            {
+                for (; enumY < Depth; enumY++)
+                {
+                    for (; enumZ < Height; enumZ++)
+                    {
+                        yield return new Cube(this, Cubes[enumX, enumY, enumZ], enumX, enumY, enumZ);
+                        if (--count == 0)
+                            yield break;
+                    }
+                }
+            }
 		}
+
+        public override void ResetEnumeration()
+        {
+            enumX = 0;
+            enumY = 0;
+            enumZ = 0;
+        }
 
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{

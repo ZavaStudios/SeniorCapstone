@@ -22,13 +22,29 @@ namespace MazeGeneration
 			Depth = depth;
 		}
 
-		public override IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes(int count)
 		{
-			foreach (Cube c in UpWall.EnumerateCubes())
-				yield return c;
-			foreach (Cube c in DownWall.EnumerateCubes())
-				yield return new Cube(this, c.Type, c.X, c.Y, Depth - c.Z - 1);
+            int remaining = count;
+
+            foreach (Cube c in UpWall.EnumerateCubes(remaining))
+            {
+                yield return c;
+                if (--remaining == 0)
+                    yield break;
+            }
+            foreach (Cube c in DownWall.EnumerateCubes(remaining))
+            {
+                yield return new Cube(this, c.Type, c.X, c.Y, Depth - c.Z - 1);
+                if (--remaining == 0)
+                    yield break;
+            }
 		}
+
+        public override void ResetEnumeration()
+        {
+            UpWall.ResetEnumeration();
+            DownWall.ResetEnumeration();
+        }
 
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{

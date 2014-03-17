@@ -243,8 +243,9 @@ namespace MazeGeneration
 					new Vector3((float)Width * 0.5f, 0.0f, (float)Depth * 0.5f) +
 					new Vector3(0.5f, 0.5f, 0.5f);
 
+            // TODO: better
 			if (Cubes != null)
-				foreach (Cube cube in Cubes.EnumerateCubes())
+				foreach (Cube cube in Cubes.EnumerateCubes(10))
 					InstantiateCube(cube, cubeStart, scalar);
 
 			_scalar = scalar;

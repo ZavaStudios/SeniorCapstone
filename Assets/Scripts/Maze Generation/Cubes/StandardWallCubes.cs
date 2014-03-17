@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+
 namespace MazeGeneration
 {
 	/// <summary>
@@ -111,31 +113,56 @@ namespace MazeGeneration
 			return toRet;
 		}
 		
-		public override IEnumerable<Cube> EnumerateCubes()
+        // Enumeration state:
+        private int enumEdgeY = 0;
+        private int enumEdgeZ = 0;
+        private int enumX = 1;
+        private int enumY = 0;
+        private int enumZ = 0;
+
+		public override IEnumerable<Cube> EnumerateCubes(int count)
 		{
 			// Fencepost: draw left and right edges always
-			for (int y = 0; y < Height; y++)
+			for (; enumEdgeY < Height; enumEdgeY++)
 			{
-				for (int z = 0; z < MaxDepth; z++)
+				for (; enumEdgeZ < MaxDepth; enumEdgeZ++)
 				{
-					yield return new Cube(this, Cubes[0,y,z], 0, y, z);
-					yield return new Cube(this, Cubes[Width-1,y,z], Width-1, y, z);
+					yield return new Cube(this, Cubes[0,enumEdgeY,enumEdgeZ], 0, enumEdgeY, enumEdgeZ);
+                    if (--count == 0)
+                        yield break;
+
+					yield return new Cube(this, Cubes[Width-1,enumEdgeY,enumEdgeZ], Width-1, enumEdgeY, enumEdgeZ);
+                    if (--count == 0)
+                        yield break;
 				}
 			}
 
 			// Return remainder only if they are uncovered somewhere:
-			for (int x = 1; x < Width-1; x++)
-			{
-				for (int y = 0; y < Height; y++)
-				{
-					for (int z = 0; z < MaxDepth; z++)
-					{
-						if (IsUncovered(x,y,z))
-							yield return new Cube(this, Cubes[x,y,z], x, y, z);
-					}
-				}
-			}
+            for (; enumX < Width - 1; enumX++)
+            {
+                for (; enumY < Height; enumY++)
+                {
+                    for (; enumZ < MaxDepth; enumZ++)
+                    {
+                        if (IsUncovered(enumX, enumY, enumZ))
+                        {
+                            yield return new Cube(this, Cubes[enumX, enumY, enumZ], enumX, enumY, enumZ);
+                            if (--count == 0)
+                                yield break;
+                        }
+                    }
+                }
+            }
 		}
+
+        public override void ResetEnumeration()
+        {
+            enumEdgeY = 0;
+            enumEdgeZ = 0;
+            enumX = 1;
+            enumY = 0;
+            enumZ = 0;
+        }
 
 		private bool IsUncovered(int x, int y, int z)
 		{

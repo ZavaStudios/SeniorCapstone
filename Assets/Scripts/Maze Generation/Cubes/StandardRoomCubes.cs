@@ -120,76 +120,107 @@ namespace MazeGeneration
 		/// order the cubes will be returned - just that each cube will appear exactly once.
 		/// </summary>
 		/// <returns>Enumeration of cubes in hte data structure</returns>
-		public override IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes(int count)
 		{
+            int remaining = count;
+
 			// Corners:
 			// top-left:
-			foreach (Cube c in TL_Corner.EnumerateCubes())
+			foreach (Cube c in TL_Corner.EnumerateCubes(remaining))
 			{
 				// TL_Corner X coordinate is c.X
 				//           Y coordinate is c.Z
 				//           Z coordinate is c.Y
 				yield return new Cube(this, c.Type, c.X, c.Z, c.Y);
+                if (--remaining == 0)
+                    yield break;
 			}
 			// top-right:
-			foreach (Cube c in TR_Corner.EnumerateCubes())
+			foreach (Cube c in TR_Corner.EnumerateCubes(remaining))
 			{
 				// TR_Corner X coordinate is Width - c.Y - 1
 				//           Y coordinate is c.Z
 				//           Z coordinate is c.X
 				yield return new Cube(this, c.Type, Width - c.Y - 1, c.Z, c.X);
+                if (--remaining == 0)
+                    yield break;
 			}
 			// bottom-left:
-			foreach (Cube c in BL_Corner.EnumerateCubes())
+			foreach (Cube c in BL_Corner.EnumerateCubes(remaining))
 			{
 				// BL_Corner X coordinate is c.Y
 				//           Y coordinate is c.Z
 				//           Z coordinate is Depth - c.X - 1
 				yield return new Cube(this, c.Type, c.Y, c.Z, Depth - c.X - 1);
+                if (--remaining == 0)
+                    yield break;
 			}
 			// bottom-right:
-			foreach (Cube c in BR_Corner.EnumerateCubes())
+			foreach (Cube c in BR_Corner.EnumerateCubes(remaining))
 			{
 				// BR_Corner X coordinate is Width - c.X - 1
 				//           Y coordinate is c.Z
 				//           Z coordinate is Depth - c.Y - 1
 				yield return new Cube(this, c.Type, Width - c.X - 1, c.Z, Depth - c.Y - 1);
+                if (--remaining == 0)
+                    yield break;
 			}
 
 			// Sides:
 			// left:
-			foreach (Cube c in L_Wall.EnumerateCubes())
+			foreach (Cube c in L_Wall.EnumerateCubes(remaining))
 			{
 				// Left wall's X coordinate is equal to c.Z
 				//             Y coordinate is equal to c.Y
 				//             Z coordinate is equal to Depth - BL_Corner.Width - c.X - 1
 				yield return new Cube(this, c.Type, c.Z, c.Y, Depth - BL_Corner.Width - c.X - 1);
+                if (--remaining == 0)
+                    yield break;
 			}
 			// right:
-			foreach (Cube c in R_Wall.EnumerateCubes())
+			foreach (Cube c in R_Wall.EnumerateCubes(remaining))
 			{
 				// Right wall's X coordinate is equal to Width - c.Z - 1
 				//              Y coordinate is equal to c.Y
 				//              Z coordinate is equal to c.X + TR_Corner.Width
 				yield return new Cube(this, c.Type, Width - c.Z - 1, c.Y, c.X + TR_Corner.Width);
+                if (--remaining == 0)
+                    yield break;
 			}
 			// top:
-			foreach (Cube c in T_Wall.EnumerateCubes())
+			foreach (Cube c in T_Wall.EnumerateCubes(remaining))
 			{
 				// Top wall's X coordinate is equal to c.X + TL_Corner.Width
 				//            Y coordinate is equal to c.Y
 				//            Z coordinate is equal to c.Z
 				yield return new Cube(this, c.Type, c.X + TL_Corner.Width, c.Y, c.Z);
+                if (--remaining == 0)
+                    yield break;
 			}
 			// bottom:
-			foreach (Cube c in B_Wall.EnumerateCubes())
+			foreach (Cube c in B_Wall.EnumerateCubes(remaining))
 			{
 				// Bottom wall's X coordinate is equal to Width - BR_Corner.Width - c.X - 1
 				//               Y coordinate is equal to c.Y
 				//               Z coordinate is equal to Depth - c.Z - 1
 				yield return new Cube(this, c.Type, Width - BR_Corner.Width - c.X - 1, c.Y, Depth - c.Z - 1);
+                if (--remaining == 0)
+                    yield break;
 			}
 		}
+
+        public override void ResetEnumeration()
+        {
+            TL_Corner.ResetEnumeration();
+            TR_Corner.ResetEnumeration();
+            BL_Corner.ResetEnumeration();
+            BR_Corner.ResetEnumeration();
+
+            L_Wall.ResetEnumeration();
+            R_Wall.ResetEnumeration();
+            T_Wall.ResetEnumeration();
+            B_Wall.ResetEnumeration();
+        }
 
 		public override IEnumerable<Cube> DestroyCube (Cube c)
 		{

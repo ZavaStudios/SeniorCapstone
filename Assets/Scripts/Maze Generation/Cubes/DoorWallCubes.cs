@@ -97,24 +97,50 @@ namespace MazeGeneration
 			return L_Side.GetLeftEdge();
 		}
 		
-		public override IEnumerable<Cube> EnumerateCubes()
+		public override IEnumerable<Cube> EnumerateCubes(int count)
 		{
+            int remaining = count;
+
 			// L Side
-			foreach (Cube c in L_Side.EnumerateCubes())
-				yield return new Cube(this, c.Type, c.X, c.Y, c.Z);
+            foreach (Cube c in L_Side.EnumerateCubes(remaining))
+            {
+                yield return new Cube(this, c.Type, c.X, c.Y, c.Z);
+                if (--remaining == 0)
+                    yield break;
+            }
 
 			// R Side
-			foreach (Cube c in R_Side.EnumerateCubes())
-				yield return new Cube(this, c.Type, c.X + L_Side.Width + RogueDungeon.CORRIDOR_WIDTH, c.Y, c.Z);
+            foreach (Cube c in R_Side.EnumerateCubes(remaining))
+            {
+                yield return new Cube(this, c.Type, c.X + L_Side.Width + RogueDungeon.CORRIDOR_WIDTH, c.Y, c.Z);
+                if (--remaining == 0)
+                    yield break;
+            }
 
 			// L Corner
-			foreach (Cube c in L_Corner.EnumerateCubes())
-				yield return new Cube(this, c.Type, c.X + L_Side.Width, c.Z, c.Y);
+			foreach (Cube c in L_Corner.EnumerateCubes(remaining))
+            {
+                yield return new Cube(this, c.Type, c.X + L_Side.Width, c.Z, c.Y);
+                if (--remaining == 0)
+                    yield break;
+            }
 
 			// R Corner
-			foreach (Cube c in R_Corner.EnumerateCubes())
-				yield return new Cube(this, c.Type, Width - 1 - R_Side.Width - c.Y, c.Z, c.X);
+			foreach (Cube c in R_Corner.EnumerateCubes(remaining))
+            {
+                yield return new Cube(this, c.Type, Width - 1 - R_Side.Width - c.Y, c.Z, c.X);
+                if (--remaining == 0)
+                    yield break;
+            }
 		}
+
+        public override void ResetEnumeration()
+        {
+            L_Corner.ResetEnumeration();
+            L_Side.ResetEnumeration();
+            R_Side.ResetEnumeration();
+            R_Corner.ResetEnumeration();
+        }
 
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{

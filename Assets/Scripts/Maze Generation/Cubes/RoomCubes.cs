@@ -35,7 +35,24 @@ namespace MazeGeneration
 
 	public abstract class RoomCubes : CubeTracker
 	{
-		public abstract IEnumerable<Cube> EnumerateCubes();
+        /// <summary>
+        /// Allows the user to enumerate cubes from the object. Yields no more than
+        /// the requested count, except that count must be positive - a value less
+        /// than 1 will yield one block assuming one exists to provide.
+        /// 
+        /// There is no guarantee that this enumeration will provide count cubes -
+        /// in fact, it is designed to be called multiple times in succession. For
+        /// example, if the object has 160 cubes:
+        ///     - The first call for 100 will yield the first 100 cubes
+        ///     - The second call for 50 will yield the 101st thru 150th cubes
+        ///     - The third call for 20 will yield the final 10 cubes (note: NOT 20!)
+        ///     
+        /// The enumeration can be reset by calling ResetEnumeration.
+        /// </summary>
+        /// <param name="count">The maximum number of cubes to yield in this call.</param>
+        /// <returns>A list of cubes in the data structure.</returns>
+		public abstract IEnumerable<Cube> EnumerateCubes(int count);
+        public abstract void ResetEnumeration();
 		public abstract IEnumerable<Cube> DestroyCube(Cube c);
 
 		// Placeholder thresholds:
