@@ -63,7 +63,7 @@ public class Hud : MonoBehaviour
 
 		//Grid for component options
 		ItemComponent[] arrAllComponents;
-		string[] arrSelctedComponentNames;
+		string[] arrSelectedComponentNames;
 
 		//Grid for possible assembled items
 		ItemComponent[][] arrAssembleWeapons;
@@ -190,12 +190,14 @@ public class Hud : MonoBehaviour
 		protected void Update ()
 		{
 				//Toggle the appropriate menu
-				if (Input.GetKeyUp (keyCodeMenusMenu)) {
-//			if(menuCode == tMenuStates.MENU_NONE)
-//				menuCode = tMenuStates.MENU_MAIN;
-//			else if (menuCode == tMenuStates.MENU_MAIN)
-//				menuCode = tMenuStates.MENU_NONE;
-				} else if (Input.GetKeyUp (keyCodeInventory)) {
+				if (InputContextManager.isMAIN_MENU_PUSHED ()) {
+						if (menuCode == tMenuStates.MENU_MAIN)
+							menuCode = tMenuStates.MENU_NONE;
+						else
+							menuCode = tMenuStates.MENU_MAIN;
+
+
+				} else if (InputContextManager.isITEM_MENU_PUSHED ()) {
 //		else if (InputContextManager.isMENU_LEFT()) //Allow toggling of the inventory when the corresponding button has been pressed
 						if (menuCode == tMenuStates.MENU_NONE)
 								menuCode = tMenuStates.INVENTORY;
@@ -213,16 +215,30 @@ public class Hud : MonoBehaviour
 								menuCode = tMenuStates.MENU_NONE;
 				}
 
-				//Take care of movement inside menus
-				if (menuCode != tMenuStates.MENU_NONE) { //Menu to select menues
-						if (Input.GetKeyUp (keyCodeInventoryAltRight))
-								intMenusMenu = (arrMenusMenu.Length + intMenusMenu + 1) % arrMenusMenu.Length; //Loop to the beginning if we're at the end
-			else if (Input.GetKeyUp (keyCodeInventoryAltLeft))
-								intMenusMenu = intMenusMenu - 1 < 0 ? arrMenusMenu.Length - 1 : intMenusMenu - 1; //Loop to the end if we're at the beginning
+//				//Take care of movement inside menus
+//				if (menuCode != tMenuStates.MENU_NONE) { //Menu to select menues
+//						if (InputContextManager.isMENU_RIGHT ())
+//								intMenusMenu = (arrMenusMenu.Length + intMenusMenu + 1) % arrMenusMenu.Length; //Loop to the beginning if we're at the end
+//						else if (InputContextManager.isMENU_LEFT ())
+//								intMenusMenu = intMenusMenu - 1 < 0 ? arrMenusMenu.Length - 1 : intMenusMenu - 1; //Loop to the end if we're at the beginning
+//
+//						menuCode = arrMenusMenu [intMenusMenu];
+//				}
 
-						menuCode = arrMenusMenu [intMenusMenu];
-				}
 				switch (menuCode) {
+				case tMenuStates.MENU_MAIN:
+						{
+								if (InputContextManager.isMENU_LEFT ())
+										menuCode = tMenuStates.INVENTORY;
+								else if (InputContextManager.isMENU_UP ())
+										menuCode = tMenuStates.ASSEMBLING;
+								else if (InputContextManager.isMENU_RIGHT ())
+										menuCode = tMenuStates.CRAFTING;
+								else if (InputContextManager.isITEM_MENU_PUSHED ())
+										menuCode = tMenuStates.MENU_NONE;
+								break;
+						}
+
 				//If the inventory is open, process movement inside the inventory
 				case tMenuStates.INVENTORY:
 						{
@@ -230,7 +246,7 @@ public class Hud : MonoBehaviour
 								handleInventoryMovement ();
 
 								//Process confirmations
-								if (Input.GetKeyUp (keyCodeConfirm))
+								if (InputContextManager.isMENU_SELECT ())
 										boolEquipWeapon = true;
 
 								break;
@@ -261,11 +277,29 @@ public class Hud : MonoBehaviour
 				//		if(GUI.Button(new Rect(250, 350, 50, 50), "Down"))
 				//			vSbarValue -= 1;
 
-				if (menuCode != tMenuStates.MENU_NONE) {
-						showMenuStates ();
-				}
+//				if (menuCode != tMenuStates.MENU_NONE) {
+//						showMenuStates ();
+//				}
 
 				switch (menuCode) {
+				case tMenuStates.MENU_MAIN: //Display context of which direction moves into which menu
+						{
+								int intMenuContextWidth = Screen.width / 6;
+								int intMenuContextHeight = Screen.height / 6;
+
+								GUIStyle style = new GUIStyle (GUI.skin.label);
+								Texture2D tex2dButtonPassiveBack = new Texture2D (1, 1);
+			
+								tex2dButtonPassiveBack = (Texture2D)Resources.Load ("InventoryButtonBackground");
+								style.normal.background = tex2dButtonPassiveBack;
+
+								GUI.Label (new Rect ((Screen.width / 2) - (intMenuContextWidth / 2), 0, intMenuContextWidth, intMenuContextHeight), "Assemble", style);//Top
+								GUI.Label (new Rect (0, (Screen.height / 2), intMenuContextWidth, intMenuContextHeight), "Inventory", style);//Left
+								GUI.Label (new Rect ((Screen.width - intMenuContextWidth / 5), (Screen.height / 2), intMenuContextWidth, intMenuContextHeight), "Crafting", style); //Right
+
+								break;
+						}
+			
 				case tMenuStates.MENU_NONE: //Display regular player info
 						{
 								// Make a health bar
@@ -389,7 +423,10 @@ public class Hud : MonoBehaviour
 								ItemWeapon potentialWeapon = ItemFactory.createWeapon ((ItemComponent)arrListComponents [i], (ItemComponent)arrListComponents [j]);
 								if (potentialWeapon != null) {
 										//TODO Use a tuple instead of an array w/ 2 items. I think the compiler won't compile against .net 4.0+
-									arrListResults.Add (new ItemComponent[2] {(ItemComponent)arrListComponents[i], (ItemComponent)arrListComponents [j]});
+										arrListResults.Add (new ItemComponent[2] {
+												(ItemComponent)arrListComponents [i],
+												(ItemComponent)arrListComponents [j]
+										});
 								}
 						}
 				}
@@ -451,7 +488,7 @@ public class Hud : MonoBehaviour
 				int intNumOres = selectedComponents.GetLength (1);
 
 				//Loop through our 2d array of components and store the names in a 1d arary to display
-				arrSelctedComponentNames = new string[intNumItems];
+				arrSelectedComponentNames = new string[intNumItems];
 
 				for (int i = 0; i < intNumAtts; i++) {
 						for (int j=0; j < intNumOres; j++) {
@@ -459,9 +496,9 @@ public class Hud : MonoBehaviour
 								//	(0,0) in botton left and indexes increasing up. In other words, rotate the array ccw by 90.
 
 								if (selectedComponents [i, j].unlocked)
-										arrSelctedComponentNames [getIndexFromCoordinate (i, j, intNumItems, intNumAtts)] = selectedComponents [i, j].item.ToString ();
+										arrSelectedComponentNames [getIndexFromCoordinate (i, j, intNumItems, intNumAtts)] = selectedComponents [i, j].item.ToString ();
 								else
-										arrSelctedComponentNames [getIndexFromCoordinate (i, j, intNumItems, intNumAtts)] = "?";
+										arrSelectedComponentNames [getIndexFromCoordinate (i, j, intNumItems, intNumAtts)] = "?";
 
 //				arrSelctedComponentNames[intNumItems - (j * intNumAtts) - (intNumAtts - i)] = selectedComponents[i,j].ToString();
 
@@ -471,15 +508,15 @@ public class Hud : MonoBehaviour
 				//Handle selection grid stuff
 				intCompSelGrid = GUI.SelectionGrid (new Rect (4.5f * intWidthPadding, intHeightPadding,
 		                                            (6f * intWidthPadding), Screen.height - (2 * intHeightPadding)),
-		                                   intCompSelGrid, arrSelctedComponentNames, intNumAtts, style);
+		                                   intCompSelGrid, arrSelectedComponentNames, intNumAtts, style);
 
 
 				//Description Menu
-				Vector2 vec2Description = getComponentCoordinateFromIndex(intCompSelGrid);
+				Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
 				//Only show the description if we've unlocked the item
 				string description = "Unlock me by crafting this component in a lower tier.";
-				if(selectedComponents[(int)vec2Description.x, (int)vec2Description.y].unlocked)
-					description = selectedComponents[(int)vec2Description.x, (int)vec2Description.y].item.getDescription();
+				if (selectedComponents [(int)vec2Description.x, (int)vec2Description.y].unlocked)
+						description = selectedComponents [(int)vec2Description.x, (int)vec2Description.y].item.getDescription ();
 
 				GUI.Label (new Rect (11 * intWidthPadding, vec2CompTypeStart.y,
 		                   	vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
@@ -598,21 +635,21 @@ public class Hud : MonoBehaviour
 		private void handleAssembleMovement ()
 		{
 				//Left and right change the type being assembled. (With wraparound)
-				if (Input.GetKeyUp (keyCodeInventoryLeft)) {
+				if (InputContextManager.isMENU_LEFT ()) {
 						int intNewType = intAssembleType - 1;
 
 						intAssembleType = (intNewType < 0 ? arrWeaponTypes.Length - 1 : intNewType);
-				} else if (Input.GetKeyUp (keyCodeInventoryRight)) {
+				} else if (InputContextManager.isMENU_RIGHT ()) {
 						int intNewType = intAssembleType + 1;
 
 						intAssembleType = (intNewType > arrWeaponTypes.Length - 1 ? 0 : intNewType);
 				}
-		//Up and down change which item to assemble (without wraparound)
-		else if (Input.GetKeyUp (keyCodeInventoryUp)) {
+					//Up and down change which item to assemble (without wraparound)
+			else if (InputContextManager.isMENU_UP ()) {
 						intAssembleWeapon = Math.Max (intAssembleWeapon - 1, 0);
-				} else if (Input.GetKeyUp (keyCodeInventoryDown)) {
+				} else if (InputContextManager.isMENU_DOWN ()) {
 						intAssembleWeapon = Math.Min (arrAssembleWeapons.Length - 1, intAssembleWeapon + 1);
-				} else if (Input.GetKeyUp (keyCodeConfirm)) {
+				} else if (InputContextManager.isMENU_SELECT ()) {
 						//Time to craft an item
 
 						//TODO remove required components from inventory
@@ -630,7 +667,7 @@ public class Hud : MonoBehaviour
 		private void handleCraftingMovement ()
 		{
 				//Take care of menu navigation from the buttons
-				if (Input.GetKeyUp (keyCodeInventoryUp)) {
+				if (InputContextManager.isMENU_UP ()) {
 						//move up in the respective menu
 						if (intCompSelGrid > 0) { //Component selection menu
 								int intNewSelection = intCompSelGrid - intCompSelCols;
@@ -640,25 +677,25 @@ public class Hud : MonoBehaviour
 								intCompTypeGrid = Math.Max (intNewSelection, 0);
 
 						}
-				} else if (Input.GetKeyUp (keyCodeInventoryRight)) {
+				} else if (InputContextManager.isMENU_RIGHT ()) {
 						//move right
 						//if i'm in the component type menu, switch over to the components
 						if (intCompSelGrid >= 0) {
 								int intNewSelection = intCompSelGrid + 1;
-								intCompSelGrid = Math.Min (intNewSelection, arrSelctedComponentNames.Length - 1);
+								intCompSelGrid = Math.Min (intNewSelection, arrSelectedComponentNames.Length - 1);
 						} else { //I'm in the component type menu
 								intCompSelGrid = 0;
 						}
-				} else if (Input.GetKeyUp (keyCodeInventoryDown)) {
+				} else if (InputContextManager.isMENU_DOWN ()) {
 						//Move down in the respective menu
 						if (intCompSelGrid >= 0) {
 								int intNewSelection = intCompSelGrid + intCompSelCols;
-								intCompSelGrid = Math.Min (arrSelctedComponentNames.Length - 1, intNewSelection);
+								intCompSelGrid = Math.Min (arrSelectedComponentNames.Length - 1, intNewSelection);
 						} else { //I'm in the component type menu
 								int intNewSelection = intCompTypeGrid + 1;
 								intCompTypeGrid = intNewSelection % (arrWepPartNames.Length);
 						}
-				} else if (Input.GetKeyUp (keyCodeInventoryLeft)) {
+				} else if (InputContextManager.isMENU_LEFT ()) {
 						//move left
 						//if i'm in the components menu, switch over to the component type menu
 						if (intCompSelGrid >= 0) {
@@ -671,7 +708,7 @@ public class Hud : MonoBehaviour
 								//Don't do anything
 						}
 
-				} else if (Input.GetKeyUp (keyCodeConfirm)) {
+				} else if (InputContextManager.isMENU_SELECT ()) {
 						//TODO Make the button be selected when the confirm key is pressed
 //			SendMessage("onActive");
 
@@ -701,12 +738,12 @@ public class Hud : MonoBehaviour
 
 		private void handleInventoryMovement ()
 		{
-				if (Input.GetKeyUp (keyCodeInventoryUp)) {
+				if (InputContextManager.isMENU_UP ()) {
 						//Decrement the index by itemsPerRow and take the maximum of 0 and newIndex
 						int intNewSelected = intSelectedWeapon - intInvItemsPerRow;
 			
 						intSelectedWeapon = Mathf.Max (0, intNewSelected);
-				} else if (Input.GetKeyUp (keyCodeInventoryDown)) {
+				} else if (InputContextManager.isMENU_DOWN ()) {
 						//Increment the index by itemsPerRow and take the min of arrListWeapons.Count and newIndex
 						int intNewSelected = intSelectedWeapon + intInvItemsPerRow;
 			
@@ -714,13 +751,13 @@ public class Hud : MonoBehaviour
 			
 						ArrayList arrListWeapons = inventory.getInventoryWeapons ();
 						intSelectedWeapon = Mathf.Min (arrListWeapons.Count - 1, intNewSelected);
-				} else if (Input.GetKeyUp (keyCodeInventoryLeft)) {
+				} else if (InputContextManager.isMENU_LEFT ()) {
 						//Decrement the index by 1 and take the maximum of 0 and newIndex
 						int intNewSelected = intSelectedWeapon - 1;
 			
 						//Bound checking
 						intSelectedWeapon = Mathf.Max (intNewSelected, 0);
-				} else if (Input.GetKeyUp (keyCodeInventoryRight)) {
+				} else if (InputContextManager.isMENU_RIGHT ()) {
 						//Increment the index by 1 and take the min of arrListWeapons.Count and newIndex
 						int intNewSelected = intSelectedWeapon + 1;
 			
