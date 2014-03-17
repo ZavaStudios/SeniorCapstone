@@ -14,7 +14,7 @@ public class ZombiePrinceAI : BossUnit
 		base.Start();
 
 		//Cap the number of enemies to be 5.
-		enemyCap = 5;
+		enemyCap = 1;
 	}
 	
 	// Update is called once per frame

@@ -67,7 +67,7 @@ public class BossUnit : UnitEnemy
 	protected override void killUnit()
 	{
 		gameObject.SetActive(false);
-		player.GetComponent<UnitPlayer>().resetSpeed();
+		playercc.enabled = true;
 		
 		if(numEnemies == 0)	
 			Debug.Log("You Win!");

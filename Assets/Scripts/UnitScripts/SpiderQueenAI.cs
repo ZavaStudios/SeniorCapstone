@@ -17,7 +17,7 @@ public class SpiderQueenAI : BossUnit
 		
 		//The spider queen will spawn spiders more frequently than other bosses. 
 		spawnTimer = 5;
-		enemyCap = 10;
+		enemyCap = 1;
 		weapon.attackRange = 10;
 	}
 	

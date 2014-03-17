@@ -15,7 +15,7 @@ public class SkeletonKingAI : BossUnit
 		
 		
 		//Set the enemy cap to be 3.
-		enemyCap = 3;
+		enemyCap = 1;
 		weapon.attackRange = 10;
 	}
 	
