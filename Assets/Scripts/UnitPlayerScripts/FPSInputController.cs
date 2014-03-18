@@ -46,6 +46,6 @@ public class FPSInputController : MonoBehaviour
 		motor.inputMoveDirection = transform.rotation * directionVector;
 //		motor.inputJump = OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_O, OuyaExampleCommon.Player);
 		//TODO replace KeyCode.Space to the prooper Input manager control
-		motor.inputJump = Input.GetKeyDown (KeyCode.Space);
+		motor.inputJump = InputContextManager.isJUMP();
 	}
 }

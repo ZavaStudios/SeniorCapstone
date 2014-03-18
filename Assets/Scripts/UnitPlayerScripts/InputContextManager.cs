@@ -77,12 +77,12 @@ public class InputContextManager : MonoBehaviour {
     //private functions to capture menu context switching
     static public bool isITEM_MENU_PUSHED()
     { 
-        return OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_A, OuyaExampleCommon.Player); 
+        return OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_SYSTEM, OuyaExampleCommon.Player); 
     }
 
     static public bool isMAIN_MENU_PUSHED()
     { 
-        return OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_SYSTEM, OuyaExampleCommon.Player); 
+        return OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_A, OuyaExampleCommon.Player); 
     }
 
     
