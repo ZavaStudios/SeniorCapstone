@@ -10,6 +10,7 @@ public class BossUnit : UnitEnemy
 	protected Transform spawnedEnemy;
 	public static GeneralRoom bossRoom;
 	public static CharacterController playercc;
+    public static Transform endGamePortal;
 	
 	//Every 5 seconds generate a new enemy.
 	protected float spawnTimer = 10.0f;
@@ -18,6 +19,9 @@ public class BossUnit : UnitEnemy
 	//Caps the number of enemies that can be spawned.
 	protected float enemyCap = 0.0f;
 	private int numEnemies = 0;
+
+    // Save position of the boss upon death so we can spawn the portal there
+    private Vector3 diePosition;
 
 
 	//ToDo: Once the enemies have been killed should we regenerate new ones? 
@@ -59,8 +63,8 @@ public class BossUnit : UnitEnemy
 	{
 		numEnemies--;
 		Debug.Log(numEnemies);
-		if(numEnemies == 0 && !gameObject.activeSelf)
-			Debug.Log("You Win!");
+        if (numEnemies == 0 && !gameObject.activeSelf)
+            win();
 		spawnTimer = Time.time + delay;
 	}
 	
@@ -68,9 +72,17 @@ public class BossUnit : UnitEnemy
 	{
 		gameObject.SetActive(false);
 		playercc.enabled = true;
-		
-		if(numEnemies == 0)	
-			Debug.Log("You Win!");
+        diePosition = gameObject.transform.position;
+        diePosition.y = 0;  // We want the portal to be on the ground, so ignore the "up-ness"
+
+        if (numEnemies == 0)
+            win();
 		//base.killUnit();
 	}
+
+    protected virtual void win()
+    {
+        Debug.Log("You Win!");
+        GameObject.Instantiate(endGamePortal, diePosition, Quaternion.identity);
+    }
 }

@@ -255,20 +255,23 @@ namespace MazeGeneration
         /// Informs this room's neighbors that they need to get themselves loaded into the
         /// scene. Does NOT load this room itself! Also, will not load a room if that room
         /// is already loaded.
+        /// 
+        /// You may pass in a room you would like not to load, as well, in case your room
+        /// is adjacent to a room already loaded (for example).
         /// </summary>
         /// <param name="maxWidth">Maximum width a room can be in the maze, in cube units.</param>
         /// <param name="maxDepth">Maximum depth a room can be in the maze, in cube units.</param>
         /// <param name="doorWidth">How large the openings to the room need to be. Must be no more than Width or Depth.</param>
         /// <param name="scalar">1 cube -> scalar units in Unity.</param>
-        public virtual void LoadNeighbors(int maxWidth, int maxDepth, int doorWidth, float scalar)
+        public virtual void LoadNeighbors(int maxWidth, int maxDepth, int doorWidth, float scalar, RogueRoom dontLoad)
         {
-            if (LeftNeighbor != null)
+            if (LeftNeighbor != null && LeftNeighbor != dontLoad)
                 LeftNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
-            if (RightNeighbor != null)
+            if (RightNeighbor != null && RightNeighbor != dontLoad)
                 RightNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
-            if (UpNeighbor != null)
+            if (UpNeighbor != null && UpNeighbor != dontLoad)
                 UpNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
-            if (DownNeighbor != null)
+            if (DownNeighbor != null && DownNeighbor != dontLoad)
                 DownNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
         }
 
