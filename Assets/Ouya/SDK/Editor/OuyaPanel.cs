@@ -142,8 +142,13 @@ public class OuyaPanel : EditorWindow
     private static string pathBin = string.Empty;
     private static string pathSrc = string.Empty;
 
+#if UNITY_4 || UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6
+    private static string javaAppName = "OuyaNativeActivity";
+    private static string apkName = "OuyaNativeActivity.apk";
+#else
     private static string javaAppName = "OuyaUnityApplication";
     private static string apkName = "OuyaUnityApplication.apk";
+#endif
 
     void UpdateOuyaPaths()
     {
@@ -306,17 +311,53 @@ public class OuyaPanel : EditorWindow
         return string.Format("{0}/platforms/android-{1}/android.jar", pathSDK, (int)PlayerSettings.Android.minSdkVersion);
     }
 
+    public static void FindFile(DirectoryInfo searchFolder, string searchFile, ref string path)
+    {
+        if (null == searchFolder)
+        {
+            return;
+        }
+        foreach (FileInfo file in searchFolder.GetFiles(searchFile))
+        {
+            if (string.IsNullOrEmpty(file.FullName))
+            {
+                continue;
+            }
+            path = file.FullName;
+            return;
+        }
+        foreach (DirectoryInfo subDir in searchFolder.GetDirectories())
+        {
+            if (null == subDir)
+            {
+                continue;
+            }
+            if (subDir.Name.ToUpper().Equals(".SVN"))
+            {
+                continue;
+            }
+            if (subDir.Name.ToUpper().Equals(".GIT"))
+            {
+                continue;
+            }
+            //Debug.Log(string.Format("Directory: {0}", subDir));
+            FindFile(subDir, searchFile, ref path);
+        }
+    }
+
     void UpdateAndroidSDKPaths()
     {
         switch (Application.platform)
         {
             case RuntimePlatform.OSXEditor:
-                pathADB = string.Format("{0}/{1}/{2}", pathSDK, REL_ANDROID_PLATFORM_TOOLS, FILE_ADB_MAC);
-                pathAAPT = string.Format("{0}/{1}/{2}", pathSDK, REL_ANDROID_PLATFORM_TOOLS, FILE_AAPT_MAC);
+                FindFile(new DirectoryInfo(string.Format("{0}", pathSDK)), FILE_ADB_MAC, ref pathADB);
+                FindFile(new DirectoryInfo(string.Format("{0}", pathSDK)), FILE_AAPT_MAC, ref pathAAPT);
+                pathADB = pathADB.Replace(@"\", "/");
+                pathAAPT = pathAAPT.Replace(@"\", "/");
                 break;
             case RuntimePlatform.WindowsEditor:
-                pathADB = string.Format("{0}/{1}/{2}", pathSDK, REL_ANDROID_PLATFORM_TOOLS, FILE_ADB_WIN);
-                pathAAPT = string.Format("{0}/{1}/{2}", pathSDK, REL_ANDROID_PLATFORM_TOOLS, FILE_AAPT_WIN);
+                FindFile(new DirectoryInfo(string.Format("{0}", pathSDK)), FILE_ADB_WIN, ref pathADB);
+                FindFile(new DirectoryInfo(string.Format("{0}", pathSDK)), FILE_AAPT_WIN, ref pathAAPT);
                 break;
         }
 
@@ -1108,7 +1149,7 @@ public class OuyaPanel : EditorWindow
             Debug.LogError("R.java cannot be found");
             return false;
         }
-        string includeFiles = string.Format("\"{0}/{1}.java\" \"{0}/IOuyaActivity.java\" \"{0}/TestOuyaFacade.java\" \"{2}\"",
+        string includeFiles = string.Format("\"{0}/{1}.java\" \"{0}/IOuyaActivity.java\" \"{0}/UnityOuyaFacade.java\" \"{2}\"",
             pathSrc, javaAppName, pathRJava);
         string jars = string.Empty;
 
@@ -1239,14 +1280,14 @@ public class OuyaPanel : EditorWindow
         }
 
         //@hack: remove extra class file
-        // tv/ouya/sdk/TestOuyaFacade.class
-        extraClass = string.Format("{0}/tv/ouya/sdk/TestOuyaFacade.class", pathClasses);
+        // tv/ouya/sdk/UnityOuyaFacade.class
+        extraClass = string.Format("{0}/tv/ouya/sdk/UnityOuyaFacade.class", pathClasses);
         if (File.Exists(extraClass))
         {
             File.Delete(extraClass);
             Debug.Log(string.Format("Removed: {0}", extraClass));
         }
-        extraClass = string.Format("{0}/tv/ouya/sdk/TestOuyaFacade.class.meta", pathClasses);
+        extraClass = string.Format("{0}/tv/ouya/sdk/UnityOuyaFacade.class.meta", pathClasses);
         if (File.Exists(extraClass))
         {
             File.Delete(extraClass);
@@ -1563,12 +1604,12 @@ public class OuyaPanel : EditorWindow
         {
             case 0:
 
-                if (GUILayout.Button("Run Application"))
+                if (GUILayout.Button("Run Application", GUILayout.MaxWidth(position.width)))
                 {
                     m_toggleRunApplication = true;
                 }
 
-                if (GUILayout.Button("Build Application"))
+                if (GUILayout.Button("Build Application", GUILayout.MaxWidth(position.width)))
                 {
                     m_toggleCompileJava = true;
                     m_toggleCompilePlugin = true;
@@ -1576,49 +1617,49 @@ public class OuyaPanel : EditorWindow
                     m_toggleBuildApplication = true;
                 }
 
-                if (GUILayout.Button("Build and Run Application"))
+                if (GUILayout.Button("Build and Run Application", GUILayout.MaxWidth(position.width)))
                 {
                     m_toggleBuildAndRunApplication = true;
                 }
 
-                if (GUILayout.Button("Build, Run, and Compile Application"))
+                if (GUILayout.Button("Build, Run, and Compile Application", GUILayout.MaxWidth(position.width)))
                 {
                     m_toggleBuildRunAndCompileApplication = true;
                 }
 
-                if (GUILayout.Button("Compile"))
+                if (GUILayout.Button("Compile", GUILayout.MaxWidth(position.width)))
                 {
                     m_toggleCompileJava = true;
                     m_toggleCompileNDK = true;
                 }
 
-                if (GUILayout.Button("Compile Java"))
+                if (GUILayout.Button("Compile Java", GUILayout.MaxWidth(position.width)))
                 {
                     m_toggleCompileJava = true;
                 }
 
-                if (GUILayout.Button("Compile Plugin"))
+                if (GUILayout.Button("Compile Plugin", GUILayout.MaxWidth(position.width)))
                 {
                     m_toggleCompilePlugin = true;
                 }
 
-                if (GUILayout.Button("Compile NDK"))
+                if (GUILayout.Button("Compile NDK", GUILayout.MaxWidth(position.width)))
                 {
                     m_toggleCompileNDK = true;
                 }
 
                 /*
-                if (GUILayout.Button("Build Application Jar"))
+                if (GUILayout.Button("Build Application Jar", GUILayout.MaxWidth(position.width)))
                 {
                     BuildApplicationJar();
                 }
 
-                if (GUILayout.Button("Compile Application Classes"))
+                if (GUILayout.Button("Compile Application Classes", GUILayout.MaxWidth(position.width)))
                 {
                     CompileApplicationClasses();
                 }
 
-                if (GUILayout.Button("Generate R.java from main layout"))
+                if (GUILayout.Button("Generate R.java from main layout", GUILayout.MaxWidth(position.width)))
                 {
                     GenerateRJava();
                 }
@@ -1632,7 +1673,7 @@ public class OuyaPanel : EditorWindow
                 StopOnErrors = GUILayout.Toggle(StopOnErrors, "Stop Build on Errors");
 
                 GUILayout.Space(5);
-                if (GUILayout.Button("Sync Bundle ID"))
+                if (GUILayout.Button("Sync Bundle ID", GUILayout.MaxWidth(position.width)))
                 {
                     m_toggleSyncBundleID = true;
                 }
@@ -1701,7 +1742,8 @@ public class OuyaPanel : EditorWindow
                         ShowNotification(new GUIContent(fieldError));
                         error = fieldError;
                     }
-                    GUILayout.Label(fieldError);
+                    EditorGUILayout.Separator();
+                    GUILayout.Label(fieldError, EditorStyles.wordWrappedLabel, GUILayout.MaxWidth(position.width - 130));
                 }
                 GUILayout.BeginHorizontal(GUILayout.MaxWidth(position.width));
                 GUILayout.Space(25);
@@ -1722,11 +1764,34 @@ public class OuyaPanel : EditorWindow
                     EditorPrefs.SetString(KEY_APK_NAME, apkName);
                 }
 
-                GUILayout.BeginHorizontal(GUILayout.MaxWidth(position.width));
-                GUILayout.Space(25);
-                GUILayout.Label("Java App Class:", GUILayout.Width(100));
-                GUILayout.Space(5);
-                if (javaAppName.ToUpper().Equals("OUYAUNITYPLUGIN"))
+#if UNITY_4 || UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6
+                if (javaAppName.ToUpper().Equals("OUYAUNITYAPPLICATION"))
+                {
+                    String fieldError = "[error] (OuyaNativeActivity should be used as the 'Java App Class' in Unity 4.X to let Unity handle native input)\n";
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ShowNotification(new GUIContent(fieldError));
+                        error = fieldError;
+                    }
+                    EditorGUILayout.Separator();
+                    GUILayout.Label(fieldError, EditorStyles.wordWrappedLabel, GUILayout.MaxWidth(position.width));
+                }
+#else
+                if (javaAppName.ToUpper().Equals("OUYANATIVEACTIVITY"))
+                {
+                    String fieldError = "[error] (OuyaUnityApplication should be used as the 'Java App Class' in Unity 3.X to avoid a crash within the Unity player input handling)\n";
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ShowNotification(new GUIContent(fieldError));
+                        error = fieldError;
+                    }
+                    EditorGUILayout.Separator();
+                    GUILayout.Label(fieldError, EditorStyles.wordWrappedLabel, GUILayout.MaxWidth(position.width - 130));
+                }
+#endif
+                else if (javaAppName.ToUpper().Equals("IOUYAACTIVITY") ||
+                    javaAppName.ToUpper().Equals("OUYAUNITYPLUGIN") ||
+                    javaAppName.ToUpper().Equals("UNITYOUYAFACADE"))
                 {
                     String fieldError = "[error] (Used reserved Java Class Name)\n";
                     if (string.IsNullOrEmpty(error))
@@ -1734,8 +1799,13 @@ public class OuyaPanel : EditorWindow
                         ShowNotification(new GUIContent(fieldError));
                         error = fieldError;
                     }
-                    GUILayout.Label(fieldError);
+                    EditorGUILayout.Separator();
+                    GUILayout.Label(fieldError, EditorStyles.wordWrappedLabel, GUILayout.MaxWidth(position.width - 130));
                 }
+                GUILayout.BeginHorizontal(GUILayout.MaxWidth(position.width));
+                GUILayout.Space(25);
+                GUILayout.Label("Java App Class:", GUILayout.Width(100));
+                GUILayout.Space(5);
                 string newJavaAppName = GUILayout.TextField(javaAppName, EditorStyles.wordWrappedLabel, GUILayout.MaxWidth(position.width - 130));
                 GUILayout.EndHorizontal();
                 if (javaAppName != newJavaAppName)
@@ -1760,7 +1830,8 @@ public class OuyaPanel : EditorWindow
                         ShowNotification(new GUIContent(fieldError));
                         error = fieldError;
                     }
-                    GUILayout.Label(fieldError);
+                    EditorGUILayout.Separator();
+                    GUILayout.Label(fieldError, EditorStyles.wordWrappedLabel, GUILayout.MaxWidth(position.width - 130));
                 }
 
                 GUILayout.BeginHorizontal(GUILayout.MaxWidth(position.width));
@@ -1779,7 +1850,8 @@ public class OuyaPanel : EditorWindow
                         ShowNotification(new GUIContent(fieldError));
                         error = fieldError;
                     }
-                    GUILayout.Label(fieldError);
+                    EditorGUILayout.Separator();
+                    GUILayout.Label(fieldError, EditorStyles.wordWrappedLabel, GUILayout.MaxWidth(position.width - 130));
                 }
                 GUILayout.BeginHorizontal(GUILayout.MaxWidth(position.width));
                 GUILayout.Space(25);

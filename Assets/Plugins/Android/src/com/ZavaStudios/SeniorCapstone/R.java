@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package tv.ouya.demo.OuyaUnityApplication;
+package com.ZavaStudios.SeniorCapstone;
 
 public final class R {
     public static final class attr {
