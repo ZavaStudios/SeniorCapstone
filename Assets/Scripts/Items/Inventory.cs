@@ -20,6 +20,18 @@ public class Inventory
         components = new ArrayList();
         items = new ArrayList();
         ores = new ArrayList();
+
+		foreach(ItemBase.tOreType oreType in Enum.GetValues(typeof(ItemBase.tOreType)))
+		{
+			if(oreType.Equals(ItemBase.tOreType.NOT_ORE) || oreType.Equals(ItemBase.tOreType.Stone))
+				continue;
+
+			//Create all the ores beforehand
+			ItemOre ore = new ItemOre(oreType);
+			ore.Quantity = 0;
+
+			ores.Add(ore);
+		}
     }
 
     public static Inventory getInstance()
@@ -66,6 +78,7 @@ public class Inventory
 		if(newItem == null)
 			return;
 
+		//TODO Loop through ores and check for equality(comparing type?) and increasing quantity
         ores.Add(newItem);
     }
 
@@ -149,7 +162,15 @@ public class Inventory
 
 	public ArrayList getInventoryOres()
 	{
-		return ores;
+		ArrayList temp = new ArrayList();
+
+		foreach(ItemOre ore in ores)
+		{
+			if(ore.Quantity > 0 )
+				temp.Add(ore);
+		}
+
+		return temp;
 	}
 
 }

@@ -15,6 +15,12 @@ public class ItemOre : ItemBase
         _quantity = 1;
     }
 
+	public int Quantity
+	{
+		get{ return _quantity;}
+		set{ _quantity = value; }
+	}
+
     public override string ToString()
     {
         return oreType.ToString();
