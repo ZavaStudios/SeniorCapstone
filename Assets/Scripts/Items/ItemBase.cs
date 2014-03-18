@@ -11,7 +11,8 @@ public class ItemBase
     public tOreType oreType;
     public Texture2D imageIcon;
     public tItemType type;
-	public ItemOre oreRequirements;
+	public tOreType neededOreType;
+	public int neededOreQuantity;
 
     public enum tItemType
     {
@@ -69,8 +70,8 @@ public class ItemBase
         _description = "This item is called " + _name + ".";
 		_quantity = 1;
 
-		oreRequirements = new ItemOre(oreType);
-		oreRequirements._quantity = 1;
+		neededOreType = oreType;
+		neededOreQuantity = 1;
     }
  
     virtual public string ToString()

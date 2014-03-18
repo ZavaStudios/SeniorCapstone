@@ -749,9 +749,11 @@ public class Hud : MonoBehaviour
 						ArrayList arrOres = inventory.getInventoryOres();
 						bool hasOres = false;
 						foreach (ItemOre ore in arrOres) {
-								if (ore.oreType.Equals (desired.item.oreRequirements.oreType)) {
-										if (ore.Quantity >= desired.item.oreRequirements.Quantity) {
-												inventory.inventoryRemoveItem (desired.item.oreRequirements);
+								if (ore.oreType.Equals (desired.item.neededOreType)) {
+										if (ore.Quantity >= desired.item.neededOreQuantity) {
+												ItemOre oreToRemove = new ItemOre(ore.oreType);
+												oreToRemove.Quantity = desired.oreNeeded.neededOreQuantity;
+												inventory.inventoryRemoveItem (oreToRemove);
 										}
 								}
 						}

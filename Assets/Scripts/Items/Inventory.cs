@@ -76,7 +76,7 @@ public class Inventory
 						return;
 
 				foreach (ItemOre ore in ores) {
-						if (ore.type.Equals (newItem.type)) {
+						if (ore.oreType.Equals (newItem.oreType)) {
 								ore.Quantity += 1;
 								return;
 						}
