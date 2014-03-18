@@ -9,13 +9,15 @@ public class Hud : MonoBehaviour
 		{
 				public ItemBase item;
 				public bool unlocked;
-				public int quantity;
+				public ItemOre oreNeeded;
 
 				public ItemSlot ()
 				{
 						item = null;
 						unlocked = false;
-						quantity = 0;
+
+						oreNeeded = new ItemOre (ItemBase.tOreType.NOT_ORE);
+						oreNeeded.Quantity = 0;
 				}
 		}
 
@@ -160,7 +162,10 @@ public class Hud : MonoBehaviour
 
 												ItemSlot slot = new ItemSlot ();
 												slot.item = newComponent;
-												//Ignoring the quantity in the slot
+
+												//TODO Ask Ari what exact quantities should be needed
+												slot.oreNeeded.oreType = oreType;
+												slot.oreNeeded.Quantity = 3;
 
 												//Unlock the very first tier of components
 												if (intOreIndex == 0)
@@ -730,18 +735,29 @@ public class Hud : MonoBehaviour
 						//TODO Make the button be selected when the confirm key is pressed
 //			SendMessage("onActive");
 
-						//TODO Assuming that we have right amounts of ore right now
-//			string cmpNewCode = ItemComponent.generateComponentCode(ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Copper, ItemWeapon.tWeaponType.WeaponSword,
-//			                                                        ItemComponent.tComponentPart.Blade);
 						//Translate what is being selected
 						Vector2 vec2SelectedComponent = getComponentCoordinateFromIndex (intCompSelGrid);
 
+						//Get the item slot of what we want
+						ItemSlot desired = arrComponentGrids [intCompTypeGrid] [(int)vec2SelectedComponent.x, (int)vec2SelectedComponent.y];
+
 						//Only allow crafting if the player has unlocked the item
-						if (!arrComponentGrids [intCompTypeGrid] [(int)vec2SelectedComponent.x, (int)vec2SelectedComponent.y].unlocked)
+						if (!desired.unlocked)
 								return;
 
+						//Make sure the player has the necessary amounts of ore
+						ArrayList arrOres = inventory.getInventoryOres();
+						bool hasOres = false;
+						foreach (ItemOre ore in arrOres) {
+								if (ore.oreType.Equals (desired.item.oreRequirements.oreType)) {
+										if (ore.Quantity >= desired.item.oreRequirements.Quantity) {
+												inventory.inventoryRemoveItem (desired.item.oreRequirements);
+										}
+								}
+						}
+
 						//Get the new component
-						ItemComponent cmpNew = (ItemComponent)(arrComponentGrids [intCompTypeGrid] [(int)vec2SelectedComponent.x, (int)vec2SelectedComponent.y].item);
+						ItemComponent cmpNew = (ItemComponent)(desired.item);
 
 						//Unlock the crafted component that is one tier above
 						try {
