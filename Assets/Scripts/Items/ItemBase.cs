@@ -73,6 +73,18 @@ public class ItemBase
 		neededOreType = oreType;
 		neededOreQuantity = 1;
     }
+
+	public ItemBase(string name, ItemBase.tOreType oreType)
+	{
+		this.oreType = oreType;
+		type = tItemType.Item;
+		_name = name;
+		_description = "This item is called " + _name + ".";
+		_quantity = 1;
+		
+		neededOreType = oreType;
+		neededOreQuantity = 1;
+	}
  
     virtual public string ToString()
     {

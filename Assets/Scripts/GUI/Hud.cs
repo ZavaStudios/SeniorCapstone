@@ -746,17 +746,23 @@ public class Hud : MonoBehaviour
 								return;
 
 						//Make sure the player has the necessary amounts of ore
-						ArrayList arrOres = inventory.getInventoryOres();
+						ArrayList arrOres = inventory.getInventoryOres ();
 						bool hasOres = false;
 						foreach (ItemOre ore in arrOres) {
-								if (ore.oreType.Equals (desired.item.neededOreType)) {
-										if (ore.Quantity >= desired.item.neededOreQuantity) {
-												ItemOre oreToRemove = new ItemOre(ore.oreType);
-												oreToRemove.Quantity = desired.oreNeeded.neededOreQuantity;
+								if (ore.oreType.Equals (desired.oreNeeded.oreType)) {
+										if (ore.Quantity >= desired.oreNeeded.Quantity) {
+												ItemOre oreToRemove = new ItemOre (ore.oreType);
+												oreToRemove.Quantity = desired.oreNeeded.Quantity;
 												inventory.inventoryRemoveItem (oreToRemove);
+
+												hasOres = true;
+												break;
 										}
 								}
 						}
+
+						if (!hasOres)
+								return;
 
 						//Get the new component
 						ItemComponent cmpNew = (ItemComponent)(desired.item);

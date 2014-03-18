@@ -7,7 +7,7 @@ public class ItemOre : ItemBase
 
 
     public ItemOre(tOreType type)
-        : base(getOreString(type))
+        : base(getOreString(type), type)
     {
         oreType = type;
         this.type = tItemType.Ore;
