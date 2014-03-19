@@ -29,6 +29,8 @@ namespace MazeGeneration
 		public static Transform door;
 		public static Transform key;
 
+		public static CubeAllocator allocator;
+
 		// Cached values so we can spawn new cubes during runtime
 		private float _scalar;
 		private Vector3 _cubeStart;
@@ -335,36 +337,14 @@ namespace MazeGeneration
 		/// <param name="scalar">Value to scale 1 block to.</param>
 		private void InstantiateCube(Cube cube, Vector3 cubeStart, float scalar)
 		{
-			Transform toSpawn;
-			switch (cube.Type)
-			{
-            case ItemBase.tOreType.Stone:
-				toSpawn = mine_cube;
-				break;
-            case ItemBase.tOreType.Bone:
-				toSpawn = ore_cube;
-				break;
-            case ItemBase.tOreType.Iron:
-				toSpawn = ore2_cube;
-				break;
-            case ItemBase.tOreType.Steel:
-				toSpawn = ore3_cube;
-				break;
-            case ItemBase.tOreType.Mithril:
-				toSpawn = ore4_cube;
-				break;
-            case ItemBase.tOreType.NOT_ORE:
-			default:
+			if (cube.Type == ItemBase.tOreType.NOT_ORE)
 				return;
-			}
-			toSpawn.transform.localScale = Vector3.one * scalar;
-			Transform spawned = (Transform)
-				MonoBehaviour.Instantiate(toSpawn,
-			                          	  (new Vector3(cube.X, cube.Y, cube.Z) + cubeStart) * scalar,
-			                          	  Quaternion.identity);
+
+			MineableBlock ct = allocator.GetCube(cube);
+			ct.transform.parent = objHolder.transform;
+			ct.transform.position = (new Vector3(cube.X, cube.Y, cube.Z) + cubeStart) * scalar;
 			cube.Parent = this;
-			spawned.FindChild("Plane").GetComponent<MineableBlock>()._cube = cube;
-            spawned.transform.parent = objHolder.transform;
+            ct.transform.parent = objHolder.transform;
 		}
 
 		public IEnumerable<Cube> DestroyCube(Cube c)
@@ -374,6 +354,12 @@ namespace MazeGeneration
 
 			// We have no reason to return anything, so don't
 			return new List<Cube>();
+		}
+
+		public void DestroyMineableBlock(MineableBlock ct)
+		{
+			DestroyCube(ct._cube);
+			allocator.ReturnCube(ct);
 		}
 	}
 }

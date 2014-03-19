@@ -33,10 +33,12 @@ public class MineableBlock : MonoBehaviour
 
 	void killUnit()
 	{
-		_cube.Parent.DestroyCube(_cube);
-        if (_cube.Type != ItemBase.tOreType.Stone && _cube.Type != ItemBase.tOreType.NOT_ORE)
+		//_cube.Parent.DestroyCube(_cube);
+        // Surface level parent should be a rogue room, so assume:
+		((RogueRoom)_cube.Parent).DestroyMineableBlock(this);
+		if (_cube.Type != ItemBase.tOreType.Stone && _cube.Type != ItemBase.tOreType.NOT_ORE)
             Inventory.getInstance().inventoryAddItem(new ItemOre(_cube.Type));
-	    Destroy (gameObject);
+	    //Destroy (gameObject);
 	}
 
 	void AddToPlayerInventory ()

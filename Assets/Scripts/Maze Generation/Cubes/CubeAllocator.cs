@@ -77,12 +77,14 @@ public class CubeAllocator : MonoBehaviour
 		}
 
 		ct.transform.parent = null;
+		//ct.gameObject.SetActive(true);
 		return ct;
 	}
 
 	public void ReturnCube(MineableBlock ct)
 	{
 		ct.transform.parent = gameObject.transform;
+		//ct.gameObject.SetActive(false);
 		ct.transform.position = DEFAULT_POSITION;
 	}
 

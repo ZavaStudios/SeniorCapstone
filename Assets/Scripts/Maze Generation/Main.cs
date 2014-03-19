@@ -32,6 +32,8 @@ public class Main : MonoBehaviour
 	public Transform skeletonBoss;
 	public Transform spiderBoss;
 
+	public CubeAllocator allocator;
+
     private RogueDungeon dungeon;
 
     // position tracking for loading/unloading rooms
@@ -62,6 +64,7 @@ public class Main : MonoBehaviour
 		RogueRoom.skeletonBoss = skeletonBoss;
 		RogueRoom.spiderBoss = spiderBoss;
         RogueRoom.key = key;
+		RogueRoom.allocator = allocator;
 
 		ZombieWeapon.Player = player;
 		EnemyStaff.player = player;
