@@ -29,7 +29,9 @@ namespace MazeGeneration
 		public static Transform door;
 		public static Transform key;
 
+		// Allocation state
 		public static CubeAllocator allocator;
+		private List<MineableBlock> blocks = new List<MineableBlock>();
 
 		// Cached values so we can spawn new cubes during runtime
 		private float _scalar;
@@ -286,6 +288,9 @@ namespace MazeGeneration
                 return;
 
             isLoaded = false;
+			foreach (MineableBlock ct in blocks)
+				allocator.ReturnCube(ct);
+			blocks.Clear();
             UnityEngine.Object.Destroy(objHolder);
             objHolder = null;
         }
@@ -339,12 +344,11 @@ namespace MazeGeneration
 		{
 			if (cube.Type == ItemBase.tOreType.NOT_ORE)
 				return;
-
-			MineableBlock ct = allocator.GetCube(cube);
-			ct.transform.parent = objHolder.transform;
-			ct.transform.position = (new Vector3(cube.X, cube.Y, cube.Z) + cubeStart) * scalar;
+			
 			cube.Parent = this;
-            ct.transform.parent = objHolder.transform;
+			MineableBlock ct = allocator.GetCube(cube);
+			ct.transform.position = (new Vector3(cube.X, cube.Y, cube.Z) + cubeStart) * scalar;
+			blocks.Add(ct);
 		}
 
 		public IEnumerable<Cube> DestroyCube(Cube c)
@@ -360,6 +364,7 @@ namespace MazeGeneration
 		{
 			DestroyCube(ct._cube);
 			allocator.ReturnCube(ct);
+			blocks.Remove(ct);
 		}
 	}
 }

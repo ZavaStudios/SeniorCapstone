@@ -15,13 +15,15 @@ public class CubeAllocator : MonoBehaviour
 
 	// Personal state
 	private int cubeCount;
+	private Stack<MineableBlock> blocks;
 
-	public void Start()
+	public void Awake()
 	{
+		blocks = new Stack<MineableBlock>(DEFAULT_SIZE);
 		for (int i = 0; i < DEFAULT_SIZE; i++)
 		{
 			MineableBlock ct = (MineableBlock)Instantiate(cubeTransform, DEFAULT_POSITION, Quaternion.identity);
-			ct.transform.parent = gameObject.transform;
+			blocks.Push(ct);
 		}
 		cubeCount = DEFAULT_SIZE;
 	}
@@ -33,10 +35,10 @@ public class CubeAllocator : MonoBehaviour
 
 	public MineableBlock GetCube(Cube cube)
 	{
-		if (gameObject.transform.childCount == 0)
+		if (blocks.Count == 0)
 			AllocCubes();
 
-		MineableBlock ct = gameObject.transform.GetChild(0).GetComponent<MineableBlock>();
+		MineableBlock ct = blocks.Pop();
 		ct._cube = cube;
 		switch (cube.Type)
 		{
@@ -76,15 +78,16 @@ public class CubeAllocator : MonoBehaviour
 			break;
 		}
 
-		ct.transform.parent = null;
+		//ct.transform.parent = null;
 		//ct.gameObject.SetActive(true);
 		return ct;
 	}
 
 	public void ReturnCube(MineableBlock ct)
 	{
-		ct.transform.parent = gameObject.transform;
+		//ct.transform.parent = gameObject.transform;
 		//ct.gameObject.SetActive(false);
+		blocks.Push(ct);
 		ct.transform.position = DEFAULT_POSITION;
 	}
 
@@ -99,7 +102,7 @@ public class CubeAllocator : MonoBehaviour
 		for (int i = 0; i < REALLOC_SIZE; i++)
 		{
 			MineableBlock ct = (MineableBlock)Instantiate(cubeTransform, DEFAULT_POSITION, Quaternion.identity);
-			ct.transform.parent = gameObject.transform;
+			blocks.Push(ct);
 		}
 		Debug.Log("Cubes needed to be instantiated. Now at: " + cubeCount);
 	}
