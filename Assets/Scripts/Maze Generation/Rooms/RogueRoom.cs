@@ -360,7 +360,8 @@ namespace MazeGeneration
 		public IEnumerable<Cube> DestroyCube(Cube c)
 		{
 			foreach (Cube uncovered in Cubes.DestroyCube(c))
-				InstantiateCube(uncovered, _cubeStart, _scalar);
+				if (uncovered.Type != ItemBase.tOreType.NOT_ORE)
+					InstantiateCube(uncovered, _cubeStart, _scalar);
 
 			// We have no reason to return anything, so don't
 			return new List<Cube>();

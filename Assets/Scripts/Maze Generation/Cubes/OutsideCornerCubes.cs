@@ -92,13 +92,48 @@ namespace MazeGeneration
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Depth; y++)
 					for (int z = 0; z < Height; z++)
-						yield return new Cube(this, Cubes[x,y,z], x, y, z);
+						if (IsVisible(x,y,z))
+							yield return new Cube(this, Cubes[x,y,z], x, y, z);
+		}
+		
+		private bool IsVisible(int x, int y, int z)
+		{
+			// if on the boundary: yes
+			if (x == 0 || x == Width-1 ||
+			    y == 0 || y == Depth-1 ||
+			    z == 0 || z == Height-1)
+				return true;
+			
+			if (Cubes[x-1, y, z] == ItemBase.tOreType.NOT_ORE ||
+			    Cubes[x+1, y, z] == ItemBase.tOreType.NOT_ORE ||
+			    Cubes[x, y-1, z] == ItemBase.tOreType.NOT_ORE ||
+			    Cubes[x, y+1, z] == ItemBase.tOreType.NOT_ORE ||
+			    Cubes[x, y, z-1] == ItemBase.tOreType.NOT_ORE ||
+			    Cubes[x, y, z+1] == ItemBase.tOreType.NOT_ORE)
+				return true;
+			
+			return false;
 		}
 
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{
-            Cubes[c.X, c.Y, c.Z] = ItemBase.tOreType.NOT_ORE;
-			return new List<Cube>();	// Return nothing, since we always show everything
+			List<Cube> toRet = new List<Cube>();
+			
+			if (c.X > 0 && !IsVisible(c.X-1, c.Y, c.Z))
+				toRet.Add(new Cube(this, Cubes[c.X-1, c.Y, c.Z], c.X-1, c.Y, c.Z));
+			if (c.X < Width-1 && !IsVisible(c.X+1, c.Y, c.Z))
+				toRet.Add(new Cube(this, Cubes[c.X+1, c.Y, c.Z], c.X+1, c.Y, c.Z));
+			if (c.Y > 0 && !IsVisible(c.X, c.Y-1, c.Z))
+				toRet.Add(new Cube(this, Cubes[c.X, c.Y-1, c.Z], c.X, c.Y-1, c.Z));
+			if (c.Y < Depth-1 && !IsVisible(c.X, c.Y+1, c.Z))
+				toRet.Add(new Cube(this, Cubes[c.X, c.Y+1, c.Z], c.X, c.Y+1, c.Z));
+			if (c.Z > 0 && !IsVisible(c.X, c.Y, c.Z-1))
+				toRet.Add(new Cube(this, Cubes[c.X, c.Y, c.Z-1], c.X, c.Y, c.Z-1));
+			if (c.Z < Height-1 && !IsVisible(c.X, c.Y, c.Z+1))
+				toRet.Add(new Cube(this, Cubes[c.X, c.Y, c.Z+1], c.X, c.Y, c.Z+1));
+			
+			Cubes[c.X, c.Y, c.Z] = ItemBase.tOreType.NOT_ORE;
+			return toRet;
 		}
 	}
 }
