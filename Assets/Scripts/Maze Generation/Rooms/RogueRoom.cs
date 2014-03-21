@@ -98,12 +98,8 @@ namespace MazeGeneration
 		/// <param name="maxDepth">Maximum depth a room can be in the maze, in cube units.</param>
 		/// <param name="doorWidth">How large the openings to the room need to be. Must be no more than Width or Depth.</param>
 		/// <param name="scalar">1 cube -> scalar units in Unity.</param>
-		public virtual void LoadRoom(int maxWidth, int maxDepth, int doorWidth, float scalar)
+		public virtual void StaticLoad(int maxWidth, int maxDepth, int doorWidth, float scalar)
 		{
-            if (isLoaded)
-                return;
-
-            isLoaded = true;
             objHolder = new GameObject("Room_" + GridX + "-" + GridY);
 			// Helpful initial values:
 			Vector3 center = GetCenter(maxWidth, maxDepth);
@@ -247,12 +243,24 @@ namespace MazeGeneration
 					new Vector3((float)Width * 0.5f, 0.0f, (float)Depth * 0.5f) +
 					new Vector3(0.5f, 0.5f, 0.5f);
 
-			if (Cubes != null)
-				foreach (Cube cube in Cubes.EnumerateCubes())
-					InstantiateCube(cube, cubeStart, scalar);
-
 			_scalar = scalar;
 			_cubeStart = cubeStart;
+		}
+
+		/// <summary>
+		/// Loads anything into the room that needs to be spawned at runtime rather than
+		/// in advance. Compare to StaticLoad, which generates objects safe to remain in
+		/// the scene perpetually from the start.
+		/// </summary>
+		public virtual void DynamicLoad()
+		{
+			if (isLoaded)
+				return;
+			isLoaded = true;
+
+			if (Cubes != null)
+				foreach (Cube cube in Cubes.EnumerateCubes())
+					InstantiateCube(cube, _cubeStart, _scalar);
 		}
 
         /// <summary>
@@ -267,16 +275,16 @@ namespace MazeGeneration
         /// <param name="maxDepth">Maximum depth a room can be in the maze, in cube units.</param>
         /// <param name="doorWidth">How large the openings to the room need to be. Must be no more than Width or Depth.</param>
         /// <param name="scalar">1 cube -> scalar units in Unity.</param>
-        public virtual void LoadNeighbors(int maxWidth, int maxDepth, int doorWidth, float scalar, RogueRoom dontLoad)
+        public virtual void LoadNeighbors(RogueRoom dontLoad)
         {
             if (LeftNeighbor != null && LeftNeighbor != dontLoad)
-                LeftNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
+                LeftNeighbor.DynamicLoad();
             if (RightNeighbor != null && RightNeighbor != dontLoad)
-                RightNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
+				RightNeighbor.DynamicLoad();
             if (UpNeighbor != null && UpNeighbor != dontLoad)
-                UpNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
+				UpNeighbor.DynamicLoad();
             if (DownNeighbor != null && DownNeighbor != dontLoad)
-                DownNeighbor.LoadRoom(maxWidth, maxDepth, doorWidth, scalar);
+				DownNeighbor.DynamicLoad();
         }
 
         /// <summary>
@@ -286,13 +294,11 @@ namespace MazeGeneration
         {
             if (!isLoaded)
                 return;
-
             isLoaded = false;
+
 			foreach (MineableBlock ct in blocks)
 				allocator.ReturnCube(ct);
 			blocks.Clear();
-            UnityEngine.Object.Destroy(objHolder);
-            objHolder = null;
         }
 
         /// <summary>

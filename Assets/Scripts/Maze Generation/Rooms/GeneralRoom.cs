@@ -74,13 +74,13 @@ namespace MazeGeneration
 		/// <param name="center">Position of the center of the room in block-lengths</param>
 		/// <param name="totalHeight">Height of surrounding space in block-lengths</param>
 		/// <param name="totalWidth">Width of surrounding space in block-lengths</param> 
-		public override void LoadRoom(int maxWidth, int maxDepth, int doorWidth, float scalar)
+		public override void StaticLoad(int maxWidth, int maxDepth, int doorWidth, float scalar)
 		{
             Vector3 center = GetCenter(maxWidth, maxDepth);
             _scalar = scalar;
             _maxDepth = maxDepth;
             _maxWidth = maxWidth;
-            base.LoadRoom(_maxWidth, _maxDepth, doorWidth, _scalar);
+            base.StaticLoad(_maxWidth, _maxDepth, doorWidth, _scalar);
 
 			// ENEMIES / ETC.
 			if (Enemies != null)
