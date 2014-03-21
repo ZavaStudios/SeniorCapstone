@@ -31,6 +31,7 @@ public class Main : MonoBehaviour
 	public Transform zombieBoss;
 	public Transform skeletonBoss;
 	public Transform spiderBoss;
+	public Transform healthBar;
 
     private RogueDungeon dungeon;
 
@@ -66,6 +67,7 @@ public class Main : MonoBehaviour
 		ZombieWeapon.Player = player;
 		EnemyStaff.player = player;
 		UnitEnemy.player = player;
+		UnitEnemy.healthBarStatic = healthBar;
 		BossUnit.playercc = player.GetComponent<CharacterController>();
         BossUnit.endGamePortal = endGamePortal;
 

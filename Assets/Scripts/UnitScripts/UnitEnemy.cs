@@ -4,11 +4,16 @@ using System.Collections;
 public class UnitEnemy : Unit
 {
 	public static Transform player;
+	public static Transform healthBarStatic;
+	private Transform healthBar;
 	protected CharacterController control;
 	protected Vector3 PlayerPosition;
 	protected Vector3 dir;
 	protected float distance;
 	float turnSpeed = 120;
+	private float healthLost = 0;
+
+	private float healthBarLength;
 //	protected SphereCollider sphere;
 	public BossUnit boss = null;
 	
@@ -17,6 +22,7 @@ public class UnitEnemy : Unit
 		moveSpeed = 5.0f;
 		control = GetComponent<CharacterController>();
         base.Start(); //gets reference to weapon, among other things.
+		healthBar = (Transform) MonoBehaviour.Instantiate(healthBarStatic, transform.position, Quaternion.identity);
 	}
 	
 	protected override void Update ()
@@ -46,9 +52,14 @@ public class UnitEnemy : Unit
 		}
 		else
 		{
-			//Makes sure that the zombie (construction worker mesh) is dropped in from the sky correctly. 
+			//Makes sure that enemies are dropped into the maze correctly.  
 			control.SimpleMove(Vector3.zero);
 		}
+		
+		healthBar.position = transform.position;
+//		healthLost = 1 - (health / maxHealth);
+//		healthBar.localScale -= new Vector3(healthLost, 0, 0);
+//		healthBar.position += new Vector3(healthLost/2, 0, 0);
 	}
 		
 	//A method for how the enemy should behave with their movement.
@@ -69,6 +80,7 @@ public class UnitEnemy : Unit
 		
 		//print ("Ow you kilt meh");
 		Destroy (gameObject);
+		Destroy(healthBar.gameObject);
 
 		// Increment player's score
 		GameObject player = GameObject.FindGameObjectWithTag ("Player");
