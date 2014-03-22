@@ -20,6 +20,7 @@ public class ItemWeapon : ItemEquipment {
 	{
 		List<tWeaponType> nonCraftingWeapons = new List<tWeaponType>();
 
+		nonCraftingWeapons.Add(tWeaponType.WeaponPickaxe);
 		nonCraftingWeapons.Add(tWeaponType.WeaponKey);
 
 		return nonCraftingWeapons;

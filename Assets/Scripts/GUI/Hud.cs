@@ -110,7 +110,7 @@ public class Hud : MonoBehaviour
 				intInvItemsPerCol = Screen.height / intInvSlotHeight;
 
 				//Initialize component data structures
-				int intNumWeapons = Enum.GetNames (typeof(ItemWeapon.tWeaponType)).Length;
+				int intNumWeapons = Enum.GetNames (typeof(ItemWeapon.tWeaponType)).Length - ItemWeapon.getNonCraftingWeapons ().Count;
 				int intNumParts = Enum.GetNames (typeof(ItemComponent.tComponentPart)).Length;
 
 				arrWepPartNames = new string[intNumWeapons * intNumParts];
@@ -124,6 +124,8 @@ public class Hud : MonoBehaviour
 				arrComponentGrids = new ItemSlot[arrWepPartNames.Length][,];
 				int intWepCategoryindex = 0;
 				foreach (ItemWeapon.tWeaponType wepType in (ItemWeapon.tWeaponType[]) Enum.GetValues(typeof(ItemWeapon.tWeaponType))) {
+						if (ItemWeapon.getNonCraftingWeapons ().Contains (wepType))
+								continue;
 						//Weapon categories are a combination of the Weapon type and the weapon part e.g. sword blade and staff arrow
 						foreach (ItemComponent.tComponentPart partType in (ItemComponent.tComponentPart[]) Enum.GetValues(typeof(ItemComponent.tComponentPart))) {
 								string code = ItemComponent.getComponentCategoryCode (wepType, partType);
@@ -132,14 +134,14 @@ public class Hud : MonoBehaviour
 								arrWepPartNames [intWepCategoryindex] = name; //An array to store the names for the weapon parts
 
 								//Get the craftable components based on which category we're in e.g. Lightened copper sword handle
-								arrMakeableComps = new ItemSlot[intNumAtts, intNumOres - ItemBase.getNonCraftingOres().Count]; //Account for non-useable types
+								arrMakeableComps = new ItemSlot[intNumAtts, intNumOres - ItemBase.getNonCraftingOres ().Count]; //Account for non-useable types
 								int intAttIndex = 0;
 								foreach (ItemComponent.tAttributeType attType in (ItemComponent.tAttributeType[])Enum.GetValues(typeof(ItemComponent.tAttributeType))) {
 										//Components will be a combination of the attribute, ore, weapon, and the part
 										int intOreIndex = 0;
 										foreach (ItemComponent.tOreType oreType in (ItemComponent.tOreType[])Enum.GetValues(typeof(ItemComponent.tOreType))) {
 												//Ignore NOT_ORE & Stone types
-												if(ItemBase.getNonCraftingOres().Contains(oreType))
+												if (ItemBase.getNonCraftingOres ().Contains (oreType))
 														continue;
 
 												string newCompCode = ItemComponent.generateComponentCode (attType, oreType, wepType, partType);
@@ -331,18 +333,9 @@ public class Hud : MonoBehaviour
 				Texture2D tex2dButtonFlashBack = new Texture2D (1, 1);
 				UnityEngine.GUIStyle style = new GUIStyle (GUI.skin.button);
 
-
 				//Set the style for selection screens
-				tex2dButtonPassiveBack = (Texture2D)Resources.Load ("InventoryButtonBackground");
-				tex2dButtonActiveBack = (Texture2D)Resources.Load ("SelectedBackground");
-				tex2dButtonFlashBack = (Texture2D)Resources.Load ("SelectedBackgroundFlash");
-		
-				//Backgrounds when I have an active selection
-				style.active.background = tex2dButtonActiveBack;
-				style.focused.background = tex2dButtonActiveBack;
-				style.onFocused.background = tex2dButtonActiveBack;
-				style.onNormal.background = tex2dButtonActiveBack;
-		
+				tex2dButtonPassiveBack = (Texture2D)Resources.Load ("InventoryTypeBackground");
+				
 				//Backgrounds for non-active items
 				style.normal.background = tex2dButtonPassiveBack;
 				style.hover.background = tex2dButtonPassiveBack;
@@ -455,7 +448,6 @@ public class Hud : MonoBehaviour
 				intCompTypeGrid = GUI.SelectionGrid (new Rect (vec2CompTypeStart.x, vec2CompTypeStart.y, vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
 		                                    intCompTypeGrid, arrWepPartNames, 1, style);
 
-				//TODO Index out of range?
 				//List of components
 				ItemSlot[,] selectedComponents = arrComponentGrids [intCompTypeGrid];
 
@@ -488,31 +480,28 @@ public class Hud : MonoBehaviour
 
 
 				//Description Area
-		try{
 				Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
 				//Only show the description if we've unlocked the item
-				string description = "Unlock me by crafting this component in a lower tier.";
+				string description = "Unlock me by crafting this component in a lower tier";
+				ItemSlot selectedComponent = selectedComponents [(int)vec2Description.x, (int)vec2Description.y]; 
 				if (vec2Description.x >= 0 && vec2Description.y >= 0 && 
-						selectedComponents [(int)vec2Description.x, (int)vec2Description.y].unlocked)
+						selectedComponent.unlocked) {
 						description = selectedComponents [(int)vec2Description.x, (int)vec2Description.y].item.getDescription ();
+						description += "\n";
+						description += "This component requires " + selectedComponent.oreNeeded.Quantity + " pieces of "  + selectedComponent.oreNeeded.oreType;
+				}
 
 				GUI.Label (new Rect (11 * intWidthPadding, vec2CompTypeStart.y,
 		                   	vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
 		           description, style);
-		}catch(IndexOutOfRangeException e)
-		{
-			Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
 
-			Debug.Log("X: " + vec2Description.x);
-			Debug.Log("Y: " + vec2Description.y);
-		}
 		}
 
 		private Vector2 getComponentCoordinateFromIndex (int index)
 		{
 				//Assume that all weapon types have the same # of cols a.k.a same # of attributes
 				int cols = (Enum.GetNames (typeof(ItemComponent.tAttributeType))).Length;
-				int tiers = (Enum.GetNames (typeof(ItemComponent.tOreType))).Length - ItemBase.getNonCraftingOres().Count; //Subtract special ores to translate to 0 based indexing
+				int tiers = (Enum.GetNames (typeof(ItemBase.tOreType))).Length - ItemBase.getNonCraftingOres ().Count - 1; //-1 to translate to 0 based indexing
 				int x = index % cols;
 				int y = (tiers - (int)(index / cols));
 
