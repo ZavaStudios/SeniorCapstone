@@ -9,7 +9,7 @@ public class Inventory
 		private ArrayList armors;
 		private ArrayList components;
 		private ArrayList items;
-		private ArrayList ores;
+		private Dictionary<int,int> ores;
 		private static Inventory _instance = null;
 
 		// Use this for initialization
@@ -19,18 +19,15 @@ public class Inventory
 				armors = new ArrayList ();
 				components = new ArrayList ();
 				items = new ArrayList ();
-				ores = new ArrayList ();
+				ores = new Dictionary<int, int> ();
 
 				List<ItemBase.tOreType> exludedOres = ItemBase.getNonCraftingOres ();
 				foreach (ItemBase.tOreType oreType in Enum.GetValues(typeof(ItemBase.tOreType))) {
-						if(exludedOres.Contains(oreType))
-			   				continue;
+						if (exludedOres.Contains (oreType))
+								continue;
 						
 						//Create all the ores beforehand w/ quantity=0
-						ItemOre ore = new ItemOre (oreType);
-						ore.Quantity = 0;
-
-						ores.Add (ore);
+						ores [(int)oreType] = 0;
 				}
 		}
 
@@ -77,13 +74,8 @@ public class Inventory
 				if (newItem == null)
 						return;
 
-				foreach (ItemOre ore in ores) {
-						if (ore.oreType.Equals (newItem.oreType)) {
-								ore.Quantity += 1;
-								return;
-						}
-
-				}
+				//Since ores are defined soly on their ore type, we can disregard any other info about the ore
+				ores [(int)newItem.oreType] += 1;
 		}
 
 		public void inventoryAddItem (ItemBase newItem)
@@ -114,16 +106,41 @@ public class Inventory
 						break;
 
 				case ItemBase.tItemType.Ore:
-						foreach (ItemOre ore in ores) {
-								if (ore.oreType.Equals (itemToRemove.oreType)) {
-										ore.Quantity -= ((ItemOre)itemToRemove).Quantity;
-								}
-						}
-						components.Remove (itemToRemove);
+						ores [(int)itemToRemove.oreType] -= 1;
 						break;
 
 				default:
                 //Defaults are just generic items
+						items.Remove (itemToRemove);
+						break;
+				}
+		}
+
+		/// <summary>
+		/// Remove an item from the inventory by string.
+		/// </summary>
+		/// <param name="weaponBase">Weapon base.</param>
+		public void inventoryRemoveItem (ItemBase itemToRemove, int quantity)
+		{
+				switch (itemToRemove.type) {
+				case ItemBase.tItemType.Weapon:
+						weapons.Remove (itemToRemove);
+						break;
+			
+				case ItemBase.tItemType.Armor:
+						armors.Remove (itemToRemove);
+						break;
+			
+				case ItemBase.tItemType.Component:
+						components.Remove (itemToRemove);
+						break;
+			
+				case ItemBase.tItemType.Ore:
+						ores [(int)itemToRemove.oreType] -= quantity;
+						break;
+			
+				default:
+			//Defaults are just generic items
 						items.Remove (itemToRemove);
 						break;
 				}
@@ -174,12 +191,21 @@ public class Inventory
 				ArrayList temp = new ArrayList ();
 
 				//Only return those ores which have are actually present
-				foreach (ItemOre ore in ores) {
-						if (ore.Quantity > 0)
-								temp.Add (ore);
+				foreach (KeyValuePair<int,int> entry in ores) {
+						if (entry.Value > 0) {
+								ItemOre oreToBeAdded = new ItemOre ((ItemBase.tOreType)entry.Key);
+								oreToBeAdded.Quantity = entry.Value;
+
+								temp.Add (oreToBeAdded);
+						}
 				}
 
 				return temp;
+		}
+		
+		public int getOreQuantity (ItemBase.tOreType oreType)
+		{
+				return ores [(int)oreType];
 		}
 
 }

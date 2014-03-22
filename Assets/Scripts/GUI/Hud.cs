@@ -479,23 +479,34 @@ public class Hud : MonoBehaviour
 		                                   intCompSelGrid, arrSelectedComponentNames, intNumAtts, style);
 
 
+		try{
 				//Description Area
 				Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
 				//Only show the description if we've unlocked the item
 				string description = "Unlock me by crafting this component in a lower tier";
-				ItemSlot selectedComponent = selectedComponents [(int)vec2Description.x, (int)vec2Description.y]; 
+				
+
 				if (vec2Description.x >= 0 && vec2Description.y >= 0 && 
-						selectedComponent.unlocked) {
+			    		selectedComponents [(int)vec2Description.x, (int)vec2Description.y].unlocked) {
+						ItemSlot selectedComponent = selectedComponents [(int)vec2Description.x, (int)vec2Description.y]; 
+
 						description = selectedComponents [(int)vec2Description.x, (int)vec2Description.y].item.getDescription ();
 						description += "\n";
-						description += "This component requires " + selectedComponent.oreNeeded.Quantity + " pieces of "  + selectedComponent.oreNeeded.oreType;
+						description += "This component requires " + selectedComponent.oreNeeded.Quantity + " pieces of " + selectedComponent.oreNeeded.oreType;
+						description += "\n";
+						description += "You currently have " + inventory.getOreQuantity (selectedComponent.oreNeeded.oreType) + " pieces of " + selectedComponent.oreNeeded.oreType;
 				}
 
 				GUI.Label (new Rect (11 * intWidthPadding, vec2CompTypeStart.y,
 		                   	vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
 		           description, style);
-
+		}catch(IndexOutOfRangeException e)
+		{
+			Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
+		Debug.Log("X: " + vec2Description.x);
+		Debug.Log ("Y: " + vec2Description.x);
 		}
+	}
 
 		private Vector2 getComponentCoordinateFromIndex (int index)
 		{
@@ -677,6 +688,7 @@ public class Hud : MonoBehaviour
 								intCompSelGrid = 0;
 						}
 				} else if (InputContextManager.isMENU_DOWN ()) {
+						//TODO Move to the next col instead of to the end
 						//Move down in the respective menu
 						if (intCompSelGrid >= 0) {
 								int intNewSelection = intCompSelGrid + intCompSelCols;
@@ -720,7 +732,7 @@ public class Hud : MonoBehaviour
 										if (ore.Quantity >= desired.oreNeeded.Quantity) {
 												ItemOre oreToRemove = new ItemOre (ore.oreType);
 												oreToRemove.Quantity = desired.oreNeeded.Quantity;
-												inventory.inventoryRemoveItem (oreToRemove);
+												inventory.inventoryRemoveItem (oreToRemove, desired.oreNeeded.Quantity);
 
 												hasOres = true;
 												break;
