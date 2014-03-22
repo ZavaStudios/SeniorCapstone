@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ItemWeapon : ItemEquipment {
 
@@ -14,6 +15,16 @@ public class ItemWeapon : ItemEquipment {
         WeaponPickaxe = 4,
 		WeaponKey = 5,
     };
+
+	public static List<tWeaponType> getNonCraftingWeapons()
+	{
+		List<tWeaponType> nonCraftingWeapons = new List<tWeaponType>();
+
+		nonCraftingWeapons.Add(tWeaponType.WeaponKey);
+
+		return nonCraftingWeapons;
+
+	}
 
     public ItemWeapon(string name, tWeaponType wepType)
         : base(name, tItemType.Weapon)

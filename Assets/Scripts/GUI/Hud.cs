@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Hud : MonoBehaviour
 {
-		//A private struct to hold represent an inventory slot
+		//A private class to represent an inventory slot
 		private class ItemSlot
 		{
 				public ItemBase item;
@@ -20,21 +20,6 @@ public class Hud : MonoBehaviour
 						oreNeeded.Quantity = 0;
 				}
 		}
-
-		//Declare public constants
-		public const KeyCode keyCodeInventory = KeyCode.I;
-		public const KeyCode keyCodeCrafting = KeyCode.C;
-		public const KeyCode keyCodeAssembleItems = KeyCode.U;
-		public const KeyCode keyCodeMenusMenu = KeyCode.O;
-
-		//Up down left right a.k.a WASD
-		public const KeyCode keyCodeInventoryUp = KeyCode.UpArrow;
-		public const KeyCode keyCodeInventoryLeft = KeyCode.LeftArrow;
-		public const KeyCode keyCodeInventoryDown = KeyCode.DownArrow;
-		public const KeyCode keyCodeInventoryRight = KeyCode.RightArrow;
-		public const KeyCode keyCodeInventoryAltLeft = KeyCode.A;
-		public const KeyCode keyCodeInventoryAltRight = KeyCode.D;
-		public const KeyCode keyCodeConfirm = KeyCode.J;
 
 		//Declare instance variables
 		protected enum tMenuStates
@@ -147,14 +132,14 @@ public class Hud : MonoBehaviour
 								arrWepPartNames [intWepCategoryindex] = name; //An array to store the names for the weapon parts
 
 								//Get the craftable components based on which category we're in e.g. Lightened copper sword handle
-								arrMakeableComps = new ItemSlot[intNumAtts, intNumOres - 1]; //Account for NOT_ORE type
+								arrMakeableComps = new ItemSlot[intNumAtts, intNumOres - ItemBase.getNonCraftingOres().Count]; //Account for non-useable types
 								int intAttIndex = 0;
 								foreach (ItemComponent.tAttributeType attType in (ItemComponent.tAttributeType[])Enum.GetValues(typeof(ItemComponent.tAttributeType))) {
 										//Components will be a combination of the attribute, ore, weapon, and the part
 										int intOreIndex = 0;
 										foreach (ItemComponent.tOreType oreType in (ItemComponent.tOreType[])Enum.GetValues(typeof(ItemComponent.tOreType))) {
-												//Ignore NOT_ORE types
-												if (oreType.Equals (ItemComponent.tOreType.NOT_ORE))
+												//Ignore NOT_ORE & Stone types
+												if(ItemBase.getNonCraftingOres().Contains(oreType))
 														continue;
 
 												string newCompCode = ItemComponent.generateComponentCode (attType, oreType, wepType, partType);
@@ -202,22 +187,6 @@ public class Hud : MonoBehaviour
 								menuCode = tMenuStates.MENU_MAIN;
 
 
-				} else if (InputContextManager.isITEM_MENU_PUSHED ()) {
-//		else if (InputContextManager.isMENU_LEFT()) //Allow toggling of the inventory when the corresponding button has been pressed
-						if (menuCode == tMenuStates.MENU_NONE)
-								menuCode = tMenuStates.INVENTORY;
-						else if (menuCode == tMenuStates.INVENTORY)
-								menuCode = tMenuStates.MENU_NONE;
-				} else if (Input.GetKeyUp (keyCodeCrafting)) { //Allow toggling on/off of the crafting menu
-						if (menuCode == tMenuStates.MENU_NONE)
-								menuCode = tMenuStates.CRAFTING;
-						else if (menuCode == tMenuStates.CRAFTING)
-								menuCode = tMenuStates.MENU_NONE;
-				} else if (Input.GetKeyUp (keyCodeAssembleItems)) { //Allow toggling on/off of the assembling menu
-						if (menuCode == tMenuStates.MENU_NONE)
-								menuCode = tMenuStates.ASSEMBLING;
-						else if (menuCode == tMenuStates.ASSEMBLING)
-								menuCode = tMenuStates.MENU_NONE;
 				}
 
 //				//Take care of movement inside menus
@@ -518,7 +487,8 @@ public class Hud : MonoBehaviour
 		                                   intCompSelGrid, arrSelectedComponentNames, intNumAtts, style);
 
 
-				//Description Menu
+				//Description Area
+		try{
 				Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
 				//Only show the description if we've unlocked the item
 				string description = "Unlock me by crafting this component in a lower tier.";
@@ -529,13 +499,20 @@ public class Hud : MonoBehaviour
 				GUI.Label (new Rect (11 * intWidthPadding, vec2CompTypeStart.y,
 		                   	vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
 		           description, style);
+		}catch(IndexOutOfRangeException e)
+		{
+			Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
+
+			Debug.Log("X: " + vec2Description.x);
+			Debug.Log("Y: " + vec2Description.y);
+		}
 		}
 
 		private Vector2 getComponentCoordinateFromIndex (int index)
 		{
 				//Assume that all weapon types have the same # of cols a.k.a same # of attributes
 				int cols = (Enum.GetNames (typeof(ItemComponent.tAttributeType))).Length;
-				int tiers = (Enum.GetNames (typeof(ItemComponent.tOreType))).Length - 2; //-1 for the NOT_ORE, -1 to translated to 0 based indexing
+				int tiers = (Enum.GetNames (typeof(ItemComponent.tOreType))).Length - ItemBase.getNonCraftingOres().Count; //Subtract special ores to translate to 0 based indexing
 				int x = index % cols;
 				int y = (tiers - (int)(index / cols));
 
@@ -616,8 +593,7 @@ public class Hud : MonoBehaviour
                                               intSelectedWeapon, arrStringWeapons, intInvItemsPerRow, style);
 
 				if (boolEquipWeapon) {
-						//TODO Don't try and equip things other than weapons
-
+						//Not allowing equipping of things other than weapons by bounding the index
 						unitPlayer.equipWeapon (((ItemWeapon)arrListWeapons [intSelectedWeapon]).weaponType.ToString ());
 						boolEquipWeapon = false;
 				}
@@ -675,10 +651,12 @@ public class Hud : MonoBehaviour
 				} else if (InputContextManager.isMENU_SELECT ()) {
 						//Time to craft an item
 
-						//TODO remove required components from inventory
 						Inventory i = Inventory.getInstance ();
 
+						//Add the item to the player's inventory
 						i.inventoryAddItem (ItemFactory.createWeapon (arrAssembleWeapons [intAssembleWeapon] [0], arrAssembleWeapons [intAssembleWeapon] [1]));
+
+						//Remove the components from the inventory
 						i.inventoryRemoveItem (arrAssembleWeapons [intAssembleWeapon] [0]);
 						i.inventoryRemoveItem (arrAssembleWeapons [intAssembleWeapon] [1]);
 

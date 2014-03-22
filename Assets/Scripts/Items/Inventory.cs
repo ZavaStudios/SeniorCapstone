@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Inventory
 {
@@ -20,11 +21,12 @@ public class Inventory
 				items = new ArrayList ();
 				ores = new ArrayList ();
 
+				List<ItemBase.tOreType> exludedOres = ItemBase.getNonCraftingOres ();
 				foreach (ItemBase.tOreType oreType in Enum.GetValues(typeof(ItemBase.tOreType))) {
-						if (oreType.Equals (ItemBase.tOreType.NOT_ORE) || oreType.Equals (ItemBase.tOreType.Stone))
-								continue;
-
-						//Create all the ores beforehand
+						if(exludedOres.Contains(oreType))
+			   				continue;
+						
+						//Create all the ores beforehand w/ quantity=0
 						ItemOre ore = new ItemOre (oreType);
 						ore.Quantity = 0;
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class ItemBase
@@ -11,7 +12,6 @@ public class ItemBase
     public tOreType oreType;
     public Texture2D imageIcon;
     public tItemType type;
-	public tOreType neededOreType;
 	public int neededOreQuantity;
 
     public enum tItemType
@@ -35,6 +35,16 @@ public class ItemBase
         Ethereal = 7,
         Stone = 8,  // probably not intended to be in the inventory, but needed elsewhere
     }
+
+	public static List<tOreType> getNonCraftingOres()
+	{
+		List<tOreType> nonCrafting = new List<tOreType>();
+
+		nonCrafting.Add(tOreType.NOT_ORE);
+		nonCrafting.Add(tOreType.Stone);
+
+		return nonCrafting;
+	}
 
     static public string getOreString(tOreType ore)
     {
@@ -69,8 +79,7 @@ public class ItemBase
         _name = name;
         _description = "This item is called " + _name + ".";
 		_quantity = 1;
-
-		neededOreType = oreType;
+		
 		neededOreQuantity = 1;
     }
 
@@ -82,7 +91,6 @@ public class ItemBase
 		_description = "This item is called " + _name + ".";
 		_quantity = 1;
 		
-		neededOreType = oreType;
 		neededOreQuantity = 1;
 	}
  
