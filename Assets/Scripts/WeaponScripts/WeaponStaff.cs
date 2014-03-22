@@ -5,15 +5,10 @@ using System.Collections;
 public class WeaponStaff : WeaponBase
 {
 	float bulletSpeed =  1000.0f;
-	float specialSpeed = 2000.0f;
-	
+		
 	// Use this for initialization
 	protected override void Start ()
 	{
-		attackRange = 10.0f;
-		weaponDamage = 20.0f;
-		attackDelay = 0.5f;
-        specialDelay = 3.0f;
 		base.Start();
 	}
 	
@@ -27,11 +22,10 @@ public class WeaponStaff : WeaponBase
 		 // Instantiate the projectile at the position and rotation of this transform
     	ProjectileFireball p;
     	GameObject clone = (GameObject)GameObject.Instantiate(Resources.Load("Fireball"), startPos,Character.getLookRotation());
-		clone.gameObject.AddComponent("ProjectileFireball");
+		p = (ProjectileFireball) clone.gameObject.AddComponent("ProjectileFireball");
 		Physics.IgnoreCollision(clone.collider,Character.collider);
 		
-		p = clone.GetComponent<ProjectileFireball>();
-		p.damage = weaponDamage;
+		p.damage = Character.AttackDamage;
 		
 		
     	// Add force to the cloned object in the object's forward direction
@@ -47,7 +41,10 @@ public class WeaponStaff : WeaponBase
             //print("tag: " + rayHit.collider.gameObject.tag);
             if(rayHit.collider.gameObject.CompareTag("Floor"))
             {
-                GameObject.Instantiate(Resources.Load("SnowburstTimer"), rayHit.point,Character.transform.rotation);
+                SnowburstTimer t;
+                GameObject snowburst = (GameObject) GameObject.Instantiate(Resources.Load("SnowburstTimer"), rayHit.point,Character.transform.rotation);
+                t = snowburst.GetComponent<SnowburstTimer>();
+                t.damage = Character.AttackDamage * specialAttackDamageRelative;
                 return;
             }
         }

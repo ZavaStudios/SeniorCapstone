@@ -11,10 +11,7 @@ public class WeaponKey : WeaponBase
     // Use this for initialization
     protected override void Start ()
     {
-        attackRange = 10.0f;
-		weaponDamage = 20.0f;
-        attackDelay = 1.2f;
-
+        attackRange = 5.0f;
         base.Start();
     }
     

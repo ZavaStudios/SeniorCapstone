@@ -13,7 +13,7 @@ public class WeaponBow : WeaponBase {
         base.Start();
         capCollider = Character.GetComponent<CharacterController>();
         specialRange = 10;
-        specialDelay = 1.0f;
+        specialAttackSpeedRelative = 1.0f;
 	}
 	
 	// Update is called once per frame
@@ -35,11 +35,6 @@ public class WeaponBow : WeaponBase {
 
     protected override void specialAttackRoutine ()
     {
-        //print ("ZOOM");
-
-
-        //Vector3 p1 = transform.position + capCollider.center + Vector3.up * -(capCollider.height*0.5f - capCollider.radius);
-        //Vector3 p2 = p1 + Vector3.up * (capCollider.height - capCollider.radius);
 
         Vector3 p1 = transform.position + capCollider.center + Vector3.up * -(capCollider.height*0.5f - capCollider.radius);
 		Vector3 p2 = transform.position + capCollider.center + Vector3.up *  (capCollider.height*0.5f - capCollider.radius);
@@ -56,13 +51,5 @@ public class WeaponBow : WeaponBase {
 
         Vector3 distanceVector = Character.getLookDirection() * distance;
         Character.transform.position = new Vector3(Character.transform.position.x + distanceVector.x, Mathf.Clamp(Character.transform.position.y + distanceVector.y,capCollider.height*0.6f,100),Character.transform.position.z + distanceVector.z);
-        //if(Physics.Raycast(Character.getEyePosition(), Character.getLookDirection(), out rayHit, specialRange,1<<8)) //layer 8 = WORLD, look at world only, no enemies. Dont care bout dem.
-        //{
-        //    Character.transform.position = rayHit.point - Character.getLookDirection() * 2 ;
-        //}
-        //else
-        //{
-        //    Character.transform.position += Character.getLookDirection()*specialRange;
-        //}
 	}
 }

@@ -8,10 +8,8 @@ public class ZombieWeapon : WeaponBase
 	// Use this for initialization
 	protected override void Start ()
 	{
-		attackRange = 2.5f;
-		weaponDamage = 40.0f;
-		attackDelay = 4.0f;
-		base.Start();
+        base.Start();
+        attackRange = 2.5f;
 	}
 	
 	// Update is called once per frame
@@ -37,7 +35,7 @@ public class ZombieWeapon : WeaponBase
 				if(!enemy)
 					print ("that is not a real enemy");
 				else
-					enemy.doDamage(weaponDamage);
+					enemy.doDamage(Character.AttackDamage);
 			}
 		}
 	}

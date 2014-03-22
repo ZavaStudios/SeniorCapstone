@@ -17,8 +17,6 @@ public class WeaponTurretAI : WeaponBase {
     {
         base.Start();
         attackRange = 10;
-        attackDelay = 2.1f;
-        specialDelay = 7.0f;
     }
 	
 

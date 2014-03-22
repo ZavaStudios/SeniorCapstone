@@ -12,11 +12,9 @@ public class WeaponBase : MonoBehaviour
 	protected RaycastHit rayHit;
 		
 	public float attackRange = 0f;
-	public float weaponDamage = 0f;
-	public float attackDelay = 2.0f; //default 2 second attack delay.
-	public float specialRange = 0f;
-    public float specialDelay = 1.0f;
-    public float specialDamage = 0f;
+    public float specialRange = 0.0f;
+    public float specialAttackSpeedRelative = 1.0f;
+    public float specialAttackDamageRelative = 1.0f;
 
 	private float nextAttack = 0.0f;
     protected float nextSpecialAttack = 0.0f;
@@ -39,7 +37,7 @@ public class WeaponBase : MonoBehaviour
     {
         if (Time.time >= nextAttack)
 	    {
-	        nextAttack = Time.time + attackDelay;
+	        nextAttack = Time.time + Character.AttackDelay;
        		attackRoutine(Character.getEyePosition(),Character.getLookDirection());
                 
 			if(Character is UnitPlayer)
@@ -77,7 +75,7 @@ public class WeaponBase : MonoBehaviour
     {
         if (Time.time >= nextSpecialAttack)
 	    {
-	        nextSpecialAttack = Time.time + specialDelay;
+	        nextSpecialAttack = Time.time + Character.AttackDelay * specialAttackSpeedRelative;
        		specialAttackRoutine();
 	    }
 

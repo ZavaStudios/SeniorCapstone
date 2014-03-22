@@ -3,6 +3,8 @@ using System.Collections;
 
 public class SnowburstTimer : MonoBehaviour {
 
+
+    public float damage = 0.0f;
 	// Use this for initialization
 	void Start () 
     {
@@ -22,7 +24,7 @@ public class SnowburstTimer : MonoBehaviour {
         {
             if (Vector3.Distance(transform.position, enemy.transform.position) < 30)
             {
-                enemy.gameObject.GetComponent<Unit>().doDamage(25);
+                enemy.gameObject.GetComponent<Unit>().doDamage(damage);
             }
         }
 
