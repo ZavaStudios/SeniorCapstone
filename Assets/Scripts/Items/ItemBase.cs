@@ -12,7 +12,7 @@ public class ItemBase
     public tOreType oreType;
     public Texture2D imageIcon;
     public tItemType type;
-	public int neededOreQuantity;
+	public int neededOreQuantity; //TODO Currently not used
 
     public enum tItemType
     {
