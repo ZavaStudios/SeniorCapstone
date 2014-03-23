@@ -71,7 +71,8 @@ public class Hud : MonoBehaviour
 		int intInvItemsPerRow;
 		int intInvItemsPerCol;
 		int intCompTypeWidth;
-		int intCompSelCols = 3;
+		int intCompSelCols = (Enum.GetNames(typeof(ItemComponent.tAttributeType)).Length);
+		int intCompSelRows = (Enum.GetNames(typeof(ItemBase.tOreType)).Length - ItemBase.getNonCraftingOres().Count);
 
 		//Vector 2's to store some x and y components
 		Vector2 vec2CompTypeStart;
@@ -526,7 +527,7 @@ public class Hud : MonoBehaviour
 
 		private void layoutInventoryGrid ()
 		{
-
+				//TODO Show equipped items. Helmet on top, sword and armor in the middle, and boots @ bottom
 //        int intWidthPadding = Screen.width / 8;
 //        int intHeightPadding = Screen.height / 8;
 
@@ -692,6 +693,12 @@ public class Hud : MonoBehaviour
 						//Move down in the respective menu
 						if (intCompSelGrid >= 0) {
 								int intNewSelection = intCompSelGrid + intCompSelCols;
+
+								if(intNewSelection > arrSelectedComponentNames.Length - 1) //If we need to move to the top of the next col
+								{
+									intNewSelection = intNewSelection % intCompSelCols;
+								}
+
 								intCompSelGrid = Math.Min (arrSelectedComponentNames.Length - 1, intNewSelection);
 						} else { //I'm in the component type menu
 								int intNewSelection = intCompTypeGrid + 1;
