@@ -12,14 +12,6 @@ public class Inventory
 		private Dictionary<int,int> ores;
 		private static Inventory _instance = null;
 
-
-        private ItemEquipment armorHead;
-        private ItemEquipment armorChest;
-        private ItemEquipment armorHands;
-        private ItemEquipment armorLegs;
-        private ItemEquipment armorBoots;
-        private ItemEquipment weapon;
-
 		// Use this for initialization
 		private Inventory ()
 		{
@@ -28,13 +20,6 @@ public class Inventory
 				components = new ArrayList ();
 				items = new ArrayList ();
 				ores = new Dictionary<int, int> ();
-
-                armorHead = null;
-                armorChest = null;
-                armorHands = null;
-                armorLegs = null;
-                armorBoots = null;
-                weapon = null;
 
 				List<ItemBase.tOreType> exludedOres = ItemBase.getNonCraftingOres ();
 				foreach (ItemBase.tOreType oreType in Enum.GetValues(typeof(ItemBase.tOreType))) {
