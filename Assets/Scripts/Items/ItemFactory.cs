@@ -32,10 +32,13 @@ public static class ItemFactory
 		} 
 		
         float totalDmg = handle.damage + blade.damage;
-		float totalSpeed = handle.atkspd + blade.damage;
-		float totalArmor = blade.armor + handle.armor;
+		float totalSpeed = handle.atkspd + blade.atkspd;
+        float totalArmor = blade.armor + handle.armor;
 		float totalHealth = blade.health + handle.health;
         float totalMoveSpeedModifier = handle.moveSpeedModifier + blade.moveSpeedModifier; //get moveSpeed from handle
+
+
+        Debug.Log( totalDmg +", " + totalSpeed +", " + totalArmor +", " + totalHealth + ", " +totalMoveSpeedModifier);
 		
 		string handleOre = ItemBase.getOreString(handle.oreType);
 		string bladeOre = ItemBase.getOreString(blade.oreType);
@@ -97,21 +100,33 @@ public static class ItemFactory
                 moveSpeedModifier = -0.25f + 0.02f * (int)oreType;
             break;
             case ItemComponent.tAttributeType.Normal:
-                health += 3 + 2 * (int)oreType; //5 to 17 bonus health
-                armor += 3 + 2 * (int)oreType; //5 to 25 bonus armor
+                health += 1 + 2 * (int)oreType; //5 to 17 bonus health
+                armor +=  2 * (int)oreType; //5 to 17 bonus armor
             break;
             case ItemComponent.tAttributeType.Light:
-                damage *= 0.8f;
-                speed *= 0.9f;
+                damage *= 0.9f;
+                speed *= 0.7f;
                 moveSpeedModifier = 0 + 0.02f * (int)oreType;
             break;
         }
 
+        //70% of damage comes from blade, 70% of delay comes from handle...
+        if ( ItemComponent.getComponentPart(strCompCode) == ItemComponent.tComponentPart.Blade)
+        {
+            damage *= 0.7f;
+            speed *= 0.3f;
+            Debug.Log(speed);
+            moveSpeedModifier *= 0.3f;
+        }
+        else
+        {
+            damage *= 0.3f;
+            speed *= 0.7f;
+            Debug.Log(speed);
+            moveSpeedModifier *= 0.7f;
+        }
 
-
-
-
-         //70% of damage comes from blade, 70% of delay comes from handle...
+ 
         return new ItemComponent (damage, speed, armor, health, moveSpeedModifier, itemName, strCompCode, itemDescription);
     }
         

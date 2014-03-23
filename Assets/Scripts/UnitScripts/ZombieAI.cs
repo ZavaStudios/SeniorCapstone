@@ -17,6 +17,7 @@ public class ZombieAI : UnitEnemy
         
 		AttackDamage = 40.0f;
 		AttackDelay = 4.0f;
+        armor = 20;
 	}
 	
 	// Update is called once per frame

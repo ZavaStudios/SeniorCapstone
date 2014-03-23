@@ -21,16 +21,23 @@ public class UnitPlayer : Unit {
         
         inventory.inventoryAddItem((ItemWeapon)myFirstPickaxe);
         
-		string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Iron, ItemWeapon.tWeaponType.WeaponSword,
+		string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
 		                                                       ItemComponent.tComponentPart.Blade);
-		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Iron, ItemWeapon.tWeaponType.WeaponSword,
+		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
+		                                                        ItemComponent.tComponentPart.Handle);
+
+		string bladeCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
+		                                                       ItemComponent.tComponentPart.Blade);
+		string handleCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
 		                                                        ItemComponent.tComponentPart.Handle);
 
         ItemBase myBlade = ItemFactory.createComponent(bladeCode);
         ItemBase myHandle = ItemFactory.createComponent(handleCode);
+                ItemBase myBlade2 = ItemFactory.createComponent(bladeCode2);
+        ItemBase myHandle2 = ItemFactory.createComponent(handleCode2);
 
         ItemWeapon myWeapon = ItemFactory.createWeapon((ItemComponent) myBlade, (ItemComponent) myHandle);
-
+        ItemWeapon myWeapon2 = ItemFactory.createWeapon((ItemComponent) myBlade2, (ItemComponent) myHandle2);
         inventory.inventoryAddItem(myWeapon);
 
 		base.Start();
