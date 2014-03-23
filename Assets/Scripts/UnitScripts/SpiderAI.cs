@@ -14,6 +14,8 @@ public class SpiderAI : UnitEnemy
 		moveSpeed = 10; // Moves as fast as a player can sprint. 
 		maxHealth = 10; //Very low life for a spider (one hit)
 		health = 10;
+        AttackDamage = 1;
+		AttackDelay = 1f;
 	}
 	
 	// Update is called once per frame

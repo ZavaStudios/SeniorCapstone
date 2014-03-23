@@ -9,18 +9,15 @@ public class Unit : MonoBehaviour
     public Inventory inventory;
 
     public bool vulnerable = true;
-    protected float attackDamage;
-    protected float attackDelay;
 
     protected float primaryAttackDamage;
     protected float primaryAttackDelay;
-    protected float secondaryAttackDamage;
-    protected float secondaryAttackDelay;
 
     protected float armor;
 	protected float health = 100.0f;
     protected float maxHealth = 100.0f;
 	public float moveSpeed = 10.0f;
+
 	public WeaponBase weapon;
 
     public float Health

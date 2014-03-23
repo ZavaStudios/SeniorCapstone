@@ -9,9 +9,6 @@ public class SpiderWeapon : ZombieWeapon
 	{
 		base.Start();
 		attackRange = 2;
-		weaponDamage = 1;
-		attackDelay = 1f;
-		
 	}
 	
 	// Update is called once per frame

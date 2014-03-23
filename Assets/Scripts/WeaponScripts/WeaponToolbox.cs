@@ -13,12 +13,11 @@ public class WeaponToolbox : WeaponBase
 	// Use this for initialization
 	protected override void Start ()
 	{
-		attackRange = 2.0f;
-		weaponDamage = 20.0f;
-		attackDelay = 2.0f;
+        
+		base.Start();
         attackRange = 5;
         currentTurret = GameObject.FindGameObjectWithTag("PlayerTurret"); 
-		base.Start();
+        specialAttackDamageRelative = 1.2f;
 	}
 	
 	// Update is called once per frame
@@ -39,7 +38,7 @@ public class WeaponToolbox : WeaponBase
                 if(!enemy)
                     print ("that is not a real enemy");
                 else
-                    enemy.doDamage(weaponDamage);
+                    enemy.doDamage(Character.AttackDamage);
             }
         }
         
@@ -62,7 +61,10 @@ public class WeaponToolbox : WeaponBase
                     Destroy(currentTurret);
                 }
                 
+                UnitTurret t;
                 currentTurret = (GameObject)GameObject.Instantiate(Resources.Load("Turret"), rayHit.point,Character.transform.rotation);
+                t = currentTurret.GetComponent<UnitTurret>();
+                t.AttackDamage = Character.AttackDamage * specialAttackDamageRelative;
                 return;
             }
         }

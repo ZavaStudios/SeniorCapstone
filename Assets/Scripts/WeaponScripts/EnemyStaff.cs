@@ -19,8 +19,7 @@ public class EnemyStaff : WeaponBase
 //		gameObject.layer = myLayer;
 //		Physics.IgnoreLayerCollision(30, 10, true);
 		attackRange = 5.0f;
-		weaponDamage = 20.0f;
-		attackDelay = 0.5f;
+
 		base.Start();
 		
 		enemyCollider = this.collider;
@@ -43,7 +42,7 @@ public class EnemyStaff : WeaponBase
 		Physics.IgnoreCollision(clone.collider, enemyCollider);
 		
 		p = clone.GetComponent<ProjectileFireballEnemy>();
-		p.damage = weaponDamage;
+		p.damage = Character.AttackDamage;
 		
 		
     	// Add force to the cloned object in the object's forward direction

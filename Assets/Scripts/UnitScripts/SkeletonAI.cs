@@ -14,6 +14,8 @@ public class SkeletonAI : UnitEnemy
 		moveSpeed = 7; //Moves the same speed as a player. 
 		maxHealth = 50; // Half the health as a zombie and player.
 		health = 50;
+        AttackDamage = 20.0f;
+		AttackDelay = 0.5f;
 	}
 	
 	// Update is called once per frame

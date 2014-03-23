@@ -14,6 +14,9 @@ public class ZombieAI : UnitEnemy
 		maxHealth = 100; //Set the health of the zombie.
 		health = 100;
 		moveSpeed = 5; //Move half as fast as the player. 
+        
+		AttackDamage = 40.0f;
+		AttackDelay = 4.0f;
 	}
 	
 	// Update is called once per frame

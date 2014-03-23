@@ -21,6 +21,10 @@ public class UnitTurret : Unit {
         
         weaponModel = transform.Find("Weapon");
 
+        
+        AttackDelay = 1.8f;
+        AttackDamage = 10f;
+
     }
     
 	protected override void Update ()
