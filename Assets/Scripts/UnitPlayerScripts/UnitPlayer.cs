@@ -17,7 +17,7 @@ public class UnitPlayer : Unit {
 		
 		//Add the default weapons
 		//TODO Instead of using the weapon types, use the names. Need some way to map between the names back to the types
-        ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.");
+        ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, 0.0f, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.");
         
         inventory.inventoryAddItem((ItemWeapon)myFirstPickaxe);
         

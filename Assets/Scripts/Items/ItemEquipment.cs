@@ -7,20 +7,22 @@ public class ItemEquipment : ItemBase {
 	protected float _atkspd = 0.0f;
 	protected float _armor = 0.0f;
 	protected float _health = 0.0f;
-
+    protected float _moveSpeedModifier = 1.0f;
+    
     public ItemEquipment(string name, tItemType itemtype) 
         : base(name)
     {
         this.type = itemtype;
     }
 
-    public ItemEquipment(float damage, float atkspd, float armor, float health, string name, tItemType itemtype, string description)
+    public ItemEquipment(float damage, float atkspd, float armor, float health, float moveSpeedModifier, string name, tItemType itemtype, string description)
         : base(name)
 	{
 		_damage = damage;
 		_atkspd = atkspd;
 		_armor = armor;
 		_health = health;
+        _moveSpeedModifier = moveSpeedModifier;
         this.type = itemtype;
 
 	}
@@ -47,6 +49,12 @@ public class ItemEquipment : ItemBase {
     {
         set { this._health = value; }
         get { return this._health; }
+    }
+
+    public float moveSpeedModifier
+    {
+        set { this._moveSpeedModifier = value; }
+        get { return this._moveSpeedModifier; }
     }
 
 	public string description

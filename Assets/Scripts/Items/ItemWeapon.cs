@@ -32,8 +32,8 @@ public class ItemWeapon : ItemEquipment {
         this.weaponType = wepType;        
     }
 
-    public ItemWeapon(float damage, float atkspd, float armor, float health, string name, tWeaponType wepType, string description)
-        : base(damage,atkspd,armor,health,name,tItemType.Weapon,description)
+    public ItemWeapon(float damage, float atkspd, float armor, float health, float moveSpeedModifier, string name, tWeaponType wepType, string description)
+        : base(damage,atkspd,armor,health,moveSpeedModifier,name,tItemType.Weapon,description)
 	{
         this.weaponType = wepType;
 	}
