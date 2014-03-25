@@ -52,6 +52,75 @@ public static class ItemFactory
 		return new ItemWeapon(totalDmg,totalSpeed,totalArmor,totalHealth,totalMoveSpeedModifier,weaponName,wepType,weaponDescription);
 	}
 
+    //creates an ItemArmor based on the ArmorCode passed to it.
+    public static ItemArmor createArmor (string strArmorCode)
+    {
+        int oreType =(int) ItemArmor.getArmorOre (strArmorCode); 
+        string itemName = ItemArmor.getArmorName (strArmorCode);
+		string itemDescription =  "This is a " + ItemArmor.getArmorName(strArmorCode) + ".";
+
+        float damage = 0.0f;
+		float speed = 0.0f;
+        
+        float armor = 0.0f;
+		float health = 0.0f;
+        float moveSpeedModifier = 0.0f;
+        
+        
+        //build damage and delay based on armor part...
+        switch(ItemArmor.getArmorPart(strArmorCode))
+        {
+            case ItemArmor.tArmorPart.Chest:
+                armor = 2.5f * oreType;
+                health = 5 * oreType;
+                health += (oreType > 4) ? 5 : 0;
+                health += (oreType == 7) ? 5 : 0;
+            break;
+            case ItemArmor.tArmorPart.Head:
+                armor = 1.5f * oreType;
+                health = 2 * oreType;
+                damage += 5;
+                damage += (oreType > 4) ? 5 : 0;
+                damage += (oreType == 7) ? 5 : 0;
+            break;
+            case ItemArmor.tArmorPart.Legs:
+                armor = 2f * oreType;
+                health = 3 * oreType;
+                moveSpeedModifier += 0.15f;
+                speed -= (oreType > 4) ? 0.01f : 0;
+                speed -= (oreType == 7) ? 0.02f : 0;
+            break;
+            default:
+                health = -99;
+                moveSpeedModifier = -1;
+            break;
+        }
+        
+        //modify damage delay health etc based on heavy/light status
+        switch(ItemArmor.getArmorAttribute(strArmorCode))
+        {
+            case ItemArmor.tAttributeType.Heavy:
+                armor *= (1+ 0.1f*oreType);
+                health *= (1+ 0.1f*oreType);
+                moveSpeedModifier += (-0.08f + 0.005f * oreType); 
+                damage *= 0.7f;
+                speed *= -0.7f;
+            break;
+            case ItemArmor.tAttributeType.Normal:
+                damage += 1 * oreType;
+                speed *= -0.7f;
+            break;
+            case ItemArmor.tAttributeType.Light:
+                damage *= 0.7f;
+                armor *= (0.2f + 0.1f *oreType);
+                health *= (0.2f + 0.1f *oreType);
+                moveSpeedModifier += (0.0075f * oreType);
+            break;
+        }
+
+        return new ItemArmor (damage, speed, armor, health, moveSpeedModifier, itemName, strArmorCode, itemDescription);
+    }
+
 	public static ItemComponent createComponent (string strCompCode)
 	{
 		ItemBase.tOreType oreType = ItemComponent.getComponentOre (strCompCode);
@@ -126,7 +195,6 @@ public static class ItemFactory
             moveSpeedModifier *= 0.7f;
         }
 
- 
         return new ItemComponent (damage, speed, armor, health, moveSpeedModifier, itemName, strCompCode, itemDescription);
     }
         
