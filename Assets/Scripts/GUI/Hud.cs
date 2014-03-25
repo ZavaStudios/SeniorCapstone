@@ -18,6 +18,7 @@ public class Hud : MonoBehaviour
 
 						oreNeeded = new ItemOre (ItemBase.tOreType.NOT_ORE);
 						oreNeeded.Quantity = 0;
+						oreNeeded.neededPoints = 0;
 				}
 		}
 
@@ -71,8 +72,8 @@ public class Hud : MonoBehaviour
 		int intInvItemsPerRow;
 		int intInvItemsPerCol;
 		int intCompTypeWidth;
-		int intCompSelCols = (Enum.GetNames(typeof(ItemComponent.tAttributeType)).Length);
-		int intCompSelRows = (Enum.GetNames(typeof(ItemBase.tOreType)).Length - ItemBase.getNonCraftingOres().Count);
+		int intCompSelCols = (Enum.GetNames (typeof(ItemComponent.tAttributeType)).Length);
+		int intCompSelRows = (Enum.GetNames (typeof(ItemBase.tOreType)).Length - ItemBase.getNonCraftingOres ().Count);
 
 		//Vector 2's to store some x and y components
 		Vector2 vec2CompTypeStart;
@@ -154,6 +155,8 @@ public class Hud : MonoBehaviour
 												//TODO Ask Ari what exact quantities should be needed
 												slot.oreNeeded.oreType = oreType;
 												slot.oreNeeded.Quantity = 3;
+
+												slot.oreNeeded.neededPoints = (int)oreType;
 
 												//Unlock the very first tier of components
 												if (intOreIndex == 0)
@@ -281,7 +284,7 @@ public class Hud : MonoBehaviour
 						{
 								// Make a health bar
 								GUI.Box (new Rect (10, 10, 100, 30), player.Health + "/" + player.MaxHealth);
-								GUI.Box (new Rect (10, 40, 100, 30), "Score: " + player.Score);
+								GUI.Box (new Rect (10, 40, 200, 30), "Crafting Points: " + player.Score);
 
 								//Draw the crosshair
 								Rect center = new Rect ((Screen.width - crosshairTexture.width) / 2,
@@ -480,34 +483,33 @@ public class Hud : MonoBehaviour
 		                                   intCompSelGrid, arrSelectedComponentNames, intNumAtts, style);
 
 
-		try{
-				//Description Area
-				Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
-				//Only show the description if we've unlocked the item
-				string description = "Unlock me by crafting this component in a lower tier";
+				try {
+						//Description Area
+						Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
+						//Only show the description if we've unlocked the item
+						string description = "Unlock me by crafting this component in a lower tier";
 				
 
-				if (vec2Description.x >= 0 && vec2Description.y >= 0 && 
-			    		selectedComponents [(int)vec2Description.x, (int)vec2Description.y].unlocked) {
-						ItemSlot selectedComponent = selectedComponents [(int)vec2Description.x, (int)vec2Description.y]; 
+						if (vec2Description.x >= 0 && vec2Description.y >= 0 && 
+								selectedComponents [(int)vec2Description.x, (int)vec2Description.y].unlocked) {
+								ItemSlot selectedComponent = selectedComponents [(int)vec2Description.x, (int)vec2Description.y]; 
 
-						description = selectedComponents [(int)vec2Description.x, (int)vec2Description.y].item.getDescription ();
-						description += "\n";
-						description += "This component requires " + selectedComponent.oreNeeded.Quantity + " pieces of " + selectedComponent.oreNeeded.oreType;
-						description += "\n";
-						description += "You currently have " + inventory.getOreQuantity (selectedComponent.oreNeeded.oreType) + " pieces of " + selectedComponent.oreNeeded.oreType;
-				}
+								description = selectedComponents [(int)vec2Description.x, (int)vec2Description.y].item.getDescription ();
+								description += "\n";
+								description += "This component requires " + selectedComponent.oreNeeded.Quantity + " pieces of " + selectedComponent.oreNeeded.oreType;
+								description += "\n";
+								description += "You currently have " + inventory.getOreQuantity (selectedComponent.oreNeeded.oreType) + " pieces of " + selectedComponent.oreNeeded.oreType;
+						}
 
-				GUI.Label (new Rect (11 * intWidthPadding, vec2CompTypeStart.y,
+						GUI.Label (new Rect (11 * intWidthPadding, vec2CompTypeStart.y,
 		                   	vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
 		           description, style);
-		}catch(IndexOutOfRangeException e)
-		{
-			Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
-		Debug.Log("X: " + vec2Description.x);
-		Debug.Log ("Y: " + vec2Description.x);
+				} catch (IndexOutOfRangeException e) {
+						Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
+						Debug.Log ("X: " + vec2Description.x);
+						Debug.Log ("Y: " + vec2Description.x);
+				}
 		}
-	}
 
 		private Vector2 getComponentCoordinateFromIndex (int index)
 		{
@@ -694,9 +696,10 @@ public class Hud : MonoBehaviour
 						if (intCompSelGrid >= 0) {
 								int intNewSelection = intCompSelGrid + intCompSelCols;
 
-								if(intNewSelection > arrSelectedComponentNames.Length - 1) //If we need to move to the top of the next col
-								{
-									intNewSelection = intNewSelection % intCompSelCols;
+								//If we need to move to the top of the next col
+								if (intNewSelection > arrSelectedComponentNames.Length - 1 &&
+										intCompSelGrid != arrSelectedComponentNames.Length - 1) { 
+										intNewSelection = (intNewSelection % intCompSelCols) + 1;
 								}
 
 								intCompSelGrid = Math.Min (arrSelectedComponentNames.Length - 1, intNewSelection);
@@ -732,22 +735,7 @@ public class Hud : MonoBehaviour
 								return;
 
 						//Make sure the player has the necessary amounts of ore
-						ArrayList arrOres = inventory.getInventoryOres ();
-						bool hasOres = false;
-						foreach (ItemOre ore in arrOres) {
-								if (ore.oreType.Equals (desired.oreNeeded.oreType)) {
-										if (ore.Quantity >= desired.oreNeeded.Quantity) {
-												ItemOre oreToRemove = new ItemOre (ore.oreType);
-												oreToRemove.Quantity = desired.oreNeeded.Quantity;
-												inventory.inventoryRemoveItem (oreToRemove, desired.oreNeeded.Quantity);
-
-												hasOres = true;
-												break;
-										}
-								}
-						}
-
-						if (!hasOres)
+						if (!playerCanCraft (desired))
 								return;
 
 						//Get the new component
@@ -796,6 +784,28 @@ public class Hud : MonoBehaviour
 						//Pressing right can wraparound to the next row if one exists
 						intSelectedWeapon = Mathf.Min (intNewSelected, arrListWeapons.Count - 1);
 				}
+		}
+
+		private bool playerCanCraft (ItemSlot desired)
+		{
+				ArrayList arrOres = inventory.getInventoryOres ();
+				bool hasOres = false;
+				foreach (ItemOre ore in arrOres) {
+						if (ore.oreType.Equals (desired.oreNeeded.oreType)) {
+								if (ore.Quantity >= desired.oreNeeded.Quantity) {
+										ItemOre oreToRemove = new ItemOre (ore.oreType);
+										oreToRemove.Quantity = desired.oreNeeded.Quantity;
+										inventory.inventoryRemoveItem (oreToRemove, desired.oreNeeded.Quantity);
+					
+										hasOres = true;
+										break;
+								}
+						}
+				}
+
+				bool hasPoints = desired.oreNeeded.neededPoints >= player.Score;
+
+				return hasOres & hasPoints;
 		}
 
 }
