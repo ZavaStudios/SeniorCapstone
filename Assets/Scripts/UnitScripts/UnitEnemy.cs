@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class UnitEnemy : Unit
 {
 	public static Transform player;
 	public static Transform healthBarStatic;
-	private Transform healthBar;
+	protected Transform healthBar;
 	protected CharacterController control;
 	protected Vector3 PlayerPosition;
 	protected Vector3 dir;
@@ -55,11 +55,12 @@ public class UnitEnemy : Unit
 			//Makes sure that enemies are dropped into the maze correctly.  
 			control.SimpleMove(Vector3.zero);
 		}
-		
-		healthBar.position = transform.position;
-//		healthLost = 1 - (health / maxHealth);
-//		healthBar.localScale -= new Vector3(healthLost, 0, 0);
-//		healthBar.position += new Vector3(healthLost/2, 0, 0);
+
+		healthBar.position = transform.position + new Vector3(0, transform.position.y, 0);
+		healthBar.rotation = Camera.main.transform.rotation;
+		healthLost = health / maxHealth;
+		healthBar.localScale = new Vector3(healthLost, 0.1f, 1);
+		healthBar.position += new Vector3((1 - healthLost) / 2, 0, 0);
 	}
 		
 	//A method for how the enemy should behave with their movement.
