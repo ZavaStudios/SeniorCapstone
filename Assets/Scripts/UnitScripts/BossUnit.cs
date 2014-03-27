@@ -75,6 +75,7 @@ public class BossUnit : UnitEnemy
         diePosition = gameObject.transform.position;
         diePosition.y = 0;  // We want the portal to be on the ground, so ignore the "up-ness"
 
+		Destroy(healthBar.gameObject);
         if (numEnemies == 0)
             win();
 		//base.killUnit();
