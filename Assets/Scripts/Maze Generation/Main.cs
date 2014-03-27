@@ -33,6 +33,8 @@ public class Main : MonoBehaviour
 	public Transform spiderBoss;
 	public Transform healthBar;
 
+	public CubeAllocator allocator;
+
     private RogueDungeon dungeon;
 
     // position tracking for loading/unloading rooms
@@ -63,6 +65,7 @@ public class Main : MonoBehaviour
 		RogueRoom.skeletonBoss = skeletonBoss;
 		RogueRoom.spiderBoss = spiderBoss;
         RogueRoom.key = key;
+		RogueRoom.allocator = allocator;
 
 		ZombieWeapon.Player = player;
 		EnemyStaff.player = player;
@@ -75,12 +78,16 @@ public class Main : MonoBehaviour
 		KeyPickup.player = player;
 		PortalScript.player = player;
 
+		// Load all static elements:
+		foreach (RogueRoom room in dungeon.Map)
+			if (room != null)
+				room.StaticLoad(RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_DEPTH,
+				                RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR);
+
         // Load start room and put player there:
         RogueRoom start = dungeon.GetStartRoom();
-        start.LoadRoom(RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_DEPTH,
-                       RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR);
-        start.LoadNeighbors(RogueDungeon.MAX_ROOM_WIDTH, RogueDungeon.MAX_ROOM_DEPTH,
-                            RogueDungeon.CORRIDOR_WIDTH, CUBE_SCALAR, null);
+        start.DynamicLoad();
+        start.LoadNeighbors(null);
         player.transform.position = (start.GetCenter(RogueDungeon.MAX_ROOM_WIDTH,
                                                      RogueDungeon.MAX_ROOM_DEPTH) +
                                                      new Vector3(0.0f, 1.5f, 0.0f)) * CUBE_SCALAR;
@@ -100,11 +107,7 @@ public class Main : MonoBehaviour
         if (newGridX != gridX || newGridY != gridY)
         {
             dungeon.Map[gridX, gridY].UnloadNeighbors(dungeon.Map[newGridX, newGridY]);
-            dungeon.Map[newGridX, newGridY].LoadNeighbors(RogueDungeon.MAX_ROOM_WIDTH,
-                                                          RogueDungeon.MAX_ROOM_DEPTH,
-                                                          RogueDungeon.CORRIDOR_WIDTH,
-                                                          CUBE_SCALAR,
-                                                          dungeon.Map[gridX, gridY]);
+            dungeon.Map[newGridX, newGridY].LoadNeighbors(dungeon.Map[gridX, gridY]);
 
             gridX = newGridX;
             gridY = newGridY;
