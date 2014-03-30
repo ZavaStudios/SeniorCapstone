@@ -7,13 +7,11 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
     public bool hitObject = false;
     public float damage = 0.0f;
     public float specialDamage = 0.0f;
-    private BoxCollider collider;
     private TrailRenderer trail;
 
 	// Use this for initialization
 	void Start () 
     {
-        collider = gameObject.GetComponent<BoxCollider>();
         trail = gameObject.GetComponentInChildren<TrailRenderer>();
                
         collider.isTrigger = true;

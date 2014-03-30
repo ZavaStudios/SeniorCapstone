@@ -504,7 +504,7 @@ public class Hud : MonoBehaviour
 						GUI.Label (new Rect (11 * intWidthPadding, vec2CompTypeStart.y,
 		                   	vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
 		           description, style);
-				} catch (IndexOutOfRangeException e) {
+				} catch (IndexOutOfRangeException) {
 						Vector2 vec2Description = getComponentCoordinateFromIndex (intCompSelGrid);
 						Debug.Log ("X: " + vec2Description.x);
 						Debug.Log ("Y: " + vec2Description.x);
@@ -597,7 +597,7 @@ public class Hud : MonoBehaviour
 
 				if (boolEquipWeapon) {
 						//Not allowing equipping of things other than weapons by bounding the index
-						unitPlayer.equipWeapon (((ItemWeapon)arrListWeapons [intSelectedWeapon]).weaponType.ToString ());
+						unitPlayer.equipWeapon (((ItemWeapon)arrListWeapons [intSelectedWeapon]));
 						boolEquipWeapon = false;
 				}
 
@@ -744,7 +744,7 @@ public class Hud : MonoBehaviour
 						//Unlock the crafted component that is one tier above
 						try {
 								arrComponentGrids [intCompTypeGrid] [(int)vec2SelectedComponent.x, (int)vec2SelectedComponent.y + 1].unlocked = true;
-						} catch (IndexOutOfRangeException e) {
+						} catch (IndexOutOfRangeException) {
 								//Ignore index out of range exceptions. Basically a lazy way to handle unlocking items at the max tier
 						}
 

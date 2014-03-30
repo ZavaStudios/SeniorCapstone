@@ -70,6 +70,20 @@ public class UnitEnemy : Unit
 
 	}
 	
+    public void equipWeapon(string newWeapon)
+    {
+        GameObject.Destroy(weapon);
+        
+        if (newWeapon != null)
+        {
+            weapon = (WeaponBase) gameObject.AddComponent(newWeapon);
+        }
+        else
+        {
+            weapon = null;
+        }
+    }
+
 	//Kills the unit by removing the enemy from the screen and give credit to the player.
 	protected override void killUnit ()
 	{

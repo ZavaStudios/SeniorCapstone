@@ -15,10 +15,11 @@ public class WeaponBowFiringScript : MonoBehaviour {
 
         GraphicalArrow = (GameObject)GameObject.Instantiate(Resources.Load("CrappyArrow"), bulletOrigin.position,bulletOrigin.rotation);
         GraphicalArrow.transform.parent = bulletOrigin;
-        //GraphicalArrow.transform.Rotate(bulletOrigin.up,3.1415f);
         GraphicalArrow.rigidbody.useGravity = false;
 
         GraphicalArrow.SetActive(false);
+
+        Character = GameObject.FindGameObjectWithTag("Player").GetComponent<UnitPlayer>();
 	}
 
     void attachArrow()
@@ -35,24 +36,26 @@ public class WeaponBowFiringScript : MonoBehaviour {
     {
         GraphicalArrow.SetActive(false);
         
+        ProjectileArrow p;
+
         GameObject arrow = (GameObject)GameObject.Instantiate(Resources.Load("CrappyArrow"), bulletOrigin.position,transform.parent.rotation);
         arrow.rigidbody.AddForce(arrow.transform.forward * weaponBow.bulletSpeed);
-        arrow.AddComponent<ProjectileArrow>();
+        p = arrow.GetComponent<ProjectileArrow>();
+        p.damage = Character.AttackDamage;
         
         GameObject arrow2 = (GameObject)GameObject.Instantiate(Resources.Load("CrappyArrow"), bulletOrigin.position,transform.parent.rotation);
         arrow2.transform.Rotate(arrow2.transform.forward,15);
         arrow2.rigidbody.AddForce(arrow2.transform.forward * weaponBow.bulletSpeed);
-        arrow2.AddComponent<ProjectileArrow>();
-        
+        p = arrow2.GetComponent<ProjectileArrow>();
+        p.damage = Character.AttackDamage;
+
         GameObject arrow3 = (GameObject)GameObject.Instantiate(Resources.Load("CrappyArrow"), bulletOrigin.position,transform.parent.rotation);
         arrow3.transform.Rotate(arrow3.transform.forward,-15);
         arrow3.rigidbody.AddForce(arrow3.transform.forward * weaponBow.bulletSpeed);
-        arrow3.AddComponent<ProjectileArrow>();
+        p = arrow3.GetComponent<ProjectileArrow>();
+        p.damage = Character.AttackDamage;
 
 
-        //Physics.IgnoreCollision(arrow.collider, arrow2.collider);
-        //Physics.IgnoreCollision(arrow2.collider, arrow3.collider);
-        //Physics.IgnoreCollision(arrow3.collider, arrow.collider); //THIS SHOULD BE DONE THROUGH GLOBAL PHYSICS LAYERS
     }
 
 }

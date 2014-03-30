@@ -13,10 +13,11 @@ public class SkeletonKingAI : BossUnit
 		equipWeapon("EnemyStaff");
 		base.Start();
 		
-		
+	    AttackDelay = 0.33f;
+        AttackDamage = 15;
 		//Set the enemy cap to be 3.
 		enemyCap = 1;
-		weapon.attackRange = 10;
+		weapon.attackRange = 20;
 	}
 	
 	// Update is called once per frame

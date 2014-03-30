@@ -3,54 +3,74 @@ using System.Collections;
 
 public class UnitPlayer : Unit {
 	
+    private Inventory inventory;
+
+    public const float DefaultMoveSpeed = 10.0f;
+    public const float DefaultMaxHealth = 100;
+
     WeaponModelSwitcher wepSwitcher;
-	int wep = 1;
-	
-    private const float walkSpeedNormal = 10.0f;
 
 	protected override void Start () 
 	{
-		setMaxSpeed(walkSpeedNormal);
-        wepSwitcher = gameObject.GetComponentInChildren<WeaponModelSwitcher>();
+	    wepSwitcher = gameObject.GetComponentInChildren<WeaponModelSwitcher>();
+
 
 		inventory = Inventory.getInstance();
-		
+
+
 		//Add the default weapons
 		//TODO Instead of using the weapon types, use the names. Need some way to map between the names back to the types
         ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, 0.0f, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.");
         
-        inventory.inventoryAddItem((ItemWeapon)myFirstPickaxe);
-        
-		string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
+        inventory.inventoryAddItem(myFirstPickaxe);
+
+        cheat();//add all weapons
+
+        base.Start();
+
+        inventory.initialize();//calling initialize here ensures inventory Character field is set before it is used
+        inventory.inventorySwitchWeapon();
+    }
+
+    private void cheat()
+    {   
+        string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
 		                                                       ItemComponent.tComponentPart.Blade);
 		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
 		                                                        ItemComponent.tComponentPart.Handle);
-
-		string bladeCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
+        string bladeCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponStaff,
 		                                                       ItemComponent.tComponentPart.Blade);
-		string handleCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
+		string handleCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponStaff,
 		                                                        ItemComponent.tComponentPart.Handle);
-
+        string bladeCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponBow,
+		                                                       ItemComponent.tComponentPart.Blade);
+		string handleCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponBow,
+		                                                        ItemComponent.tComponentPart.Handle);
+		string bladeCode4 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponToolbox,
+		                                                       ItemComponent.tComponentPart.Blade);
+		string handleCode4 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponToolbox,
+		                                                        ItemComponent.tComponentPart.Handle);
+        
         ItemBase myBlade = ItemFactory.createComponent(bladeCode);
         ItemBase myHandle = ItemFactory.createComponent(handleCode);
-                ItemBase myBlade2 = ItemFactory.createComponent(bladeCode2);
+        ItemBase myBlade2 = ItemFactory.createComponent(bladeCode2);
         ItemBase myHandle2 = ItemFactory.createComponent(handleCode2);
+        ItemBase myBlade3 = ItemFactory.createComponent(bladeCode3);
+        ItemBase myHandle3 = ItemFactory.createComponent(handleCode3);
+        ItemBase myBlade4 = ItemFactory.createComponent(bladeCode4);
+        ItemBase myHandle4 = ItemFactory.createComponent(handleCode4);
 
         ItemWeapon myWeapon = ItemFactory.createWeapon((ItemComponent) myBlade, (ItemComponent) myHandle);
         ItemWeapon myWeapon2 = ItemFactory.createWeapon((ItemComponent) myBlade2, (ItemComponent) myHandle2);
+        ItemWeapon myWeapon3 = ItemFactory.createWeapon((ItemComponent) myBlade3, (ItemComponent) myHandle3);
+        ItemWeapon myWeapon4 = ItemFactory.createWeapon((ItemComponent) myBlade4, (ItemComponent) myHandle4);
+        
         inventory.inventoryAddItem(myWeapon);
-
-		base.Start();
-        primaryAttackDamage = 20.0f;
-        equipWeapon(ItemWeapon.tWeaponType.WeaponPickaxe.ToString());
-
-//		inventory.inventoryAddItem (ItemFactory.createComponent (staffHandleCode)); //Add a staff handle
-//		inventory.inventoryAddItem (ItemFactory.createComponent (staffBladeCode)); //Add a staff blade
-//		inventory.inventoryAddItem (ItemFactory.createComponent (bladeCode));
-//		inventory.inventoryAddItem (ItemFactory.createComponent (handleCode));
-
-	}
-
+        inventory.inventoryAddItem(myWeapon2);
+        inventory.inventoryAddItem(myWeapon3);
+        inventory.inventoryAddItem(myWeapon4);
+        inventory.inventoryAddItem(new ItemKey("The cheaters key"));
+    }
 	public void incrementScore()
 	{
 		Score++;
@@ -60,11 +80,8 @@ public class UnitPlayer : Unit {
 	{
 		if(InputContextManager.isATTACK()) //or some other button on OUYA
 		{
-//			print ("mouse clicked....");
 			if (weapon != null)
 				weapon.attack();
-			//else
-			//	print ("You cannot attack without a weapon!");
 		}
 
         if(InputContextManager.isATTACK_RELEASED())
@@ -75,101 +92,53 @@ public class UnitPlayer : Unit {
 
 		if(InputContextManager.isSPECIAL_ATTACK())
 		{
-//			print ("right clicked...");
-			
 			if (weapon != null)
 			{
 				weapon.attackSpecial();
 			}
 		}
 		
-		const int numWeapons = 6;
 		if(InputContextManager.isSWITCH_WEAPON())
 		{
-			if (wep > (numWeapons-1))
-			{
-				wep = 0;
-			}
-			
-			//print ("switch to wep: " + wep);
-			
-			switch (wep)
-			{
-				case 0:
-					equipWeapon("WeaponPickaxe");
-					wep++;
-					break;
-				case 1:
-					equipWeapon("WeaponSword");
-					wep++;
-					break;
-				case 2:
-					equipWeapon ("WeaponStaff");
-					wep++;
-					break;
-                case 3:
-                    equipWeapon ("WeaponToolbox");
-                    wep++;
-                    break;
-                case 4:
-                    equipWeapon ("WeaponBow");
-                    wep++;
-                    break;
-				case 5:
-					equipWeapon ("WeaponKey");
-					wep++;
-					break;
-			}
+            inventory.inventorySwitchWeapon();
 		}
 		
 		if(InputContextManager.isSPRINT())
 		{
-			setMaxSpeed (walkSpeedNormal*1.6f);
+			temporarySetMoveSpeed(moveSpeed*1.6f);
 		}
 		else
 		{
-			setMaxSpeed (walkSpeedNormal);
+			resetMoveSpeed();
 		}
 	}
 	
 	
 	//Gets reference to the character motor class, then sets the move speed
-	void setMaxSpeed(float newSpeed)
+	public void resetMoveSpeed()
 	{ 
-		moveSpeed = newSpeed;
 		CharacterMotor m = gameObject.GetComponent<CharacterMotor>();
 		m.movement.maxForwardSpeed = moveSpeed;
 		m.movement.maxSidewaysSpeed = moveSpeed;
 		m.movement.maxBackwardsSpeed = moveSpeed;	
 	}
 	
-	public void setSpeed(float newSpeed)
+	public void temporarySetMoveSpeed(float newSpeed)
 	{
-		moveSpeed = newSpeed;
 		CharacterMotor m = gameObject.GetComponent<CharacterMotor>();
-		m.movement.maxForwardSpeed = moveSpeed;
-		m.movement.maxSidewaysSpeed = moveSpeed;
-		m.movement.maxBackwardsSpeed = moveSpeed;
+		m.movement.maxForwardSpeed = newSpeed;
+		m.movement.maxSidewaysSpeed = newSpeed;
+		m.movement.maxBackwardsSpeed = newSpeed;
 	}
-	
-	public void resetSpeed()
-	{
-		moveSpeed = walkSpeedNormal;
-		CharacterMotor m = gameObject.GetComponent<CharacterMotor>();
-		m.movement.maxForwardSpeed = walkSpeedNormal;
-		m.movement.maxSidewaysSpeed = walkSpeedNormal;
-		m.movement.maxBackwardsSpeed = walkSpeedNormal;
-	}
-    
-	public override void equipWeapon(string newWeapon)
+	    
+	public override void equipWeapon(ItemWeapon newWeapon)
     {
         base.equipWeapon(newWeapon);
-        wepSwitcher.SwitchWeapon(newWeapon);
+        wepSwitcher.SwitchWeapon(newWeapon.weaponType);
     }   
         
 	protected override void killUnit ()
 	{
-		//print ("How did you die...???");
 		
 		//Draws the gameover GUI to the screen. 
 		GameOver.gameOver = true;

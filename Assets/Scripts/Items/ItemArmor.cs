@@ -5,6 +5,8 @@ using System;
 public class ItemArmor : ItemEquipment {
  
     public string strArmorCode;
+    public tArmorPart armorPart;
+    public tAttributeType armorAttribute;
 
     //	NOTE New enum for componentType. Length 3 strings, abcd. a={Light=0, Normal=1, Heavy=2}, b=tOreType, c=tArmorType
 	//	Example: 030 = Light iron helmet
@@ -23,6 +25,9 @@ public class ItemArmor : ItemEquipment {
 		Chest = 1,
         Legs = 2
 	};
+
+
+
 
     public static string generateArmorCode(tAttributeType att, tOreType ore, ItemArmor.tArmorPart part)
 	{
@@ -75,8 +80,10 @@ public class ItemArmor : ItemEquipment {
     public ItemArmor(float damage, float atkspd, float armor, float health, float moveSpeedModifier, string name, string armorCode, string description)
         : base(damage, atkspd, armor, health, moveSpeedModifier, name, tItemType.Armor, description)
 	{
-        this.oreType = ItemComponent.getComponentOre(armorCode);
+        this.oreType = getArmorOre(armorCode);
 		this.strArmorCode = armorCode;
+        this.armorAttribute = getArmorAttribute(armorCode);
+        this.armorPart = getArmorPart(armorCode);
 	}
 
 }

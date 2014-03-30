@@ -6,8 +6,6 @@ using System.Collections;
 
 public class Unit : MonoBehaviour 
 {
-    public Inventory inventory;
-
     public bool vulnerable = true;
 
     protected float primaryAttackDamage;
@@ -70,11 +68,19 @@ public class Unit : MonoBehaviour
 		
 	}
 	
+    private const int armorDiminishingReturnThreshold = 100;
 	public void doDamage(float amount)
 	{
-		if(vulnerable)
-			this.health -=  amount;
-		//print ("health decreased.");
+		if(!vulnerable) return;
+        
+        //10% reduced damage at 10% of threshold -> 10 armor
+        //20% reduced damage at 25% of threshold -> 25 armor
+        //50% reduced damage at threshold    -> 100 armor
+        //66% reduced damage at 2x threshold -> 200 armor
+        //75% reduced damage at 3x threshold -> 300 armor
+        float adjustmentScalar = 1/(1 + armor/armorDiminishingReturnThreshold);
+
+        this.health -=  amount * adjustmentScalar;
 		
 		if (health <= 0)
 		{
@@ -83,14 +89,20 @@ public class Unit : MonoBehaviour
 		}
 	}
 	
-    virtual public void equipWeapon(string newWeapon)
+    virtual public void equipWeapon(ItemWeapon newWeapon)
     {
-        //Debug.Log("Equipping :" + newWeapon);
 
+        
         GameObject.Destroy(weapon);
-        weapon = (WeaponBase) gameObject.AddComponent(newWeapon);
-        //Debug.Log("Current Equipped: " + weapon.strWeaponType);
-       
+        
+        if (newWeapon != null)
+        {
+            weapon = (WeaponBase) gameObject.AddComponent("" + newWeapon.weaponType);
+        }
+        else
+        {
+            weapon = null;
+        }
     }   
     
 	virtual protected void killUnit()

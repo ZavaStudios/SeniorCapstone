@@ -13,8 +13,7 @@ public class SpiderQueenAI : BossUnit
 	{
 		equipWeapon("SpiderWeapon");
 		base.Start();
-		
-		
+				
 		//The spider queen will spawn spiders more frequently than other bosses. 
 		spawnTimer = 5;
 		enemyCap = 1;

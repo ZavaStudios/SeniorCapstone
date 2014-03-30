@@ -3,16 +3,14 @@ using System.Collections;
 
 public class ProjectileArrow : MonoBehaviour {
 	
-	public float damage = 15;
-	private bool hit = false;
+	public float damage = 0;
 	// Use this for initialization
 	void Start () 
 	{
 	
 		BoxCollider collider = gameObject.GetComponent<BoxCollider>();
 		collider.isTrigger = true;
-
-
+        
 	}
 	
 	// Update is called once per frame
