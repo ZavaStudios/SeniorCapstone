@@ -69,7 +69,8 @@ public class Unit : MonoBehaviour
 	}
 	
     private const int armorDiminishingReturnThreshold = 100;
-	public void doDamage(float amount)
+	
+    virtual public void doDamage(float amount)
 	{
 		if(!vulnerable) return;
         

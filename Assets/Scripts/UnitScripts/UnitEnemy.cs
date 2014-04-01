@@ -9,6 +9,8 @@ public class UnitEnemy : Unit
 	protected CharacterController control;
 	protected Vector3 PlayerPosition;
 	protected Vector3 dir;
+    protected GameObject floatingDamageText;
+    protected FloatingDamageText floatingDamageTextScript;
 	protected float distance;
 	float turnSpeed = 120;
 	private float healthLost = 0;
@@ -22,7 +24,10 @@ public class UnitEnemy : Unit
 		moveSpeed = 5.0f;
 		control = GetComponent<CharacterController>();
         base.Start(); //gets reference to weapon, among other things.
-		healthBar = (Transform) MonoBehaviour.Instantiate(healthBarStatic, transform.position, Quaternion.identity);
+		healthBar = (Transform) GameObject.Instantiate(healthBarStatic, transform.position, Quaternion.identity);
+        floatingDamageText = (GameObject) GameObject.Instantiate(Resources.Load("FloatingDamageText"), transform.position, Quaternion.identity);
+        floatingDamageTextScript = floatingDamageText.GetComponent<FloatingDamageText>();
+        floatingDamageTextScript.parent = transform;
 	}
 	
 	protected override void Update ()
@@ -82,6 +87,12 @@ public class UnitEnemy : Unit
         {
             weapon = null;
         }
+    }
+
+    public override void doDamage(float damage)
+    {
+        base.doDamage(damage);
+        floatingDamageTextScript.startText(damage.ToString());
     }
 
 	//Kills the unit by removing the enemy from the screen and give credit to the player.
