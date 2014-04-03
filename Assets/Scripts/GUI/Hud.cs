@@ -36,7 +36,6 @@ public class Hud : MonoBehaviour
     }
 
     private tMenuStates menuCode = tMenuStates.MENU_NONE;
-    private bool boolEquipWeapon = false;
 
     //Keep a reference to the player
     Unit player;
@@ -88,7 +87,7 @@ public class Hud : MonoBehaviour
     private int intCompSelGrid = 0; //Index for selecting different components
     private int intAssembleType = 0; //Index for selecting which type of weapon to assemble
     private int intAssembleWeapon = 0; //Index for selecting which weapon to assemble
-    private int intSelectedWeapon = 0; //The index of the selected weapon
+    private int intInventoryItem = 0; //The index of the selected inventory item
 
     //Texture for the crosshair
     public Texture2D crosshairTexture;
@@ -236,10 +235,6 @@ public class Hud : MonoBehaviour
                     //Process menu movement inside the inventory
                     handleInventoryMovement();
 
-                    //Process confirmations
-                    if (InputContextManager.isMENU_SELECT())
-                        boolEquipWeapon = true;
-
                     break;
                 }
             case tMenuStates.CRAFTING:
@@ -262,20 +257,6 @@ public class Hud : MonoBehaviour
 
     void OnGUI()
     {
-
-        //TODO This is a test implementation of a scroll bar that will give values from 0(top) to 9(bottom)
-        //		GUI.Label (new Rect(300, 100, 50, 20), Math.Floor(vSbarValue).ToString());
-        //		vSbarValue = GUI.VerticalScrollbar(new Rect (100, 100, 100, 100), vSbarValue, 1.0f, 0.0f, 10.0f);
-        //
-        //		if(GUI.Button(new Rect(250, 250, 50, 50), "Up"))
-        //			vSbarValue += 1;
-        //
-        //		if(GUI.Button(new Rect(250, 350, 50, 50), "Down"))
-        //			vSbarValue -= 1;
-
-        //				if (menuCode != tMenuStates.MENU_NONE) {
-        //						showMenuStates ();
-        //				}
 
         switch (menuCode)
         {
@@ -356,17 +337,17 @@ public class Hud : MonoBehaviour
     int intArmorAttributes = 0;
     int intArmorOres = 0;
 
-            //Categories we can craft
-        List<ItemBase.tItemType> armorCraftableCategories = new List<ItemBase.tItemType> { ItemBase.tItemType.Armor };
+    //Categories we can craft
+    List<ItemBase.tItemType> armorCraftableCategories = new List<ItemBase.tItemType> { ItemBase.tItemType.Armor };
 
-        //List of types of armors
-        List<ItemArmor.tArmorPart> armors = new List<ItemArmor.tArmorPart> { ItemArmor.tArmorPart.Chest, ItemArmor.tArmorPart.Head, ItemArmor.tArmorPart.Legs };
+    //List of types of armors
+    List<ItemArmor.tArmorPart> armors = new List<ItemArmor.tArmorPart> { ItemArmor.tArmorPart.Chest, ItemArmor.tArmorPart.Head, ItemArmor.tArmorPart.Legs };
 
-        //List armor attributes
-        List<ItemArmor.tAttributeType> armorAttributes = new List<ItemArmor.tAttributeType> { ItemArmor.tAttributeType.Heavy, ItemArmor.tAttributeType.Normal, ItemArmor.tAttributeType.Light };
+    //List armor attributes
+    List<ItemArmor.tAttributeType> armorAttributes = new List<ItemArmor.tAttributeType> { ItemArmor.tAttributeType.Heavy, ItemArmor.tAttributeType.Normal, ItemArmor.tAttributeType.Light };
 
-        //List ores that armors can be made from
-        List<ItemBase.tOreType> armorOres = new List<ItemBase.tOreType>();
+    //List ores that armors can be made from
+    List<ItemBase.tOreType> armorOres = new List<ItemBase.tOreType>();
 
     private void layoutArmorCraftingGrid()
     {
@@ -393,12 +374,12 @@ public class Hud : MonoBehaviour
         //Info at the Bottom of the screen.
         GUI.BeginGroup(new Rect(0, Screen.height - labelHeight, Screen.width, labelHeight));
         //TODO Make this work for OUYA Controls
-        GUI.Label(new Rect(0, 0, Screen.width, Screen.height), "Make all your selections and then confirm." + "\n" + 
+        GUI.Label(new Rect(0, 0, Screen.width, Screen.height), "Make all your selections and then confirm." + "\n" +
             "Change option group: Left,Right" + "\n" +
             "Switch Option: Up, Down" + "\n" +
             "Confirm:Enter", infoStyle);
         GUI.EndGroup();
-        
+
         //Don't let groups show on top of the info footer
         groupHeight -= labelHeight;
 
@@ -450,7 +431,7 @@ public class Hud : MonoBehaviour
         {
             oreStrings[i] = armorOres[i].ToString();
         }
-        GUI.Label(new Rect(0, 0, groupWidth, labelHeight), "What kind of ore would you like to make your " + attributeStrings[intArmorAttributes] 
+        GUI.Label(new Rect(0, 0, groupWidth, labelHeight), "What kind of ore would you like to make your " + attributeStrings[intArmorAttributes]
             + " " + itemStrings[intArmors] + " " + categoryStrings[intArmorCategory] + " out of?", infoStyle);
         intArmorOres = GUI.SelectionGrid(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), intArmorOres, oreStrings, 1);
         GUI.EndGroup();
@@ -515,7 +496,7 @@ public class Hud : MonoBehaviour
             switch (armorState)
             {
                 case tArmorCraftingState.CATEGORY_SELECTION:
-                    intArmorCategory = Math.Min(armorCraftableCategories.Count -1, intArmorCategory + 1);
+                    intArmorCategory = Math.Min(armorCraftableCategories.Count - 1, intArmorCategory + 1);
                     break;
                 case tArmorCraftingState.ITEM_TYPE:
                     intArmors = Math.Min(armors.Count - 1, intArmors + 1);
@@ -777,6 +758,7 @@ public class Hud : MonoBehaviour
         return (intNumItems - (y * intNumCols) - (intNumCols - x));
     }
 
+    ArrayList arrInventoryItems;
     private void layoutInventoryGrid()
     {
         //TODO Show equipped items. Helmet on top, sword and armor in the middle, and boots @ bottom
@@ -796,40 +778,41 @@ public class Hud : MonoBehaviour
         ArrayList arrComponents = inventory.getInventoryComponents();
         ArrayList arrItems = inventory.getInventoryItems();
         ArrayList arrOres = inventory.getInventoryOres();
+        arrInventoryItems = new ArrayList();
 
-        ArrayList allItems = new ArrayList();
+
 
         foreach (ItemWeapon weapon in arrListWeapons)
         {
-            allItems.Add(weapon);
+            arrInventoryItems.Add(weapon);
         }
 
         foreach (ItemEquipment armor in arrArmors)
         {
-            allItems.Add(armor);
+            arrInventoryItems.Add(armor);
         }
 
         foreach (ItemBase item in arrItems)
         {
-            allItems.Add(item);
+            arrInventoryItems.Add(item);
         }
 
         foreach (ItemBase component in arrComponents)
         {
-            allItems.Add(component);
+            arrInventoryItems.Add(component);
         }
 
         foreach (ItemOre ore in arrOres)
         {
-            allItems.Add(ore);
+            arrInventoryItems.Add(ore);
         }
 
-        string[] arrStringWeapons = new string[allItems.Count];
+        string[] arrStringWeapons = new string[arrInventoryItems.Count];
 
-        for (int i = 0; i < allItems.Count; i++)
+        for (int i = 0; i < arrInventoryItems.Count; i++)
         {
             //ItemWeapon wep = (ItemWeapon)arrListWeapons[i];
-            ItemBase wep = (ItemBase)allItems[i];
+            ItemBase wep = (ItemBase)arrInventoryItems[i];
             //Grab the names of the item associated with the weapon
             arrStringWeapons[i] = wep.ToString(); //To instead use pictures/textures, make an array of pictures/textures
         }
@@ -848,46 +831,20 @@ public class Hud : MonoBehaviour
         style.onNormal.background = tex2dButtonActiveBack;
 
 
-        intSelectedWeapon = GUI.SelectionGrid(new Rect(vec2CurrentPos.x, vec2CurrentPos.y, Screen.width, intInvSlotHeight),
-                                      intSelectedWeapon, arrStringWeapons, intInvItemsPerRow, style);
+        intInventoryItem = GUI.SelectionGrid(new Rect(vec2CurrentPos.x, vec2CurrentPos.y, Screen.width, intInvSlotHeight),
+                                      intInventoryItem, arrStringWeapons, intInvItemsPerRow, style);
 
-        if (boolEquipWeapon)
-        {
-            //Not allowing equipping of things other than weapons by bounding the index
-            unitPlayer.equipWeapon(((ItemWeapon)arrListWeapons[intSelectedWeapon]));
-            boolEquipWeapon = false;
-        }
+        GUI.BeginGroup(new Rect(Screen.width - 300, 100, 300, Screen.height));
 
-        //      // Uncomment this out if we want to use this. A.K.A ALTERNATIVE SCHEME
-        //		//Loop through all the items and lay them out simply
-        //
-        //		//Store the current weapon being worked with
-        //		string weapon;
-        //		for(int i = 0; i < arrListWeapons.Count; i++)
-        //		{
-        //			weapon = arrListWeapons[i].ToString();
-        //
-        //
-        //            //Set the clicked button to have a special style
-        //			if(GUI.Button(new Rect(vec2CurrentPos.x, vec2CurrentPos.y, intSlotWidth, intSlotHeight), weapon))
-        //			{
-        //				unitPlayer.equipWeapon(weapon);
-        //                intSelectedWeapon = i;
-        //			}
-        //
-        //
-        //			//Update the current position
-        //			vec2CurrentPos.x += intSlotWidth;
-        //			if(vec2CurrentPos.x >= Screen.width)
-        //			{
-        //				//Start at the beginning of the next row
-        //				vec2CurrentPos.x = 0;
-        //
-        //				//Move down a row
-        //				vec2CurrentPos.y += intSlotHeight;
-        //			}
-        //
-        //		}
+        ItemArmor equippedHelmet = inventory.getEquippedHelmet();
+        ItemArmor equippedChest = inventory.getEquippedChest();
+        ItemArmor equippedLegs = inventory.getEquippedLegs();
+
+        GUI.Label(new Rect(0, 0, 300, 200), "Head: " + (equippedHelmet == null ? "not equipped" : equippedHelmet.ToString()));
+        GUI.Label(new Rect(0, 200, 300, 200), "Chest: " + (equippedChest == null ? "not equipped" : equippedChest.ToString()));
+        GUI.Label(new Rect(0, 2 * 200, 300, 200), "Legs: " + (equippedLegs == null ? "not equipped" : equippedLegs.ToString()));
+
+        GUI.EndGroup();
 
     }
 
@@ -1044,42 +1001,73 @@ public class Hud : MonoBehaviour
 
     private void handleInventoryMovement()
     {
+        Inventory inventory = Inventory.getInstance();
+        int itemsEquippable = inventory.getInventoryArmors().Count + inventory.getInventoryWeapons().Count;
+
         if (InputContextManager.isMENU_UP())
         {
             //Decrement the index by itemsPerRow and take the maximum of 0 and newIndex
-            int intNewSelected = intSelectedWeapon - intInvItemsPerRow;
+            int intNewSelected = intInventoryItem - intInvItemsPerRow;
 
-            intSelectedWeapon = Mathf.Max(0, intNewSelected);
+            intInventoryItem = Mathf.Max(0, intNewSelected);
         }
         else if (InputContextManager.isMENU_DOWN())
         {
             //Increment the index by itemsPerRow and take the min of arrListWeapons.Count and newIndex
-            int intNewSelected = intSelectedWeapon + intInvItemsPerRow;
+            int intNewSelected = intInventoryItem + intInvItemsPerRow;
 
-            Inventory inventory = Inventory.getInstance();
 
-            ArrayList arrListWeapons = inventory.getInventoryWeapons();
-            intSelectedWeapon = Mathf.Min(arrListWeapons.Count - 1, intNewSelected);
+            intInventoryItem = Mathf.Min(itemsEquippable - 1, intNewSelected);
         }
         else if (InputContextManager.isMENU_LEFT())
         {
             //Decrement the index by 1 and take the maximum of 0 and newIndex
-            int intNewSelected = intSelectedWeapon - 1;
+            int intNewSelected = intInventoryItem - 1;
 
             //Bound checking
-            intSelectedWeapon = Mathf.Max(intNewSelected, 0);
+            intInventoryItem = Mathf.Max(intNewSelected, 0);
         }
         else if (InputContextManager.isMENU_RIGHT())
         {
             //Increment the index by 1 and take the min of arrListWeapons.Count and newIndex
-            int intNewSelected = intSelectedWeapon + 1;
-
-            Inventory inventory = Inventory.getInstance();
-
-            ArrayList arrListWeapons = inventory.getInventoryWeapons();
+            int intNewSelected = intInventoryItem + 1;
 
             //Pressing right can wraparound to the next row if one exists
-            intSelectedWeapon = Mathf.Min(intNewSelected, arrListWeapons.Count - 1);
+            intInventoryItem = Mathf.Min(intNewSelected, itemsEquippable - 1);
+        }
+        else if (InputContextManager.isMENU_SELECT())
+        {
+            ItemBase itemToEquip = (ItemBase)arrInventoryItems[intInventoryItem];
+
+            switch (itemToEquip.type)
+            {
+                case ItemBase.tItemType.Weapon:
+                    {
+                        inventory.inventoryEquipWeapon((ItemWeapon)itemToEquip);
+
+                        break;
+                    }
+                case ItemBase.tItemType.Armor:
+                    {
+                        ItemArmor armorToEquip = (ItemArmor)itemToEquip;
+                        switch (armorToEquip.armorPart)
+                        {
+                            case ItemArmor.tArmorPart.Chest:
+                                inventory.inventoryEquipChest(armorToEquip);
+                                break;
+
+                            case ItemArmor.tArmorPart.Head:
+                                inventory.inventoryEquipHelmet(armorToEquip);
+                                break;
+
+                            case ItemArmor.tArmorPart.Legs:
+                                inventory.inventoryEquipLegs(armorToEquip);
+                                break;
+                        }
+
+                        break;
+                    }
+            }
         }
     }
 

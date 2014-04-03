@@ -274,6 +274,20 @@ public class Inventory
         return temp;
     }
 
+    public ItemArmor getEquippedHelmet()
+    {
+        return equipedHelmet;
+    }
+
+    public ItemArmor getEquippedChest()
+    {
+        return equipedChest;
+    }
+    public ItemArmor getEquippedLegs()
+    {
+        return equipedLegs;
+    }
+
     public int getOreQuantity(ItemBase.tOreType oreType)
     {
         return ores[(int)oreType];
