@@ -23,7 +23,7 @@ public class EnemyStaff : WeaponBase
 		base.Start();
 		
 		enemyCollider = this.collider;
-		Fireball = (GameObject)Resources.Load("Fireball");
+		Fireball = (GameObject)Resources.Load("FireballEnemy");
 	}
 	
 	// Update is called once per frame
@@ -35,13 +35,12 @@ public class EnemyStaff : WeaponBase
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
 		 // Instantiate the projectile at the position and rotation of this transform
-    	ProjectileFireballEnemy p;
+    	ProjectileFireball p;
     	GameObject clone = (GameObject)GameObject.Instantiate(Fireball, 
 			new Vector3(startPos.x, player.position.y, startPos.z), Character.getLookRotation());
-		clone.gameObject.AddComponent("ProjectileFireballEnemy");
+		p = (ProjectileFireball)clone.gameObject.AddComponent("ProjectileFireball");
 		Physics.IgnoreCollision(clone.collider, enemyCollider);
 		
-		p = clone.GetComponent<ProjectileFireballEnemy>();
 		p.damage = Character.AttackDamage;
 		
 		

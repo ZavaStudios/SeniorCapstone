@@ -7,7 +7,7 @@ public class WeaponBow : WeaponBase {
     private CharacterController capCollider;
     private WeaponBowFiringScript s ;
 	// Use this for initialization
-	void Start () 
+	protected override void Start () 
     {
         s = gameObject.GetComponentInChildren<WeaponBowFiringScript>();
         base.Start();
@@ -16,12 +16,6 @@ public class WeaponBow : WeaponBase {
         specialAttackSpeedRelative = 1.0f;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-
     protected override void attackRoutine(Vector3 startPos, Vector3 faceDir)
     {
     }

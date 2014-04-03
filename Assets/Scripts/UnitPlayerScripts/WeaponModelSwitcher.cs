@@ -23,7 +23,7 @@ public class WeaponModelSwitcher : MonoBehaviour
 		crappy_key.SetActive(false);
     }
     
-    public void SwitchWeapon(string newWeapon)
+    public void SwitchWeapon(ItemWeapon.tWeaponType newWeapon)
     {
         crappy_sword.SetActive(false);
         crappy_pickaxe.SetActive(false);
@@ -33,48 +33,39 @@ public class WeaponModelSwitcher : MonoBehaviour
         crappy_bow.SetActive(false);
 		crappy_key.SetActive(false);
         
-        if (newWeapon == ItemWeapon.tWeaponType.WeaponSword.ToString())
+        switch(newWeapon)
         {
-            crappy_sword.SetActive(true);
-            Active = crappy_sword;
-        }
-        
-        else if (newWeapon == ItemWeapon.tWeaponType.WeaponPickaxe.ToString())
-        {
-			crappy_pickaxe.SetActive(true);
-            Active = crappy_pickaxe;
-        }
+            case ItemWeapon.tWeaponType.WeaponBow:
+                crappy_bow.SetActive(true);
+                Active = crappy_bow;
+            break;
+            case ItemWeapon.tWeaponType.WeaponKey:
+                crappy_key.SetActive(true);
+			    Active = crappy_key;
+            break;
+            case ItemWeapon.tWeaponType.WeaponPickaxe:
+                crappy_pickaxe.SetActive(true);
+                Active = crappy_pickaxe;
+            break;
+            case ItemWeapon.tWeaponType.WeaponStaff:
+			    crappy_staff.SetActive(true);
+			    Active = crappy_staff;
+            break;
+            case ItemWeapon.tWeaponType.WeaponSword:
+                crappy_sword.SetActive(true);
+                Active = crappy_sword;
+            break;
+            case ItemWeapon.tWeaponType.WeaponToolbox:
+                crappy_toolbox.SetActive(true);
+                crappy_wrench.SetActive(true);
+                Active = crappy_toolbox;
+            break;
+            default:
+                Active = null;
+            break;
             
-        else if (newWeapon == ItemWeapon.tWeaponType.WeaponStaff.ToString())
-		{
-			crappy_staff.SetActive(true);
-			Active = crappy_staff;
-		}  
- 
-        else if (newWeapon == ItemWeapon.tWeaponType.WeaponToolbox.ToString())
-        {
-            crappy_toolbox.SetActive(true);
-            crappy_wrench.SetActive(true);
-            Active = crappy_toolbox;
         }
 
-        else if (newWeapon == ItemWeapon.tWeaponType.WeaponBow.ToString())
-        {
-            crappy_bow.SetActive(true);
-            Active = crappy_bow;
-        }
-
-		else if (newWeapon == ItemWeapon.tWeaponType.WeaponKey.ToString())
-		{
-			crappy_key.SetActive(true);
-			Active = crappy_key;
-		}
-            
-        else
-        {
-            //print("ERRUHHH! WHAT YOU THINKIN? " + newWeapon + " isn't a weapon.");
-            Active = null;
-        }
     }
     
     public void playAnimation()

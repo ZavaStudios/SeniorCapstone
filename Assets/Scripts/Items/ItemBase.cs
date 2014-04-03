@@ -95,7 +95,7 @@ public class ItemBase
 		neededOreQuantity = 1;
 	}
  
-    virtual public string ToString()
+    public override string ToString()
     {
         return _name;
     }

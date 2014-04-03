@@ -9,6 +9,7 @@ public class WeaponStaff : WeaponBase
 	// Use this for initialization
 	protected override void Start ()
 	{
+        attackRange = 10.0f;
 		base.Start();
 	}
 	

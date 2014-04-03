@@ -40,6 +40,7 @@ public class WeaponBase : MonoBehaviour
 	        nextAttack = Time.time + Character.AttackDelay;
        		attackRoutine(Character.getEyePosition(),Character.getLookDirection());
                 
+            
 			if(Character is UnitPlayer)
 				Character.playAttackAnimation();
 

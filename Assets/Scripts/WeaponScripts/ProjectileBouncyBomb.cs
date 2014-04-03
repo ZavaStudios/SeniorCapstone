@@ -35,8 +35,10 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 	void explode()
 	{
 		float radius = 1.0f;
-		float power = 100.0f;
-		//print ("BOOM!!!!!!!!");
+
+        //TODO: make it do an explosion thingo
+		//float explosionPower = 100.0f;
+		
 		GameObject sparks = (GameObject)Instantiate(Resources.Load("FireballSparks"), transform.position, transform.rotation);
 
 		Collider[] colliders = Physics.OverlapSphere (transform.position, radius);
@@ -47,9 +49,9 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 
 				if(toDie)
                 	toDie.doDamage(damage);
-                //print("Make The Little Man FLY!!!"); power += 1000;
-				//print(hit.name);
-				//hit.rigidbody.AddExplosionForce(power, transform.position, radius, 3.0f);
+				
+                //probably not like this...
+                //hit.rigidbody.AddExplosionForce(explosionPower, transform.position, radius, 3.0f);
 		}
 		
 		Destroy (gameObject);

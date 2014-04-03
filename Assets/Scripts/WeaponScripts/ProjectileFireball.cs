@@ -6,12 +6,16 @@ public class ProjectileFireball : MonoBehaviour
 	
 	public float damage = 0;
 	private bool hit = false;
+    private Transform Sparks;
+    private Transform Projectile;
 	// Use this for initialization
 	void Start () 
 	{
-	
 		SphereCollider collider = gameObject.GetComponent<SphereCollider>();
 		collider.isTrigger = true;
+        Sparks = transform.Find("ImpactSparks");
+        Projectile = transform.Find("Projectile");
+        Sparks.gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -26,21 +30,16 @@ public class ProjectileFireball : MonoBehaviour
 		//print("collision");
 		if(hit == false)
 		{
-			Unit otherObject = other.gameObject.GetComponent<UnitEnemy>();
+			Unit otherObject = other.gameObject.GetComponent<Unit>();
 			
 			if(otherObject != null)
-			{					
-		        if(otherObject is UnitEnemy)
-		        {
-					
-	                otherObject.doDamage(damage);
-	                explode();
-		        }
+			{	
+				otherObject.doDamage(damage);
+	            
 			}
-			else
-			{
-				explode();
-			}
+			explode();
+		    
+	        rigidbody.velocity = Vector3.zero;
 		}
 		hit = true;
 		
@@ -48,9 +47,9 @@ public class ProjectileFireball : MonoBehaviour
 	
 	void explode()
 	{
-		GameObject sparks = (GameObject)Instantiate(Resources.Load("FireballSparks"), transform.position-transform.forward*0.75f, transform.rotation);
-		Destroy (gameObject);
-		Destroy (sparks,0.5f);
+		Sparks.gameObject.SetActive(true);
+        Projectile.gameObject.SetActive(false);
+        Destroy (this,0.5f);
 		
 	}
 }
