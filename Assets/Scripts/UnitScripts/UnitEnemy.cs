@@ -61,8 +61,8 @@ public class UnitEnemy : Unit
 			control.SimpleMove(Vector3.zero);
 		}
 
-		healthBar.position = transform.position + new Vector3(0, transform.position.y, 0);
 		healthBar.rotation = Camera.main.transform.rotation;
+        healthBar.position = transform.position + new Vector3(0, transform.position.y, 0) + (transform.right * 0.5f);
 		healthLost = health / maxHealth;
 		healthBar.localScale = new Vector3(healthLost, 1, 1);
 	}
