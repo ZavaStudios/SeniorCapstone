@@ -38,7 +38,7 @@ public static class ItemFactory
         float totalMoveSpeedModifier = handle.moveSpeedModifier + blade.moveSpeedModifier; //get moveSpeed from handle
 
 
-        Debug.Log( totalDmg +", " + totalSpeed +", " + totalArmor +", " + totalHealth + ", " +totalMoveSpeedModifier);
+        //Debug.Log( totalDmg +", " + totalSpeed +", " + totalArmor +", " + totalHealth + ", " +totalMoveSpeedModifier);
 		
 		string handleOre = ItemBase.getOreString(handle.oreType);
 		string bladeOre = ItemBase.getOreString(blade.oreType);
@@ -184,14 +184,14 @@ public static class ItemFactory
         {
             damage *= 0.7f;
             speed *= 0.3f;
-            Debug.Log(speed);
+            //Debug.Log(speed);
             moveSpeedModifier *= 0.3f;
         }
         else
         {
             damage *= 0.3f;
             speed *= 0.7f;
-            Debug.Log(speed);
+            //Debug.Log(speed);
             moveSpeedModifier *= 0.7f;
         }
 

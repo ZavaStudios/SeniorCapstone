@@ -22,7 +22,7 @@ public class ProjectileFireballEnemy : MonoBehaviour
 	
 	 void OnTriggerEnter(Collider other)
     {
-		print (other);
+        //print (other);
 		//print("collision");
 		if(hit == false)
 		{

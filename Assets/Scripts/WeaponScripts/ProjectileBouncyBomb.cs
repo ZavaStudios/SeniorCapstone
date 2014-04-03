@@ -43,7 +43,7 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 		
 		foreach ( Collider hit in colliders) {
 				Unit toDie = hit.gameObject.GetComponent<Unit>();
-                print(toDie);
+                //print(toDie);
 
 				if(toDie)
                 	toDie.doDamage(damage);
