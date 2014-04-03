@@ -64,8 +64,7 @@ public class UnitEnemy : Unit
 		healthBar.position = transform.position + new Vector3(0, transform.position.y, 0);
 		healthBar.rotation = Camera.main.transform.rotation;
 		healthLost = health / maxHealth;
-		healthBar.localScale = new Vector3(healthLost, 0.1f, 1);
-		healthBar.position += new Vector3((1 - healthLost) / 2, 0, 0);
+		healthBar.localScale = new Vector3(healthLost, 1, 1);
 	}
 		
 	//A method for how the enemy should behave with their movement.
