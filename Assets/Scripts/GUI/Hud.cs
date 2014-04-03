@@ -535,7 +535,7 @@ public class Hud : MonoBehaviour
         else if (InputContextManager.isMENU_RIGHT())
         {
             int numStates = Enum.GetNames(typeof(tArmorCraftingState)).Length;
-            armorState = (tArmorCraftingState)Math.Min(numStates, (int)armorState + 1);
+            armorState = (tArmorCraftingState)Math.Min(numStates - 1, (int)armorState + 1);
         }
         else if (InputContextManager.isMENU_SELECT())
         {
@@ -854,7 +854,7 @@ public class Hud : MonoBehaviour
         if (boolEquipWeapon)
         {
             //Not allowing equipping of things other than weapons by bounding the index
-            unitPlayer.equipWeapon(((ItemWeapon)arrListWeapons[intSelectedWeapon]).weaponType.ToString());
+            unitPlayer.equipWeapon(((ItemWeapon)arrListWeapons[intSelectedWeapon]));
             boolEquipWeapon = false;
         }
 
