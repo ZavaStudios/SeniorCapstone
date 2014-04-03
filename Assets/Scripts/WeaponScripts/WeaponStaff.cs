@@ -24,7 +24,7 @@ public class WeaponStaff : WeaponBase
     	ProjectileFireball p;
     	GameObject clone = (GameObject)GameObject.Instantiate(Resources.Load("Fireball"), startPos,Character.getLookRotation());
 		p = (ProjectileFireball) clone.gameObject.AddComponent("ProjectileFireball");
-		Physics.IgnoreCollision(clone.collider,Character.collider);
+		//Physics.IgnoreCollision(clone.collider,Character.collider);
 		
 		p.damage = Character.AttackDamage;
 		

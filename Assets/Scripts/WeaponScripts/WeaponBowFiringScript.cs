@@ -16,7 +16,7 @@ public class WeaponBowFiringScript : MonoBehaviour {
         GraphicalArrow = (GameObject)GameObject.Instantiate(Resources.Load("CrappyArrow"), bulletOrigin.position,bulletOrigin.rotation);
         GraphicalArrow.transform.parent = bulletOrigin;
         GraphicalArrow.rigidbody.useGravity = false;
-
+        Destroy(GraphicalArrow.GetComponent<ProjectileArrow>());
         GraphicalArrow.SetActive(false);
 
         Character = GameObject.FindGameObjectWithTag("Player").GetComponent<UnitPlayer>();

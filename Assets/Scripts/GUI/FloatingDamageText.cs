@@ -9,6 +9,8 @@ public class FloatingDamageText : MonoBehaviour {
     public float scrollSpeed = 0.05f; 
     public float duration = 1.5f;
     public Transform parent;
+    private bool started;
+    private float damage;
 
     private float alpha;
 	// Use this for initialization
@@ -35,6 +37,7 @@ public class FloatingDamageText : MonoBehaviour {
         }
         else
         {
+            started = false;
             if(parent)
             {
                 gameObject.SetActive(false);
@@ -46,14 +49,20 @@ public class FloatingDamageText : MonoBehaviour {
         }
 	}
 
-    public void startText(string text)
+    public void startDamage(float newDamage)
     {
-        Vector3 pos = Camera.main.WorldToViewportPoint(parent.position);
-        alpha = 1;
-        textColor.a = 1;
-        guiText.material.color = textColor;
-        guiText.text = text;
-        transform.position = pos;
-        gameObject.SetActive(true);
+        if (!started)
+        {
+            Vector3 pos = Camera.main.WorldToViewportPoint(parent.position);
+            alpha = 1;
+            textColor.a = 1;
+            guiText.material.color = textColor;
+            damage = 0;
+            transform.position = pos;
+            gameObject.SetActive(true);
+            started = true;
+        }
+        damage += newDamage;
+        guiText.text = damage.ToString();
     }
 }

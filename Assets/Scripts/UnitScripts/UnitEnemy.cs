@@ -91,7 +91,7 @@ public class UnitEnemy : Unit
     public override void doDamage(float damage)
     {
         base.doDamage(damage);
-        floatingDamageTextScript.startText(damage.ToString());
+        floatingDamageTextScript.startDamage(damage);
     }
 
 	//Kills the unit by removing the enemy from the screen and give credit to the player.
