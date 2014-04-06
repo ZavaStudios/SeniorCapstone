@@ -28,9 +28,9 @@ public class FloatingDamageText : MonoBehaviour {
     {
 	    if(alpha > 0)
         {
-            Vector3 pos = transform.position;
-            pos.y += scrollSpeed * Time.deltaTime;
-            transform.position = pos;
+            //Vector3 pos = transform.position;
+            //pos.y += scrollSpeed * Time.deltaTime;
+            //transform.position = pos;
             alpha -= Time.deltaTime/duration;
             textColor.a = alpha;
             guiText.material.color = textColor;
@@ -60,6 +60,7 @@ public class FloatingDamageText : MonoBehaviour {
             damage = 0;
             transform.position = pos;
             gameObject.SetActive(true);
+            transform.rigidbody.AddForce(Vector3.up * 100.0f);
             started = true;
         }
         damage += newDamage;

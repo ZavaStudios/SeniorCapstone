@@ -6,7 +6,7 @@ public class WeaponPickaxeBlockDestroyerScript : MonoBehaviour {
     public Unit Character;
     public float damage;
     public float range;
-
+    private int layer8_bitmask = 1 << 8; //0b10000000;
 	// Use this for initialization
 	void Start () {
 	
@@ -19,10 +19,13 @@ public class WeaponPickaxeBlockDestroyerScript : MonoBehaviour {
 
     void damageObject()
     {
-        RaycastHit rayHit;
-        if(Physics.Raycast(Character.getEyePosition(), Character.getLookDirection(), out rayHit, range))
-        {
 
+        RaycastHit rayHit;
+        print("mining");
+        
+        if(Physics.Raycast(Character.getEyePosition(), Character.getLookDirection(), out rayHit, range, layer8_bitmask))//world is on layer 8
+        {
+            print(rayHit.collider);
             if(rayHit.collider.gameObject.CompareTag("Ore"))
             {
                 MineableBlock resource = rayHit.collider.GetComponent<MineableBlock>();
