@@ -17,7 +17,7 @@ public class WeaponToolbox : WeaponBase
 		base.Start();
         attackRange = 5;
         currentTurret = GameObject.FindGameObjectWithTag("PlayerTurret"); 
-        specialAttackDamageRelative = 1.2f;
+        specialAttackDamageRelative = 1.6f;
 	}
 	
 	// Update is called once per frame
@@ -64,7 +64,9 @@ public class WeaponToolbox : WeaponBase
                 UnitTurret t;
                 currentTurret = (GameObject)GameObject.Instantiate(Resources.Load("Turret"), rayHit.point,Character.transform.rotation);
                 t = currentTurret.GetComponent<UnitTurret>();
-                t.AttackDamage = Character.AttackDamage * specialAttackDamageRelative;
+                t.AttackDamage = Character.AttackDamage;
+                t.AttackDelay = Character.AttackDelay;
+                t.specialAttackDamageRelative = specialAttackDamageRelative;
                 return;
             }
         }

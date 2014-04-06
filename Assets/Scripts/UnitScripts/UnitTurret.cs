@@ -8,28 +8,25 @@ public class UnitTurret : Unit {
     WeaponTurretAI tWeapon;
 	Transform weaponModel;
     private float turnSpeed = 150f;
+    public float specialAttackDamageRelative;
 
     protected override void Start ()
 	{
         base.Start();
 
-       
         tWeapon = (WeaponTurretAI) gameObject.AddComponent("WeaponTurretAI");
+        print(tWeapon);
         weapon = tWeapon;
-
+        weapon.specialAttackDamageRelative = specialAttackDamageRelative;
         bulletOrigin = transform.Find("Weapon/BulletOrigin");
         
         weaponModel = transform.Find("Weapon");
 
-        
-        AttackDelay = 1.8f;
-        AttackDamage = 10f;
-
     }
-    
+
 	protected override void Update ()
 	{	
-        if (tWeapon.shouldRotate)    
+        if (tWeapon.shouldRotate && tWeapon.currentTarget != null)    
         {
             Vector3 enemyPosition = tWeapon.currentTarget.transform.position;
             float angleToTarget = Mathf.Atan2((enemyPosition.x - transform.position.x), (enemyPosition.z - transform.position.z)) * Mathf.Rad2Deg;

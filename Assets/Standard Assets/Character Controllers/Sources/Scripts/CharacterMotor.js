@@ -29,7 +29,7 @@ class CharacterMotorMovement {
 	var slopeSpeedMultiplier : AnimationCurve = AnimationCurve(Keyframe(-90, 1), Keyframe(0, 1), Keyframe(90, 0));
 	
 	// How fast does the character change speeds?  Higher is faster.
-	var maxGroundAcceleration : float = 30.0;
+	var maxGroundAcceleration : float = 9999999999.0; //changing here does nothing. bastards
 	var maxAirAcceleration : float = 20.0;
 
 	// The gravity for the character

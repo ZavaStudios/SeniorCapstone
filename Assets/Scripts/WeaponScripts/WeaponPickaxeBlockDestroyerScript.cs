@@ -21,11 +21,8 @@ public class WeaponPickaxeBlockDestroyerScript : MonoBehaviour {
     {
 
         RaycastHit rayHit;
-        print("mining");
-        
         if(Physics.Raycast(Character.getEyePosition(), Character.getLookDirection(), out rayHit, range, layer8_bitmask))//world is on layer 8
         {
-            print(rayHit.collider);
             if(rayHit.collider.gameObject.CompareTag("Ore"))
             {
                 MineableBlock resource = rayHit.collider.GetComponent<MineableBlock>();
