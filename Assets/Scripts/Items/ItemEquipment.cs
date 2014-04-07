@@ -7,7 +7,7 @@ public class ItemEquipment : ItemBase {
 	protected float _atkspd = 0.0f;
 	protected float _armor = 0.0f;
 	protected float _health = 0.0f;
-    protected float _moveSpeedModifier = 1.0f;
+    protected float _moveSpeedModifier = 0.0f;
     
     public ItemEquipment(string name, tItemType itemtype) 
         : base(name)
