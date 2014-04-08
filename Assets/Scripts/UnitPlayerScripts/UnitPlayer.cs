@@ -5,8 +5,14 @@ public class UnitPlayer : Unit {
 	
     private Inventory inventory;
 
-    public const float DefaultMoveSpeed = 10.0f;
+    public const float DefaultMoveSpeed = 8.0f;
     public const float DefaultMaxHealth = 100;
+
+    private enum cheatAmount
+    {
+        a_lot,
+        a_little
+    };
 
     WeaponModelSwitcher wepSwitcher;
 
@@ -24,7 +30,7 @@ public class UnitPlayer : Unit {
         
         inventory.inventoryAddItem(myFirstPickaxe);
 
-        cheat();//add all weapons
+        cheat(cheatAmount.a_little);//add all weapons
 
         base.Start();
 
@@ -32,23 +38,29 @@ public class UnitPlayer : Unit {
         inventory.inventorySwitchWeapon();
     }
 
-    private void cheat()
+    private void cheat(cheatAmount cheatHowBadly)
     {   
-        string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
+        ItemBase.tOreType oreToUse = ItemBase.tOreType.Bone;
+        if (cheatHowBadly == cheatAmount.a_lot)
+        {
+            oreToUse = ItemBase.tOreType.Ethereal;
+        }
+
+        string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
 		                                                       ItemComponent.tComponentPart.Blade);
-		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponSword,
+		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
 		                                                        ItemComponent.tComponentPart.Handle);
-        string bladeCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponStaff,
+        string bladeCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponStaff,
 		                                                       ItemComponent.tComponentPart.Blade);
-		string handleCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponStaff,
+		string handleCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponStaff,
 		                                                        ItemComponent.tComponentPart.Handle);
-        string bladeCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponBow,
+        string bladeCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponBow,
 		                                                       ItemComponent.tComponentPart.Blade);
-		string handleCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponBow,
+		string handleCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponBow,
 		                                                        ItemComponent.tComponentPart.Handle);
-		string bladeCode4 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponToolbox,
+		string bladeCode4 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponToolbox,
 		                                                       ItemComponent.tComponentPart.Blade);
-		string handleCode4 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, ItemBase.tOreType.Ethereal, ItemWeapon.tWeaponType.WeaponToolbox,
+		string handleCode4 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponToolbox,
 		                                                        ItemComponent.tComponentPart.Handle);
         
         ItemBase myBlade = ItemFactory.createComponent(bladeCode);

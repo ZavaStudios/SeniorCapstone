@@ -6,7 +6,6 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
 
     public bool hitObject = false;
     public float damage = 0.0f;
-    public float specialDamage = 0.0f;
     private TrailRenderer trail;
 
 	// Use this for initialization
@@ -26,23 +25,12 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
     void OnTriggerEnter(Collider other)
     {
         Unit otherObject = other.gameObject.GetComponent<Unit>();
-        float damageToDo;
-        if (animation["SwordSwing"].time > 0)
-        {
-            damageToDo = damage;
-        }
-        else
-        {
-            damageToDo = specialDamage;
-        }
-
-
         if (otherObject != null)
         {
 		    if(otherObject is UnitEnemy)
             {
 				//print ("found enemy and doing damage.");
-                otherObject.doDamage(damageToDo);
+                otherObject.doDamage(damage);
             }
         }
     }

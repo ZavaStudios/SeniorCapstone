@@ -49,7 +49,7 @@ public class ProjectileFireball : MonoBehaviour
 	{
 		Sparks.gameObject.SetActive(true);
         Projectile.gameObject.SetActive(false);
-        Destroy (this,0.5f);
+        Destroy (gameObject,0.5f);
 		
 	}
 }

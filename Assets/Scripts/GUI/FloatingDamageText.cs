@@ -6,7 +6,7 @@ public class FloatingDamageText : MonoBehaviour {
 
 
     public Color textColor = new Color(0.8f,0.0f,0.0f,1.0f); //red
-    public float scrollSpeed = 0.05f; 
+    public float startVelocity = 3.0f; 
     public float duration = 1.5f;
     public Transform parent;
     private bool started;
@@ -28,9 +28,9 @@ public class FloatingDamageText : MonoBehaviour {
     {
 	    if(alpha > 0)
         {
-            Vector3 pos = transform.position;
-            pos.y += scrollSpeed * Time.deltaTime;
-            transform.position = pos;
+            //Vector3 pos = transform.position;
+            //pos.y += scrollSpeed * Time.deltaTime;
+            //transform.position = pos;
             alpha -= Time.deltaTime/duration;
             textColor.a = alpha;
             guiText.material.color = textColor;
@@ -60,6 +60,7 @@ public class FloatingDamageText : MonoBehaviour {
             damage = 0;
             transform.position = pos;
             gameObject.SetActive(true);
+            transform.rigidbody2D.AddForce(Vector3.up * startVelocity);
             started = true;
         }
         damage += newDamage;

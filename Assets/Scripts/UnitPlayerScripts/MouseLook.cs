@@ -25,8 +25,8 @@ public class MouseLook : MonoBehaviour {
 	public float minimumX = -360F;
 	public float maximumX = 360F;
 	
-	public float minimumY = -80F;
-	public float maximumY = 80F;
+	private float minimumY = -89.9F;
+	private float maximumY = 89.9F;
 	
 	float rotationY = 0F;
 	

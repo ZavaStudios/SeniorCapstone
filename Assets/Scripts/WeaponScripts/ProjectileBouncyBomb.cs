@@ -3,11 +3,18 @@ using System.Collections;
 
 public class ProjectileBouncyBomb : MonoBehaviour {
 	
-	public float damage = 0;
-	private int BOOMcount = 0;
+    public float damage = 0;
+    private int BOOMcount = 0;
+    
+    private Transform Sparks;
+    private Transform Projectile;
+
 	// Use this for initialization
 	void Start () 
 	{
+        Sparks = transform.Find("ImpactSparks");
+        Projectile = transform.Find("Projectile");
+        Sparks.gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -15,46 +22,45 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 	{
 	}
 	
-	 void OnCollisionEnter(Collision other)
+    void OnCollisionEnter(Collision other)
     {
-		BOOMcount++;
-		Unit otherObject = other.gameObject.GetComponent<Unit>();
-		
-		if(otherObject != null && otherObject.GetType() == typeof(UnitEnemy))
-		{
-            otherObject.doDamage(damage);
-			explode();
+        BOOMcount++;
 
-		}
-		if( BOOMcount >= 3)
-		{
-			explode();
-		}
+        Unit otherObject = other.gameObject.GetComponent<Unit>();
+		
+        if(otherObject != null)
+        {
+            explode();
+        }
+        
+        if( BOOMcount >= 3)
+        {
+            explode();
+        }
     }
 	
-	void explode()
-	{
-		float radius = 1.0f;
-
-        //TODO: make it do an explosion thingo
-		//float explosionPower = 100.0f;
+    //allbutworld mask>> all bits but bit 8->>> ...1111100000000
+    int allLayersButWorldBitMask = ~(255);
+    void explode()
+    {
+        float radius = 1.0f;
+        
+        Collider[] colliders = Physics.OverlapSphere (transform.position, radius,allLayersButWorldBitMask);
 		
-		GameObject sparks = (GameObject)Instantiate(Resources.Load("FireballSparks"), transform.position, transform.rotation);
-
-		Collider[] colliders = Physics.OverlapSphere (transform.position, radius);
-		
-		foreach ( Collider hit in colliders) {
-				Unit toDie = hit.gameObject.GetComponent<Unit>();
-                //print(toDie);
-
-				if(toDie)
-                	toDie.doDamage(damage);
+        foreach ( Collider hit in colliders) 
+        {
+            Unit toDie = hit.gameObject.GetComponent<UnitEnemy>();
+            if(toDie)
+            {
+                toDie.doDamage(damage);
+            }
 				
-                //probably not like this...
-                //hit.rigidbody.AddExplosionForce(explosionPower, transform.position, radius, 3.0f);
-		}
+            //probably not like this...
+            //hit.rigidbody.AddExplosionForce(explosionPower, transform.position, radius, 3.0f);
+        }
 		
-		Destroy (gameObject);
-		Destroy (sparks,0.25f);
-	}
+        Sparks.gameObject.SetActive(true);
+        Projectile.gameObject.SetActive(false);
+        Destroy (gameObject,0.5f);
+    }
 }
