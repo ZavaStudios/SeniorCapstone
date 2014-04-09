@@ -13,6 +13,8 @@ public class Main : MonoBehaviour
     private const float LIGHT_DISTANCE = 2.0f;
     private const float ORE_DISTRIBUTION = 0.2f;
 
+    public Texture2D[] crackTextures;
+
 	public Transform door;
 	public Transform key;
 	public Transform floor_tile;
@@ -73,6 +75,7 @@ public class Main : MonoBehaviour
 		UnitEnemy.healthBarStatic = healthBar;
 		BossUnit.playercc = player.GetComponent<CharacterController>();
         BossUnit.endGamePortal = endGamePortal;
+        MineableBlock.crackTextures = crackTextures;
 
         DoorScript.player = player;
 		KeyPickup.player = player;
