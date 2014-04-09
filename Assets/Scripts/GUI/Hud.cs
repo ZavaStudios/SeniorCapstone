@@ -24,7 +24,7 @@ public class Hud : MonoBehaviour
     }
 
     //Declare instance variables
-    protected enum tMenuStates
+    public enum tMenuStates
     {
         MENU_NONE = 0,
         INVENTORY = 1,
@@ -35,7 +35,7 @@ public class Hud : MonoBehaviour
         ARMOR_CRAFTING = 6
     }
 
-    private tMenuStates menuCode = tMenuStates.MENU_NONE;
+    public static tMenuStates menuCode = tMenuStates.MENU_NONE;
 
     //Keep a reference to the player
     Unit player;
