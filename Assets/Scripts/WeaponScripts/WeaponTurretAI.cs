@@ -16,7 +16,7 @@ public class WeaponTurretAI : WeaponBase {
 	protected override void Start () 
     {
         base.Start();
-        attackRange = 10;
+        attackRange = 15;
     }
 	
 
@@ -58,6 +58,8 @@ public class WeaponTurretAI : WeaponBase {
     {
         int count = 3;
      
+        float damage = Character.AttackDamage * specialAttackDamageRelative / count;
+            
         yield return new WaitForSeconds(targetingDelay); //waiting first gives turret a second to move + target before shot is fired.
 
         for(int i = 0; i < count; i++)
@@ -65,11 +67,10 @@ public class WeaponTurretAI : WeaponBase {
 
             ProjectileBouncyBomb p;
     	    GameObject clone = (GameObject)GameObject.Instantiate(Resources.Load("BouncingBomb", typeof(GameObject)), Character.getEyePosition(),Character.getLookRotation());
-		    clone.gameObject.AddComponent("ProjectileBouncyBomb");
 		    Physics.IgnoreCollision(clone.collider,Character.collider);
 		
 		    p = clone.GetComponent<ProjectileBouncyBomb>();
-		    p.damage = 10; //real damage later
+		    p.damage = damage;
 		
     	    // Add force to the cloned object in the object's forward direction
     	    clone.rigidbody.AddForce(clone.transform.forward * projectileSpeed);
