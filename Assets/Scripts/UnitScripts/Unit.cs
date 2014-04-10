@@ -54,7 +54,13 @@ public class Unit : MonoBehaviour
     {
         get { return armor; }
         set { armor = value; }
-    }    
+    }
+
+    public float MoveSpeed
+    {
+        get { return moveSpeed; }
+        set { moveSpeed = value; }
+    }
     
     //////////////////////////////////
 	

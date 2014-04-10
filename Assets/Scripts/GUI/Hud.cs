@@ -44,7 +44,6 @@ public class Hud : MonoBehaviour
     //Keep a reference to the inventory
     Inventory inventory = Inventory.getInstance();
 
-    //TODO Clean up all this code. Maybe separate into different classes.
     //Enumerate All components first and keep all the arrays around to update later.
     ItemSlot[,] arrMakeableComps;
     string[] arrWepPartNames;
@@ -69,7 +68,13 @@ public class Hud : MonoBehaviour
 	};
 
     //Options for laying out the grid
-    int intInvSlotWidth; //The width of an inventory item slot
+    readonly int screenWidth = (int)(Screen.width * 0.9);
+    readonly int screenHeight = (int)(Screen.height * 0.9);
+    //Take half of (100 - scale factor) and add that to 0 for the new start positions 
+    readonly int screenX0 = (int)(Screen.width * 0.05);
+    readonly int screenY0 = (int)(Screen.height * 0.05);
+
+     int intInvSlotWidth; //The width of an inventory item slot
     int intInvSlotHeight; //The height of an inventory item slot
     int intInvItemsPerRow;
     int intInvItemsPerCol;
@@ -92,11 +97,6 @@ public class Hud : MonoBehaviour
     //Texture for the crosshair
     public Texture2D crosshairTexture;
 
-
-    //Current value of the scroll bar
-    //    float vSbarValue = 0; //TODO Use the scroll bar to move through the inventory
-
-
     protected void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Unit>();
@@ -110,8 +110,8 @@ public class Hud : MonoBehaviour
         intInvSlotWidth = 150; //The width of an item slot
         intInvSlotHeight = 150; //The height of an item slot
 
-        intInvItemsPerRow = Screen.width / intInvSlotWidth;
-        intInvItemsPerCol = Screen.height / intInvSlotHeight;
+        intInvItemsPerRow = screenWidth / intInvSlotWidth;
+        intInvItemsPerCol = screenHeight / intInvSlotHeight;
 
         //Initialize component data structures
         int intNumWeapons = Enum.GetNames(typeof(ItemWeapon.tWeaponType)).Length - ItemWeapon.getNonCraftingWeapons().Count;
@@ -262,8 +262,8 @@ public class Hud : MonoBehaviour
         {
             case tMenuStates.MENU_MAIN: //Display context of which direction moves into which menu
                 {
-                    int intMenuContextWidth = Screen.width / 6;
-                    int intMenuContextHeight = Screen.height / 6;
+                    int intMenuContextWidth = screenWidth / 6;
+                    int intMenuContextHeight = screenHeight / 6;
 
                     GUIStyle style = new GUIStyle(GUI.skin.label);
                     Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
@@ -271,11 +271,11 @@ public class Hud : MonoBehaviour
                     tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryButtonBackground");
                     style.normal.background = tex2dButtonPassiveBack;
 
-                    GUI.BeginGroup(new Rect(Screen.width / 2 - 400, Screen.height / 2 - 300, 800, 600), style);
+                    GUI.BeginGroup(new Rect(screenWidth / 2 - 400, screenHeight / 2 - 300, 800, 600), style);
 
-                    //GUI.Label(new Rect((Screen.width / 2) - (intMenuContextWidth / 2), 0, intMenuContextWidth, intMenuContextHeight), "Assemble", style);//Top
-                    //GUI.Label(new Rect(0, (Screen.height / 2), intMenuContextWidth, intMenuContextHeight), "Inventory", style);//Left
-                    //GUI.Label(new Rect((Screen.width - intMenuContextWidth / 5), (Screen.height / 2), intMenuContextWidth, intMenuContextHeight), "Crafting", style); //Right
+                    //GUI.Label(new Rect((screenWidth / 2) - (intMenuContextWidth / 2), 0, intMenuContextWidth, intMenuContextHeight), "Assemble", style);//Top
+                    //GUI.Label(new Rect(0, (screenHeight / 2), intMenuContextWidth, intMenuContextHeight), "Inventory", style);//Left
+                    //GUI.Label(new Rect((screenWidth - intMenuContextWidth / 5), (screenHeight / 2), intMenuContextWidth, intMenuContextHeight), "Crafting", style); //Right
                     //GUI.Label(new Rect(0, 0, 0, 0), "Armor", style);
 
                     GUI.Label(new Rect(400, 0, intMenuContextWidth, intMenuContextHeight), "Assemble", style);//Top
@@ -295,8 +295,8 @@ public class Hud : MonoBehaviour
                     GUI.Box(new Rect(10, 40, 200, 30), "Crafting Points: " + player.Score);
 
                     //Draw the crosshair
-                    Rect center = new Rect((Screen.width - crosshairTexture.width) / 2,
-                  (Screen.height - crosshairTexture.height) / 2,
+                    Rect center = new Rect((screenWidth - crosshairTexture.width) / 2,
+                  (screenHeight - crosshairTexture.height) / 2,
                   crosshairTexture.width,
                   crosshairTexture.height);
                     GUI.DrawTexture(center, crosshairTexture);
@@ -362,8 +362,8 @@ public class Hud : MonoBehaviour
         }
 
         //Split the screen into 4 groups
-        int groupWidth = Screen.width / 5;
-        int groupHeight = Screen.height;
+        int groupWidth = screenWidth / 5;
+        int groupHeight = screenHeight;
 
         //Layout variables
         GUIStyle infoStyle = new GUIStyle(GUI.skin.label);
@@ -372,9 +372,9 @@ public class Hud : MonoBehaviour
         int labelHeight = 80;
 
         //Info at the Bottom of the screen.
-        GUI.BeginGroup(new Rect(0, Screen.height - labelHeight, Screen.width, labelHeight));
-        //TODO Make this work for OUYA Controls
-        GUI.Label(new Rect(0, 0, Screen.width, Screen.height), "Make all your selections and then confirm." + "\n" +
+        GUI.BeginGroup(new Rect(0, screenHeight - labelHeight, screenWidth, labelHeight));
+        //TODO Make labels work for OUYA Controls
+        GUI.Label(new Rect(0, 0, screenWidth, screenHeight), "Make all your selections and then confirm." + "\n" +
             "Change option group: Left,Right" + "\n" +
             "Switch Option: Up, Down" + "\n" +
             "Confirm:Enter", infoStyle);
@@ -549,8 +549,8 @@ public class Hud : MonoBehaviour
 
     private void layoutAssembleGrid()
     {
-        int intAssembleWidthPadding = Screen.width / 8;
-        int intAssembleHeightPadding = Screen.height / 8;
+        int intAssembleWidthPadding = screenWidth / 8;
+        int intAssembleHeightPadding = screenHeight / 8;
 
         Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
         Texture2D tex2dButtonActiveBack = new Texture2D(1, 1);
@@ -568,8 +568,8 @@ public class Hud : MonoBehaviour
         //Make a label to show which kind of weapon is being assembled
         int intAssemWeaponLabelWidth = 2 * intAssembleWidthPadding;
         int intAssemWeaponLabelHeight = intAssembleHeightPadding;
-        int intAssemWeaponLabelX = (Screen.width / 2) - (intAssemWeaponLabelWidth / 2); //Start the label at half the screen shifted by half the label width
-        int intAssemWeaponLabelY = (Screen.height / 20);
+        int intAssemWeaponLabelX = (screenWidth / 2) - (intAssemWeaponLabelWidth / 2); //Start the label at half the screen shifted by half the label width
+        int intAssemWeaponLabelY = (screenHeight / 20);
 
         GUI.Label(new Rect(intAssemWeaponLabelX, intAssemWeaponLabelY, intAssemWeaponLabelWidth, intAssemWeaponLabelHeight), arrWeaponTypes[intAssembleType], style);
 
@@ -660,16 +660,13 @@ public class Hud : MonoBehaviour
         //Backgrounds for selecting an item while the button is still being pressed
         style.onActive.background = tex2dButtonFlashBack;
 
-        //TODO Draw background for menu
-        //		GUI.Box (new Rect (0, 0, Screen.width, Screen.height), (Texture2D)Resources.Load("SelectedBackground"), style);
-
         //Initialize options for the menus
-        int intWidthPadding = Screen.width / 15; //(1/15) of the screen for width padding
-        int intHeightPadding = Screen.height / 8; //(1/8) of the screen for height padding
-        //		int intCompTypeWidth = (Screen.width - (2 * intWidthPadding)) / 4; //(Screen width - padding on both sides) is how big the components type menu should be
+        int intWidthPadding = screenWidth / 15; //(1/15) of the screen for width padding
+        int intHeightPadding = screenHeight / 8; //(1/8) of the screen for height padding
+        //		int intCompTypeWidth = (screenWidth - (2 * intWidthPadding)) / 4; //(Screen width - padding on both sides) is how big the components type menu should be
 
         vec2CompTypeStart = new Vector2(intWidthPadding, (intHeightPadding));
-        vec2CompTypeDimensions = new Vector2(2.5f * intWidthPadding, Screen.height - (2f * intHeightPadding));
+        vec2CompTypeDimensions = new Vector2(2.5f * intWidthPadding, screenHeight - (2f * intHeightPadding));
 
         //        intCompTypeGrid = GUI.SelectionGrid(new Rect(vec2CompTypeStart.x, vec2CompTypeStart.y,  vec2CompTypeDimensions.x, vec2CompTypeDimensions.y),
         //		                                    intCompTypeGrid, arrComponents, 1, style);
@@ -706,7 +703,7 @@ public class Hud : MonoBehaviour
 
         //Handle selection grid stuff
         intCompSelGrid = GUI.SelectionGrid(new Rect(4.5f * intWidthPadding, intHeightPadding,
-                                            (6f * intWidthPadding), Screen.height - (2 * intHeightPadding)),
+                                            (6f * intWidthPadding), screenHeight - (2 * intHeightPadding)),
                                    intCompSelGrid, arrSelectedComponentNames, intNumAtts, style);
 
 
@@ -759,28 +756,20 @@ public class Hud : MonoBehaviour
     }
 
     ArrayList arrInventoryItems;
+    Vector2 invScrollPosition = Vector2.zero;
+    int invSlotHeight = 200;
+
+    /// <summary>
+    /// This method handles laying out the inventory menu 
+    /// </summary>
     private void layoutInventoryGrid()
     {
-        //TODO Show equipped items. Helmet on top, sword and armor in the middle, and boots @ bottom
-        //        int intWidthPadding = Screen.width / 8;
-        //        int intHeightPadding = Screen.height / 8;
-
-        //The starting position of the inventory
-        Vector2 vec2CurrentPos = new Vector2(0, 100);
-
-        //Find the inventory
-        Inventory inventory = Inventory.getInstance();
-
-        //TODO Allow scrolling down when weapons don't all fit on the screen
-
         ArrayList arrListWeapons = inventory.getInventoryWeapons();
         ArrayList arrArmors = inventory.getInventoryArmors();
         ArrayList arrComponents = inventory.getInventoryComponents();
         ArrayList arrItems = inventory.getInventoryItems();
         ArrayList arrOres = inventory.getInventoryOres();
         arrInventoryItems = new ArrayList();
-
-
 
         foreach (ItemWeapon weapon in arrListWeapons)
         {
@@ -807,14 +796,13 @@ public class Hud : MonoBehaviour
             arrInventoryItems.Add(ore);
         }
 
-        string[] arrStringWeapons = new string[arrInventoryItems.Count];
+        string[] arrInventoryStrings = new string[arrInventoryItems.Count];
 
         for (int i = 0; i < arrInventoryItems.Count; i++)
         {
-            //ItemWeapon wep = (ItemWeapon)arrListWeapons[i];
             ItemBase wep = (ItemBase)arrInventoryItems[i];
             //Grab the names of the item associated with the weapon
-            arrStringWeapons[i] = wep.ToString(); //To instead use pictures/textures, make an array of pictures/textures
+            arrInventoryStrings[i] = wep.ToString(); //To instead use pictures/textures, make an array of pictures/textures
         }
 
         UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
@@ -830,21 +818,70 @@ public class Hud : MonoBehaviour
         //Backgrounds when I have an active selection
         style.onNormal.background = tex2dButtonActiveBack;
 
+        float itemLayoutWidth = screenWidth * 0.8f;
+        float itemLayoutHeight = screenHeight * 0.8f;
+        
+        //Area for inventory items
+        GUI.BeginGroup(new Rect(screenX0, screenY0, itemLayoutWidth, itemLayoutHeight));
+        GUI.Label(new Rect(0, 0, itemLayoutWidth, 100), "ITEMS!!!!!!!!!!!!!!!!!!!!!!!!", style);
 
-        intInventoryItem = GUI.SelectionGrid(new Rect(vec2CurrentPos.x, vec2CurrentPos.y, Screen.width, intInvSlotHeight),
-                                      intInventoryItem, arrStringWeapons, intInvItemsPerRow, style);
+        //TODO Make this look better
+        invScrollPosition = GUI.BeginScrollView(new Rect(0, 100, itemLayoutWidth - screenX0, 3.5f * invSlotHeight), invScrollPosition, new Rect(0, 0, itemLayoutWidth, (arrInventoryItems.Count + 1) * invSlotHeight), false, true);
 
-        GUI.BeginGroup(new Rect(Screen.width - 300, 100, 300, Screen.height));
-
-        ItemArmor equippedHelmet = inventory.getEquippedHelmet();
-        ItemArmor equippedChest = inventory.getEquippedChest();
-        ItemArmor equippedLegs = inventory.getEquippedLegs();
-
-        GUI.Label(new Rect(0, 0, 300, 200), "Head: " + (equippedHelmet == null ? "not equipped" : equippedHelmet.ToString()));
-        GUI.Label(new Rect(0, 200, 300, 200), "Chest: " + (equippedChest == null ? "not equipped" : equippedChest.ToString()));
-        GUI.Label(new Rect(0, 2 * 200, 300, 200), "Legs: " + (equippedLegs == null ? "not equipped" : equippedLegs.ToString()));
-
+        intInventoryItem = GUI.SelectionGrid(new Rect(0, 0, itemLayoutWidth, arrInventoryItems.Count * invSlotHeight), intInventoryItem, arrInventoryStrings, 1, style);
+        GUI.EndScrollView();
         GUI.EndGroup();
+
+        float itemStatsWidth = (screenWidth - itemLayoutWidth);
+        float itemStatsHeight = itemLayoutHeight;
+        
+        //Area for the selected item's stats
+        GUI.BeginGroup(new Rect(itemLayoutWidth, screenY0, itemStatsWidth ,itemStatsHeight ));
+        GUI.Label(new Rect(0, 0, itemStatsWidth, 100), "STATS!!!!!!!!!!!!!!!!!!!!!", style);
+
+        ItemEquipment itemSelected = (ItemEquipment)arrInventoryItems[intInventoryItem];
+        String fullDescription = "\n" +
+                    itemSelected._description + "\n" +
+                    "Stats" + "\n" +
+                    "Damage: " + itemSelected.damage + "\n" +
+                    "Armor: " + itemSelected.armor + "\n" +
+                    "Attack Speed: " + itemSelected.atkspd + "\n" +
+                    "\n" + "\n";
+        GUI.Label(new Rect(0, 100, itemStatsWidth, itemStatsHeight), fullDescription, style);
+        
+        GUI.EndGroup();
+
+        float playerStatsWidth = screenWidth;
+        float playerStatsHeight = (screenHeight - itemLayoutHeight);
+
+        //Area for player's stats
+        GUI.BeginGroup(new Rect(screenX0, itemLayoutHeight + screenY0, playerStatsWidth, playerStatsHeight ));
+        String strPlayerStats = "\n" +
+                    "Stats" + "\n" +
+                    "Max Health: " + player.MaxHealth + "\n" +
+                    "Move Speed: " + player.MoveSpeed + "\n" +
+                    "Attack: " + player.AttackDamage + "\n" +
+                    "Attack Speed: " + player.AttackDelay + "\n" +
+                    "Armor: " + player.Armor + "\n" +
+                    "\n" + "\n";
+
+        GUI.Label(new Rect(0, 0, playerStatsWidth, playerStatsHeight), strPlayerStats, style);
+        GUI.EndGroup();
+
+        //intInventoryItem = GUI.SelectionGrid(new Rect(vec2CurrentPos.x, vec2CurrentPos.y, screenWidth, intInvSlotHeight),
+        //                                                intInventoryItem, arrInventoryStrings, intInvItemsPerRow, style);
+
+        //GUI.BeginGroup(new Rect(screenWidth - 300, 100, 300, screenHeight));
+
+        //ItemArmor equippedHelmet = inventory.getEquippedHelmet();
+        //ItemArmor equippedChest = inventory.getEquippedChest();
+        //ItemArmor equippedLegs = inventory.getEquippedLegs();
+
+        //GUI.Label(new Rect(0, 0, 300, 200), "Head: " + (equippedHelmet == null ? "not equipped" : equippedHelmet.ToString()));
+        //GUI.Label(new Rect(0, 200, 300, 200), "Chest: " + (equippedChest == null ? "not equipped" : equippedChest.ToString()));
+        //GUI.Label(new Rect(0, 2 * 200, 300, 200), "Legs: " + (equippedLegs == null ? "not equipped" : equippedLegs.ToString()));
+
+        //GUI.EndGroup();
 
     }
 
@@ -1006,34 +1043,41 @@ public class Hud : MonoBehaviour
 
         if (InputContextManager.isMENU_UP())
         {
-            //Decrement the index by itemsPerRow and take the maximum of 0 and newIndex
-            int intNewSelected = intInventoryItem - intInvItemsPerRow;
+            ////Decrement the index by itemsPerRow and take the maximum of 0 and newIndex
+            //int intNewSelected = intInventoryItem - intInvItemsPerRow;
 
-            intInventoryItem = Mathf.Max(0, intNewSelected);
-        }
-        else if (InputContextManager.isMENU_DOWN())
-        {
-            //Increment the index by itemsPerRow and take the min of arrListWeapons.Count and newIndex
-            int intNewSelected = intInventoryItem + intInvItemsPerRow;
+            //intInventoryItem = Mathf.Max(0, intNewSelected);
 
 
-            intInventoryItem = Mathf.Min(itemsEquippable - 1, intNewSelected);
-        }
-        else if (InputContextManager.isMENU_LEFT())
-        {
+
             //Decrement the index by 1 and take the maximum of 0 and newIndex
             int intNewSelected = intInventoryItem - 1;
 
             //Bound checking
             intInventoryItem = Mathf.Max(intNewSelected, 0);
+
+            //If we have a new selection, move the scroll bar
+            if (intInventoryItem == intNewSelected)
+                invScrollPosition.y -= invSlotHeight;
         }
-        else if (InputContextManager.isMENU_RIGHT())
+        else if (InputContextManager.isMENU_DOWN())
         {
+            ////Increment the index by itemsPerRow and take the min of arrListWeapons.Count and newIndex
+            //int intNewSelected = intInventoryItem + intInvItemsPerRow;
+
+            //intInventoryItem = Mathf.Min(itemsEquippable - 1, intNewSelected);
+
+
+
             //Increment the index by 1 and take the min of arrListWeapons.Count and newIndex
             int intNewSelected = intInventoryItem + 1;
 
             //Pressing right can wraparound to the next row if one exists
             intInventoryItem = Mathf.Min(intNewSelected, itemsEquippable - 1);
+
+            //We have a new selection
+            if(intInventoryItem == intNewSelected)
+                invScrollPosition.y += intInvSlotHeight;
         }
         else if (InputContextManager.isMENU_SELECT())
         {
