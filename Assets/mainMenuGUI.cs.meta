@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 34a7f7f6f6c5cc14babef4981740bfb9
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - MainBg: {fileID: 2800000, guid: 97b050d43ac7c4d2b9f6cbb587650761, type: 3}
+  - StartUnselected: {fileID: 2800000, guid: 98ee4fc5e840d4d42a1f011d0f2f09ae, type: 3}
+  - StartSelected: {fileID: 2800000, guid: eaa0e1955385eb94898a0cec949e543b, type: 3}
+  - ExitUnselected: {fileID: 2800000, guid: cafe88875a68586469ede24285d3a218, type: 3}
+  - ExitSelected: {fileID: 2800000, guid: 090e4feca1c792f4883b41a6d557bcb0, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

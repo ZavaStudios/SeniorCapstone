@@ -99,6 +99,8 @@ public class Hud : MonoBehaviour
 
     protected void Start()
     {
+        menuCode = tMenuStates.MENU_NONE;
+
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Unit>();
         unitPlayer = player.GetComponent<UnitPlayer>();
 

@@ -81,13 +81,13 @@ public class InputContextManager : MonoBehaviour {
     //private functions to capture menu context switching
     static public bool isITEM_MENU_PUSHED()
     { 
-        //return OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_SYSTEM, OuyaExampleCommon.Player); 
+        //return OuyaExampleCommon.GetButtonUp(OuyaSDK.KeyEnum.BUTTON_SYSTEM, OuyaExampleCommon.Player); 
         return false;
     }
 
     static public bool isMAIN_MENU_PUSHED()
     { 
-        return OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_A, OuyaExampleCommon.Player); 
+        return OuyaExampleCommon.GetButtonUp(OuyaSDK.KeyEnum.BUTTON_A, OuyaExampleCommon.Player); 
     }
 
     
@@ -114,7 +114,7 @@ public class InputContextManager : MonoBehaviour {
 
     static public bool isMENU_SELECT()
     {
-        return IN_MENU && OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_O, OuyaExampleCommon.Player); 
+        return IN_MENU && OuyaExampleCommon.GetButtonUp(OuyaSDK.KeyEnum.BUTTON_O, OuyaExampleCommon.Player); 
     }
     
     //weapon controls
