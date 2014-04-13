@@ -276,23 +276,23 @@ public class Hud : MonoBehaviour
                     int intMenuContextWidth = screenWidth / 8;
                     int intMenuContextHeight = screenHeight / 8;
 
-                    GUIStyle style = new GUIStyle(GUI.skin.label);
-                    Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
+                    GUIStyle styleCrafting = new GUIStyle(GUI.skin.label);
+                    styleCrafting.normal.background = (Texture2D)Resources.Load("CraftingTest");
 
-                    tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryButtonBackground");
-                    style.normal.background = tex2dButtonPassiveBack;
+                    GUIStyle styleInventory = new GUIStyle(GUI.skin.label);
+                    styleInventory.normal.background = (Texture2D)Resources.Load("InventoryTest");
+
+
+                    GUIStyle styleAssemble = new GUIStyle(GUI.skin.label);
+                    styleAssemble.normal.background = (Texture2D)Resources.Load("AssemblyTest");
+
 
                     GUI.BeginGroup(new Rect((Screen.width/ 2) - (intMenuContextWidth / 2), (screenHeight / 2) - (intMenuContextHeight / 2),
-                                            2 * intMenuContextWidth , 3 * intMenuContextHeight), style);
+                                            2 * intMenuContextWidth, 3 * intMenuContextHeight));
 
-                    //GUI.Label(new Rect((screenWidth / 2) - (intMenuContextWidth / 2), 0, intMenuContextWidth, intMenuContextHeight), "Assemble", style);//Top
-                    //GUI.Label(new Rect(0, (screenHeight / 2), intMenuContextWidth, intMenuContextHeight), "Inventory", style);//Left
-                    //GUI.Label(new Rect((screenWidth - intMenuContextWidth / 5), (screenHeight / 2), intMenuContextWidth, intMenuContextHeight), "Crafting", style); //Right
-                    //GUI.Label(new Rect(0, 0, 0, 0), "Armor", style);
-
-                    GUI.Label(new Rect(0.5f * intMenuContextWidth, 0, intMenuContextWidth, intMenuContextHeight), "Inventory", style);//Top
-                    GUI.Label(new Rect(0, intMenuContextHeight, intMenuContextWidth, intMenuContextHeight), "Crafting", style);//Left
-                    GUI.Label(new Rect(intMenuContextWidth, intMenuContextHeight, intMenuContextWidth, intMenuContextHeight), "Assembling", style); //Right
+                    GUI.Label(new Rect(0.5f * intMenuContextWidth, 0, intMenuContextWidth, intMenuContextHeight), "", styleInventory);//Top
+                    GUI.Label(new Rect(0, intMenuContextHeight, intMenuContextWidth, intMenuContextHeight), "", styleCrafting);//Left
+                    GUI.Label(new Rect(intMenuContextWidth, intMenuContextHeight, intMenuContextWidth, intMenuContextHeight), "", styleAssemble); //Right
                     //GUI.Label(new Rect(0.5f * intMenuContextWidth, 2.0f * intMenuContextHeight, intMenuContextWidth, intMenuContextHeight), "Options"); //Down  
 
                     GUI.EndGroup();
