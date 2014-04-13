@@ -116,6 +116,16 @@ public class InputContextManager : MonoBehaviour {
     {
         return IN_MENU && OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_O, OuyaExampleCommon.Player); 
     }
+
+    static public bool isMENU_SWITCH_RIGHT()
+    {
+        return IN_MENU && OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_RB, OuyaExampleCommon.Player);
+    }
+
+    static public bool isMENU_SWITCH_LEFT()
+    {
+        return IN_MENU && OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_LB, OuyaExampleCommon.Player);
+    }
     
     //weapon controls
     static public bool isATTACK()
@@ -224,6 +234,16 @@ public class InputContextManager : MonoBehaviour {
     static public bool isMENU_SELECT()
     {
         return IN_MENU && (Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter));
+    }
+
+    static public bool isMENU_SWITCH_RIGHT()
+    {
+        return IN_MENU && (Input.GetKeyUp(KeyCode.E) || Input.GetKeyUp(KeyCode.Period));
+    }
+
+    static public bool isMENU_SWITCH_LEFT()
+    {
+        return IN_MENU && (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Comma));
     }
     
     //weapon controls
