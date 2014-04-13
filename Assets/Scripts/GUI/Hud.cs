@@ -576,55 +576,77 @@ public class Hud : MonoBehaviour
 
     private void layoutAssembleGrid()
     {
-        int intAssembleWidthPadding = screenWidth / 8;
-        int intAssembleHeightPadding = screenHeight / 8;
+        //int intAssembleWidthPadding = screenWidth / 8;
+        //int intAssembleHeightPadding = screenHeight / 8;
 
-        Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
-        Texture2D tex2dButtonActiveBack = new Texture2D(1, 1);
-        Texture2D tex2dButtonFlashBack = new Texture2D(1, 1);
-        UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
+        //Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
+        //Texture2D tex2dButtonActiveBack = new Texture2D(1, 1);
+        //Texture2D tex2dButtonFlashBack = new Texture2D(1, 1);
+        //UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
 
-        //Set the style for selection screens
-        tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryTypeBackground");
+        ////Set the style for selection screens
+        //tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryTypeBackground");
 
-        //Backgrounds for non-active items
-        style.normal.background = tex2dButtonPassiveBack;
-        style.hover.background = tex2dButtonPassiveBack;
-        style.onHover.background = tex2dButtonPassiveBack;
+        ////Backgrounds for non-active items
+        //style.normal.background = tex2dButtonPassiveBack;
+        //style.hover.background = tex2dButtonPassiveBack;
+        //style.onHover.background = tex2dButtonPassiveBack;
 
-        //Make a label to show which kind of weapon is being assembled
-        int intAssemWeaponLabelWidth = 2 * intAssembleWidthPadding;
-        int intAssemWeaponLabelHeight = intAssembleHeightPadding;
-        int intAssemWeaponLabelX = (screenWidth / 2) - (intAssemWeaponLabelWidth / 2); //Start the label at half the screen shifted by half the label width
-        int intAssemWeaponLabelY = (screenHeight / 20);
+        ////Make a label to show which kind of weapon is being assembled
+        //int intAssemWeaponLabelWidth = 2 * intAssembleWidthPadding;
+        //int intAssemWeaponLabelHeight = intAssembleHeightPadding;
+        //int intAssemWeaponLabelX = (screenWidth / 2) - (intAssemWeaponLabelWidth / 2); //Start the label at half the screen shifted by half the label width
+        //int intAssemWeaponLabelY = (screenHeight / 20);
 
-        GUI.Label(new Rect(intAssemWeaponLabelX, intAssemWeaponLabelY, intAssemWeaponLabelWidth, intAssemWeaponLabelHeight), arrWeaponTypes[intAssembleType], style);
+        //GUI.Label(new Rect(intAssemWeaponLabelX, intAssemWeaponLabelY, intAssemWeaponLabelWidth, intAssemWeaponLabelHeight), arrWeaponTypes[intAssembleType], style);
 
-        ArrayList arrListAssemblable = getMakeableItems();
-        ArrayList temp = new ArrayList();
+        //ArrayList arrListAssemblable = getMakeableItems();
+        //ArrayList temp = new ArrayList();
 
-        //Filter the makeable items by their type
-        for (int i = 0; i < arrListAssemblable.Count; i++)
-        {
-            ItemWeapon wepCurrent = ItemFactory.createWeapon(((ItemComponent[])arrListAssemblable[i])[0], ((ItemComponent[])arrListAssemblable[i])[1]);
+        ////Filter the makeable items by their type
+        //for (int i = 0; i < arrListAssemblable.Count; i++)
+        //{
+        //    ItemWeapon wepCurrent = ItemFactory.createWeapon(((ItemComponent[])arrListAssemblable[i])[0], ((ItemComponent[])arrListAssemblable[i])[1]);
 
-            if (wepCurrent.weaponType.ToString().Equals(arrWeaponTypes[intAssembleType]))
-                temp.Add(arrListAssemblable[i]);
-        }
+        //    if (wepCurrent.weaponType.ToString().Equals(arrWeaponTypes[intAssembleType]))
+        //        temp.Add(arrListAssemblable[i]);
+        //}
 
-        //Copy the valid items into an array
-        string[] arrAssembleStrings = new string[temp.Count];
-        arrAssembleWeapons = new ItemComponent[temp.Count][];
-        for (int i = 0; i < temp.Count; i++)
-        {
-            arrAssembleWeapons[i] = (ItemComponent[])temp[i];
-            arrAssembleStrings[i] = ItemFactory.createWeapon(arrAssembleWeapons[i][0], arrAssembleWeapons[i][1]).name;
-        }
+        ////Copy the valid items into an array
+        //string[] arrAssembleStrings = new string[temp.Count];
+        //arrAssembleWeapons = new ItemComponent[temp.Count][];
+        //for (int i = 0; i < temp.Count; i++)
+        //{
+        //    arrAssembleWeapons[i] = (ItemComponent[])temp[i];
+        //    arrAssembleStrings[i] = ItemFactory.createWeapon(arrAssembleWeapons[i][0], arrAssembleWeapons[i][1]).name;
+        //}
 
-        intCompTypeGrid = GUI.SelectionGrid(new Rect(intAssembleWidthPadding, intAssemWeaponLabelY + intAssemWeaponLabelHeight + 10,
-                                             6 * intAssembleWidthPadding, 6 * intAssembleHeightPadding),
-                                    intAssembleWeapon, arrAssembleStrings, 3, style);
+        //intCompTypeGrid = GUI.SelectionGrid(new Rect(intAssembleWidthPadding, intAssemWeaponLabelY + intAssemWeaponLabelHeight + 10,
+        //                                     6 * intAssembleWidthPadding, 6 * intAssembleHeightPadding),
+        //                            intAssembleWeapon, arrAssembleStrings, 3, style);
+        GUIStyle styleNormal = new GUIStyle(GUI.skin.label);
+        Texture2D tex2Normal = new Texture2D(1, 1);
+        tex2Normal = (Texture2D)Resources.Load("InventoryTypeBackground");
+        styleNormal.normal.background = tex2Normal;
+        styleNormal.alignment = TextAnchor.UpperCenter;
 
+        int groupWidth = screenWidth / 3;
+        int groupHeight = screenHeight;
+
+        //Component 1 selection
+        GUI.BeginGroup(new Rect(screenX0, screenY0, groupWidth, groupHeight));
+        GUI.Label(new Rect(0, 0, groupWidth, groupHeight), "Component1", styleNormal);
+        GUI.EndGroup();
+
+        //Component 2 selection
+        GUI.BeginGroup(new Rect(screenX0 + groupWidth, screenY0, groupWidth, groupHeight));
+        GUI.Label(new Rect(0, 0, groupWidth, groupHeight), "Component2", styleNormal);
+        GUI.EndGroup();
+
+        //Description area
+        GUI.BeginGroup(new Rect(screenX0 + 2 * groupWidth, screenY0, groupWidth, groupHeight));
+        GUI.Label(new Rect(0, 0, groupWidth, groupHeight), "Description", styleNormal);
+        GUI.EndGroup();
     }
 
     /// <summary>
