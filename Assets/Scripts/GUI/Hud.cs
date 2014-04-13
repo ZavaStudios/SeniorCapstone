@@ -378,31 +378,40 @@ public class Hud : MonoBehaviour
         GUIStyle infoStyle = new GUIStyle(GUI.skin.label);
         infoStyle.alignment = TextAnchor.UpperCenter;
         infoStyle.fontSize = 16;
-        int labelHeight = 100;
 
         //Split the screen into 4 groups with padding on the edges(1 groups worth)
+        int labelHeight = 100;
         int groupWidth = screenWidth / 5;
         int groupHeight = screenHeight - labelHeight;
 
-        //Description Area
+        //Description Area (non-active)
         GUIStyle categoryStyle = new GUIStyle(GUI.skin.label);
         categoryStyle.alignment = TextAnchor.MiddleCenter;
         categoryStyle.fontStyle = FontStyle.Bold;
         categoryStyle.fontSize = 20;
 
         Texture2D tex2dLabelBack = new Texture2D(1, 1);
-        Texture2D tex2dLabelBackSelected = new Texture2D(1, 1);
         tex2dLabelBack = (Texture2D)Resources.Load("InventoryButtonBackground");
-        tex2dLabelBackSelected = (Texture2D)Resources.Load("SelectedBackground");
-
         //Backgrounds for non-active items
-        categoryStyle.normal.background = tex2dLabelBackSelected;
+        categoryStyle.normal.background = tex2dLabelBack;
         categoryStyle.wordWrap = true;
 
+        //Description Area(active)
+        GUIStyle categoryStyleActive = new GUIStyle(GUI.skin.label);
+        categoryStyleActive.alignment = TextAnchor.MiddleCenter;
+        categoryStyleActive.fontStyle = FontStyle.Bold;
+        categoryStyleActive.fontSize = 20;
+
+        Texture2D tex2dLabelBackSelected = new Texture2D(1, 1);
+        tex2dLabelBackSelected = (Texture2D)Resources.Load("SelectedBackground");
+
+        //Background for active items
+        categoryStyleActive.normal.background = tex2dLabelBackSelected;
+        categoryStyleActive.wordWrap = true;
 
         //Info at the Bottom of the screen.
         GUI.BeginGroup(new Rect(screenX0, screenY0 + groupHeight, screenWidth, labelHeight));
-        //TODO Make labels work for OUYA Controls
+        //TODO Make labels work for OUYA Controls            
         GUI.Label(new Rect(0, 0, screenWidth, screenHeight), "Make all your selections and then confirm." + "\n" +
             "Change option group: Left,Right" + "\n" +
             "Switch Option: Up, Down" + "\n" +
@@ -412,7 +421,10 @@ public class Hud : MonoBehaviour
 
         //Category Groups
         GUI.BeginGroup(new Rect(screenX0, screenY0, groupWidth, groupHeight));
-        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftableCategories[intCraftingCategory].ToString(), categoryStyle);
+        if(craftingState.Equals(tCraftingState.CATEGORY_SELECTION))
+            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftableCategories[intCraftingCategory].ToString(), categoryStyleActive);
+        else
+            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftableCategories[intCraftingCategory].ToString(), categoryStyle);
         GUI.EndGroup();
 
 
@@ -425,20 +437,29 @@ public class Hud : MonoBehaviour
         
         //Make sure when switching between categories, we readjust the max option index if we need to
         intTypesInCategory = Math.Min(intTypesInCategory, craftingTypeInCategory.Count - 1);
-        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingTypeInCategory[intTypesInCategory].ToString(), categoryStyle);
+        if(craftingState.Equals(tCraftingState.ITEM_TYPE))
+            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingTypeInCategory[intTypesInCategory].ToString(), categoryStyleActive);
+        else
+            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingTypeInCategory[intTypesInCategory].ToString(), categoryStyle);
         GUI.EndGroup();
 
 
         //Attribute choice for your item
         GUI.BeginGroup(new Rect(2 * groupWidth + screenX0, screenY0, groupWidth, groupHeight));
-        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingAttributes[intCraftingAttributes].ToString(), categoryStyle);
+        if(craftingState.Equals(tCraftingState.ATTRIBUTE_SELECTION))
+            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingAttributes[intCraftingAttributes].ToString(), categoryStyleActive);
+        else
+            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingAttributes[intCraftingAttributes].ToString(), categoryStyle);
         GUI.EndGroup();
 
 
 
         //Ore choice for your item
         GUI.BeginGroup(new Rect(3 * groupWidth + screenX0, screenY0, groupWidth, groupHeight));
-        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingOres[intCraftingOres].ToString(), categoryStyle);
+        if(craftingState.Equals(tCraftingState.ORE_SELECTION))
+            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingOres[intCraftingOres].ToString(), categoryStyleActive);
+        else
+            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingOres[intCraftingOres].ToString(), categoryStyle);
         GUI.EndGroup();
 
         //Description Area
