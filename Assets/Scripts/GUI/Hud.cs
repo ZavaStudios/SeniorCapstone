@@ -374,18 +374,34 @@ public class Hud : MonoBehaviour
             craftingOres.Add(ore);
         }
 
-        //Split the screen into 4 groups
-        int groupWidth = screenWidth / 5;
-        int groupHeight = screenHeight;
-
         //Layout variables
         GUIStyle infoStyle = new GUIStyle(GUI.skin.label);
         infoStyle.alignment = TextAnchor.UpperCenter;
         infoStyle.fontSize = 16;
-        int labelHeight = 80;
+        int labelHeight = 100;
+
+        //Split the screen into 4 groups with padding on the edges(1 groups worth)
+        int groupWidth = screenWidth / 5;
+        int groupHeight = screenHeight - labelHeight;
+
+        //Description Area
+        GUIStyle categoryStyle = new GUIStyle(GUI.skin.label);
+        categoryStyle.alignment = TextAnchor.MiddleCenter;
+        categoryStyle.fontStyle = FontStyle.Bold;
+        categoryStyle.fontSize = 20;
+
+        Texture2D tex2dLabelBack = new Texture2D(1, 1);
+        Texture2D tex2dLabelBackSelected = new Texture2D(1, 1);
+        tex2dLabelBack = (Texture2D)Resources.Load("InventoryButtonBackground");
+        tex2dLabelBackSelected = (Texture2D)Resources.Load("SelectedBackground");
+
+        //Backgrounds for non-active items
+        categoryStyle.normal.background = tex2dLabelBackSelected;
+        categoryStyle.wordWrap = true;
+
 
         //Info at the Bottom of the screen.
-        GUI.BeginGroup(new Rect(screenX0, screenHeight - labelHeight, screenWidth, labelHeight));
+        GUI.BeginGroup(new Rect(screenX0, screenY0 + groupHeight, screenWidth, labelHeight));
         //TODO Make labels work for OUYA Controls
         GUI.Label(new Rect(0, 0, screenWidth, screenHeight), "Make all your selections and then confirm." + "\n" +
             "Change option group: Left,Right" + "\n" +
@@ -393,57 +409,36 @@ public class Hud : MonoBehaviour
             "Confirm:Enter", infoStyle);
         GUI.EndGroup();
 
-        //Don't let groups show on top of the info footer
-        groupHeight -= labelHeight;
 
         //Category Groups
-        GUI.BeginGroup(new Rect(0, 0, groupWidth, groupHeight));
-
-        //String[] categoryStrings = new String[armorCraftableCategories.Count];
-        //for (int i = 0; i < armorCraftableCategories.Count; i++)
-        //{
-        //    categoryStrings[i] = armorCraftableCategories[i].ToString();
-        //}
-
-        //GUI.Label(new Rect(0, 0, groupWidth, labelHeight), "What would you like to craft?", infoStyle);
-        //intArmorCategory = GUI.SelectionGrid(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), intArmorCategory, categoryStrings, 1);
-
-        String[] categoryStrings = new String[craftableCategories.Count];
-        for (int i = 0; i < craftableCategories.Count; i++)
-        {
-            categoryStrings[i] = craftableCategories[i].ToString();
-        }
-        GUI.Label(new Rect(0, 0, groupWidth, groupHeight), craftableCategories[intCraftingCategory].ToString());
+        GUI.BeginGroup(new Rect(screenX0, screenY0, groupWidth, groupHeight));
+        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftableCategories[intCraftingCategory].ToString(), categoryStyle);
         GUI.EndGroup();
 
 
         //Items from the selected category
-        GUI.BeginGroup(new Rect(1 * groupWidth, 0, groupWidth, groupHeight));
+        GUI.BeginGroup(new Rect(1 * groupWidth + screenX0, screenY0, groupWidth, groupHeight));
         if (craftableCategories[intCraftingCategory].Equals(ItemBase.tItemType.Armor))
-        {
             craftingTypeInCategory = armors;
-        }
         else
-        {
             craftingTypeInCategory = components;
-        }
-
-        //Make sure when switching between categories, we readjust the max option
+        
+        //Make sure when switching between categories, we readjust the max option index if we need to
         intTypesInCategory = Math.Min(intTypesInCategory, craftingTypeInCategory.Count - 1);
-        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingTypeInCategory[intTypesInCategory].ToString());
+        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingTypeInCategory[intTypesInCategory].ToString(), categoryStyle);
         GUI.EndGroup();
 
 
         //Attribute choice for your item
-        GUI.BeginGroup(new Rect(2 * groupWidth, 0, groupWidth, groupHeight));
-        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingAttributes[intCraftingAttributes].ToString());
+        GUI.BeginGroup(new Rect(2 * groupWidth + screenX0, screenY0, groupWidth, groupHeight));
+        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingAttributes[intCraftingAttributes].ToString(), categoryStyle);
         GUI.EndGroup();
 
 
 
         //Ore choice for your item
-        GUI.BeginGroup(new Rect(3 * groupWidth, 0, groupWidth, groupHeight));
-        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingOres[intCraftingOres].ToString());
+        GUI.BeginGroup(new Rect(3 * groupWidth + screenX0, screenY0, groupWidth, groupHeight));
+        GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingOres[intCraftingOres].ToString(), categoryStyle);
         GUI.EndGroup();
 
         //Description Area
@@ -452,7 +447,8 @@ public class Hud : MonoBehaviour
         descriptionStyle.fontStyle = FontStyle.Bold;
         descriptionStyle.fontSize = 20;
 
-        GUI.BeginGroup(new Rect(4 * groupWidth, 0, groupWidth, groupHeight));
+        //Details about what the current selection would craft into
+        GUI.BeginGroup(new Rect(4 * groupWidth + screenX0, screenY0, groupWidth, groupHeight));
         String armorCode = ItemArmor.generateArmorCode(craftingAttributes[intCraftingAttributes], craftingOres[intCraftingOres], armors[intTypesInCategory]);
         ItemArmor madeArmor = ItemFactory.createArmor(armorCode);
         String fullDescription = "\n" +
@@ -732,7 +728,7 @@ public class Hud : MonoBehaviour
 
         inventoryItemsFullHeight = arrInventoryItems.Count * inventorySlotHeight;
 
-        //Show 4 items at a time
+        //Each slot is a fixed height, and so higher resolutions may see more of the inventory at one time
         int inventoryItemsDisplayHeight = ((int)(itemLayoutHeight / inventorySlotHeight)) * inventorySlotHeight;
 
         inventoryScrollPosition = GUI.BeginScrollView(new Rect(0, 60, itemLayoutWidth, inventoryItemsDisplayHeight),
