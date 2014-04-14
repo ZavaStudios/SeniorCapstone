@@ -16,7 +16,7 @@ public class SkeletonKingAI : BossUnit
 	    AttackDelay = 0.33f;
         AttackDamage = 15;
 		//Set the enemy cap to be 3.
-		enemyCap = 1;
+		enemyCap = 5;
 		weapon.attackRange = 20;
 	}
 	
