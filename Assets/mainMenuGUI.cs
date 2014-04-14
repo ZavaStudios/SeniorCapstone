@@ -3,11 +3,8 @@ using System.Collections;
 
 public class mainMenuGUI : MonoBehaviour
 {
-    public Texture2D MainBg;
-    public Texture2D StartUnselected;
-    public Texture2D StartSelected;
-    public Texture2D ExitUnselected;
-    public Texture2D ExitSelected;
+    public Texture2D MainBgStart;
+    public Texture2D MainBgExit;
     private int selected = 0;
 
     // WARNING:  some hacks below, in order to use the input manager, which is fairly hacky as well.
@@ -33,6 +30,7 @@ public class mainMenuGUI : MonoBehaviour
             Debug.Log("selected: " + selected);
             if (selected == 0)
             {
+                Hud.menuCode = Hud.tMenuStates.MENU_NONE;
                 Application.LoadLevel("loadScreen");
             }
             else
@@ -42,9 +40,7 @@ public class mainMenuGUI : MonoBehaviour
 
     void OnGUI()
     {
-        // TODO: better placement
+        Texture2D MainBg = selected == 0 ? MainBgStart : MainBgExit;
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), MainBg);
-        GUI.DrawTexture(new Rect(0, 0, 100, 100), selected == 0 ? StartSelected : StartUnselected);
-        GUI.DrawTexture(new Rect(0, 0, 100, 150), selected == 0 ? ExitUnselected : ExitSelected);
     }
 }
