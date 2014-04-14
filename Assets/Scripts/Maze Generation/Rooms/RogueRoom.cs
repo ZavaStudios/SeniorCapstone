@@ -105,19 +105,21 @@ namespace MazeGeneration
 			Vector3 center = GetCenter(maxWidth, maxDepth);
 
 			// Spawn floor / ceiling:
-			floor_tile.transform.localScale = new Vector3((float)Width,
-			                                              0.0f,
-			                                              (float)Depth) * scalar;
+			
 			//floor_tile.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(Width, Depth));
 			Transform ft = (Transform)MonoBehaviour.Instantiate(floor_tile, center * scalar, Quaternion.identity);
 			Transform ct = (Transform)MonoBehaviour.Instantiate(floor_tile,
 			                          							(center + new Vector3(0.0f, Height, 0.0f)) * scalar,
 			                                                    Quaternion.AngleAxis (180.0f, Vector3.forward));
+            
+            ft.transform.localScale = new Vector3((float)Width, 1.0f, (float)Depth) * scalar;
+            ct.transform.localScale = new Vector3((float)Width, 1.0f, (float)Depth) * scalar;
+
    			ft.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(Width, Depth));
 			ct.FindChild("Plane").renderer.material.SetTextureScale("_MainTex", new Vector2(Width, Depth));
 
             //set the tag for raycast identification.
-            ft.FindChild("Plane").tag = "Floor"; 
+            ft.FindChild("Plane").tag = "Floor";
             ct.FindChild("Plane").tag = "Ceiling"; 
 
             //assign parent:
