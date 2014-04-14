@@ -28,7 +28,7 @@ public class InputContextManager : MonoBehaviour {
 
 #if !UNITY_EDITOR && !UNITY_STANDALONE_WIN
     
-    private const float buttonRepeatTimer = 0.5f;
+    private const float buttonRepeatTimer = 0.125f;
     static private float nextMenuJoyStickLeft = 0.0f;
     static private float nextMenuJoyStickRight = 0.0f;
     static private float nextMenuJoyStickUp = 0.0f;
@@ -37,7 +37,7 @@ public class InputContextManager : MonoBehaviour {
     //simulates buttonDown effect using left joystick.
     static private bool joyButtonDownLEFT()
     {
-        if (OuyaExampleCommon.GetAxis(OuyaSDK.KeyEnum.AXIS_LSTICK_X, OuyaExampleCommon.Player) > 0.25 && Time.time > nextMenuJoyStickLeft)
+        if (OuyaExampleCommon.GetAxis(OuyaSDK.KeyEnum.AXIS_LSTICK_X, OuyaExampleCommon.Player) < -0.25 && Time.time > nextMenuJoyStickLeft)
         {
             nextMenuJoyStickLeft = Time.time + buttonRepeatTimer;
             return true;
@@ -48,7 +48,7 @@ public class InputContextManager : MonoBehaviour {
     //simulates buttonDown effect using left joystick.
     static private bool joyButtonDownRIGHT()
     {
-        if (OuyaExampleCommon.GetAxis(OuyaSDK.KeyEnum.AXIS_LSTICK_X, OuyaExampleCommon.Player) < -0.25 && Time.time > nextMenuJoyStickRight)
+        if (OuyaExampleCommon.GetAxis(OuyaSDK.KeyEnum.AXIS_LSTICK_X, OuyaExampleCommon.Player) > 0.25 && Time.time > nextMenuJoyStickRight)
         {
             nextMenuJoyStickRight = Time.time + buttonRepeatTimer;
             return true;
@@ -59,7 +59,7 @@ public class InputContextManager : MonoBehaviour {
     //simulates buttonDown effect using left joystick.
     static private bool joyButtonDownDOWN()
     {
-        if (OuyaExampleCommon.GetAxis(OuyaSDK.KeyEnum.AXIS_LSTICK_Y, OuyaExampleCommon.Player) < -0.25 && Time.time > nextMenuJoyStickDown)
+        if (OuyaExampleCommon.GetAxis(OuyaSDK.KeyEnum.AXIS_LSTICK_Y, OuyaExampleCommon.Player) > 0.25 && Time.time > nextMenuJoyStickDown)
         {
             nextMenuJoyStickDown = Time.time + buttonRepeatTimer;
             return true;
@@ -81,13 +81,13 @@ public class InputContextManager : MonoBehaviour {
     //private functions to capture menu context switching
     static public bool isITEM_MENU_PUSHED()
     { 
-        //return OuyaExampleCommon.GetButtonUp(OuyaSDK.KeyEnum.BUTTON_SYSTEM, OuyaExampleCommon.Player); 
+        //return OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_SYSTEM, OuyaExampleCommon.Player); 
         return false;
     }
 
     static public bool isMAIN_MENU_PUSHED()
     { 
-        return OuyaExampleCommon.GetButtonUp(OuyaSDK.KeyEnum.BUTTON_A, OuyaExampleCommon.Player); 
+        return OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_A, OuyaExampleCommon.Player); 
     }
 
     
@@ -114,7 +114,7 @@ public class InputContextManager : MonoBehaviour {
 
     static public bool isMENU_SELECT()
     {
-        return IN_MENU && OuyaExampleCommon.GetButtonUp(OuyaSDK.KeyEnum.BUTTON_O, OuyaExampleCommon.Player); 
+        return IN_MENU && OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_O, OuyaExampleCommon.Player); 
     }
 
     static public bool isMENU_SWITCH_RIGHT()
@@ -188,12 +188,12 @@ public class InputContextManager : MonoBehaviour {
 
     static public bool isSPRINT()
     {
-        return !IN_MENU && ((OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_RB, OuyaExampleCommon.Player) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_LB, OuyaExampleCommon.Player)); 
+        return !IN_MENU && ((OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_RB, OuyaExampleCommon.Player) || OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_LB, OuyaExampleCommon.Player))); 
     }
 
 	static public bool isACTIVATE()
 	{
-		return !IN_MENU && OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_U);
+		return !IN_MENU && OuyaExampleCommon.GetButtonDown(OuyaSDK.KeyEnum.BUTTON_U, OuyaExampleCommon.Player);
 	}
 
 #else
@@ -201,49 +201,49 @@ public class InputContextManager : MonoBehaviour {
     //private functions to capture menu context switching
     static public bool isITEM_MENU_PUSHED()
     { 
-        return Input.GetKeyUp(KeyCode.I); 
+        return Input.GetKeyDown(KeyCode.I); 
     }
 
     static public bool isMAIN_MENU_PUSHED()
     {
-        return Input.GetKeyUp(KeyCode.Escape);
+        return Input.GetKeyDown(KeyCode.Escape);
     }
 
     
     //menu controls (DPAD on OUYA)
     static public bool isMENU_LEFT()
     {
-        return IN_MENU && (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.A)); 
+        return IN_MENU && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)); 
     }
 
     static public bool isMENU_RIGHT()
     {
-        return IN_MENU && (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.D));  
+        return IN_MENU && (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D));  
     }
 
     static public bool isMENU_UP()
     {
-        return IN_MENU && (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.W)); 
+        return IN_MENU && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)); 
     }
 
     static public bool isMENU_DOWN()
     {
-        return IN_MENU && (Input.GetKeyUp(KeyCode.DownArrow) || Input.GetKeyUp(KeyCode.S)); 
+        return IN_MENU && (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)); 
     }
 
     static public bool isMENU_SELECT()
     {
-        return IN_MENU && (Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter));
+        return IN_MENU && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter));
     }
 
     static public bool isMENU_SWITCH_RIGHT()
     {
-        return IN_MENU && (Input.GetKeyUp(KeyCode.E) || Input.GetKeyUp(KeyCode.Period));
+        return IN_MENU && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Period));
     }
 
     static public bool isMENU_SWITCH_LEFT()
     {
-        return IN_MENU && (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Comma));
+        return IN_MENU && (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Comma));
     }
     
     //weapon controls
