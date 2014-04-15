@@ -335,14 +335,13 @@ public class Hud : MonoBehaviour
 
                     break;
                 }
-
         }
     }
 
     //Variables for crafting armor
     Vector2 itemScrollPosition = Vector2.zero;
     int intCraftingCategory = 0;
-    int intTypesInCategory = 0;
+    int intCraftingTypesInCategory = 0;
     int intCraftingAttributes = 0;
     int intCraftingOres = 0;
     int intCraftingWeaponTypes = 0;
@@ -443,11 +442,11 @@ public class Hud : MonoBehaviour
             craftingTypeInCategory = components;
 
         //Make sure when switching between categories, we readjust the max option index if we need to
-        intTypesInCategory = Math.Min(intTypesInCategory, craftingTypeInCategory.Count - 1);
+        intCraftingTypesInCategory = Math.Min(intCraftingTypesInCategory, craftingTypeInCategory.Count - 1);
         if (craftingState.Equals(tCraftingState.ITEM_TYPE))
-            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingTypeInCategory[intTypesInCategory].ToString(), categoryStyleActive);
+            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingTypeInCategory[intCraftingTypesInCategory].ToString(), categoryStyleActive);
         else
-            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingTypeInCategory[intTypesInCategory].ToString(), categoryStyle);
+            GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingTypeInCategory[intCraftingTypesInCategory].ToString(), categoryStyle);
         GUI.EndGroup();
 
 
@@ -493,7 +492,7 @@ public class Hud : MonoBehaviour
         string fullDescription = ""; //The description of what we're crafting
         if (craftingCategories[intCraftingCategory].Equals(ItemBase.tItemType.Armor))
         {
-            String armorCode = ItemArmor.generateArmorCode(craftingAttributes[intCraftingAttributes], craftingOres[intCraftingOres], armors[intTypesInCategory]);
+            String armorCode = ItemArmor.generateArmorCode(craftingAttributes[intCraftingAttributes], craftingOres[intCraftingOres], armors[intCraftingTypesInCategory]);
             ItemArmor madeArmor = ItemFactory.createArmor(armorCode);
             fullDescription = "\n" +
                         madeArmor.description + "\n" +
@@ -510,7 +509,7 @@ public class Hud : MonoBehaviour
         else
         {
             String componentCode = ItemComponent.generateComponentCode(craftingAttributes[intCraftingAttributes], craftingOres[intCraftingOres],
-                                                craftingWeaponTypes[intCraftingWeaponTypes], (ItemComponent.tComponentPart)craftingTypeInCategory[intTypesInCategory]);
+                                                craftingWeaponTypes[intCraftingWeaponTypes], (ItemComponent.tComponentPart)craftingTypeInCategory[intCraftingTypesInCategory]);
             ItemComponent madeComponent = ItemFactory.createComponent(componentCode);
 
             fullDescription = "\n" +
@@ -528,6 +527,17 @@ public class Hud : MonoBehaviour
 
         GUI.Label(new Rect(0, 0, groupWidth, groupHeight), fullDescription, descriptionStyle);
         GUI.EndGroup();
+    }
+
+    private void showMenuStates()
+    {
+        UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
+        Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
+
+        tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryTypeBackground");
+        style.normal.background = tex2dButtonPassiveBack;
+
+        GUI.Label(new Rect(0, 0, 150, 50), arrMenusMenu[intMenusMenu].ToString(), style);
     }
 
     private enum tCraftingState
@@ -550,7 +560,7 @@ public class Hud : MonoBehaviour
                     intCraftingCategory = Math.Max(0, intCraftingCategory - 1);
                     break;
                 case tCraftingState.ITEM_TYPE:
-                    intTypesInCategory = Math.Max(0, intTypesInCategory - 1);
+                    intCraftingTypesInCategory = Math.Max(0, intCraftingTypesInCategory - 1);
                     break;
                 case tCraftingState.ATTRIBUTE_SELECTION:
                     intCraftingAttributes = Math.Max(0, intCraftingAttributes - 1);
@@ -572,7 +582,7 @@ public class Hud : MonoBehaviour
                     intCraftingCategory = Math.Min(craftingCategories.Count - 1, intCraftingCategory + 1);
                     break;
                 case tCraftingState.ITEM_TYPE:
-                    intTypesInCategory = Math.Min(craftingTypeInCategory.Count - 1, intTypesInCategory + 1);
+                    intCraftingTypesInCategory = Math.Min(craftingTypeInCategory.Count - 1, intCraftingTypesInCategory + 1);
                     break;
                 case tCraftingState.ATTRIBUTE_SELECTION:
                     intCraftingAttributes = Math.Min(craftingAttributes.Count - 1, intCraftingAttributes + 1);
@@ -605,106 +615,143 @@ public class Hud : MonoBehaviour
         }
         else if (InputContextManager.isMENU_SELECT())
         {
-            String armorCode = ItemArmor.generateArmorCode(craftingAttributes[intCraftingAttributes], craftingOres[intCraftingOres], armors[intTypesInCategory]);
-            ItemArmor madeArmor = ItemFactory.createArmor(armorCode);
-
-            ItemSlot armorSlot = new ItemSlot();
-            ItemOre oreRequirement = new ItemOre(madeArmor.oreType);
-            oreRequirement.neededOreQuantity = madeArmor.neededOreQuantity;
-            armorSlot.oreNeeded = oreRequirement;
-            if (playerCanCraft(armorSlot))
+            if (craftingCategories[intCraftingCategory].Equals(ItemBase.tItemType.Armor)) //We're making armor
             {
-                inventory.inventoryRemoveItem(oreRequirement, armorSlot.oreNeeded.neededOreQuantity);
-                player.CraftingPoints -= armorSlot.oreNeeded.neededPoints;
-                inventory.inventoryAddItem(madeArmor);
+                String armorCode = ItemArmor.generateArmorCode(craftingAttributes[intCraftingAttributes], craftingOres[intCraftingOres], armors[intCraftingTypesInCategory]);
+                ItemArmor madeArmor = ItemFactory.createArmor(armorCode);
+
+                ItemSlot armorSlot = new ItemSlot();
+                ItemOre oreRequirement = new ItemOre(madeArmor.oreType);
+                oreRequirement.neededOreQuantity = madeArmor.neededOreQuantity;
+                armorSlot.oreNeeded = oreRequirement;
+                if (playerCanCraft(armorSlot))
+                {
+                    inventory.inventoryRemoveItem(oreRequirement, armorSlot.oreNeeded.neededOreQuantity);
+                    player.CraftingPoints -= armorSlot.oreNeeded.neededPoints;
+                    inventory.inventoryAddItem(madeArmor);
+                }
+            }
+            else //We're making components
+            {
+                String componentCode = ItemComponent.generateComponentCode(craftingAttributes[intCraftingAttributes], craftingOres[intCraftingOres],
+                                        craftingWeaponTypes[intCraftingWeaponTypes], (ItemComponent.tComponentPart)craftingTypeInCategory[intCraftingTypesInCategory]);
+                ItemComponent madeComponent = ItemFactory.createComponent(componentCode);
+
+                ItemSlot componentSlot = new ItemSlot();
+                ItemOre oreRequirement = new ItemOre(madeComponent.oreType);
+                oreRequirement.neededOreQuantity = madeComponent.neededOreQuantity;
+                componentSlot.oreNeeded = oreRequirement;
+
+                if (playerCanCraft(componentSlot))
+                {
+                    inventory.inventoryRemoveItem(oreRequirement, componentSlot.oreNeeded.neededOreQuantity);
+                    player.CraftingPoints -= componentSlot.oreNeeded.neededPoints;
+                    inventory.inventoryAddItem(madeComponent);
+                }
             }
         }
     }
 
+    List<ItemComponent> bladeComponents = new List<ItemComponent>();
+    List<ItemComponent> handleComponents = new List<ItemComponent>();
 
-    private void showMenuStates()
+    int intBladeComponents = 0;
+    int intHandleComponents = 0;
+
+    private enum tAssemState
     {
-        UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
-        Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
-
-        tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryTypeBackground");
-        style.normal.background = tex2dButtonPassiveBack;
-
-        GUI.Label(new Rect(0, 0, 150, 50), arrMenusMenu[intMenusMenu].ToString(), style);
+        BLADE = 0,
+        HANDLE = 1
     }
 
+    tAssemState assemState = tAssemState.BLADE;
     private void layoutAssembleGrid()
     {
-        //int intAssembleWidthPadding = screenWidth / 8;
-        //int intAssembleHeightPadding = screenHeight / 8;
+        //Separate blades from handles
+        bladeComponents = new List<ItemComponent>();
+        handleComponents = new List<ItemComponent>();
+        foreach(ItemComponent comp in inventory.getInventoryComponents())
+        {
+            string compCode = comp.strComponentCode;
+            if (ItemComponent.getComponentPart(comp.strComponentCode).Equals(ItemComponent.tComponentPart.Blade))
+            {
+                bladeComponents.Add(comp);
+            }
+            else //Otherwise, we have a handle
+            {
+                handleComponents.Add(comp);
+            }
+        }
 
-        //Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
-        //Texture2D tex2dButtonActiveBack = new Texture2D(1, 1);
-        //Texture2D tex2dButtonFlashBack = new Texture2D(1, 1);
-        //UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
+        GUI.DrawTexture(new Rect(screenX0, screenY0, screenWidth, screenHeight), (Texture2D)Resources.Load("Assembly"));
 
-        ////Set the style for selection screens
-        //tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryTypeBackground");
-
-        ////Backgrounds for non-active items
-        //style.normal.background = tex2dButtonPassiveBack;
-        //style.hover.background = tex2dButtonPassiveBack;
-        //style.onHover.background = tex2dButtonPassiveBack;
-
-        ////Make a label to show which kind of weapon is being assembled
-        //int intAssemWeaponLabelWidth = 2 * intAssembleWidthPadding;
-        //int intAssemWeaponLabelHeight = intAssembleHeightPadding;
-        //int intAssemWeaponLabelX = (screenWidth / 2) - (intAssemWeaponLabelWidth / 2); //Start the label at half the screen shifted by half the label width
-        //int intAssemWeaponLabelY = (screenHeight / 20);
-
-        //GUI.Label(new Rect(intAssemWeaponLabelX, intAssemWeaponLabelY, intAssemWeaponLabelWidth, intAssemWeaponLabelHeight), arrWeaponTypes[intAssembleType], style);
-
-        //ArrayList arrListAssemblable = getMakeableItems();
-        //ArrayList temp = new ArrayList();
-
-        ////Filter the makeable items by their type
-        //for (int i = 0; i < arrListAssemblable.Count; i++)
-        //{
-        //    ItemWeapon wepCurrent = ItemFactory.createWeapon(((ItemComponent[])arrListAssemblable[i])[0], ((ItemComponent[])arrListAssemblable[i])[1]);
-
-        //    if (wepCurrent.weaponType.ToString().Equals(arrWeaponTypes[intAssembleType]))
-        //        temp.Add(arrListAssemblable[i]);
-        //}
-
-        ////Copy the valid items into an array
-        //string[] arrAssembleStrings = new string[temp.Count];
-        //arrAssembleWeapons = new ItemComponent[temp.Count][];
-        //for (int i = 0; i < temp.Count; i++)
-        //{
-        //    arrAssembleWeapons[i] = (ItemComponent[])temp[i];
-        //    arrAssembleStrings[i] = ItemFactory.createWeapon(arrAssembleWeapons[i][0], arrAssembleWeapons[i][1]).name;
-        //}
-
-        //intCompTypeGrid = GUI.SelectionGrid(new Rect(intAssembleWidthPadding, intAssemWeaponLabelY + intAssemWeaponLabelHeight + 10,
-        //                                     6 * intAssembleWidthPadding, 6 * intAssembleHeightPadding),
-        //                            intAssembleWeapon, arrAssembleStrings, 3, style);
         GUIStyle styleNormal = new GUIStyle(GUI.skin.label);
         Texture2D tex2Normal = new Texture2D(1, 1);
-        tex2Normal = (Texture2D)Resources.Load("InventoryTypeBackground");
+        tex2Normal = (Texture2D)Resources.Load("Transparent");
         styleNormal.normal.background = tex2Normal;
-        styleNormal.alignment = TextAnchor.UpperCenter;
+        styleNormal.alignment = TextAnchor.MiddleCenter;
+        styleNormal.fontSize = 18;
+
+        GUIStyle styleSelection = new GUIStyle(GUI.skin.label);
+        styleSelection.normal.background = (Texture2D)Resources.Load("CellBackground");
+        styleSelection.fontSize = 24;
+        styleSelection.alignment = TextAnchor.MiddleCenter;
+        styleSelection.normal.textColor = new Color(202 / 255f, 121 / 255f, 33 / 255f); //A golden yellow
+
+        int labelHeight = 200;
 
         int groupWidth = screenWidth / 3;
-        int groupHeight = screenHeight;
+        int groupHeight = ((int)(screenHeight * 0.9)) - labelHeight; //Take off some for the label on the texture
+
+
+        //If no item combinations are possible
+        if (getMakeableItems().Count == 0)
+        {
+            GUI.Label(new Rect(screenX0, screenY0, screenWidth, screenHeight),
+                "No weapon combinations possible. Make sure you get a blade and a handle for the same weapon that are the same type.",
+                styleNormal);
+            return;
+        }
+        //After here, we can assume that we have at least 1 blade and handle
 
         //Component 1 selection
-        GUI.BeginGroup(new Rect(screenX0, screenY0, groupWidth, groupHeight));
-        GUI.Label(new Rect(0, 0, groupWidth, groupHeight), "Component1", styleNormal);
+        GUI.BeginGroup(new Rect(screenX0, screenY0 + labelHeight, groupWidth, groupHeight));
+        if (assemState.Equals(tAssemState.BLADE))   //Selected
+            GUI.Label(new Rect(0, 0, groupWidth, groupHeight), bladeComponents[intBladeComponents].ToString(), styleSelection);
+        
+        else   //Not selected
+            GUI.Label(new Rect(0, 0, groupWidth, groupHeight), bladeComponents[intBladeComponents].ToString(), styleNormal);
+        
         GUI.EndGroup();
 
         //Component 2 selection
-        GUI.BeginGroup(new Rect(screenX0 + groupWidth, screenY0, groupWidth, groupHeight));
-        GUI.Label(new Rect(0, 0, groupWidth, groupHeight), "Component2", styleNormal);
+        GUI.BeginGroup(new Rect(screenX0 + groupWidth, screenY0 + labelHeight, groupWidth, groupHeight));
+        if (assemState.Equals(tAssemState.HANDLE))
+            GUI.Label(new Rect(0, 0, groupWidth, groupHeight), handleComponents[intHandleComponents].ToString(), styleSelection);
+        else
+            GUI.Label(new Rect(0, 0, groupWidth, groupHeight), handleComponents[intHandleComponents].ToString(), styleNormal);
+
         GUI.EndGroup();
 
         //Description area
         GUI.BeginGroup(new Rect(screenX0 + 2 * groupWidth, screenY0, groupWidth, groupHeight));
-        GUI.Label(new Rect(0, 0, groupWidth, groupHeight), "Description", styleNormal);
+        string fullDescription = "";
+
+        ItemWeapon potentialWeapon = ItemFactory.createWeapon(bladeComponents[intBladeComponents], handleComponents[intHandleComponents]);
+        
+        if (potentialWeapon == null)
+            fullDescription = "Cannot Combine";
+        else
+        {
+            fullDescription = "\n" +
+                    potentialWeapon._description + "\n" +
+                    "\n" +
+                    "Damage: " + potentialWeapon.damage + "\n" +
+                    "Armor: " + potentialWeapon.armor + "\n" +
+                    "Attack Speed: " + potentialWeapon.atkspd + "\n" +
+                    "\n" + "\n";
+        }
+        GUI.Label(new Rect(0, 0, groupWidth, groupHeight), fullDescription, styleNormal);
         GUI.EndGroup();
     }
 
@@ -771,8 +818,6 @@ public class Hud : MonoBehaviour
         ArrayList arrItems = inventory.getInventoryItems();
         ArrayList arrOres = inventory.getInventoryOres();
         arrInventoryItems = new ArrayList();
-
-        Debug.Log("Have " + arrArmors.Count);
 
         foreach (ItemWeapon weapon in arrListWeapons)
         {
@@ -941,47 +986,69 @@ public class Hud : MonoBehaviour
 
     private void handleAssembleMovement()
     {
+        //No components, no movement
+        if(handleComponents.Count == 0 || bladeComponents.Count == 0)
+            return;
+
         //Left and right change the type being assembled. (With wraparound)
         if (InputContextManager.isMENU_LEFT())
         {
-            int intNewType = intAssembleType - 1;
-
-            intAssembleType = (intNewType < 0 ? arrWeaponTypes.Length - 1 : intNewType);
+            assemState = (tAssemState)Math.Max(0, (int)assemState - 1);
         }
         else if (InputContextManager.isMENU_RIGHT())
         {
-            int intNewType = intAssembleType + 1;
+            int numStates = Enum.GetNames(typeof(tAssemState)).Length - 1;
 
-            intAssembleType = (intNewType > arrWeaponTypes.Length - 1 ? 0 : intNewType);
+            assemState = (tAssemState)Math.Min(numStates,(int)assemState + 1);
         }
         //Up and down change which item to assemble (without wraparound)
         else if (InputContextManager.isMENU_UP())
         {
-            intAssembleWeapon = Math.Max(intAssembleWeapon - 1, 0);
+            switch (assemState)
+            {
+                case tAssemState.BLADE:
+                    intBladeComponents = Math.Max(0, intBladeComponents - 1);
+                    break;
+                case tAssemState.HANDLE:
+                    intHandleComponents = Math.Max(0, intHandleComponents - 1);
+                    break;
+            }
+
         }
         else if (InputContextManager.isMENU_DOWN())
         {
-            intAssembleWeapon = Math.Min(arrAssembleWeapons.Length - 1, intAssembleWeapon + 1);
+            switch (assemState)
+            {
+                case tAssemState.BLADE:
+                    intBladeComponents = Math.Min(bladeComponents.Count - 1, intBladeComponents + 1);
+                    break;
+                case tAssemState.HANDLE:
+                    intHandleComponents = Math.Min(handleComponents.Count - 1, intHandleComponents + 1);
+                    break;
+            }
+
         }
         else if (InputContextManager.isMENU_SELECT())
         {
             //Time to craft an item
+            ItemWeapon madeWeapon = ItemFactory.createWeapon(bladeComponents[intBladeComponents], handleComponents[intHandleComponents]);
+            if (madeWeapon == null)
+                return;
 
-            //Add the item to the player's inventory
-            inventory.inventoryAddItem(ItemFactory.createWeapon(arrAssembleWeapons[intAssembleWeapon][0], arrAssembleWeapons[intAssembleWeapon][1]));
+            //Since we have a weapon, add it to the inventory
+            inventory.inventoryAddItem(madeWeapon);
 
             //Remove the components from the inventory
-            inventory.inventoryRemoveItem(arrAssembleWeapons[intAssembleWeapon][0]);
-            inventory.inventoryRemoveItem(arrAssembleWeapons[intAssembleWeapon][1]);
+            inventory.inventoryRemoveItem(bladeComponents[intBladeComponents]);
+            inventory.inventoryRemoveItem(handleComponents[intHandleComponents]);
 
-            //Reset the component index
-            intAssembleWeapon = 0;
         }
     }
 
     private void handleInventoryMovement()
     {
-        int itemsEquippable = inventory.getInventoryArmors().Count + inventory.getInventoryWeapons().Count + inventory.getInventoryOres().Count;
+        int itemsEquippable = inventory.getInventoryArmors().Count + inventory.getInventoryWeapons().Count + 
+                               inventory.getInventoryComponents().Count + inventory.getInventoryOres().Count;
 
         if (InputContextManager.isMENU_UP())
         {
