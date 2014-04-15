@@ -5,8 +5,9 @@ public class UnitTurret : Unit {
 
     private Transform bulletOrigin;
     protected Vector3 dir;
-    WeaponTurretAI tWeapon;
-	Transform weaponModel;
+    private WeaponTurretAI tWeapon;
+	private Transform weaponModel;
+    private Transform turretBody;
     private float turnSpeed = 150f;
     public float specialAttackDamageRelative;
 
@@ -18,9 +19,9 @@ public class UnitTurret : Unit {
         print(tWeapon);
         weapon = tWeapon;
         weapon.specialAttackDamageRelative = specialAttackDamageRelative;
-        bulletOrigin = transform.Find("Weapon/BulletOrigin");
-        
-        weaponModel = transform.Find("Weapon");
+        bulletOrigin = transform.Find("TurretBody/Weapon/BulletOrigin");
+        weaponModel = transform.Find("TurretBody/Weapon");
+        turretBody = transform.Find("TurretBody");
 
     }
 
@@ -30,7 +31,7 @@ public class UnitTurret : Unit {
         {
             Vector3 enemyPosition = tWeapon.currentTarget.transform.position;
             float angleToTarget = Mathf.Atan2((enemyPosition.x - transform.position.x), (enemyPosition.z - transform.position.z)) * Mathf.Rad2Deg;
-            transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);           
+            turretBody.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(turretBody.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);           
             
             float rotationY = Mathf.Clamp (Vector3.Distance(transform.position, enemyPosition)*4, 0, 70);
             weaponModel.localEulerAngles = new Vector3(-rotationY,0,0);

@@ -13,7 +13,7 @@ namespace MazeGeneration
     {
         // Approximate number of slots in the dungeon to be filled with enemy rooms,
         // with 1.0f being 100% of the rooms, and 0.0f being (probably) none of them.
-		private const float ENEMY_ROOM_DENSITY = 0.5f;
+		private const float ENEMY_ROOM_DENSITY = 0.7f;
 
         // Values deciding how large rooms can be. Specifically,
 		// main min/max values describe what the sizes of any room
@@ -244,7 +244,7 @@ namespace MazeGeneration
                     // enemy room, so we won't worry about that.
 					// TODO: smarter distribution of enemy points. For now, just give same value to each room.
 					if (newRoom is GeneralRoom)
-						((GeneralRoom)newRoom).AssignEnemies(5);
+						((GeneralRoom)newRoom).AssignEnemies(LevelHolder.Level * 10);
 					
                     Map[x, y] = newRoom;
                 }

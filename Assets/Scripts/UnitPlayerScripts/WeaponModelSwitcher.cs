@@ -11,6 +11,7 @@ public class WeaponModelSwitcher : MonoBehaviour
     public GameObject bow;
 	public GameObject key;
     private GameObject Active;
+    //private UnitPlayer PlayerCharacter;
     
     public void start()
     {
@@ -33,6 +34,8 @@ public class WeaponModelSwitcher : MonoBehaviour
         bow.SetActive(false);
 		key.SetActive(false);
         
+        //PlayerCharacter = GameObject.FindGameObjectWithTag("Player").GetComponent<UnitPlayer>();
+
         switch(newWeapon)
         {
             case ItemWeapon.tWeaponType.WeaponBow:
@@ -45,7 +48,7 @@ public class WeaponModelSwitcher : MonoBehaviour
             break;
             case ItemWeapon.tWeaponType.WeaponPickaxe:
                 pickaxe.SetActive(true);
-                Active = pickaxe;
+                Active = pickaxe;                
             break;
             case ItemWeapon.tWeaponType.WeaponStaff:
 			    staff.SetActive(true);
@@ -56,7 +59,6 @@ public class WeaponModelSwitcher : MonoBehaviour
                 Active = sword;
             break;
             case ItemWeapon.tWeaponType.WeaponToolbox:
-                //crappy_toolbox.SetActive(true);
                 wrench.SetActive(true);
                 Active = wrench;
             break;
@@ -86,16 +88,16 @@ public class WeaponModelSwitcher : MonoBehaviour
         }
         else if (Active == bow )
         {
-            //Active.animation.PlayQueued("BowstringDraw");
+            Active.animation.PlayQueued("Aim");
         }
         else if (Active == wrench )
         {
             //crappy_toolbox.animation.PlayQueued("ToolBoxSwing");
-            wrench.animation.PlayQueued("WrenchBonk");
+            Active.animation.PlayQueued("WrenchBonk");
         }
-
-        else
+        else if (Active == key )
         {
+            Active.animation.PlayQueued("KeyUnlock");
             //print ("no animation found");
         }
     }
