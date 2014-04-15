@@ -305,7 +305,7 @@ public class Hud : MonoBehaviour
             case tMenuStates.MENU_NONE: //Display regular player info
                 {
                     // Make a health bar
-                    GUI.Box(new Rect(screenX0 + 10, screenY0 + 10, 100, 30), player.Health + "/" + player.MaxHealth);
+                    GUI.Box(new Rect(screenX0 + 10, screenY0 + 10, 100, 30), Math.Round(player.Health) + "/" + player.MaxHealth);
                     GUI.Box(new Rect(screenX0 + 10, screenY0 + 40, 200, 30), "Crafting Points: " + player.CraftingPoints);
 
                     //Draw the crosshair
