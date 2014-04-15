@@ -48,13 +48,21 @@ public class UnitPlayer : Unit {
 
     private void cheat(cheatAmount cheatHowBadly)
     {   
+
         ItemBase.tOreType oreToUse = ItemBase.tOreType.Bone;
         if (cheatHowBadly == cheatAmount.a_lot)
         {
             oreToUse = ItemBase.tOreType.Dragon;
         }
 
-        string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
+        //Give the player crafting points
+        for (int i = 0; i < 10; i++)
+        {
+            incrementScore();
+            inventory.inventoryAddItem(new ItemOre(ItemBase.tOreType.Bone));
+        }
+
+                string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
 		                                                       ItemComponent.tComponentPart.Blade);
 		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
 		                                                        ItemComponent.tComponentPart.Handle);
@@ -93,7 +101,7 @@ public class UnitPlayer : Unit {
     }
 	public void incrementScore()
 	{
-		Score++;
+		CraftingPoints++;
 	}
 
 	protected override void Update () 

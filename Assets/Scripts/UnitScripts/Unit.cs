@@ -26,7 +26,7 @@ public class Unit : MonoBehaviour
         set {health = value; }
     }
 
-	public int Score
+	public int CraftingPoints
 	{
 				get;
 				set;
