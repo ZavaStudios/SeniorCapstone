@@ -37,7 +37,7 @@ public class UnitPlayer : Unit {
         inventory.inventoryAddItem(myFirstPickaxe);
         inventory.inventoryAddItem(myFirstSword);
 
-        //cheat(cheatAmount.a_little);//add all weapons
+        cheat(cheatAmount.a_little);//add all weapons
         //cheat(cheatAmount.a_lot);//add all weapons
 
         base.Start();
@@ -159,9 +159,9 @@ public class UnitPlayer : Unit {
         
 	protected override void killUnit ()
 	{
-		
 		//Draws the gameover GUI to the screen. 
 		GameOver.gameOver = true;
+        inventory.removeInstance();
 		
 		//Wait for 5 seconds.
 		StartCoroutine(wait(5));
