@@ -172,6 +172,8 @@ public class UnitPlayer : Unit {
 		
 		//Draws the gameover GUI to the screen. 
 		GameOver.gameOver = true;
+
+        inventory.removeInstance();
 		
 		//Wait for 5 seconds.
 		StartCoroutine(wait(5));
