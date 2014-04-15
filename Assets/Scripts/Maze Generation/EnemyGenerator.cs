@@ -11,18 +11,20 @@ public class EnemyGenerator
 		spiderBoss, skeletonBoss, zombieBoss,
 	}
 
+    // TODO: Due to some issues with the other enemies, presently just returns zombies.
+    //
 	//Generates enemies at random based on the number of points that are allocated to that room.
 	// Returns an ArrayList of type enemy with the enemies that should be contained in any given room.
 	public static List<EnemyType> generateEnemies(int points)
 	{
-		List<EnemyType> enemyList = new List<EnemyType>();		//Fuck you Victor. Here's a comment for you! :) PS Angel Beats is the best! :DDDD 
+		List<EnemyType> enemyList = new List<EnemyType>(); 
 		int mod = points%5;
 
 		//Check to see if we have an exact number of points.
 		if(mod != 0)
 		{
 			//Round up if we get a value greater than our threshold.
-            if (mod > Maze.rnd.Next(5))
+            if (true)//(mod > Maze.rnd.Next(5))
 			{
 				points += (5 - mod);
 			}
@@ -37,6 +39,7 @@ public class EnemyGenerator
 		//Fill in the remaining points with random enemies.
 		for(int i = 0; i < points; i += 5)
 		{
+            /*
             switch (Maze.rnd.Next(3))
 			{
 				case 0: 				
@@ -56,14 +59,17 @@ public class EnemyGenerator
 					enemyList.Add(EnemyType.zombie);
 					break;					
 			}
-		}		
+             */
+            enemyList.Add(EnemyType.zombie);
+		}
 		return enemyList;
 	}
 	
 	public static List<EnemyType> generateBoss()
 	{
 		List<EnemyType> enemyList = new List<EnemyType>();
-		switch(Maze.rnd.Next(3))
+		/*
+        switch(Maze.rnd.Next(3))
 			{
 				case 0: 				
 					enemyList.Add(EnemyType.skeletonBoss);
@@ -77,6 +83,8 @@ public class EnemyGenerator
 					enemyList.Add(EnemyType.zombieBoss);
 					break;					
 			}
+         */
+        enemyList.Add(EnemyType.zombieBoss);
 		return enemyList;
 	}
 }

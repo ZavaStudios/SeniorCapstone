@@ -37,7 +37,7 @@ public class UnitPlayer : Unit {
         inventory.inventoryAddItem(myFirstPickaxe);
         inventory.inventoryAddItem(myFirstSword);
 
-        cheat(cheatAmount.a_little);//add all weapons
+        //cheat(cheatAmount.a_little);//add all weapons
         cheat(cheatAmount.a_lot);//add all weapons
 
         base.Start();
