@@ -35,7 +35,7 @@ public class UnitEnemy : Unit
 		distance = Vector3.Distance(transform.position, player.position);
 		PlayerPosition = player.position;
 		dir = PlayerPosition - transform.position;
-		dir.y = transform.position.y;
+		dir.y = 0;
 		dir.Normalize();
 		
 		//Determine whether to attack or not.
@@ -50,7 +50,8 @@ public class UnitEnemy : Unit
 			float angleToTarget = Mathf.Atan2((PlayerPosition.x - transform.position.x), (PlayerPosition.z - transform.position.z)) * Mathf.Rad2Deg;
 			transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
 			//transform.Rotate(-90,0,0);
-	
+
+            Debug.Log("dir: " + dir.x + ", " + dir.y + ", " + dir.z);
 			control.SimpleMove(dir * moveSpeed);
 			
 //			enemyMovement();
