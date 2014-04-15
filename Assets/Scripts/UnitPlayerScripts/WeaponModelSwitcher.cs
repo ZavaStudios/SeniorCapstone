@@ -3,62 +3,62 @@ using System.Collections;
 
 public class WeaponModelSwitcher : MonoBehaviour 
 {
-    public GameObject crappy_sword;
-    public GameObject crappy_pickaxe;
-	public GameObject crappy_staff;
-    public GameObject crappy_toolbox;
-    public GameObject crappy_wrench;
-    public GameObject crappy_bow;
-	public GameObject crappy_key;
+    public GameObject sword;
+    public GameObject pickaxe;
+	public GameObject staff;
+    //public GameObject crappy_toolbox;
+    public GameObject wrench;
+    public GameObject bow;
+	public GameObject key;
     private GameObject Active;
     
     public void start()
     {
-        crappy_sword.SetActive(false);
-        crappy_pickaxe.SetActive(false);
-		crappy_staff.SetActive(false);
-        crappy_toolbox.SetActive(false);
-        crappy_wrench.SetActive(false);
-        crappy_bow.SetActive(false);
-		crappy_key.SetActive(false);
+        sword.SetActive(false);
+        pickaxe.SetActive(false);
+		staff.SetActive(false);
+        //crappy_toolbox.SetActive(false);
+        wrench.SetActive(false);
+        bow.SetActive(false);
+		key.SetActive(false);
     }
     
     public void SwitchWeapon(ItemWeapon.tWeaponType newWeapon)
     {
-        crappy_sword.SetActive(false);
-        crappy_pickaxe.SetActive(false);
-		crappy_staff.SetActive(false);
-        crappy_toolbox.SetActive(false);
-        crappy_wrench.SetActive(false);
-        crappy_bow.SetActive(false);
-		crappy_key.SetActive(false);
+        sword.SetActive(false);
+        pickaxe.SetActive(false);
+		staff.SetActive(false);
+        //crappy_toolbox.SetActive(false);
+        wrench.SetActive(false);
+        bow.SetActive(false);
+		key.SetActive(false);
         
         switch(newWeapon)
         {
             case ItemWeapon.tWeaponType.WeaponBow:
-                crappy_bow.SetActive(true);
-                Active = crappy_bow;
+                bow.SetActive(true);
+                Active = bow;
             break;
             case ItemWeapon.tWeaponType.WeaponKey:
-                crappy_key.SetActive(true);
-			    Active = crappy_key;
+                key.SetActive(true);
+			    Active = key;
             break;
             case ItemWeapon.tWeaponType.WeaponPickaxe:
-                crappy_pickaxe.SetActive(true);
-                Active = crappy_pickaxe;
+                pickaxe.SetActive(true);
+                Active = pickaxe;
             break;
             case ItemWeapon.tWeaponType.WeaponStaff:
-			    crappy_staff.SetActive(true);
-			    Active = crappy_staff;
+			    staff.SetActive(true);
+			    Active = staff;
             break;
             case ItemWeapon.tWeaponType.WeaponSword:
-                crappy_sword.SetActive(true);
-                Active = crappy_sword;
+                sword.SetActive(true);
+                Active = sword;
             break;
             case ItemWeapon.tWeaponType.WeaponToolbox:
-                crappy_toolbox.SetActive(true);
-                crappy_wrench.SetActive(true);
-                Active = crappy_toolbox;
+                //crappy_toolbox.SetActive(true);
+                wrench.SetActive(true);
+                Active = wrench;
             break;
             default:
                 Active = null;
@@ -70,28 +70,28 @@ public class WeaponModelSwitcher : MonoBehaviour
     
     public void playAnimation()
     {
-        if (Active == crappy_sword)
-        {
-            //Active.animation["SwordSwing"].speed = 1.0f; //animation speed was set to negative by sword collision detection.
-            Active.animation.PlayQueued("SwordSwing");
+        if (!Active) return;
 
+        if (Active == sword)
+        {
+            Active.animation["SwordSwing"].speed = 1.0f; //animation speed was set to negative by sword collision detection.
         }
-        else if (Active == crappy_pickaxe )
+        else if (Active == pickaxe )
         {
             Active.animation.PlayQueued("PickaxeSwing");
         }
-		else if (Active == crappy_staff )
+		else if (Active == staff )
         {
             Active.animation.PlayQueued("StaffBlast");
         }
-        else if (Active == crappy_bow )
+        else if (Active == bow )
         {
-            Active.animation.PlayQueued("CrappyBowDraw");
+            //Active.animation.PlayQueued("BowstringDraw");
         }
-        else if (Active == crappy_toolbox )
+        else if (Active == wrench )
         {
-            crappy_toolbox.animation.PlayQueued("ToolBoxSwing");
-            crappy_wrench.animation.PlayQueued("WrenchBonk");
+            //crappy_toolbox.animation.PlayQueued("ToolBoxSwing");
+            wrench.animation.PlayQueued("WrenchBonk");
         }
 
         else
