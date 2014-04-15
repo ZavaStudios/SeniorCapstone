@@ -22,8 +22,8 @@ public class WeaponBow : WeaponBase {
 
     protected override void releaseRoutine()
 	{   
-        s.weaponBow = this;
-        s.releaseShot();        
+        //s.weaponBow = this;
+        //s.releaseShot();        
 	}
 
 

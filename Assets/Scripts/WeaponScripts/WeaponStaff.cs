@@ -20,17 +20,19 @@ public class WeaponStaff : WeaponBase
 	
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
-		 // Instantiate the projectile at the position and rotation of this transform
-    	ProjectileFireball p;
-    	GameObject clone = (GameObject)GameObject.Instantiate(Resources.Load("Fireball"), startPos,Character.getLookRotation());
-		p = (ProjectileFireball) clone.gameObject.AddComponent("ProjectileFireball");
-		//Physics.IgnoreCollision(clone.collider,Character.collider);
+        //handled by animation function calls...
+
+        // // Instantiate the projectile at the position and rotation of this transform
+        //ProjectileFireball p;
+        //GameObject clone = (GameObject)GameObject.Instantiate(Resources.Load("Fireball"), startPos,Character.getLookRotation());
+        //p = (ProjectileFireball) clone.gameObject.AddComponent("ProjectileFireball");
+        ////Physics.IgnoreCollision(clone.collider,Character.collider);
 		
-		p.damage = Character.AttackDamage;
+        //p.damage = Character.AttackDamage;
 		
 		
-    	// Add force to the cloned object in the object's forward direction
-    	clone.rigidbody.AddForce(clone.transform.forward * bulletSpeed);
+        //// Add force to the cloned object in the object's forward direction
+        //clone.rigidbody.AddForce(clone.transform.forward * bulletSpeed);
 
 	}
 	
