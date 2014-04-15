@@ -48,10 +48,18 @@ public class UnitPlayer : Unit {
 
     private void cheat(cheatAmount cheatHowBadly)
     {   
+
         ItemBase.tOreType oreToUse = ItemBase.tOreType.Bone;
         if (cheatHowBadly == cheatAmount.a_lot)
         {
             oreToUse = ItemBase.tOreType.Ethereal;
+        }
+
+        //Give the player crafting points
+        for (int i = 0; i < 10; i++)
+        {
+            incrementScore();
+            inventory.inventoryAddItem(new ItemOre(ItemBase.tOreType.Bone));
         }
 
         string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
@@ -93,7 +101,7 @@ public class UnitPlayer : Unit {
     }
 	public void incrementScore()
 	{
-		Score++;
+		CraftingPoints++;
 	}
 
 	protected override void Update () 

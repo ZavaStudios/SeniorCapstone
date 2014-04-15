@@ -96,18 +96,18 @@ public static class ItemFactory
         //modify damage delay health etc based on heavy/light status
         switch(ItemArmor.getArmorAttribute(strArmorCode))
         {
-            case ItemArmor.tAttributeType.Heavy:
+            case ItemComponent.tAttributeType.Heavy:
                 armor *= (1+ 0.1f*oreType);
                 health *= (1+ 0.1f*oreType);
                 moveSpeedModifier += (-0.08f + 0.005f * oreType); 
                 damage *= 0.7f;
                 speed *= -0.7f;
             break;
-            case ItemArmor.tAttributeType.Normal:
+            case ItemComponent.tAttributeType.Normal:
                 damage += 1 * oreType;
                 speed *= -0.7f;
             break;
-            case ItemArmor.tAttributeType.Light:
+            case ItemComponent.tAttributeType.Light:
                 damage *= 0.7f;
                 armor *= (0.2f + 0.1f *oreType);
                 health *= (0.2f + 0.1f *oreType);
