@@ -476,6 +476,8 @@ public class Hud : MonoBehaviour
         descriptionStyle.alignment = TextAnchor.MiddleCenter;
         descriptionStyle.fontStyle = FontStyle.Bold;
         descriptionStyle.fontSize = 20;
+        descriptionStyle.normal.textColor =  new Color(202 / 255f, 121 / 255f, 33 / 255f); //Gold from the mockups
+
 
         //Details about what the current selection would craft into
         GUI.BeginGroup(new Rect(4 * groupWidth + screenX0, screenY0, groupWidth, groupHeight));
@@ -760,28 +762,27 @@ public class Hud : MonoBehaviour
                 arrInventoryStrings[i] = item.ToString(); //To instead use pictures/textures, make an array of pictures/textures
         }
 
-        UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
-        Texture2D tex2dButtonPassiveBack = new Texture2D(1, 1);
-        Texture2D tex2dButtonActiveBack = new Texture2D(1, 1);
-        tex2dButtonPassiveBack = (Texture2D)Resources.Load("InventoryButtonBackground");
-        tex2dButtonActiveBack = (Texture2D)Resources.Load("SelectedBackground");
-
-        //Backgrounds for non-active items
-        style.normal.background = tex2dButtonPassiveBack;
+        //Style for non-active items
+        UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.label);
         style.wordWrap = true;
+        style.alignment = TextAnchor.MiddleCenter;
+        style.fontSize = 15;
+        style.onNormal.background = (Texture2D)Resources.Load("Transparent");
 
-        //Backgrounds when I have an active selection
-        style.onNormal.background = tex2dButtonActiveBack;
+        //Style for when I have an active selection
         style.onNormal.textColor = new Color(202 / 255f, 121 / 255f, 33/ 255f); //Divide by 255f to get a range from 0 to 1
 
         float itemLayoutWidth = screenWidth * 0.8f;
-        float itemLayoutHeight = screenHeight * 0.8f;
+        float itemLayoutHeight = screenHeight * 0.7f;
 
-        int itemLabelHeight = 40;
+        int itemLabelHeight = 100;
+
+        //Background image
+        GUI.DrawTexture(new Rect(screenX0, screenY0, screenWidth, screenHeight), (Texture2D)Resources.Load("Inventory"));
 
         //Area for inventory items
-        GUI.BeginGroup(new Rect(screenX0, screenY0, itemLayoutWidth, itemLayoutHeight));
-        GUI.Label(new Rect(0, 0, itemLayoutWidth, itemLabelHeight), "ITEMS!!!!!!!!!!!!!!!!!!!!!!!!");
+        GUI.BeginGroup(new Rect(screenX0, screenY0 + itemLabelHeight, itemLayoutWidth, itemLayoutHeight));
+        //GUI.Label(new Rect(0, 0, itemLayoutWidth, itemLabelHeight), "ITEMS!!!!!!!!!!!!!!!!!!!!!!!!"); //There is instead a label on the texture
 
         //Each slot is a fixed height, and so higher resolutions may see more of the inventory at one time
         int itemsDisplayable = ((int)(itemLayoutHeight / inventorySlotHeight));
@@ -797,7 +798,7 @@ public class Hud : MonoBehaviour
 
         for(int i = 0; i < neededEmptySlots; i++)
         {
-            arrInventoryStrings[previousLength + i] = "[empty]";
+            arrInventoryStrings[previousLength + i] = "[You require more minerals (to build more equipment)]";
         }
         
         //Start to actually layout things
@@ -813,22 +814,29 @@ public class Hud : MonoBehaviour
         GUI.EndScrollView();
         GUI.EndGroup();
 
+        UnityEngine.GUIStyle descriptionStyle = new GUIStyle(GUI.skin.label);
+        descriptionStyle.wordWrap = true;
+        descriptionStyle.alignment = TextAnchor.MiddleCenter;
+        descriptionStyle.fontSize = 16;
+        //descriptionStyle.normal.background = (Texture2D)Resources.Load("Transparent"); //Won't apply other onNormal settings if there's no background?
+
+        //Style for when I have an active selection
+        descriptionStyle.normal.textColor = new Color(202 / 255f, 121 / 255f, 33 / 255f); //Divide by 255f to get a range from 0 to 1
 
         float playerStatsWidth = screenWidth;
         float playerStatsHeight = (screenHeight - itemLayoutHeight);
 
         //Area for player's stats
-        GUI.BeginGroup(new Rect(screenX0, screenY0 + inventoryItemsDisplayHeight + itemLabelHeight + 30, playerStatsWidth, playerStatsHeight)); //An extra 30 pixels for padding
+        GUI.BeginGroup(new Rect(screenX0, screenY0 + inventoryItemsDisplayHeight + itemLabelHeight, playerStatsWidth, playerStatsHeight)); //An extra 30 pixels for padding
         String strPlayerStats = "\n" +
                     "Player's Stats:" + "\n" +
-                    "Max Health: " + player.MaxHealth + "\n" +
+                    "Max Health: " + player.MaxHealth + "\t\t" +
                     "Move Speed: " + player.MoveSpeed + "\n" +
-                    "Attack: " + player.AttackDamage + "\n" +
-                    "Attack Speed: " + player.AttackDelay + "\n" +
-                    "Armor: " + player.Armor + "\n" +
-                    "\n" + "\n";
+                    "Attack: " + player.AttackDamage + "\t\t" +
+                    "Attack Speed: " + player.AttackDelay + "\t\t" +
+                    "Armor: " + player.Armor + "\t";
 
-        GUI.Label(new Rect(0, 0, playerStatsWidth, playerStatsHeight), strPlayerStats, style);
+        GUI.Label(new Rect(0, 0, playerStatsWidth, playerStatsHeight), strPlayerStats, descriptionStyle);
         GUI.EndGroup();
 
 
@@ -837,7 +845,7 @@ public class Hud : MonoBehaviour
 
         //Area for the selected item's stats
         GUI.BeginGroup(new Rect(itemLayoutWidth + screenX0, screenY0, itemStatsWidth, itemStatsHeight));
-        GUI.Label(new Rect(0, 0, itemStatsWidth, 100), "Selected Item Stats!!!!!!!!!!!!!!!!!!!!!", style);
+        //GUI.Label(new Rect(0, 0, itemStatsWidth, 100), "Selected Item Stats!!!!!!!!!!!!!!!!!!!!!", style);
 
         ItemEquipment itemSelected = (ItemEquipment)arrInventoryItems[intInventoryItem];
         String fullDescription = "\n" +
@@ -847,7 +855,7 @@ public class Hud : MonoBehaviour
                     "Armor: " + itemSelected.armor + "\n" +
                     "Attack Speed: " + itemSelected.atkspd + "\n" +
                     "\n" + "\n";
-        GUI.Label(new Rect(0, 100, itemStatsWidth, itemStatsHeight), fullDescription, style);
+        GUI.Label(new Rect(0, 100, itemStatsWidth, itemStatsHeight), fullDescription, descriptionStyle);
 
         GUI.EndGroup();
 
