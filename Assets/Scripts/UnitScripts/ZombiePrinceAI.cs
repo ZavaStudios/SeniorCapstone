@@ -17,6 +17,7 @@ public class ZombiePrinceAI : BossUnit
 		//Cap the number of enemies to be 5.
 		enemyCap = 3;
 		rand = new System.Random();
+        AttackDamage = 50;
 	}
 	
 	// Update is called once per frame

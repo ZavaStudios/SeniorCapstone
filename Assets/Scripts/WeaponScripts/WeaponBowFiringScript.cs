@@ -6,12 +6,13 @@ public class WeaponBowFiringScript : MonoBehaviour {
     private GameObject GraphicalArrow;
     private UnitPlayer Character;
     private Transform bulletOrigin;
+    public GameObject arrowModel;
 
 	// Use this for initialization
 	void Start () 
     {
         bulletOrigin = transform.Find("BulletOrigin");
-
+        arrowModel = (GameObject)Resources.Load("arrow");
         Character = GameObject.FindGameObjectWithTag("Player").GetComponent<UnitPlayer>();
 	}
 
@@ -30,18 +31,18 @@ public class WeaponBowFiringScript : MonoBehaviour {
     {
         ProjectileArrow p;
 
-        GameObject arrow = (GameObject)GameObject.Instantiate(Resources.Load("arrow"), bulletOrigin.position,transform.parent.rotation);
+        GameObject arrow = (GameObject)GameObject.Instantiate(arrowModel, bulletOrigin.position,transform.parent.rotation);
         arrow.rigidbody.AddForce(arrow.transform.forward * WeaponBow.bulletSpeed);
         p = arrow.GetComponent<ProjectileArrow>();
         p.damage = Character.AttackDamage;
         
-        GameObject arrow2 = (GameObject)GameObject.Instantiate(Resources.Load("arrow"), bulletOrigin.position,transform.parent.rotation);
+        GameObject arrow2 = (GameObject)GameObject.Instantiate(arrowModel, bulletOrigin.position,transform.parent.rotation);
         arrow2.transform.Rotate(arrow2.transform.forward,15);
         arrow2.rigidbody.AddForce(arrow2.transform.forward * WeaponBow.bulletSpeed);
         p = arrow2.GetComponent<ProjectileArrow>();
         p.damage = Character.AttackDamage;
 
-        GameObject arrow3 = (GameObject)GameObject.Instantiate(Resources.Load("arrow"), bulletOrigin.position,transform.parent.rotation);
+        GameObject arrow3 = (GameObject)GameObject.Instantiate(arrowModel, bulletOrigin.position,transform.parent.rotation);
         arrow3.transform.Rotate(arrow3.transform.forward,-15);
         arrow3.rigidbody.AddForce(arrow3.transform.forward * WeaponBow.bulletSpeed);
         p = arrow3.GetComponent<ProjectileArrow>();

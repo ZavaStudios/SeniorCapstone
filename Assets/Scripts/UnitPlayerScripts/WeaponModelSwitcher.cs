@@ -24,7 +24,7 @@ public class WeaponModelSwitcher : MonoBehaviour
 		key.SetActive(false);
     }
     
-    public void SwitchWeapon(ItemWeapon.tWeaponType newWeapon)
+    public void SwitchWeapon(ItemWeapon.tWeaponType newWeapon, ItemWeapon.tOreType oreType)
     {
         sword.SetActive(false);
         pickaxe.SetActive(false);
@@ -35,12 +35,12 @@ public class WeaponModelSwitcher : MonoBehaviour
 		key.SetActive(false);
         
         //PlayerCharacter = GameObject.FindGameObjectWithTag("Player").GetComponent<UnitPlayer>();
-
         switch(newWeapon)
         {
             case ItemWeapon.tWeaponType.WeaponBow:
                 bow.SetActive(true);
                 Active = bow;
+                       
             break;
             case ItemWeapon.tWeaponType.WeaponKey:
                 key.SetActive(true);
@@ -66,6 +66,28 @@ public class WeaponModelSwitcher : MonoBehaviour
                 Active = null;
             break;
             
+        }
+
+ 
+        if (newWeapon != ItemWeapon.tWeaponType.WeaponStaff)
+        {
+            ItemTextureSwitcher texSwitcher;
+            texSwitcher = Active.GetComponent<ItemTextureSwitcher>();
+            texSwitcher.SwitchTexture(oreType);
+            
+            if (newWeapon == ItemWeapon.tWeaponType.WeaponBow)
+            {
+                WeaponBowFiringScript s = bow.GetComponent<WeaponBowFiringScript>();
+                PlayerStaffTextureSwitcher arrowTexSwitcher = s.arrowModel.GetComponent<PlayerStaffTextureSwitcher>();
+                arrowTexSwitcher.SwitchTexture(oreType);
+            }
+
+        }
+        else
+        {
+            PlayerStaffTextureSwitcher texSwitcher;
+            texSwitcher = Active.GetComponent<PlayerStaffTextureSwitcher>();
+            texSwitcher.SwitchTexture(oreType);
         }
 
     }

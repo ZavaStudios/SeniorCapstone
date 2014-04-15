@@ -46,7 +46,7 @@ public static class ItemFactory
 		string weaponName = handleOre + " handled " + bladeOre + " " + weaponString;
 		string weaponDescription = "A fine " + bladeOre + " " + weaponString + ", crafted with a " + handleOre + getComponentString(handle.strComponentCode) + ".";
 		
-		return new ItemWeapon(totalDmg,totalSpeed,totalArmor,totalHealth,totalMoveSpeedModifier,weaponName,wepType,weaponDescription);
+		return new ItemWeapon(totalDmg,totalSpeed,totalArmor,totalHealth,totalMoveSpeedModifier,weaponName,wepType,weaponDescription,blade.oreType);
 	}
 
     //creates an ItemArmor based on the ArmorCode passed to it.
