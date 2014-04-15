@@ -8,6 +8,8 @@ public class MineableBlock : MonoBehaviour
     public float _health = 4;
 	public int _quantity = 2;
 	public Cube _cube;
+    protected GameObject floatingOreText;
+    protected FloatingXPText floatingOreTextScript;
 
     public static Texture2D[] crackTextures;
 
@@ -43,14 +45,26 @@ public class MineableBlock : MonoBehaviour
 
 	void killUnit()
 	{
+        if (_cube.Type != ItemBase.tOreType.Stone && _cube.Type != ItemBase.tOreType.NOT_ORE)
+        {
+            floatingOreText = (GameObject)GameObject.Instantiate(Resources.Load("FloatingXPText"), transform.position, Quaternion.identity);
+            floatingOreTextScript = floatingOreText.GetComponent<FloatingXPText>();
+            floatingOreTextScript.parent2 = transform;
+            floatingOreTextScript.enabled = true;
+            floatingOreTextScript.textColor = new Color(1.0f, 0.6f, 0.0f, 1.0f);
+            print(floatingOreText.transform.position);
+            print(transform.position);
+            ItemOre ore = new ItemOre(_cube.Type);
+            floatingOreTextScript.displayText("+1 " + ore.ToString());
+            Inventory.getInstance().inventoryAddItem(ore);
+        }
 		//_cube.Parent.DestroyCube(_cube);
         // Surface level parent should be a rogue room, so assume:
         renderer.material.SetTexture("_DecalTex", crackTextures[0]);
 		((RogueRoom)_cube.Parent).DestroyMineableBlock(this);
-		if (_cube.Type != ItemBase.tOreType.Stone && _cube.Type != ItemBase.tOreType.NOT_ORE)
-            Inventory.getInstance().inventoryAddItem(new ItemOre(_cube.Type));
+        
 	    //Destroy (gameObject);
-	}
+    }
 
 	void AddToPlayerInventory ()
 	{

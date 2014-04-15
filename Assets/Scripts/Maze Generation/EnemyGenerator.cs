@@ -39,7 +39,7 @@ public class EnemyGenerator
 		//Fill in the remaining points with random enemies.
 		for(int i = 0; i < points; i += 5)
 		{
-            /*
+            
             switch (Maze.rnd.Next(3))
 			{
 				case 0: 				
@@ -59,8 +59,8 @@ public class EnemyGenerator
 					enemyList.Add(EnemyType.zombie);
 					break;					
 			}
-             */
-            enemyList.Add(EnemyType.zombie);
+             
+            //enemyList.Add(EnemyType.zombie);
 		}
 		return enemyList;
 	}
@@ -68,7 +68,7 @@ public class EnemyGenerator
 	public static List<EnemyType> generateBoss()
 	{
 		List<EnemyType> enemyList = new List<EnemyType>();
-		/*
+		
         switch(Maze.rnd.Next(3))
 			{
 				case 0: 				
@@ -83,8 +83,8 @@ public class EnemyGenerator
 					enemyList.Add(EnemyType.zombieBoss);
 					break;					
 			}
-         */
-        enemyList.Add(EnemyType.zombieBoss);
+         
+       // enemyList.Add(EnemyType.zombieBoss);
 		return enemyList;
 	}
 }

@@ -23,7 +23,26 @@ public class ItemOre : ItemBase
 
     public override string ToString()
     {
-        return oreType.ToString();
+        switch (oreType)
+        {
+            case tOreType.Bone:
+                return "Bone";
+            case tOreType.Copper:
+                return "Copper Ore";
+            case tOreType.Dragon:
+                return "Dragon Scale";
+            case tOreType.Iron:
+                return "Iron Ore";
+            case tOreType.Mithril:
+                return "Mithril Ore";
+            case tOreType.Steel:
+                return "Steel Ore";
+            case tOreType.Ethereal:
+                return "Ethereal Ore";
+            default:
+                return "";
+
+        }
     }
 	
 }
