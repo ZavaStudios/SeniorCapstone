@@ -382,7 +382,7 @@ public class Hud : MonoBehaviour
         infoStyle.fontSize = 16;
 
         //Split the screen into 4 groups with padding on the edges(1 groups worth)
-        int labelHeight = 100;
+        int labelHeight = 200;
         int groupWidth = screenWidth / 5;
         int groupHeight = screenHeight - labelHeight;
 
@@ -390,29 +390,36 @@ public class Hud : MonoBehaviour
         GUIStyle categoryStyle = new GUIStyle(GUI.skin.label);
         categoryStyle.alignment = TextAnchor.MiddleCenter;
         categoryStyle.fontStyle = FontStyle.Bold;
-        categoryStyle.fontSize = 20;
+        categoryStyle.fontSize = 16;
+        categoryStyle.normal.textColor = new Color(202 / 255f, 121 / 255f, 33 / 255f); //Divide by 255f to get a range between 0 to 1
 
         Texture2D tex2dLabelBack = new Texture2D(1, 1);
-        tex2dLabelBack = (Texture2D)Resources.Load("InventoryButtonBackground");
+        //tex2dLabelBack = (Texture2D)Resources.Load("InventoryButtonBackground");
         //Backgrounds for non-active items
-        categoryStyle.normal.background = tex2dLabelBack;
+        //categoryStyle.normal.background = tex2dLabelBack;
         categoryStyle.wordWrap = true;
 
         //Description Area(active)
         GUIStyle categoryStyleActive = new GUIStyle(GUI.skin.label);
         categoryStyleActive.alignment = TextAnchor.MiddleCenter;
         categoryStyleActive.fontStyle = FontStyle.Bold;
-        categoryStyleActive.fontSize = 20;
+        categoryStyleActive.fontSize = 22;
+        categoryStyleActive.normal.textColor = new Color(202/ 255f, 121/255f, 33/255f); //Divide by 255f to get a range between 0 to 1
 
         Texture2D tex2dLabelBackSelected = new Texture2D(1, 1);
-        tex2dLabelBackSelected = (Texture2D)Resources.Load("SelectedBackground");
+        tex2dLabelBackSelected = (Texture2D)Resources.Load("CellBackground");
 
         //Background for active items
         categoryStyleActive.normal.background = tex2dLabelBackSelected;
         categoryStyleActive.wordWrap = true;
 
+        //Screen background
+        //GUI.DrawTexture(new Rect(screenX0,screenY0, Screen.width, Screen.height), (Texture2D)Resources.Load("Crafting(Large)")); 
+        GUI.DrawTexture(new Rect(screenX0, screenY0, screenWidth, screenHeight), (Texture2D)Resources.Load("Crafting")); 
+
+
         //Info at the Bottom of the screen.
-        GUI.BeginGroup(new Rect(screenX0, screenY0 + groupHeight, screenWidth, labelHeight));
+        GUI.BeginGroup(new Rect(screenX0, screenY0 + groupHeight + labelHeight / 2, screenWidth, labelHeight));
         //TODO Make labels work for OUYA Controls            
         GUI.Label(new Rect(0, 0, screenWidth, screenHeight), "Make all your selections and then confirm." + "\n" +
             "Change option group: Left,Right" + "\n" +
@@ -744,9 +751,13 @@ public class Hud : MonoBehaviour
 
         for (int i = 0; i < arrInventoryItems.Count; i++)
         {
-            ItemBase wep = (ItemBase)arrInventoryItems[i];
+            ItemBase item = (ItemBase)arrInventoryItems[i];
+
             //Grab the names of the item associated with the weapon
-            arrInventoryStrings[i] = wep.ToString(); //To instead use pictures/textures, make an array of pictures/textures
+            if(item is ItemOre)
+                arrInventoryStrings[i] = item.ToString() + " x " + inventory.getOreQuantity(item.oreType); //To instead use pictures/textures, make an array of pictures/textures
+            else
+                arrInventoryStrings[i] = item.ToString(); //To instead use pictures/textures, make an array of pictures/textures
         }
 
         UnityEngine.GUIStyle style = new GUIStyle(GUI.skin.button);
@@ -761,6 +772,7 @@ public class Hud : MonoBehaviour
 
         //Backgrounds when I have an active selection
         style.onNormal.background = tex2dButtonActiveBack;
+        style.onNormal.textColor = new Color(202 / 255f, 121 / 255f, 33/ 255f); //Divide by 255f to get a range from 0 to 1
 
         float itemLayoutWidth = screenWidth * 0.8f;
         float itemLayoutHeight = screenHeight * 0.8f;
@@ -771,16 +783,31 @@ public class Hud : MonoBehaviour
         GUI.BeginGroup(new Rect(screenX0, screenY0, itemLayoutWidth, itemLayoutHeight));
         GUI.Label(new Rect(0, 0, itemLayoutWidth, itemLabelHeight), "ITEMS!!!!!!!!!!!!!!!!!!!!!!!!");
 
-        inventoryItemsFullHeight = arrInventoryItems.Count * inventorySlotHeight;
-
         //Each slot is a fixed height, and so higher resolutions may see more of the inventory at one time
-        int inventoryItemsDisplayHeight = ((int)(itemLayoutHeight / inventorySlotHeight)) * inventorySlotHeight;
+        int itemsDisplayable = ((int)(itemLayoutHeight / inventorySlotHeight));
+        int inventoryItemsDisplayHeight =  itemsDisplayable * inventorySlotHeight;
+
+        //Normalize so that we always have at least the displayable number of items
+        int neededEmptySlots = (itemsDisplayable - arrInventoryStrings.Length);
+        int previousLength = arrInventoryStrings.Length;
+        if(neededEmptySlots > 0)
+        {
+            Array.Resize(ref arrInventoryStrings, neededEmptySlots + previousLength);
+        }
+
+        for(int i = 0; i < neededEmptySlots; i++)
+        {
+            arrInventoryStrings[previousLength + i] = "[empty]";
+        }
+        
+        //Start to actually layout things
+        inventoryItemsFullHeight = arrInventoryStrings.Length * inventorySlotHeight;
 
         inventoryScrollPosition = GUI.BeginScrollView(new Rect(0, 60, itemLayoutWidth, inventoryItemsDisplayHeight),
                                     inventoryScrollPosition,
                                     new Rect(0, 0, itemLayoutWidth - 50, inventoryItemsFullHeight), false, true); //Pad 50 for the scrollbar
 
-        intInventoryItem = GUI.SelectionGrid(new Rect(0, 0, itemLayoutWidth, arrInventoryItems.Count * inventorySlotHeight),
+        intInventoryItem = GUI.SelectionGrid(new Rect(0, 0, itemLayoutWidth, arrInventoryStrings.Length * inventorySlotHeight),
                                     intInventoryItem, arrInventoryStrings, 1, style);
 
         GUI.EndScrollView();

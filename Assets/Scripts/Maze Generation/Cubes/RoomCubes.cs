@@ -38,12 +38,13 @@ namespace MazeGeneration
 		public abstract IEnumerable<Cube> EnumerateCubes();
 		public abstract IEnumerable<Cube> DestroyCube(Cube c);
 
-		// Placeholder thresholds:
-		protected const float STONE_FREQ    = 0.80f;
-		protected const float IRON_FREQ     = 0.10f;
-		protected const float SILVER_FREQ   = 0.05f;
-		protected const float GOLD_FREQ     = 0.005f;
-		protected const float PLATINUM_FREQ = 0.005f;
+		// Type array - return adjacent types
+        private ItemBase.tOreType[] genGrid = new ItemBase.tOreType[]
+        {
+            ItemBase.tOreType.Bone, ItemBase.tOreType.Copper, ItemBase.tOreType.Iron,
+            ItemBase.tOreType.Steel, ItemBase.tOreType.Mithril, ItemBase.tOreType.Dragon,
+            ItemBase.tOreType.Ethereal
+        };
 
 		/// <summary>
 		/// Retruns a type of cube for placement in the maze.
@@ -54,21 +55,15 @@ namespace MazeGeneration
 		/// <returns>Cube type to be placed in the maze.</returns>
         protected ItemBase.tOreType GetCubeType()
 		{
-			if (Maze.rnd.NextDouble() <= STONE_FREQ)
+            //Debug.Log("Level: " + LevelHolder.Level);
+            int primaryIndex = Math.Min(genGrid.Length - 1, LevelHolder.Level - 1);
+            int secondaryIndex = Math.Min(genGrid.Length - 1, primaryIndex + 1);
+            if (Maze.rnd.NextDouble() < 0.75)
                 return ItemBase.tOreType.Stone;
-            if (Maze.rnd.NextDouble() - STONE_FREQ <= IRON_FREQ)
-                return ItemBase.tOreType.Bone;
-            if (Maze.rnd.NextDouble() - STONE_FREQ - IRON_FREQ <= SILVER_FREQ)
-                return ItemBase.tOreType.Iron;
-            if (Maze.rnd.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ <= GOLD_FREQ)
-                return ItemBase.tOreType.Steel;
-            if (Maze.rnd.NextDouble() - STONE_FREQ - IRON_FREQ - SILVER_FREQ - GOLD_FREQ <= PLATINUM_FREQ)
-                return ItemBase.tOreType.Mithril;
-			
-	        // TODO: more
-
-			// None succeeded: return stone
-			return ItemBase.tOreType.Stone;
+            else if (Maze.rnd.NextDouble() < 0.9)
+                return genGrid[primaryIndex];
+            else
+                return genGrid[secondaryIndex];
 		}
 	}
 
