@@ -54,17 +54,17 @@ public class UnitPlayer : Unit {
             oreToUse = ItemBase.tOreType.Ethereal;
         }
 
-        string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
+        string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
 		                                                       ItemComponent.tComponentPart.Blade);
-		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
+		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
 		                                                        ItemComponent.tComponentPart.Handle);
         string bladeCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponStaff,
 		                                                       ItemComponent.tComponentPart.Blade);
 		string handleCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponStaff,
 		                                                        ItemComponent.tComponentPart.Handle);
-        string bladeCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponBow,
+        string bladeCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponBow,
 		                                                       ItemComponent.tComponentPart.Blade);
-		string handleCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponBow,
+		string handleCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponBow,
 		                                                        ItemComponent.tComponentPart.Handle);
 		string bladeCode4 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponToolbox,
 		                                                       ItemComponent.tComponentPart.Blade);
@@ -121,6 +121,7 @@ public class UnitPlayer : Unit {
 		if(InputContextManager.isSWITCH_WEAPON())
 		{
             inventory.inventorySwitchWeapon();
+            print(AttackDelay);
 		}
 		
 		if(InputContextManager.isSPRINT())
