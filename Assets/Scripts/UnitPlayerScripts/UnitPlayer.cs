@@ -8,6 +8,8 @@ public class UnitPlayer : Unit {
     public const float DefaultMoveSpeed = 8.0f;
     public const float DefaultMaxHealth = 100;
 
+    public const float healthPerSec = 1;
+
     private enum cheatAmount
     {
         a_lot,
@@ -106,6 +108,9 @@ public class UnitPlayer : Unit {
 
 	protected override void Update () 
 	{
+        Health += healthPerSec * Time.deltaTime;
+        Health = Mathf.Min(maxHealth,Health);
+
 		if(InputContextManager.isATTACK()) //or some other button on OUYA
 		{
 			if (weapon != null)
