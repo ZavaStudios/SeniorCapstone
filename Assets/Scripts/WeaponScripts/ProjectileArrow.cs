@@ -3,6 +3,8 @@ using System.Collections;
 
 public class ProjectileArrow : MonoBehaviour {
 	
+    private GameObject parent;
+    bool hit = false;
 	public float damage = 0;
 	// Use this for initialization
 	void Start () 
@@ -16,11 +18,16 @@ public class ProjectileArrow : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-
+        if (parent == null && hit)
+        {
+            Destroy(gameObject);
+        }
 	}
 	
 	 void OnTriggerEnter(Collider other)
     {
+        hit = true;
+        parent = other.gameObject;
         //print (other);
         Unit otherUnit = other.GetComponent<Unit>();
         

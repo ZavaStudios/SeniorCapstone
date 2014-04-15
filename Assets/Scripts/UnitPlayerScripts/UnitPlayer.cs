@@ -26,7 +26,7 @@ public class UnitPlayer : Unit {
 
 		//Add the default weapons
 		//TODO Instead of using the weapon types, use the names. Need some way to map between the names back to the types
-        ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, 0.0f, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.");
+        ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, 0.0f, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.",ItemBase.tOreType.Copper);
 
         string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Bone, ItemWeapon.tWeaponType.WeaponSword,
 		                                                       ItemComponent.tComponentPart.Blade);
@@ -37,7 +37,7 @@ public class UnitPlayer : Unit {
         inventory.inventoryAddItem(myFirstPickaxe);
         inventory.inventoryAddItem(myFirstSword);
 
-        //cheat(cheatAmount.a_little);//add all weapons
+        cheat(cheatAmount.a_little);//add all weapons
         cheat(cheatAmount.a_lot);//add all weapons
 
         base.Start();
@@ -51,7 +51,7 @@ public class UnitPlayer : Unit {
         ItemBase.tOreType oreToUse = ItemBase.tOreType.Bone;
         if (cheatHowBadly == cheatAmount.a_lot)
         {
-            oreToUse = ItemBase.tOreType.Ethereal;
+            oreToUse = ItemBase.tOreType.Dragon;
         }
 
         string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
@@ -121,7 +121,6 @@ public class UnitPlayer : Unit {
 		if(InputContextManager.isSWITCH_WEAPON())
 		{
             inventory.inventorySwitchWeapon();
-            print(AttackDelay);
 		}
 		
 		if(InputContextManager.isSPRINT())
@@ -154,8 +153,10 @@ public class UnitPlayer : Unit {
 	    
 	public override void equipWeapon(ItemWeapon newWeapon)
     {
+        if(newWeapon==null) {return;}
+
         base.equipWeapon(newWeapon);
-        wepSwitcher.SwitchWeapon(newWeapon.weaponType);
+        wepSwitcher.SwitchWeapon(newWeapon.weaponType, newWeapon.oreType);
     }   
         
 	protected override void killUnit ()
