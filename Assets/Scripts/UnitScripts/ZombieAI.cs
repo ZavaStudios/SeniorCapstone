@@ -15,7 +15,7 @@ public class ZombieAI : UnitEnemy
 		health = 100;
 		moveSpeed = 5; //Move half as fast as the player. 
         
-		AttackDamage = 40.0f;
+		AttackDamage = 20.0f;
 		AttackDelay = 4.0f;
         armor = 20;
 	}

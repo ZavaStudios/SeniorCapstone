@@ -6,19 +6,16 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
 
     public bool hitObject = false;
     public float damage = 0.0f;
-    private TrailRenderer trail;
+    public Collider c;
 
 	// Use this for initialization
 	void Start () 
     {
-        trail = gameObject.GetComponentInChildren<TrailRenderer>();
-               
-        collider.isTrigger = true;
-        trail.enabled = false;
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+    {
 	
 	}
 
@@ -33,18 +30,6 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
                 otherObject.doDamage(damage);
             }
         }
-    }
-
-    void collisionEnable()
-    {
-        collider.enabled = true;
-        trail.enabled= true;
-    }
-
-    void collisionDisable()
-    {
-        collider.enabled = false;
-        trail.enabled = false;
     }
 }
 

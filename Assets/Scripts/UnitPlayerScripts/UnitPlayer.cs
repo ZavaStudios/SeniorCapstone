@@ -8,6 +8,8 @@ public class UnitPlayer : Unit {
     public const float DefaultMoveSpeed = 8.0f;
     public const float DefaultMaxHealth = 100;
 
+    public const float healthPerSec = 1;
+
     private enum cheatAmount
     {
         a_lot,
@@ -26,12 +28,19 @@ public class UnitPlayer : Unit {
 
 		//Add the default weapons
 		//TODO Instead of using the weapon types, use the names. Need some way to map between the names back to the types
-        ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, 0.0f, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.");
+        ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, 0.0f, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.",ItemBase.tOreType.Copper);
+
+        string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Bone, ItemWeapon.tWeaponType.WeaponSword,
+		                                                       ItemComponent.tComponentPart.Blade);
+		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Bone, ItemWeapon.tWeaponType.WeaponSword,
+		                                                        ItemComponent.tComponentPart.Handle);
+        ItemWeapon myFirstSword = ItemFactory.createWeapon(ItemFactory.createComponent(bladeCode), ItemFactory.createComponent(handleCode));
         
         inventory.inventoryAddItem(myFirstPickaxe);
+        inventory.inventoryAddItem(myFirstSword);
 
-        cheat(cheatAmount.a_little);//add all weapons
-        cheat(cheatAmount.a_lot);//add all weapons
+        //cheat(cheatAmount.a_little);//add all weapons
+        //cheat(cheatAmount.a_lot);//add all weapons
 
         base.Start();
 
@@ -41,23 +50,31 @@ public class UnitPlayer : Unit {
 
     private void cheat(cheatAmount cheatHowBadly)
     {   
+
         ItemBase.tOreType oreToUse = ItemBase.tOreType.Bone;
         if (cheatHowBadly == cheatAmount.a_lot)
         {
-            oreToUse = ItemBase.tOreType.Ethereal;
+            oreToUse = ItemBase.tOreType.Dragon;
         }
 
-        string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
+        //Give the player crafting points
+        for (int i = 0; i < 10; i++)
+        {
+            incrementScore();
+            inventory.inventoryAddItem(new ItemOre(ItemBase.tOreType.Bone));
+        }
+
+                string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
 		                                                       ItemComponent.tComponentPart.Blade);
-		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
+		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponSword,
 		                                                        ItemComponent.tComponentPart.Handle);
         string bladeCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponStaff,
 		                                                       ItemComponent.tComponentPart.Blade);
 		string handleCode2 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponStaff,
 		                                                        ItemComponent.tComponentPart.Handle);
-        string bladeCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponBow,
+        string bladeCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponBow,
 		                                                       ItemComponent.tComponentPart.Blade);
-		string handleCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, oreToUse, ItemWeapon.tWeaponType.WeaponBow,
+		string handleCode3 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponBow,
 		                                                        ItemComponent.tComponentPart.Handle);
 		string bladeCode4 = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Light, oreToUse, ItemWeapon.tWeaponType.WeaponToolbox,
 		                                                       ItemComponent.tComponentPart.Blade);
@@ -86,11 +103,14 @@ public class UnitPlayer : Unit {
     }
 	public void incrementScore()
 	{
-		Score++;
+		CraftingPoints++;
 	}
 
 	protected override void Update () 
 	{
+        Health += healthPerSec * Time.deltaTime;
+        Health = Mathf.Min(maxHealth,Health);
+
 		if(InputContextManager.isATTACK()) //or some other button on OUYA
 		{
 			if (weapon != null)
@@ -146,8 +166,10 @@ public class UnitPlayer : Unit {
 	    
 	public override void equipWeapon(ItemWeapon newWeapon)
     {
+        if(newWeapon==null) {return;}
+
         base.equipWeapon(newWeapon);
-        wepSwitcher.SwitchWeapon(newWeapon.weaponType);
+        wepSwitcher.SwitchWeapon(newWeapon.weaponType, newWeapon.oreType);
     }   
         
 	protected override void killUnit ()

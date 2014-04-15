@@ -10,7 +10,9 @@ public class UnitEnemy : Unit
 	protected Vector3 PlayerPosition;
 	protected Vector3 dir;
     protected GameObject floatingDamageText;
+    protected GameObject floatingXPText;
     protected FloatingDamageText floatingDamageTextScript;
+    protected FloatingXPText floatingXPTextScript;
 	protected float distance;
 	float turnSpeed = 120;
 	private float healthLost = 0;
@@ -28,6 +30,10 @@ public class UnitEnemy : Unit
         floatingDamageText = (GameObject) GameObject.Instantiate(Resources.Load("FloatingDamageText"), transform.position, Quaternion.identity);
         floatingDamageTextScript = floatingDamageText.GetComponent<FloatingDamageText>();
         floatingDamageTextScript.parent = transform;
+
+        floatingXPText = (GameObject) GameObject.Instantiate(Resources.Load("FloatingXPText"), transform.position, Quaternion.identity);
+        floatingXPTextScript = floatingXPText.GetComponent<FloatingXPText>();
+        floatingXPTextScript.parent = transform;
 	}
 	
 	protected override void Update ()
@@ -35,7 +41,7 @@ public class UnitEnemy : Unit
 		distance = Vector3.Distance(transform.position, player.position);
 		PlayerPosition = player.position;
 		dir = PlayerPosition - transform.position;
-		dir.y = transform.position.y;
+		dir.y = 0;
 		dir.Normalize();
 		
 		//Determine whether to attack or not.
@@ -50,7 +56,8 @@ public class UnitEnemy : Unit
 			float angleToTarget = Mathf.Atan2((PlayerPosition.x - transform.position.x), (PlayerPosition.z - transform.position.z)) * Mathf.Rad2Deg;
 			transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
 			//transform.Rotate(-90,0,0);
-	
+
+            Debug.Log("dir: " + dir.x + ", " + dir.y + ", " + dir.z);
 			control.SimpleMove(dir * moveSpeed);
 			
 //			enemyMovement();
@@ -97,19 +104,20 @@ public class UnitEnemy : Unit
 	//Kills the unit by removing the enemy from the screen and give credit to the player.
 	protected override void killUnit ()
 	{
+        float score = 1;
 		//Decrement boss's count of spawned enemies if the boss spawned you.
 		if(boss != null)
 		{
 			boss.decreaseEnemyCount();
 		}
-		
+		floatingXPTextScript.displayText("+" + score.ToString()+"pt");
 		//print ("Ow you kilt meh");
 		Destroy (gameObject);
 		Destroy(healthBar.gameObject);
 
 		// Increment player's score
 		GameObject player = GameObject.FindGameObjectWithTag ("Player");
-		player.transform.SendMessage ("incrementScore", 1);
+		player.transform.SendMessage ("incrementScore", score);
 		
 		
 	}

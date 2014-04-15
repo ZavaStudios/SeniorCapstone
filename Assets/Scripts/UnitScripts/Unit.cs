@@ -12,8 +12,9 @@ public class Unit : MonoBehaviour
     protected float primaryAttackDelay;
 
     protected float armor;
-	protected float health = 100.0f;
-    protected float maxHealth = 100.0f;
+    protected float maxHealth = 100.0f; 
+    protected float health = 100.0f;
+
 	
     public float moveSpeed = 10.0f;
 
@@ -25,7 +26,7 @@ public class Unit : MonoBehaviour
         set {health = value; }
     }
 
-	public int Score
+	public int CraftingPoints
 	{
 				get;
 				set;
@@ -66,7 +67,7 @@ public class Unit : MonoBehaviour
 	
     virtual protected void Start () 
 	{
-
+        health = maxHealth;
 	}
 	
 	virtual protected void Update () 

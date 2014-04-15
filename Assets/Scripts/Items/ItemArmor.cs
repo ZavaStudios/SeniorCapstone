@@ -6,19 +6,12 @@ public class ItemArmor : ItemEquipment {
  
     public string strArmorCode;
     public tArmorPart armorPart;
-    public tAttributeType armorAttribute;
+    public ItemComponent.tAttributeType armorAttribute;
 
     //	NOTE New enum for componentType. Length 3 strings, abcd. a={Light=0, Normal=1, Heavy=2}, b=tOreType, c=tArmorType
 	//	Example: 030 = Light iron helmet
 	//	Example: 272 = Heavy ethereal greaves
-    
-    public enum tAttributeType
-	{
-		Light = 0,
-		Normal = 1,
-		Heavy = 2
-	};
-
+        
     public enum tArmorPart
 	{
 		Head = 0,
@@ -29,14 +22,14 @@ public class ItemArmor : ItemEquipment {
 
 
 
-    public static string generateArmorCode(tAttributeType att, tOreType ore, ItemArmor.tArmorPart part)
+    public static string generateArmorCode(ItemComponent.tAttributeType att, tOreType ore, ItemArmor.tArmorPart part)
 	{
 		return "" + (int)att + (int)ore + (int)part;
 	}
 
-	public static tAttributeType getArmorAttribute(string strCode)
+    public static ItemComponent.tAttributeType getArmorAttribute(string strCode)
 	{
-		return (tAttributeType)(Char.GetNumericValue (strCode [0]));
+        return (ItemComponent.tAttributeType)(Char.GetNumericValue(strCode[0]));
 	}
 
 	public static tOreType getArmorOre(string strCode)
@@ -63,7 +56,7 @@ public class ItemArmor : ItemEquipment {
 
 		if (strCode.Length == 3) 
 		{
-			strName += ((tAttributeType)(Char.GetNumericValue(strCode[0]))).ToString () + " ";
+            strName += ((ItemComponent.tAttributeType)(Char.GetNumericValue(strCode[0]))).ToString() + " ";
 			strName += ((tOreType)(Char.GetNumericValue(strCode[1]))).ToString () + " ";
 			strName += ((tArmorPart)(Char.GetNumericValue(strCode[2]))).ToString () + " ";
 			

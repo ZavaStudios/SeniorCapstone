@@ -32,6 +32,6 @@ public class WeaponSword : WeaponBase
     protected override void specialAttackRoutine ()
     {
         s.damage = Character.AttackDamage * specialAttackDamageRelative; //special gets moar
-        s.animation.PlayQueued("SpecialSwordSwing");
+        s.animation.PlayQueued("SwordSpecial");
     }
 }

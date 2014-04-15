@@ -3,7 +3,7 @@ using System.Collections;
 
 public class WeaponBow : WeaponBase {
 
-    public float bulletSpeed =  1200.0f;
+    public const float bulletSpeed =  1200.0f;
     private CharacterController capCollider;
     private WeaponBowFiringScript s ;
 	// Use this for initialization
@@ -19,13 +19,6 @@ public class WeaponBow : WeaponBase {
     protected override void attackRoutine(Vector3 startPos, Vector3 faceDir)
     {
     }
-
-    protected override void releaseRoutine()
-	{   
-        s.weaponBow = this;
-        s.releaseShot();        
-	}
-
 
     protected override void specialAttackRoutine ()
     {

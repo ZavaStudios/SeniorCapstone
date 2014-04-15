@@ -50,6 +50,12 @@ public class Inventory
         Character = GameObject.FindGameObjectWithTag("Player").GetComponent<UnitPlayer>();
     }
 
+    //Clears out the previous instance of the inventory
+    public void removeInstance()
+    {
+        _instance = null;
+    }
+
     public static Inventory getInstance()
     {
         if (_instance == null)

@@ -24,7 +24,8 @@ public class SnowburstTimer : MonoBehaviour {
         {
             if (Vector3.Distance(transform.position, enemy.transform.position) < 30)
             {
-                enemy.gameObject.GetComponent<Unit>().doDamage(damage);
+                Unit unit = enemy.gameObject.GetComponent<Unit>();
+                if (unit) { unit.doDamage(damage); }
             }
         }
 
