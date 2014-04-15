@@ -4,8 +4,8 @@ using System.Collections;
 
 public class SkeletonKingAI : BossUnit
 {
-	private float invulTime;
-	private bool invulTimeSet = false;
+	private float disappTime;
+	private bool disappTimeSet = false;
 	
 	// Use this for initialization
 	protected override void Start () 
@@ -27,59 +27,85 @@ public class SkeletonKingAI : BossUnit
 		
 		if(health <= 75 && healthAt75 != true)
 		{
-			//Make the boss invulnerable (unable to take damage), and invisible.
-			vulnerable = false;
-			transform.renderer.enabled = false;
-			
-			if(!invulTimeSet)
+			healthBar.gameObject.SetActive(false);
+			foreach(Transform child in transform.GetChild(0))
 			{
-				invulTime = Time.time + 3;
-				invulTimeSet = true;
+				if(child.renderer)
+					child.renderer.enabled = false;
 			}
-			else if(invulTime < Time.time)
+			
+			if(!disappTimeSet)
 			{
-				vulnerable = true;
-				transform.renderer.enabled = true;
+				disappTime = Time.time + 3;
+				disappTimeSet = true;
+			}
+			else if(disappTime < Time.time)
+			{
+				foreach(Transform child in transform.GetChild(0))
+				{
+					if(child.renderer)
+						child.renderer.enabled = true;
+				}
+
+				healthBar.gameObject.SetActive(true);
 				healthAt75 = true;
-				invulTimeSet = false;
+				disappTimeSet = false;
 			}
 			
 		}
 		else if(health <= 50 && healthAt50 != true)
 		{
-			vulnerable = false;
-			transform.renderer.enabled = false;
-			
-			if(!invulTimeSet)
+			healthBar.gameObject.SetActive(false);
+			foreach(Transform child in transform.GetChild(0))
 			{
-				invulTime = Time.time + 3;
-				invulTimeSet = true;
+				if(child.renderer)
+					child.renderer.enabled = false;
 			}
-			else if(invulTime < Time.time)
+			
+			if(!disappTimeSet)
 			{
-				vulnerable = true;
-				transform.renderer.enabled = true;
+				disappTime = Time.time + 3;
+				disappTimeSet = true;
+			}
+			else if(disappTime < Time.time)
+			{
+				foreach(Transform child in transform.GetChild(0))
+				{
+					if(child.renderer)
+						child.renderer.enabled = true;
+				}
+
+				healthBar.gameObject.SetActive(true);
 				healthAt50 = true;
-				invulTimeSet = false;
+				disappTimeSet = false;
 			}
 			
 		}
 		else if(health <= 25 && healthAt25 != true)
 		{
-			vulnerable = false;
-			transform.renderer.enabled = false;
-			
-			if(!invulTimeSet)
+			healthBar.gameObject.SetActive(false);
+			foreach(Transform child in transform.GetChild(0))
 			{
-				invulTime = Time.time + 3;
-				invulTimeSet = true;
+				if(child.renderer)
+					child.renderer.enabled = false;
 			}
-			else if(invulTime < Time.time)
+			
+			if(!disappTimeSet)
 			{
-				vulnerable = true;
-				transform.renderer.enabled = true;
+				disappTime = Time.time + 3;
+				disappTimeSet = true;
+			}
+			else if(disappTime < Time.time)
+			{
+				foreach(Transform child in transform.GetChild(0))
+				{
+					if(child.renderer)
+						child.renderer.enabled = true;
+				}
+
+				healthBar.gameObject.SetActive(true);
 				healthAt25 = true;
-				invulTimeSet = false;
+				disappTimeSet = false;
 			}
 			
 		}

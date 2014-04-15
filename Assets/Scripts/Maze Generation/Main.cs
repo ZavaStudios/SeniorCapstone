@@ -14,6 +14,7 @@ public class Main : MonoBehaviour
     private const float ORE_DISTRIBUTION = 0.2f;
 
     public Texture2D[] crackTextures;
+    public Material[] weaponMaterials;
 
 	public Transform door;
 	public Transform key;
@@ -76,6 +77,7 @@ public class Main : MonoBehaviour
 		BossUnit.playercc = player.GetComponent<CharacterController>();
         BossUnit.endGamePortal = endGamePortal;
         MineableBlock.crackTextures = crackTextures;
+        ItemTextureSwitcher.materials = weaponMaterials;
 
         DoorScript.player = player;
 		KeyPickup.player = player;
