@@ -2,15 +2,14 @@
 using System.Collections;
 
 
-public class FloatingDamageText : MonoBehaviour {
+public class FloatingXPText : MonoBehaviour {
 
 
-    public Color textColor = new Color(0.8f,0.0f,0.0f,1.0f); //red
+    public Color textColor = new Color(0.0f,0.8f,0.2f,1.0f); //green
     public float startVelocity = 3.0f; 
     public float duration = 1.5f;
     public Transform parent;
     private bool started;
-    private float damage;
 
     private float alpha;
 	// Use this for initialization
@@ -49,7 +48,7 @@ public class FloatingDamageText : MonoBehaviour {
         }
 	}
 
-    public void startDamage(float newDamage)
+    public void displayText(string textToDisplay)
     {
         if (!started)
         {
@@ -57,13 +56,11 @@ public class FloatingDamageText : MonoBehaviour {
             alpha = 1;
             textColor.a = 1;
             guiText.material.color = textColor;
-            damage = 0;
             transform.position = pos;
             gameObject.SetActive(true);
             transform.rigidbody2D.AddForce(Vector3.up * startVelocity + Vector3.right * Random.RandomRange(-0.5f,0.5f) * startVelocity);
             started = true;
         }
-        damage += newDamage;
-        guiText.text = damage.ToString();
+        guiText.text = textToDisplay;
     }
 }
