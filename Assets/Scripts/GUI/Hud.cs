@@ -487,7 +487,7 @@ public class Hud : MonoBehaviour
         descriptionStyle.normal.textColor = new Color(202 / 255f, 121 / 255f, 33 / 255f); //Gold from the mockups
 
         //Details about what the current selection would craft into
-        GUI.BeginGroup(new Rect(5 * groupWidth + screenX0, screenY0, groupWidth, groupHeight));
+        GUI.BeginGroup(new Rect(5 * groupWidth + screenX0, screenY0 + labelHeight / 2, groupWidth, screenHeight));
 
         string fullDescription = ""; //The description of what we're crafting
         if (craftingCategories[intCraftingCategory].Equals(ItemBase.tItemType.Armor))
@@ -691,11 +691,13 @@ public class Hud : MonoBehaviour
         styleNormal.normal.background = tex2Normal;
         styleNormal.alignment = TextAnchor.MiddleCenter;
         styleNormal.fontSize = 18;
+        styleNormal.wordWrap = true;
 
         GUIStyle styleSelection = new GUIStyle(GUI.skin.label);
         styleSelection.normal.background = (Texture2D)Resources.Load("CellBackground");
         styleSelection.fontSize = 24;
         styleSelection.alignment = TextAnchor.MiddleCenter;
+        styleSelection.wordWrap = true;
         styleSelection.normal.textColor = new Color(202 / 255f, 121 / 255f, 33 / 255f); //A golden yellow
 
         int labelHeight = 200;
@@ -734,7 +736,7 @@ public class Hud : MonoBehaviour
         GUI.EndGroup();
 
         //Description area
-        GUI.BeginGroup(new Rect(screenX0 + 2 * groupWidth, screenY0, groupWidth, groupHeight));
+        GUI.BeginGroup(new Rect(screenX0 + 2 * groupWidth, screenY0 + labelHeight, groupWidth, groupHeight));
         string fullDescription = "";
 
         ItemWeapon potentialWeapon = ItemFactory.createWeapon(bladeComponents[intBladeComponents], handleComponents[intHandleComponents]);
