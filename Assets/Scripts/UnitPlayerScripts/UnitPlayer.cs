@@ -27,11 +27,18 @@ public class UnitPlayer : Unit {
 		//Add the default weapons
 		//TODO Instead of using the weapon types, use the names. Need some way to map between the names back to the types
         ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, 0.0f, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.");
+
+        string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Bone, ItemWeapon.tWeaponType.WeaponSword,
+		                                                       ItemComponent.tComponentPart.Blade);
+		string handleCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Bone, ItemWeapon.tWeaponType.WeaponSword,
+		                                                        ItemComponent.tComponentPart.Handle);
+        ItemWeapon myFirstSword = ItemFactory.createWeapon(ItemFactory.createComponent(bladeCode), ItemFactory.createComponent(handleCode));
         
         inventory.inventoryAddItem(myFirstPickaxe);
+        inventory.inventoryAddItem(myFirstSword);
 
-        cheat(cheatAmount.a_little);//add all weapons
-        cheat(cheatAmount.a_lot);//add all weapons
+        //cheat(cheatAmount.a_little);//add all weapons
+        //cheat(cheatAmount.a_lot);//add all weapons
 
         base.Start();
 
