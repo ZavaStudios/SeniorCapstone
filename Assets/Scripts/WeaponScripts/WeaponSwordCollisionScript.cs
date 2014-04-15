@@ -6,6 +6,7 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
 
     public bool hitObject = false;
     public float damage = 0.0f;
+    public Collider c;
 
 	// Use this for initialization
 	void Start () 
@@ -13,7 +14,8 @@ public class WeaponSwordCollisionScript : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+    {
 	
 	}
 

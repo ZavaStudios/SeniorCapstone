@@ -74,7 +74,7 @@ public class WeaponModelSwitcher : MonoBehaviour
 
         if (Active == sword)
         {
-            Active.animation["SwordSwing"].speed = 1.0f; //animation speed was set to negative by sword collision detection.
+            Active.animation.PlayQueued("SwordSwing");
         }
         else if (Active == pickaxe )
         {
