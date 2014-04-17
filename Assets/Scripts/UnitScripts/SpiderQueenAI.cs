@@ -18,6 +18,7 @@ public class SpiderQueenAI : BossUnit
 		spawnTimer = 5;
 		enemyCap = 7;
 		weapon.attackRange = 10;
+        AttackDamage = 10;
 	}
 	
 	// Update is called once per frame

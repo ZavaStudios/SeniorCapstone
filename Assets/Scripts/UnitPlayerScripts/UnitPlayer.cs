@@ -179,7 +179,7 @@ public class UnitPlayer : Unit {
 		GameOver.gameOver = true;
 
         inventory.removeInstance();
-
+		
 		//Wait for 5 seconds.
 		StartCoroutine(wait(5));
 		

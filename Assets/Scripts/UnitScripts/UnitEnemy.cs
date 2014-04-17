@@ -33,7 +33,7 @@ public class UnitEnemy : Unit
 
         floatingXPText = (GameObject) GameObject.Instantiate(Resources.Load("FloatingXPText"), transform.position, Quaternion.identity);
         floatingXPTextScript = floatingXPText.GetComponent<FloatingXPText>();
-        floatingXPTextScript.parent = transform;
+        floatingXPTextScript.parent2 = transform;
 	}
 	
 	protected override void Update ()
@@ -57,7 +57,7 @@ public class UnitEnemy : Unit
 			transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
 			//transform.Rotate(-90,0,0);
 
-            Debug.Log("dir: " + dir.x + ", " + dir.y + ", " + dir.z);
+            //Debug.Log("dir: " + dir.x + ", " + dir.y + ", " + dir.z);
 			control.SimpleMove(dir * moveSpeed);
 			
 //			enemyMovement();

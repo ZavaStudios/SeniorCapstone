@@ -8,12 +8,12 @@ public class FloatingXPText : MonoBehaviour {
     public Color textColor = new Color(0.0f,0.8f,0.2f,1.0f); //green
     public float startVelocity = 3.0f; 
     public float duration = 1.5f;
-    public Transform parent;
+    public Transform parent2;
     private bool started;
 
     private float alpha;
 	// Use this for initialization
-	void Start () 
+	public void Start () 
     {
 	    guiText.material.color = textColor;
         guiText.fontSize = 24;
@@ -33,34 +33,42 @@ public class FloatingXPText : MonoBehaviour {
             alpha -= Time.deltaTime/duration;
             textColor.a = alpha;
             guiText.material.color = textColor;
+            print(alpha);
         }
         else
         {
             started = false;
-            if(parent)
+            if(parent2)
             {
                 gameObject.SetActive(false);
+                print("disabling text");
             }
             else
             {
                 Destroy(gameObject);
+                print("destroying text");
             }
         }
 	}
 
     public void displayText(string textToDisplay)
     {
+
+        print("displaying " + textToDisplay);
         if (!started)
         {
-            Vector3 pos = Camera.main.WorldToViewportPoint(parent.position);
+            Vector3 pos = Camera.main.WorldToViewportPoint(parent2.position);
             alpha = 1;
             textColor.a = 1;
             guiText.material.color = textColor;
             transform.position = pos;
             gameObject.SetActive(true);
-            transform.rigidbody2D.AddForce(Vector3.up * startVelocity + Vector3.right * Random.RandomRange(-0.5f,0.5f) * startVelocity);
+            transform.rigidbody2D.AddForce(Vector3.up * startVelocity + Vector3.right * Random.RandomRange(-0.5f, 0.5f) * startVelocity);
             started = true;
+
+            print("initially displaying " + textToDisplay);
         }
         guiText.text = textToDisplay;
     }
+   
 }
