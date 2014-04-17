@@ -6,8 +6,9 @@ namespace MazeGeneration
     /// <summary>
     /// Generates a grid of smooth noise for you to use for whatever. :D
 	/// 
-	/// Quick note: most of this code is scraped straight out of an old project of mine. This code has no
-	/// pretense of being optimized - that can come later. For now, I just want to get a proof of concept.
+	/// Quick note: most of this code is scraped straight out of an old project of mine (Aric). This
+    /// code has no pretense of being optimized - that can come later. For now, this is just a proof
+    /// of concept.
 	/// </summary>
 	public class PerlinNoise
     {

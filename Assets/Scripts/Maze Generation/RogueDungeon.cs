@@ -34,30 +34,9 @@ namespace MazeGeneration
 		public const int MAX_ROOM_DEPTH = BOSS_ROOM_DEPTH;
 		public const int MAX_ROOM_HEIGHT = 5;
 
-		/*
-		public const int MIN_ROOM_WIDTH = CORRIDOR_WIDTH;
-		public const int MAX_ROOM_WIDTH = CORRIDOR_WIDTH * 4;
-		public const int MIN_ROOM_DEPTH = CORRIDOR_WIDTH;
-		public const int MAX_ROOM_DEPTH = CORRIDOR_WIDTH * 4;
-		public const int MAX_ROOM_HEIGHT = 5;
-
-		// Enemy Rooms
-		public const int MIN_ENEMY_ROOM_WIDTH = CORRIDOR_WIDTH * 2;
-		public const int MAX_ENEMY_ROOM_WIDTH = CORRIDOR_WIDTH * 2 + (CORRIDOR_WIDTH / 2);
-		public const int MIN_ENEMY_ROOM_DEPTH = CORRIDOR_WIDTH * 2;
-		public const int MAX_ENEMY_ROOM_DEPTH = CORRIDOR_WIDTH * 2 + (CORRIDOR_WIDTH / 2);
-		// Starting / Shop Room
-		public const int MIN_SHOP_ROOM_WIDTH = MIN_ENEMY_ROOM_WIDTH;
-		public const int MAX_SHOP_ROOM_WIDTH = MAX_ENEMY_ROOM_WIDTH;
-		public const int MIN_SHOP_ROOM_DEPTH = MIN_ENEMY_ROOM_DEPTH;
-		public const int MAX_SHOP_ROOM_DEPTH = MAX_ENEMY_ROOM_DEPTH;
-		// Boss Room
-		public const int MIN_BOSS_ROOM_WIDTH = CORRIDOR_WIDTH * 3;
-		public const int MAX_BOSS_ROOM_WIDTH = MAX_ROOM_WIDTH;
-		public const int MIN_BOSS_ROOM_DEPTH = CORRIDOR_WIDTH * 3;
-		public const int MAX_BOSS_ROOM_DEPTH = MAX_ROOM_DEPTH;
-		*/
-
+		// Grid of all the rooms in the dungeon. Many of these grid squares may be
+        // null, since these squares also account for corridors, which aren't always
+        // in the maze.
 		public RogueRoom[,] Map { get; private set; }
 
         // Cache the start room
@@ -359,11 +338,20 @@ namespace MazeGeneration
 			}
 		}
 
+        /// <summary>
+        /// Returns the room labeled as the starting room.
+        /// </summary>
+        /// <returns>Room labeled as start room in dungeon.s</returns>
         public RogueRoom GetStartRoom()
         {
             return Map[startRoomX, startRoomY];
         }
-				
+		
+        /// <summary>
+        /// Enumerates all the rooms in the map, but nicely skips over the null entries so you
+        /// don't have to deal with the null checks.
+        /// </summary>
+        /// <returns>Enumeration of non-null rooms in the dungeon.</returns>
 		public IEnumerable<RogueRoom> EnumerateRooms()
 		{
 			foreach (RogueRoom room in Map)

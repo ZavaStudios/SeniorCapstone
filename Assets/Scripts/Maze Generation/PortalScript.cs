@@ -1,22 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Manages the end-of-level portal, checking for when the player collides
+/// with it and sending them off to the next level.
+/// </summary>
 public class PortalScript : MonoBehaviour
 {
+    // Instance of the player, so we can check it collided with our collision box.
 	public static Transform player;
-	private BoxCollider portalCollider;
 
-	// Use this for initialization
 	void Start ()
 	{
-		portalCollider = gameObject.GetComponent<BoxCollider>();
+		BoxCollider portalCollider = gameObject.GetComponent<BoxCollider>();
 		portalCollider.isTrigger = true;
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-	
 	}
 
 	public void OnTriggerEnter(Collider other)

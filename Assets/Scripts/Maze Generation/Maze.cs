@@ -5,9 +5,17 @@ using System.Text;
 
 namespace MazeGeneration
 {
+    /// <summary>
+    /// Generates 2D mazes in the form of boolean grids. Nicely exported for
+    /// your map generation needs!
+    /// </summary>
     class Maze
     {
-        // Shared random object:
+        // This is kind of a hack - in all reality, there's no good reason for
+        // this class to publically export the random number generator. However,
+        // various components of the game need a random number generator, and
+        // having them use the same one is better. This class is intended to be
+        // able to be stripped out and used elsewhere, so this does need to be here.
         public static Random rnd = new Random();
 
         // Width and height of the map, stored as global values to be used
