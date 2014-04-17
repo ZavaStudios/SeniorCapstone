@@ -952,7 +952,7 @@ public class Hud : MonoBehaviour
             fullDescription = currentItem.oreType.ToString() + " to make items with.";
         }
         else
-        { //What to display for everything else in the inventory (
+        { //What to display for everything else in the inventory
             ItemEquipment itemSelected = (ItemEquipment)arrInventoryItems[intInventoryItem];
             fullDescription = "\n" +
                         itemSelected._description + "\n" +
