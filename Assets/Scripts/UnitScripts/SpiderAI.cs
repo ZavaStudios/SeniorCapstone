@@ -17,6 +17,8 @@ public class SpiderAI : UnitEnemy
         AttackDamage = 5;
 		AttackDelay = 1f;
 
+        //Add the audio source for when this unit attacks
+        attackSound = gameObject.AddComponent<AudioSource>();
         attackSound.clip = (AudioClip)Resources.Load("Sounds/Spider");
 	}
 	
