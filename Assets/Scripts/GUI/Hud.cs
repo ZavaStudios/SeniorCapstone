@@ -38,7 +38,6 @@ public class Hud : MonoBehaviour
 
     //Keep a reference to the player
     Unit player;
-    UnitPlayer unitPlayer;
 
     //Keep a reference to the inventory
     Inventory inventory = Inventory.getInstance();
@@ -49,14 +48,10 @@ public class Hud : MonoBehaviour
     ItemSlot[][,] arrComponentGrids; //An array that holds 2d arrays of itemcomponents. These 2d arrays are the tiered components that the player sees
 
     //Grid for component options
-    ItemComponent[] arrAllComponents;
     string[] arrSelectedComponentNames;
 
     //Grid for possible assembled items
     ItemComponent[][] arrAssembleWeapons;
-
-    //Grid for weapon types
-    string[] arrWeaponTypes;
 
     //The available options for selecting menus
     tMenuStates[] arrMenusMenu = {
@@ -72,13 +67,7 @@ public class Hud : MonoBehaviour
     readonly int screenX0 = (int)(Screen.width * 0.1);
     readonly int screenY0 = (int)(Screen.height * 0.1);
 
-    int intInvSlotWidth; //The width of an inventory item slot
-    int intInvSlotHeight; //The height of an inventory item slot
-    int intInvItemsPerRow;
-    int intInvItemsPerCol;
     int intCompTypeWidth;
-    int intCompSelCols = (Enum.GetNames(typeof(ItemComponent.tAttributeType)).Length);
-    int intCompSelRows = (Enum.GetNames(typeof(ItemBase.tOreType)).Length - ItemBase.getNonCraftingOres().Count);
 
     //Vector 2's to store some x and y components
     Vector2 vec2CompTypeStart;
@@ -86,10 +75,6 @@ public class Hud : MonoBehaviour
 
     //Indexes for the selections
     private int intMenusMenu = 0; //Index for which menu is selected
-    private int intCompTypeGrid = 0; //Index for the type(category) of component
-    private int intCompSelGrid = 0; //Index for selecting different components
-    private int intAssembleType = 0; //Index for selecting which type of weapon to assemble
-    private int intAssembleWeapon = 0; //Index for selecting which weapon to assemble
     private int intInventoryItem = 0; //The index of the selected inventory item
 
     //Texture for the crosshair
@@ -100,18 +85,7 @@ public class Hud : MonoBehaviour
         menuCode = tMenuStates.MENU_NONE;
 
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Unit>();
-        unitPlayer = player.GetComponent<UnitPlayer>();
-
-        //Assuming some sizes makes other calculations easier
-        int intSlotWidth = 300; //The width of an item slot
-        int intSlotHeight = 100; //The height of an item slot
-
-        //Declare the options in laying out the inventory grid
-        intInvSlotWidth = 150; //The width of an item slot
-        intInvSlotHeight = 150; //The height of an item slot
-
-        intInvItemsPerRow = screenWidth / intInvSlotWidth;
-        intInvItemsPerCol = screenHeight / intInvSlotHeight;
+        
 
         //Initialize component data structures
         int intNumWeapons = Enum.GetNames(typeof(ItemWeapon.tWeaponType)).Length - ItemWeapon.getNonCraftingWeapons().Count;
@@ -121,8 +95,6 @@ public class Hud : MonoBehaviour
 
         int intNumOres = Enum.GetNames(typeof(ItemComponent.tOreType)).Length;
         int intNumAtts = Enum.GetNames(typeof(ItemComponent.tAttributeType)).Length;
-
-        arrAllComponents = new ItemComponent[intNumOres * intNumAtts];
 
         //Find all the weapon categories and add them to an array
         arrComponentGrids = new ItemSlot[arrWepPartNames.Length][,];
@@ -182,8 +154,6 @@ public class Hud : MonoBehaviour
             }
         }
 
-        //Get a list of weapon types to cycle through during assembling
-        arrWeaponTypes = Enum.GetNames(typeof(ItemWeapon.tWeaponType));
     }
 
     /// <summary>
@@ -339,7 +309,6 @@ public class Hud : MonoBehaviour
     }
 
     //Variables for crafting armor
-    Vector2 itemScrollPosition = Vector2.zero;
     int intCraftingCategory = 0;
     int intCraftingTypesInCategory = 0;
     int intCraftingAttributes = 0;
@@ -353,7 +322,6 @@ public class Hud : MonoBehaviour
     List<ItemArmor.tArmorPart> armors = new List<ItemArmor.tArmorPart> { ItemArmor.tArmorPart.Chest, ItemArmor.tArmorPart.Head, ItemArmor.tArmorPart.Legs };
 
     //List of types of weapon components
-    ItemWeapon.tWeaponType a = ItemWeapon.tWeaponType.WeaponSword;
     List<ItemComponent.tComponentPart> components = new List<ItemComponent.tComponentPart> { ItemComponent.tComponentPart.Handle, ItemComponent.tComponentPart.Blade };
 
     //An untyped list that will either reference amors or components. Basically this list acts as context to whichever this list gets referenced to
@@ -672,7 +640,6 @@ public class Hud : MonoBehaviour
         handleComponents = new List<ItemComponent>();
         foreach(ItemComponent comp in inventory.getInventoryComponents())
         {
-            string compCode = comp.strComponentCode;
             if (ItemComponent.getComponentPart(comp.strComponentCode).Equals(ItemComponent.tComponentPart.Blade))
             {
                 bladeComponents.Add(comp);
@@ -970,7 +937,6 @@ public class Hud : MonoBehaviour
 
 
         //intInventoryItem = GUI.SelectionGrid(new Rect(vec2CurrentPos.x, vec2CurrentPos.y, screenWidth, intInvSlotHeight),
-        //                                                intInventoryItem, arrInventoryStrings, intInvItemsPerRow, style);
 
         //GUI.BeginGroup(new Rect(screenWidth - 300, 100, 300, screenHeight));
 

@@ -60,7 +60,7 @@ public class FloatingDamageText : MonoBehaviour {
             damage = 0;
             transform.position = pos;
             gameObject.SetActive(true);
-            transform.rigidbody2D.AddForce(Vector3.up * startVelocity + Vector3.right * Random.RandomRange(-0.5f,0.5f) * startVelocity);
+            transform.rigidbody2D.AddForce(Vector3.up * startVelocity + Vector3.right * Random.Range(-0.5f,0.5f) * startVelocity);
             started = true;
         }
         damage += newDamage;

@@ -34,21 +34,10 @@ public class EnemyGenerator
 		List<EnemyType> enemyList = new List<EnemyType>(); 
 		int mod = points%5;
 
-		//Check to see if we have an exact number of points.
+		//Check to see if we have an exact number of points, make it exact if not.
 		if(mod != 0)
 		{
-			//Round up if we get a value greater than our threshold.
-            if (true)//(mod > Maze.rnd.Next(5))
-			{
-				points += (5 - mod);
-			}
-			//Round down if below threshold.
-			else
-			{
-				points -= mod;
-			}
-
-			
+			points += (5 - mod);
 		}
 		//Fill in the remaining points with random enemies.
 		for(int i = 0; i < points; i += 5)

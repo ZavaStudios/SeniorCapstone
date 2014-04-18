@@ -11,8 +11,7 @@ public class ZombiePrinceAI : BossUnit
 {	
 	private float fearTimer;
 	private bool fearTimerSet;
-	private System.Random rand; 
-	
+
 	// Use this for initialization
 	protected override void Start ()
 	{
@@ -21,7 +20,6 @@ public class ZombiePrinceAI : BossUnit
 
 		//Cap the number of enemies to be 5.
 		enemyCap = 3;
-		rand = new System.Random();
         AttackDamage = 50;
 	}
 	

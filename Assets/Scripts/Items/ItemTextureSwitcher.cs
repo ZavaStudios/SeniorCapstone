@@ -4,9 +4,7 @@ using System.Collections;
 public class ItemTextureSwitcher : MonoBehaviour
 {
     public static Material[] materials;
-
-    ItemBase.tOreType _type = ItemBase.tOreType.Bone;
-
+    
     public virtual void SwitchTexture(ItemBase.tOreType type)
     {
         switch (type)

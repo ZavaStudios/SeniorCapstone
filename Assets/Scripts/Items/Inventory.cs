@@ -374,8 +374,7 @@ public class Inventory
         else
         {
             int weaponIndex = getInventoryWeaponIndex(equipedWeapon);
-            int maxIndex = weapons.Count;
-            
+
             weaponIndex++;
             
             if (weaponIndex >= weapons.Count)

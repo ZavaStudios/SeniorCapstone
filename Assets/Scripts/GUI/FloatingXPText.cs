@@ -63,7 +63,7 @@ public class FloatingXPText : MonoBehaviour {
             guiText.material.color = textColor;
             transform.position = pos;
             gameObject.SetActive(true);
-            transform.rigidbody2D.AddForce(Vector3.up * startVelocity + Vector3.right * Random.RandomRange(-0.5f, 0.5f) * startVelocity);
+            transform.rigidbody2D.AddForce(Vector3.up * startVelocity + Vector3.right * Random.Range(-0.5f, 0.5f) * startVelocity);
             started = true;
 
             print("initially displaying " + textToDisplay);

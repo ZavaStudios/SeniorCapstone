@@ -5,11 +5,9 @@ public class WeaponBow : WeaponBase {
 
     public const float bulletSpeed =  1200.0f;
     private CharacterController capCollider;
-    private WeaponBowFiringScript s ;
 	// Use this for initialization
 	protected override void Start () 
     {
-        s = gameObject.GetComponentInChildren<WeaponBowFiringScript>();
         base.Start();
         capCollider = Character.GetComponent<CharacterController>();
         specialRange = 10;
