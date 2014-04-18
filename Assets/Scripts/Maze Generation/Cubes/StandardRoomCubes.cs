@@ -55,6 +55,7 @@ namespace MazeGeneration
 		//	* Corridors (are we putting blocks in corridors? probably, but not now)
 		//	* Other possible things
 		
+        // These hold the various groupings of cubes our room needs
 		private WallCubes L_Wall;
 		private WallCubes R_Wall;
 		private WallCubes T_Wall;
@@ -64,10 +65,14 @@ namespace MazeGeneration
 		private InsideCornerCubes BL_Corner;
 		private InsideCornerCubes BR_Corner;
 		
+        // Width (floor coordinates) of the room
 		private int Width { get; set; }
+        // Depth (floor coordinates) of the room
 		private int Depth { get; set; }
+        // Height (floor to ceiling) of the room
 		private int Height { get; set; }
 
+        // How deep we would like the walls to be.
 		public int WallDepth { get { return L_Wall.MaxDepth; } }
 		
 		/// <summary>
@@ -84,7 +89,6 @@ namespace MazeGeneration
 			Depth = roomHeight;
 			Height = ceilingHeight;
 			
-			// TODO: something smarter than a fixed value
 			int CORNER_DIM = 8;
 			int wallDepth = (Depth - (CORNER_DIM * 2)) < 0 ? 0 : (Depth - (CORNER_DIM * 2));
 			int wallWidth = (Width - (CORNER_DIM * 2)) < 0 ? 0 : (Width - (CORNER_DIM * 2));
@@ -191,6 +195,12 @@ namespace MazeGeneration
 			}
 		}
 
+        /// <summary>
+        /// Removes a cube from the corridor, and yields any cubes that are
+        /// uncovered as a consequence.
+        /// </summary>
+        /// <param name="c">Cube to be destroyed.</param>
+        /// <returns>Cubes that have been uncovered by destroying c.</returns>
 		public override IEnumerable<Cube> DestroyCube (Cube c)
 		{
 			// Left side:

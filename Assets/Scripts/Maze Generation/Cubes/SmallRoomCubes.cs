@@ -25,13 +25,45 @@ namespace MazeGeneration
 	// initial air carving that gets put into the room, and the doors
 	// will simply cut into that preexisting state.
 
+    /// <summary>
+    /// Represents the data structure for the small rooms that aren't rooms, but really
+    /// extensions of corridors.
+    /// </summary>
 	public class SmallRoomCubes : RoomCubes
 	{
+        // Width (floor coordinates) of the small room
 		private int Width { get; set; }
+        // Depth (floor coordinates) of the small room
 		private int Depth { get; set; }
+        // Height (floor to ceiling) of the small room
 		private int Height { get; set; }
+        
+        // 3D grid of the cubes in the small room
 		private ItemBase.tOreType[,,] Cubes;
 
+        /// <summary>
+        /// Instantiates all the cubes for the small room.
+        /// </summary>
+        /// <param name="width">Width (floor coordinates) of the wall.</param>
+        /// <param name="depth">Depth (floor coordinates) of the wall.</param>
+        /// <param name="height">Height (floor to ceiling) of the wall.</param>
+        /// <param name="doorCode">Bitmask representing all the directions doors exist on the small room.</param>
+        /// <param name="lftNbrUp">Array of depths for the upper portion of the left neighbor.
+        /// May be null, but only if there is no left neighbor.</param>
+        /// <param name="lftNbrDwn">Array of depths for the lower portion of the left neighbor.
+        /// May be null, but only if there is no left neighbor.</param>
+        /// <param name="rgtNbrUp">Array of depths for the upper portion of the right neighbor.
+        /// May be null, but only if there is no right neighbor.</param>
+        /// <param name="rgtNbrDwn">Array of depths for the lower portion of the right neighbor.
+        /// May be null, but only if there is no right neighbor.</param>
+        /// <param name="upNbrLft">Array of depths for the left portion of the up neighbor.
+        /// May be null, but only if there is no up neighbor.</param>
+        /// <param name="upNbrRgt">Array of depths for the right portion of the up neighbor.
+        /// May be null, but only if there is no up neighbor.</param>
+        /// <param name="dwnNbrLft">Array of depths for the left portion of the down neighbor.
+        /// May be null, but only if there is no down neighbor.</param>
+        /// <param name="dwnNbrRgt">Array of depths for the right portion of the down neighbor.
+        /// May be null, but only if there is no down neighbor.</param>
 		public SmallRoomCubes(int width, int depth, int height, int doorCode,
 		                      int[] lftNbrUp, int[] lftNbrDwn, int[] rgtNbrUp, int[] rgtNbrDwn,
 		                      int[] upNbrLft, int[] upNbrRgt, int[] dwnNbrLft, int[] dwnNbrRgt)
@@ -44,6 +76,10 @@ namespace MazeGeneration
 			InitializeCubes(lftNbrUp, lftNbrDwn, rgtNbrUp, rgtNbrDwn, upNbrLft, upNbrRgt, dwnNbrLft, dwnNbrRgt);
 		}
 
+        /// <summary>
+        /// Helper function for initializing the cubes. I'll skip over the parameters, because they are the
+        /// same as for the constructor, and this function is only used there.
+        /// </summary>
 		private void InitializeCubes(int[] lftNbrUp, int[] lftNbrDwn, int[] rgtNbrUp, int[] rgtNbrDwn,
 		                             int[] upNbrLft, int[] upNbrRgt, int[] dwnNbrLft, int[] dwnNbrRgt)
 		{
@@ -60,32 +96,6 @@ namespace MazeGeneration
 				{
 					for (int y = 0; y < Depth; y++)
 					{
-						/*
-						// Top half:
-						if (y <= Depth / 2)
-							if (upNbrLft != null && upNbrRgt != null)
-								if (x >= upNbrLft[z] && x <= Width - 1 - upNbrRgt[z])
-									Cubes[x,y,z] = Cube.CubeType.Air;
-
-						// Bottom half:
-						if (y >= Depth / 2)
-							if (dwnNbrLft != null && dwnNbrRgt != null)
-								if (x >= dwnNbrLft[z] && x <= Width - 1 - dwnNbrRgt[z])
-									Cubes[x,y,z] = Cube.CubeType.Air;
-
-						// Left half:
-						if (x <= Width / 2)
-							if (lftNbrUp != null && lftNbrDwn != null)
-								if (y >= lftNbrUp[z] && y <= Depth - 1 - lftNbrDwn[z])
-									Cubes[x,y,z] = Cube.CubeType.Air;
-
-						// Right half:
-						if (x >= Width / 2)
-							if (rgtNbrUp != null && rgtNbrDwn != null)
-								if (y >= rgtNbrUp[z] && y <= Depth - 1 - rgtNbrDwn[z])
-									Cubes[x,y,z] = Cube.CubeType.Air;
-									*/
-
 						// Quadrant 1:
 						if ((x <= y) && ((Width-x-1) >= y))
 						{
@@ -139,6 +149,12 @@ namespace MazeGeneration
 			}
 		}
 
+        /// <summary>
+        /// Iterates over all the cubes in the corridor, and passes back any
+        /// cubes that are visible. Air cubes are skipped, and cubes which
+        /// are obscured from the player's view are also not returned.
+        /// </summary>
+        /// <returns>List of cubes that are visible in this corridor to the player.</returns>
 		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			for (int x = 0; x < Width; x++)
@@ -148,6 +164,13 @@ namespace MazeGeneration
 							yield return new Cube(this, Cubes[x,y,z], x, z, y);
 		}
 
+        /// <summary>
+        /// Helper function for determining whether a cube at the given position is visible.
+        /// </summary>
+        /// <param name="x">X coordinate of the cube in question.</param>
+        /// <param name="y">Y coordinate of the cube in question.</param>
+        /// <param name="z">Z coordinate of the cube in question.</param>
+        /// <returns></returns>
 		private bool IsVisible(int x, int y, int z)
 		{
 			// if on the boundary: yes
@@ -167,6 +190,12 @@ namespace MazeGeneration
 			return false;
 		}
 
+        /// <summary>
+        /// Removes a cube from the corridor, and yields any cubes that are
+        /// uncovered as a consequence.
+        /// </summary>
+        /// <param name="c">Cube to be destroyed.</param>
+        /// <returns>Cubes that have been uncovered by destroying c.</returns>
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{
 			int tmp = c.Y;

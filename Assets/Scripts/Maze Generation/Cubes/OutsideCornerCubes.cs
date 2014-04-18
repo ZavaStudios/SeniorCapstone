@@ -18,21 +18,32 @@ namespace MazeGeneration
 	/// </summary>
 	public class OutsideCornerCubes : RoomCubes
 	{
+        // Grid of cubes in the corner
         private ItemBase.tOreType[, ,] Cubes;
 		
+        // Width (floor coordinates) of the corner
 		public int Width
 		{
 			get { return Cubes.GetLength(0); }
 		}
+        // Height (floor to ceiling) of the corner
 		public int Height
 		{
 			get { return Cubes.GetLength(2); }
 		}
+        // Depth (floor coordinates) of the corner
 		public int Depth
 		{
 			get { return Cubes.GetLength(1); }
 		}
 		
+        /// <summary>
+        /// Generates all the cubes for the corner.
+        /// </summary>
+        /// <param name="width">Width (floor coordinates) of the corner.</param>
+        /// <param name="depth">Depth (floor coordinates) of the corner.</param>
+        /// <param name="left">List of depth values for the wall directly to this corner's left.</param>
+        /// <param name="up">List of depth values for the wall directly to this corner's up.</param>
 		public OutsideCornerCubes(int width, int depth, int[] left, int[] up)
 		{
 			int height = up.Length;
@@ -41,6 +52,11 @@ namespace MazeGeneration
 			InitializeCubes(left, up);
 		}
 		
+        /// <summary>
+        /// Helper function that actually goes about generating all the cubes.
+        /// Parameters skipped, because they match the constructor and this function
+        /// is only called from there.
+        /// </summary>
 		private void InitializeCubes(int[] left, int[] up)
 		{
 			for (int z = 0; z < Height; z++)
@@ -72,7 +88,6 @@ namespace MazeGeneration
 					{
 						// TODO
                         Cubes[x, y, z] = ItemBase.tOreType.NOT_ORE;
-						//Cubes[x,y,z] = Cube.CubeType.Gold;
 					}
 				}
 				// Quadrant 4
@@ -86,7 +101,13 @@ namespace MazeGeneration
 				}
 			}
 		}
-		
+
+        /// <summary>
+        /// Iterates over all the cubes in the corridor, and passes back any
+        /// cubes that are visible. Air cubes are skipped, and cubes which
+        /// are obscured from the player's view are also not returned.
+        /// </summary>
+        /// <returns>List of cubes that are visible in this corridor to the player.</returns>
 		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			for (int x = 0; x < Width; x++)
@@ -96,6 +117,14 @@ namespace MazeGeneration
 							yield return new Cube(this, Cubes[x,y,z], x, y, z);
 		}
 		
+        /// <summary>
+        /// Helper which determines whether the cube at the provided position is
+        /// actually visible to the player.
+        /// </summary>
+        /// <param name="x">X coordinate of the cube in question.</param>
+        /// <param name="y">Y coordinate of the cube in question.</param>
+        /// <param name="z">Z coordinate of the cube in question.</param>
+        /// <returns>True if the input cube is visible. False otherwise.</returns>
 		private bool IsVisible(int x, int y, int z)
 		{
 			// if on the boundary: yes
@@ -115,6 +144,12 @@ namespace MazeGeneration
 			return false;
 		}
 
+        /// <summary>
+        /// Removes a cube from the corridor, and yields any cubes that are
+        /// uncovered as a consequence.
+        /// </summary>
+        /// <param name="c">Cube to be destroyed.</param>
+        /// <returns>Cubes that have been uncovered by destroying c.</returns>
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{
 			List<Cube> toRet = new List<Cube>();

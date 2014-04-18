@@ -10,20 +10,37 @@ namespace MazeGeneration
 	/// </summary>
 	public class StandardWallCubes : WallCubes, CubeTracker
 	{
+        // Wall cubes are _technically_ held as a 3D array here, but the
+        // better way to think of this is a 2D array of Linked Lists. We
+        // generate this as effectively a depth map laid on the grid.
         private ItemBase.tOreType[, ,] Cubes { get; set; }
+        
+        // This is the maximum depth of those "Linked Lists" I was talking about.
 		private int _maxDepth;
-
 		public override int MaxDepth { get { return _maxDepth; }}
+        // And this is the minimum depth of those "Linked Lists".
 		public int MinDepth { get; private set; }
+
+        // This is how wide the 2D Array part of the wall is.
 		public override int Width
 		{
 			get { return Cubes.GetLength(0); }
 		}
+        // This is how tall the 2D array part of the wall is.
 		public override int Height
 		{
 			get { return Cubes.GetLength(1); }
 		}
 		
+        /// <summary>
+        /// Instantiates a wall of cubes. Generates some Perlin Noise, samples
+        /// into that noise to build a depth map, then randomly assigns cubes
+        /// to each of those spots we decided cubes should go.
+        /// </summary>
+        /// <param name="width">Width (floor coordinates) of the wall.</param>
+        /// <param name="height">Height (floor to ceiling) of the wall.</param>
+        /// <param name="maxDepth">Maximum depth the wall can poke out.</param>
+        /// <param name="minDepth">Minimum depth the wall can poke out.</param>
 		public StandardWallCubes(int width, int height, int maxDepth, int minDepth)
 		{
 			_maxDepth = maxDepth;
@@ -37,6 +54,10 @@ namespace MazeGeneration
 			InitializeCubes();
 		}
 		
+        /// <summary>
+        /// Helper function to take care of the initialization part of
+        /// setting up our wall of cubes.
+        /// </summary>
 		private void InitializeCubes()
 		{
             int[,] noise = PerlinNoise.GenerateNoise128();
@@ -44,7 +65,7 @@ namespace MazeGeneration
 			{
 				for (int y = 0; y < Cubes.GetLength(1); y++)
 				{
-					// TODO: better indexing. We could average nearby values or something.
+					// This index isn't the smartest, but it seems to work well enough.
 					int xIndex = (int)(((float)x / (float)Cubes.GetLength(0)) *
                                        ((float)(noise.GetLength(0)-1)));
 					int yIndex = (int)(((float)y / (float)Cubes.GetLength(1)) * 
@@ -52,10 +73,11 @@ namespace MazeGeneration
 
                     float tmpDepth =(float)noise[xIndex,yIndex] * 0.01f;
 					int depth = MinDepth + (int)((float)(MaxDepth - MinDepth) * tmpDepth);
-					// HACK: for now, perlin noise is still busted. We don't want to get more than
-					// our corner sizes (or bad things happen), so clamp the value:
+					// HACK: Because my Perlin Noise class wasn't the best, it sometimes returns
+                    // values outside the accepted range. I could bang myself over the head to fix
+                    // old code, or I could just fix it here. Let's go with that last one.
 					depth = (depth > MaxDepth) ? MaxDepth : depth;
-					// HACK: I think somehow I may be getting lower than min? w/e
+					// HACK: And I think somehow I may be getting lower than min? w/e
 					depth = (depth < MinDepth) ? MinDepth : depth;
 					for (int z = 0; z < depth; z++)
 					{
@@ -110,7 +132,13 @@ namespace MazeGeneration
 				toRet[y] = GetDepthAt(0, y);
 			return toRet;
 		}
-		
+
+        /// <summary>
+        /// Iterates over all the cubes in the corridor, and passes back any
+        /// cubes that are visible. Air cubes are skipped, and cubes which
+        /// are obscured from the player's view are also not returned.
+        /// </summary>
+        /// <returns>List of cubes that are visible in this corridor to the player.</returns>
 		public override IEnumerable<Cube> EnumerateCubes()
 		{
 			// Fencepost: draw left and right edges always
@@ -137,6 +165,14 @@ namespace MazeGeneration
 			}
 		}
 
+        /// <summary>
+        /// Helper function to determine whether the cube at the provided
+        /// position is visible or not.
+        /// </summary>
+        /// <param name="x">X coordinate of the cube.</param>
+        /// <param name="y">Y coordinate of the cube.</param>
+        /// <param name="z">Z coordinate of the cube.</param>
+        /// <returns></returns>
 		private bool IsUncovered(int x, int y, int z)
 		{
 			return ((z == MaxDepth-1) ||
@@ -148,6 +184,12 @@ namespace MazeGeneration
                     ((Cubes[x, y, z + 1] == ItemBase.tOreType.NOT_ORE)));
 		}
 
+        /// <summary>
+        /// Removes a cube from the corridor, and yields any cubes that are
+        /// uncovered as a consequence.
+        /// </summary>
+        /// <param name="c">Cube to be destroyed.</param>
+        /// <returns>Cubes that have been uncovered by destroying c.</returns>
 		public override IEnumerable<Cube> DestroyCube(Cube c)
 		{
 			List<Cube> toRet = new List<Cube>();

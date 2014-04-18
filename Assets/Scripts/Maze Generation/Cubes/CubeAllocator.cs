@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using MazeGeneration;
 
+/// <summary>
+/// System that handles allocation of Unity cubes in a resource pool, allowing
+/// reuse and avoiding the expensive costs of instantiating objects at runtime.
+/// </summary>
 public class CubeAllocator : MonoBehaviour
 {
+    // We need to spawn some number of cubes by default. Let's go with this many.
 	private const int DEFAULT_SIZE = 5000;
+    // In the off chance that we ran out of cubes, we still need to allocate to the user.
+    // Let's spawn this many more whenever we run out.
 	private const int REALLOC_SIZE = 50;
-	private Vector3 DEFAULT_POSITION = new Vector3(0, -10, 0);	// This should be safely out of view
+    // This is where we hide the cubes we're not using right now.
+	private Vector3 DEFAULT_POSITION = new Vector3(0, -10, 0);
 
 	// Unity specified vars
 	public MineableBlock cubeTransform;
@@ -17,6 +25,8 @@ public class CubeAllocator : MonoBehaviour
 	private int cubeCount;
 	private Stack<MineableBlock> blocks;
 
+    // Typically we would do this stuff in the Start call, but in this case
+    // we need to make sure this happens before that.
 	public void Awake()
 	{
 		blocks = new Stack<MineableBlock>(DEFAULT_SIZE);
@@ -28,11 +38,16 @@ public class CubeAllocator : MonoBehaviour
 		cubeCount = DEFAULT_SIZE;
 	}
 
-	public void Update()
-	{
-		// nah
-	}
-
+    /// <summary>
+    /// Gives you an allocated cube for you to do with as you wish. Please give it
+    /// back when you're done!
+    /// 
+    /// We take in the Cube data so we can put that into the MineableBlock for you,
+    /// as well as properly set the texture so the cube looks as intended when you
+    /// get it.
+    /// </summary>
+    /// <param name="cube">Cube data to stick into your MineableBlock.</param>
+    /// <returns>Freshly allocated cube that's yours to do with as you wish.</returns>
 	public MineableBlock GetCube(Cube cube)
 	{
 		if (blocks.Count == 0)
@@ -78,15 +93,16 @@ public class CubeAllocator : MonoBehaviour
 			break;
 		}
 
-		//ct.transform.parent = null;
-		//ct.gameObject.SetActive(true);
 		return ct;
 	}
 
+    /// <summary>
+    /// Returns a cube to the resource pool so others can make use of it later.
+    /// Thanks for your patronage!
+    /// </summary>
+    /// <param name="ct">Instantiated cube you're returning to the pool.</param>
 	public void ReturnCube(MineableBlock ct)
 	{
-		//ct.transform.parent = gameObject.transform;
-		//ct.gameObject.SetActive(false);
 		blocks.Push(ct);
 		ct.transform.position = DEFAULT_POSITION;
 	}
