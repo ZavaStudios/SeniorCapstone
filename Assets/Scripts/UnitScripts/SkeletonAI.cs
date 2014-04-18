@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Skeleton AI.
+/// Defines how the skeleton AI behaves. 
+/// </summary>
 public class SkeletonAI : UnitEnemy
 {
 //	private float turnSpeed = 90;

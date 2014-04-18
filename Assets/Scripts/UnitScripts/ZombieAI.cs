@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Zombie AI.
+/// Defines how the zombie AI behaves. 
+/// </summary>
 public class ZombieAI : UnitEnemy
 {
 //	float turnSpeed = 90;

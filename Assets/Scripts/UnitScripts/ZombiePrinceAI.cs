@@ -2,6 +2,11 @@
 using System.Collections;
 
 
+/// <summary>
+/// Zombie prince AI.
+/// Defines the behavior for the Zombie Prince Boss. 
+/// Spawns enemies and also has special abilities. 
+/// </summary>
 public class ZombiePrinceAI : BossUnit
 {	
 	private float fearTimer;

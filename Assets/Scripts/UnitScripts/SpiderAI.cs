@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Spider AI.
+/// Defines how the spider AI behaves. 
+/// </summary>
 public class SpiderAI : UnitEnemy
 {
 	

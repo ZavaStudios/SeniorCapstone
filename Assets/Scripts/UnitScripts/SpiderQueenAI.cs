@@ -2,6 +2,11 @@
 using System.Collections;
 
 
+/// <summary>
+/// Spider Queen AI.
+/// Defines the behavior for the Spider Queen Boss. 
+/// Spawns enemies and also has special abilities. 
+/// </summary>
 public class SpiderQueenAI : BossUnit 
 {
 	private float immobilizedTimer = 0;

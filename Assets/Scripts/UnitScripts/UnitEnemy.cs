@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Unit enemy.
+/// Base class that is used for all enemies. Defines how they move and behave. 
+/// </summary>
 public class UnitEnemy : Unit
 {
 	public static Transform player;

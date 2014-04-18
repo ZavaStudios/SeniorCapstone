@@ -4,6 +4,10 @@ using System.Collections;
 [RequireComponent(typeof (CharacterController))]
 
 
+/// <summary>
+/// Unit.
+/// Base class for all units. Contains all of the functions that all units have in common, such as: what to do on death, attack, etc. 
+/// </summary>
 public class Unit : MonoBehaviour 
 {
     public bool vulnerable = true;

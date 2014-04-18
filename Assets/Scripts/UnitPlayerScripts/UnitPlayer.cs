@@ -40,7 +40,7 @@ public class UnitPlayer : Unit {
         inventory.inventoryAddItem(myFirstSword);
 
         //cheat(cheatAmount.a_little);//add all weapons
-        //cheat(cheatAmount.a_lot);//add all weapons
+        cheat(cheatAmount.a_lot);//add all weapons
 
         base.Start();
 
@@ -182,6 +182,8 @@ public class UnitPlayer : Unit {
 		
 		//Wait for 5 seconds.
 		StartCoroutine(wait(5));
+
+		LevelHolder.Level = 1;
 		
 		Application.LoadLevel(0);
 	}

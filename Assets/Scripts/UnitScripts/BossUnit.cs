@@ -2,6 +2,10 @@
 using System.Collections;
 using MazeGeneration;
 
+/// <summary>
+/// Boss unit.
+/// Base class for all bosses. Spawns the enemies and defines all common behaviors of all bosses.
+/// </summary>
 public class BossUnit : UnitEnemy 
 {
 	protected bool healthAt25 = false;

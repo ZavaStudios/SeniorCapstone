@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
+/// <summary>
+/// Skeleton King AI.
+/// Defines the behavior for the Skeleton King Boss. 
+/// Spawns enemies and also has special abilities. 
+/// </summary>
 public class SkeletonKingAI : BossUnit
 {
 	private float disappTime;
@@ -15,7 +19,7 @@ public class SkeletonKingAI : BossUnit
 		
 	    AttackDelay = 0.33f;
         AttackDamage = 15;
-		//Set the enemy cap to be 3.
+		//Set the enemy cap to be 5.
 		enemyCap = 5;
 		weapon.attackRange = 20;
 	}
