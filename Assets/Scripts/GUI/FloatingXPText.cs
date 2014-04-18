@@ -33,7 +33,6 @@ public class FloatingXPText : MonoBehaviour {
             alpha -= Time.deltaTime/duration;
             textColor.a = alpha;
             guiText.material.color = textColor;
-            print(alpha);
         }
         else
         {
@@ -41,12 +40,10 @@ public class FloatingXPText : MonoBehaviour {
             if(parent2)
             {
                 gameObject.SetActive(false);
-                print("disabling text");
             }
             else
             {
                 Destroy(gameObject);
-                print("destroying text");
             }
         }
 	}
@@ -54,7 +51,6 @@ public class FloatingXPText : MonoBehaviour {
     public void displayText(string textToDisplay)
     {
 
-        print("displaying " + textToDisplay);
         if (!started)
         {
             Vector3 pos = Camera.main.WorldToViewportPoint(parent2.position);
@@ -65,8 +61,6 @@ public class FloatingXPText : MonoBehaviour {
             gameObject.SetActive(true);
             transform.rigidbody2D.AddForce(Vector3.up * startVelocity + Vector3.right * Random.Range(-0.5f, 0.5f) * startVelocity);
             started = true;
-
-            print("initially displaying " + textToDisplay);
         }
         guiText.text = textToDisplay;
     }

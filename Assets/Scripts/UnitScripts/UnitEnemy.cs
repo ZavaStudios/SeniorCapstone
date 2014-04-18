@@ -22,7 +22,6 @@ public class UnitEnemy : Unit
 	private float healthLost = 0;
 
 	private float healthBarLength;
-//	protected SphereCollider sphere;
 	public BossUnit boss = null;
 
     //Action sounds
@@ -73,7 +72,6 @@ public class UnitEnemy : Unit
             //Debug.Log("dir: " + dir.x + ", " + dir.y + ", " + dir.z);
 			control.SimpleMove(dir * moveSpeed);
 			
-//			enemyMovement();
 		}
 		else
 		{

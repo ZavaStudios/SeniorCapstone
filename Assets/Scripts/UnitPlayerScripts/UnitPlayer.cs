@@ -116,13 +116,7 @@ public class UnitPlayer : Unit {
 			if (weapon != null)
 				weapon.attack();
 		}
-
-        if(InputContextManager.isATTACK_RELEASED())
-        {
-            if (weapon != null)
-                weapon.onAttackButtonReleased();
-        }
-
+        
 		if(InputContextManager.isSPECIAL_ATTACK())
 		{
 			if (weapon != null)

@@ -27,7 +27,6 @@ public static class ItemFactory
 		
 		if (bladeType != handleType || bladeWeaponType != handleWeaponType) //Can't mix attributes(e.g. light and heavies) or weapon types(e.g. sword, bow)
 		{
-//			MonoBehaviour.print("I'm sorry children. Pig and elephant DNA just wont s(p)lice...");
 			return null;
 		} 
 		
@@ -196,7 +195,7 @@ public static class ItemFactory
     }
         
 
-	
+	//helper function to create more realistic english sounding names in game.
 	static string getComponentString(string componentCode)
 	{
 		int weaponType = (int)ItemComponent.getComponentWeaponType (componentCode);

@@ -24,16 +24,16 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 	
     void OnCollisionEnter(Collision other)
     {
-        BOOMcount++;
+        BOOMcount++; //how many times the projectile has hit the ground. if boomcount == 3, projectile goes boom
 
         Unit otherObject = other.gameObject.GetComponent<Unit>();
 		
-        if(otherObject != null)
+        if(otherObject != null) //explode on impact if the other object was a unit
         {
             explode();
         }
         
-        if( BOOMcount >= 3)
+        if( BOOMcount >= 3) //otherwise explode after 3 bounces
         {
             explode();
         }
@@ -41,7 +41,8 @@ public class ProjectileBouncyBomb : MonoBehaviour {
 	
     //allbutworld mask>> all bits but bit 8->>> ...1111100000000
     int allLayersButWorldBitMask = ~(255);
-    void explode()
+    
+    private void explode()
     {
         float radius = 1.0f;
         
@@ -53,10 +54,7 @@ public class ProjectileBouncyBomb : MonoBehaviour {
             if(toDie)
             {
                 toDie.doDamage(damage);
-            }
-				
-            //probably not like this...
-            //hit.rigidbody.AddExplosionForce(explosionPower, transform.position, radius, 3.0f);
+            }				
         }
 		
         Sparks.gameObject.SetActive(true);

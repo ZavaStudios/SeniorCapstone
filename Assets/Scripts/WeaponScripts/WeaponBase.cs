@@ -18,7 +18,6 @@ public class WeaponBase : MonoBehaviour
 
 	private float nextAttack = 0.0f;
     protected float nextSpecialAttack = 0.0f;
-    private bool attacking = false;
 
 	// Use this for initialization
 	virtual protected void Start ()
@@ -32,7 +31,7 @@ public class WeaponBase : MonoBehaviour
 		
 	}
 
-
+    //attack routine checks attack timing information and allows the attack to occur at specified rate
     virtual public void attack()
     {
         if (Time.time >= nextAttack)
@@ -43,24 +42,7 @@ public class WeaponBase : MonoBehaviour
             
 			if(Character is UnitPlayer)
 				Character.playAttackAnimation();
-
-            attacking = true;
 	    }
-    }
-
-
-    public void onAttackButtonReleased()
-    {
-
-        if (attacking)
-        {
-            releaseRoutine();
-            attacking = false;
-        }
-    }
-
-    virtual protected void releaseRoutine()
-    {
     }
 
 	virtual protected void attackRoutine(Vector3 startPos, Vector3 faceDir)

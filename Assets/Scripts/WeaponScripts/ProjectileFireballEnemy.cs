@@ -22,8 +22,6 @@ public class ProjectileFireballEnemy : MonoBehaviour
 	
 	 void OnTriggerEnter(Collider other)
     {
-        //print (other);
-		//print("collision");
 		if(hit == false)
 		{
 			Debug.Log (this.transform.parent);

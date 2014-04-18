@@ -49,27 +49,7 @@ public class ItemBase
 
     static public string getOreString(tOreType ore)
     {
-//        switch (ore)
-//        {
-//            case tOreType.Bone:
-//                return "Bone";
-//            case tOreType.Copper:
-//                return "Copper";
-//            case tOreType.Iron:
-//                return "Iron";
-//            case tOreType.Steel:
-//                return "Steel";
-//            case tOreType.Mithril:
-//                return "Mithril";
-//            case tOreType.Dragon:
-//                return "Dragon";
-//            case tOreType.Ethereal:
-//                return "Ethereal";
-//            default:
-//                return "Not Ore";
-//        }
 		return Enum.GetName(typeof(tOreType), ore);
-
 
     }
     

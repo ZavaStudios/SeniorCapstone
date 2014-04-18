@@ -36,7 +36,6 @@ public class WeaponTurretAI : WeaponBase {
             {
                 if(rayHit.collider.gameObject.CompareTag("Enemy"))
                 {
-                    //print("got enemy");
                     closestDistance = Vector3.Distance(transform.position, enemyPosition);
                     closestValidTarget = enemy;
                 }

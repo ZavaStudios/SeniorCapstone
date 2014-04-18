@@ -16,7 +16,7 @@ public class UnitTurret : Unit {
         base.Start();
 
         tWeapon = (WeaponTurretAI) gameObject.AddComponent("WeaponTurretAI");
-        print(tWeapon);
+
         weapon = tWeapon;
         weapon.specialAttackDamageRelative = specialAttackDamageRelative;
         bulletOrigin = transform.Find("TurretBody/Weapon/BulletOrigin");
