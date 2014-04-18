@@ -28,7 +28,6 @@ public class WeaponToolbox : WeaponBase
 	
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)
 	{
-		//print("attacking..");
         
         if(Physics.Raycast(startPos, faceDir, out rayHit, attackRange))
         {
@@ -51,8 +50,6 @@ public class WeaponToolbox : WeaponBase
         
         if(Physics.Raycast(Character.getEyePosition(), Character.getLookDirection(), out rayHit, attackRange))
         {
-            //print(rayHit.collider.gameObject);
-            //print("tag: " + rayHit.collider.gameObject.tag);
             if(rayHit.collider.gameObject.CompareTag("Floor"))
             {
 

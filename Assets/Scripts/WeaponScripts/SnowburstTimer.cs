@@ -19,14 +19,20 @@ public class SnowburstTimer : MonoBehaviour {
         yield return new WaitForSeconds(seconds);
         Destroy(gameObject);
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy"); 
-        foreach (GameObject enemy in enemies)
+
+
+        //allbutworld mask>> all bits but bit 8->>> ...1111100000000
+        
+        int allLayersButWorldBitMask = ~(255);//looking at all the blocks is expensive
+        Collider[] colliders = Physics.OverlapSphere (transform.position, 15 ,allLayersButWorldBitMask);
+		
+        foreach ( Collider hit in colliders) 
         {
-            if (Vector3.Distance(transform.position, enemy.transform.position) < 30)
+            Unit toDie = hit.gameObject.GetComponent<UnitEnemy>();
+            if(toDie)
             {
-                Unit unit = enemy.gameObject.GetComponent<Unit>();
-                if (unit) { unit.doDamage(damage); }
-            }
+                toDie.doDamage(damage);
+            }				
         }
 
         GameObject sparks1 = (GameObject)Instantiate(Resources.Load("BigSnowBurst"), transform.position, transform.rotation);

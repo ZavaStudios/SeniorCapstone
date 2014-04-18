@@ -54,8 +54,6 @@ public class MineableBlock : MonoBehaviour
             floatingOreTextScript.parent2 = transform;
             floatingOreTextScript.enabled = true;
             floatingOreTextScript.textColor = new Color(1.0f, 0.6f, 0.0f, 1.0f);
-            print(floatingOreText.transform.position);
-            print(transform.position);
             ItemOre ore = new ItemOre(_cube.Type);
             floatingOreTextScript.displayText("+1 " + ore.ToString());
             Inventory.getInstance().inventoryAddItem(ore);
