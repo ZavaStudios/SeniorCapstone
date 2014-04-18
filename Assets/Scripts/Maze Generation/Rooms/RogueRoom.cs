@@ -4,8 +4,18 @@ using UnityEngine;
 
 namespace MazeGeneration
 {
+    /// <summary>
+    /// Template for all rooms in the maze. Defines the base functionality that all rooms need:
+    ///     - Template objects to generate (including things this class can't generate, which is somewhat sketchy).
+    ///     - Necessary state for handling direction checking, cube allocation, etc.
+    ///     - Code for allocating walls and cubes for rooms.
+    ///     - Base structure for creating, loading, and unloading the room.
+    ///     - Important properties that parents will need to access regardless of type.
+    /// </summary>
 	public abstract class RogueRoom : CubeTracker
 	{
+        // Bitmasks used to check Door Codes: that is, used to check which directions
+        // this room has doors on
 		public const int UP_DOOR_MASK = 0x01;
 		public const int DOWN_DOOR_MASK = 0x02;
 		public const int LEFT_DOOR_MASK = 0x04;
@@ -29,8 +39,9 @@ namespace MazeGeneration
 		public static Transform door;
 		public static Transform key;
 
-		// Allocation state
+		// Allocator for getting instantiated cubes for placing in the Unity scene
 		public static CubeAllocator allocator;
+        // List of cubes that have been allocated to us
 		private List<MineableBlock> blocks = new List<MineableBlock>();
 
 		// Cached values so we can spawn new cubes during runtime
@@ -40,22 +51,38 @@ namespace MazeGeneration
         // Stores anything generated in this room so it can be destroyed on unload
         protected GameObject objHolder;
 		
+        /// <summary>
+        /// Enumeration of various types a room may be. This class doesn't directly use this
+        /// information, but it is important to subclasses and parents, so it is held here to
+        /// be generic.
+        /// </summary>
 		public enum RoomType
 		{
-			empty, enemy, start, corridor, boss, shop, corridorFork, keyRoom // TODO: others?
+			empty, enemy, start, corridor, boss, shop, corridorFork, keyRoom
 		}
 
-		// Room properties:
+		// Basic room properties:
+        // ----------------------
+        // Width and Depth are the floor dimensions
 		public int Width { get;    protected set; }
 		public int Depth { get;    protected set; }
+        // Height is how tall the room is
 		public int Height { get;   protected set; }
+        // Bitmask holding which walls of this room have doors
 		public int DoorCode { get; protected set; }
+        // X and Y position of this room in the overall grid. Effectively
+        // a cached value from the parent, so kind of a hack
 		public int GridX { get; set; }
 		public int GridY { get; set; }
+        // Type of this room
 		public RoomType Type { get; set; }
+        // Data structure holding cubes - in this case, not allocated cubes, but rather
+        // the saved cubes structure. TL;DR version: iterate over this to know what to
+        // do with cubes allocated from allocator
 		public RoomCubes Cubes { get; set; }
 
-		// Room relationships:
+		// Pointers to adjascent rooms. Used by subclasses to allow cube generation to
+        // be continuous between neighboring rooms.
 		public RogueRoom LeftNeighbor { get; set; }
 		public RogueRoom RightNeighbor { get; set; }
 		public RogueRoom UpNeighbor { get; set; }
@@ -67,10 +94,9 @@ namespace MazeGeneration
 		/// <summary>
 		/// Returns center coordinates of the floor of this room.
 		/// </summary>
-		/// <returns>The center.</returns>
 		/// <param name="totalHeight">Maximum height of a room.</param>
-		/// <param name="totalWidth">Maximum width of a room.</param>
-		/// <param name="corridorWidth">Width of a corridor.</param>
+        /// <param name="totalWidth">Maximum width of a room.</param>
+        /// <returns>The center.</returns>
 		public virtual Vector3 GetCenter(int maxWidth, int maxDepth)
 		{
 			return new Vector3((float)maxWidth * ((float)GridX + 0.5f),
@@ -81,7 +107,8 @@ namespace MazeGeneration
 		/// <summary>
 		/// Initializes the Cubes property for this room. Functions uniquely for each kind of
 		/// room, so there is no default behavior. Generally should be called only once the
-		/// neighbors for each room have been appropriately assigned.
+		/// neighbors for each room have been appropriately assigned, and always before the
+        /// room is loaded.
 		/// </summary>
 		public abstract void InitializeCubes();
 
@@ -359,6 +386,17 @@ namespace MazeGeneration
 			blocks.Add(ct);
 		}
 
+        /// <summary>
+        /// Destroys a cube stored in this room's Cubes data set. Since this class
+        /// doesn't directly hold the cube, we'll pass the cube on to Cubes to handle.
+        /// 
+        /// This class inherits this structure for consistency in convention for handling
+        /// cube destruction. However, since this class will be the one instantiating the
+        /// yielded cubes from lower DestroyCube calls, nothing is yielded from this call.
+        /// </summary>
+        /// <param name="c">Cube to be destroyed.</param>
+        /// <returns>Nothing. This class will handle instantiation - don't worry your pretty
+        /// little head over it.</returns>
 		public IEnumerable<Cube> DestroyCube(Cube c)
 		{
 			foreach (Cube uncovered in Cubes.DestroyCube(c))
@@ -369,6 +407,15 @@ namespace MazeGeneration
 			return new List<Cube>();
 		}
 
+        /// <summary>
+        /// Deallocates the provided instance block, returning it to the allocator for future
+        /// use elsewhere in the maze.
+        /// 
+        /// Also, this function calls DestroyCube on the spawned block's Cube property. No
+        /// parent class should be calling Destroy cube if they have a MineableBlock for that
+        /// cube instead.
+        /// </summary>
+        /// <param name="ct">Instantiated block to be deallocated.</param>
 		public void DestroyMineableBlock(MineableBlock ct)
 		{
 			DestroyCube(ct._cube);

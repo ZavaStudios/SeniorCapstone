@@ -5,20 +5,24 @@ using System.Collections.Generic;
 namespace MazeGeneration
 {
 	/// <summary>
-	/// Represents one room in a RougeDungeon.
-	/// Beyond tracking what type the room is, as well as its dimensions, the room
-	/// is also responsible for tracking what mineable blocks are stored inside, and
-	/// handles spawning / unspawning itself from the Unity environment upon request.
+	/// Represents a general purpose room for the RogueDungeon. Specifically used for:
+    ///     - Start room
+    ///     - Enemy room
+    ///     - Key room
+    ///     - Boss room
+    ///     
+    /// Includes code for instantiating the key and enemies. Any other rooms intending to
+    /// generate enemies will likely want to inherit this class, though not necessarily.
 	/// </summary>
 	public class GeneralRoom : RogueRoom
 	{
-        System.Random enemyPosGen = new System.Random();
+        // Cached values used for loading objects
         private float _scalar;
         private int _maxWidth;
         private int _maxDepth;
 
 		/// <summary>
-		/// Stores the types of enemies held in this room.
+		/// A list enumerating the types of enemies held in this room.
 		/// </summary>
 		public List<EnemyGenerator.EnemyType> Enemies
 		{
@@ -26,6 +30,15 @@ namespace MazeGeneration
 			private set;
 		}
 		
+        /// <summary>
+        /// Constructs a new room. Does not instantiate cubes, and does not load the room.
+        /// </summary>
+        /// <param name="width">Width (floor dimension) of room</param>
+        /// <param name="depth">Depth (floor dimension) of room</param>
+        /// <param name="height">Height (floor to ceiling) of room</param>
+        /// <param name="x">X coordinate in parenting RogueDungeon map</param>
+        /// <param name="y">Y coordinate in parenting RogueDungeon map</param>
+        /// <param name="doors">Bitmask describing which directions this room has doors in</param>
 		public GeneralRoom(int width, int depth, int height, int x, int y, int doors)
 		{
 			Type = RoomType.empty;
@@ -127,32 +140,55 @@ namespace MazeGeneration
 			}
 		}
 
+        /// <summary>
+        /// Loads a locked door object at the provided postion.
+        /// </summary>
+        /// <param name="position">Location for the center of the door, before scaling.</param>
+        /// <param name="angle">Angle the door should be rotated to be flush with the wall.</param>
+        /// <param name="scalar">Value which scales 1.0f to the size of a cube in Unity coordinates.</param>
 		private void InstantiateDoor(Vector3 position, Quaternion angle, float scalar)
 		{
 			Transform dt = (Transform)MonoBehaviour.Instantiate(door, position * scalar, angle);
             dt.transform.parent = objHolder.transform;
 		}
 
+        /// <summary>
+        /// Instantiates a key object in the maze.
+        /// </summary>
+        /// <param name="position">Position to place the key.</param>
+        /// <param name="scalar">Value which scales 1.0f to the size of a cube in Unity coordinates.</param>
         private void InstantiateKey(Vector3 position, float scalar)
         {
             Transform kt = (Transform)MonoBehaviour.Instantiate(key, position * scalar, Quaternion.identity);
             kt.transform.parent = objHolder.transform;
         }
 
+        /// <summary>
+        /// Insantiates an enemy. Given the type, will determine which prefab and position
+        /// to place the enemy at. Places the enemy randomly in the maze somewhere it does
+        /// not collide with cubes.
+        /// </summary>
+        /// <param name="enemy">Type of enemy to generate.</param>
+        /// <returns>Enemy transform that was instantiated, so user can apply further
+        /// changes as appropriate.</returns>
         public Transform SpawnEnemy(EnemyGenerator.EnemyType enemy)
         {
             Vector3 center = GetCenter(_maxWidth, _maxDepth);
             float posX = center.x +
-                                 ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+                                 ((float)((Maze.rnd.NextDouble() - 0.5) * 2.0) *
                                  ((float)(Width * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
             float posY = center.z +
-                         ((float)((enemyPosGen.NextDouble() - 0.5) * 2.0) *
+                         ((float)((Maze.rnd.NextDouble() - 0.5) * 2.0) *
                          ((float)(Height * 0.5) - (float)((StandardRoomCubes)Cubes).WallDepth));
             Vector3 enemyPos = new Vector3(posX, 0.2f, posY);
             return InstantiateEnemy(enemyPos, enemy, _scalar);
         }
 
-		public override void InitializeCubes ()
+        /// <summary>
+        /// Initializes the Cube data structure with the appropriate RoomCubes subclass.
+        /// Must be called before loading the room, and after adding neighbors.
+        /// </summary>
+		public override void InitializeCubes()
 		{
 			RoomCubes lftCbes = (LeftNeighbor != null)  ? LeftNeighbor.Cubes  : null;
 			RoomCubes rgtCbes = (RightNeighbor != null) ? RightNeighbor.Cubes : null;
