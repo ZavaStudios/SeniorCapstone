@@ -52,7 +52,7 @@ public class UnitEnemy : Unit
 		//Determine whether to attack or not.
 		if(weapon && (distance <= weapon.attackRange))
 		{
-            if(!attackSound.isPlaying)
+            if(attackSound != null && !attackSound.isPlaying)
                 attackSound.Play();
 
 			weapon.attack();
