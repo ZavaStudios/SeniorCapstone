@@ -16,6 +16,9 @@ public class SkeletonAI : UnitEnemy
 		health = 50;
         AttackDamage = 20.0f;
 		AttackDelay = 0.5f;
+
+        attackSound = gameObject.AddComponent<AudioSource>();
+        attackSound.clip = (AudioClip)Resources.Load("Sounds/Fireball");
 	}
 	
 	// Update is called once per frame

@@ -20,6 +20,9 @@ public class UnitEnemy : Unit
 	private float healthBarLength;
 //	protected SphereCollider sphere;
 	public BossUnit boss = null;
+
+    //Action sounds
+    protected AudioSource attackSound;
 	
 	protected override void Start ()
 	{
@@ -34,6 +37,8 @@ public class UnitEnemy : Unit
         floatingXPText = (GameObject) GameObject.Instantiate(Resources.Load("FloatingXPText"), transform.position, Quaternion.identity);
         floatingXPTextScript = floatingXPText.GetComponent<FloatingXPText>();
         floatingXPTextScript.parent2 = transform;
+
+
 	}
 	
 	protected override void Update ()
@@ -47,7 +52,11 @@ public class UnitEnemy : Unit
 		//Determine whether to attack or not.
 		if(weapon && (distance <= weapon.attackRange))
 		{
+            if(!attackSound.isPlaying)
+                attackSound.Play();
+
 			weapon.attack();
+            
 			float angleToTarget = Mathf.Atan2((PlayerPosition.x - transform.position.x), (PlayerPosition.z - transform.position.z)) * Mathf.Rad2Deg;
 			transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
 		}
@@ -98,6 +107,7 @@ public class UnitEnemy : Unit
     public override void doDamage(float damage)
     {
         base.doDamage(damage);
+
         floatingDamageTextScript.startDamage(damage);
     }
 

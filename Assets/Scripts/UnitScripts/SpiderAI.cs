@@ -16,6 +16,8 @@ public class SpiderAI : UnitEnemy
 		health = 10;
         AttackDamage = 5;
 		AttackDelay = 1f;
+
+        attackSound.clip = (AudioClip)Resources.Load("Sounds/Spider");
 	}
 	
 	// Update is called once per frame
