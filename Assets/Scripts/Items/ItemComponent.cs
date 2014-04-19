@@ -6,7 +6,7 @@ public class ItemComponent : ItemEquipment {
 
     public string strComponentCode;
 
-	//	NOTE New enum for componentType. Length 4 strings, abcd. a={Light=0, Normal=1, Heavy=2}, b=tOreType, c=tWeaponType d={handle=0, blade=1}.
+	//	Enum for componentType. Length 4 strings, abcd. a={Light=0, Normal=1, Heavy=2}, b=tOreType, c=tWeaponType d={handle=0, blade=1}.
 	//	Example: 0300 = Light iron sword handle
 	//	Example: 2731 = Heavy ethereal toolbox blade
 	// To check whether 2 items can be combined, simply make sure that two items have the same tWeaponType and tOreType and that XOR of d = true
