@@ -43,10 +43,6 @@ public class ZombieAI : UnitEnemy
 		dir.y = transform.position.y;
 		dir.Normalize();
 		
-//		float angleToTarget = Mathf.Atan2((PlayerPosition.x - transform.position.x), (PlayerPosition.z - transform.position.z)) * Mathf.Rad2Deg;
-//		transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
-		//transform.Rotate(-90,0,0);
-
 		control.SimpleMove(dir * moveSpeed);
 	}
 }
