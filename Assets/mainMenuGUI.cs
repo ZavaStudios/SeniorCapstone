@@ -27,6 +27,7 @@ public class mainMenuGUI : MonoBehaviour
             selected = (selected - 1) & 1;
         if (InputContextManager.isMENU_SELECT())
         {
+            Debug.Log("selected: " + selected);
             if (selected == 0)
             {
                 Hud.menuCode = Hud.tMenuStates.MENU_NONE;
