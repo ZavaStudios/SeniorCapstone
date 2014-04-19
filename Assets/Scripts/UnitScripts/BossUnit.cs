@@ -66,7 +66,7 @@ public class BossUnit : UnitEnemy
 	public void decreaseEnemyCount()
 	{
 		numEnemies--;
-		Debug.Log(numEnemies);
+        //Debug.Log(numEnemies);
         if (numEnemies == 0 && !gameObject.activeSelf)
             win();
 		spawnTimer = Time.time + delay;

@@ -65,6 +65,7 @@ public class ItemBase
 		_quantity = 1;
 		
 		neededOreQuantity = 1;
+        neededPoints = 1;
     }
 
 	public ItemBase(string name, ItemBase.tOreType oreType)
@@ -76,6 +77,7 @@ public class ItemBase
 		_quantity = 1;
 		
 		neededOreQuantity = 1;
+        neededPoints = 1;
 	}
  
     public override string ToString()
