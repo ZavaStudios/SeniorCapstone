@@ -69,7 +69,7 @@ public class Inventory
     /// <summary>
     /// Add an item to the inventory.
     /// </summary>
-    /// <param name="weaponBase">Weapon base.</param>
+    /// <param name="newItem">ItemWeapon</param>
     public void inventoryAddItem(ItemWeapon newItem)
     {
         if (newItem == null)
@@ -77,7 +77,12 @@ public class Inventory
 
         weapons.Add((ItemWeapon)newItem);
     }
-
+    
+    
+    /// <summary>
+    /// Add an item to the inventory.
+    /// </summary>
+    /// <param name="newItem">ItemEquipment</param>
     public void inventoryAddItem(ItemEquipment newItem)
     {
         if (newItem == null)
@@ -99,7 +104,11 @@ public class Inventory
                 break;
         }
     }
-
+    
+    /// <summary>
+    /// Add an item to the inventory.
+    /// </summary>
+    /// <param name="newItem">ItemOre</param>
     public void inventoryAddItem(ItemOre newItem)
     {
         if (newItem == null)
@@ -108,7 +117,11 @@ public class Inventory
         //Since ores are defined soly on their ore type, we can disregard any other info about the ore
         ores[(int)newItem.oreType] += 1;
     }
-
+    
+    /// <summary>
+    /// Add an item to the inventory.
+    /// </summary>
+    /// <param name="newItem">ItemBase</param>
     public void inventoryAddItem(ItemBase newItem)
     {
         if (newItem == null)
@@ -138,7 +151,7 @@ public class Inventory
     /// <summary>
     /// Remove an item from the inventory by string.
     /// </summary>
-    /// <param name="weaponBase">Weapon base.</param>
+    /// <param name="itemToRemove">ItemBase</param>
     public void inventoryRemoveItem(ItemBase itemToRemove)
     {
         switch (itemToRemove.type)
