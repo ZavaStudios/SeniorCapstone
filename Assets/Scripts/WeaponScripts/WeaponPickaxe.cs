@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// A pickaxe used for mining. Equip this on the pickaxe prefab for functionality.
+/// </summary>
 public class WeaponPickaxe : WeaponBase
 {
-	//TODO Better way to override the base string?
-	//TODO Instead of Using Strings, use an enum
 	public override string strWeaponName {get{return "Pickaxe";}}
 	public override string strWeaponType {get{return "WeaponPickaxe";}}
 

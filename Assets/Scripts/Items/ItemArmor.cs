@@ -2,6 +2,10 @@
 using System.Collections;
 using System;
 
+/// <summary>
+/// This class represents armors.
+/// Armors have the code representing how the armor was made, what type of armor they are, and the attribute of the armor
+/// </summary>
 public class ItemArmor : ItemEquipment {
  
     public string strArmorCode;
@@ -12,6 +16,9 @@ public class ItemArmor : ItemEquipment {
 	//	Example: 030 = Light iron helmet
 	//	Example: 272 = Heavy ethereal greaves
         
+    /// <summary>
+    /// Types of armor we can have
+    /// </summary>
     public enum tArmorPart
 	{
 		Head = 0,

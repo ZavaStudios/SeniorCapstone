@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System;
 
 
-//the itembase class keeps reference to all variables that are common to inventory items:
-//name, oretype, quantity (if stackable), description, type etc.
+/// <summary>
+/// The itembase class keeps reference to all variables that are common to inventory items:
+/// name, oretype, quantity (if stackable), description, type etc.
+/// </summary>
 public class ItemBase
 {
     protected string _name;
@@ -18,6 +20,9 @@ public class ItemBase
 	public int neededOreQuantity;
 	public int neededPoints;
 
+    /// <summary>
+    /// This enum specifies all types of items
+    /// </summary>
     public enum tItemType
     {
         Weapon,
@@ -27,6 +32,9 @@ public class ItemBase
         Ore
     }
 
+    /// <summary>
+    /// This enum specifies all types of ore
+    /// </summary>
     public enum tOreType
     {
         NOT_ORE = 0,
@@ -40,6 +48,10 @@ public class ItemBase
         Stone = 8  
     }
 
+    /// <summary>
+    /// Get a list of ores that cannot be used for crafting
+    /// </summary>
+    /// <returns></returns>
 	public static List<tOreType> getNonCraftingOres()
 	{
 		List<tOreType> nonCrafting = new List<tOreType>();
@@ -49,13 +61,22 @@ public class ItemBase
 
 		return nonCrafting;
 	}
-
+    
+    /// <summary>
+    /// Get the string representation of the type of ore
+    /// </summary>
+    /// <param name="ore"></param>
+    /// <returns></returns>
     static public string getOreString(tOreType ore)
     {
 		return Enum.GetName(typeof(tOreType), ore);
 
     }
     
+    /// <summary>
+    /// This constructor makes an item with the specified name.
+    /// </summary>
+    /// <param name="name"></param>
     public ItemBase(string name)
     {
         oreType = tOreType.NOT_ORE;
@@ -68,6 +89,11 @@ public class ItemBase
         neededPoints = 1;
     }
 
+    /// <summary>
+    /// This constructor makes an item with the specified name and ore type.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="oreType"></param>
 	public ItemBase(string name, ItemBase.tOreType oreType)
 	{
 		this.oreType = oreType;
@@ -80,22 +106,36 @@ public class ItemBase
         neededPoints = 1;
 	}
  
+    /// <summary>
+    /// The string representation for an item.
+    /// </summary>
+    /// <returns></returns>
     public override string ToString()
     {
         return _name;
     }
 
+    /// <summary>
+    /// Get the description of the item
+    /// </summary>
+    /// <returns></returns>
     virtual public string getDescription()
     {
         return _description;
     }
  
+    /// <summary>
+    /// Returns true if the item is stackable i.e. quantity can be > 1.
+    /// </summary>
     public bool isStackable
 	{
         set { this._isStackable = value; }
         get { return this._isStackable; }
 	}
 
+    /// <summary>
+    /// Return the name of this item.
+    /// </summary>
     public string name
     {
         get { return this.ToString(); }

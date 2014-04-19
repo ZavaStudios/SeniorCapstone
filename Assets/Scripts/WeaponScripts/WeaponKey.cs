@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
+
+/// <summary>
+/// A key weapon and how it can be used. Attack this to keys.
+/// </summary>
 public class WeaponKey : WeaponBase
 {
-	//TODO Better way to override the base string?
-	//TODO Instead of Using Strings, use an enum
 	public override string strWeaponName {get{return "Key";}}
 	public override string strWeaponType {get{return "WeaponKey";}}
 

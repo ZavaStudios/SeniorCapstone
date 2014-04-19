@@ -3,10 +3,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// This class represents a singleton inventory which the player possesses.
+/// </summary>
 public class Inventory
 {
     private static UnitPlayer Character; //variable is initialied to reference player by Main.cs
 
+    //Separate out the kinds of things in the inventory
     private List<ItemWeapon> weapons;
     private ArrayList armors;
     private ArrayList components;
@@ -14,6 +18,7 @@ public class Inventory
     private Dictionary<int, int> ores;
     private static Inventory _instance = null;
 
+    //Keep track of what is equipped
     private ItemWeapon equipedWeapon;
     private ItemArmor equipedHelmet;
     private ItemArmor equipedChest;
@@ -56,6 +61,10 @@ public class Inventory
         _instance = null;
     }
 
+    /// <summary>
+    /// Get an instance of the inventory
+    /// </summary>
+    /// <returns></returns>
     public static Inventory getInstance()
     {
         if (_instance == null)
@@ -254,26 +263,46 @@ public class Inventory
         return weapons.IndexOf(itemToFind);
     }
 
+    /// <summary>
+    /// Returns an ArrayList of the weapons in the inventory.
+    /// </summary>
+    /// <returns></returns>
     public ArrayList getInventoryWeapons()
     {
         return new ArrayList(weapons);
     }
 
+    /// <summary>
+    /// Returns an ArrayList of armors in the inventory.
+    /// </summary>
+    /// <returns></returns>
     public ArrayList getInventoryArmors()
     {
         return armors;
     }
 
+    /// <summary>
+    /// Returns an ArrayList of components in the inventory.
+    /// </summary>
+    /// <returns></returns>
     public ArrayList getInventoryComponents()
     {
         return components;
     }
 
+    /// <summary>
+    /// Returns an ArrayList of useable items in the inventory.
+    /// </summary>
+    /// <returns></returns>
     public ArrayList getInventoryItems()
     {
         return items;
     }
 
+    /// <summary>
+    /// Returns and ArrayList of ores in the inventory.
+    /// </summary>
+    /// <returns></returns>
     public ArrayList getInventoryOres()
     {
         ArrayList temp = new ArrayList();
@@ -293,26 +322,48 @@ public class Inventory
         return temp;
     }
 
+    /// <summary>
+    /// Get the equipped helmet armor.
+    /// </summary>
+    /// <returns></returns>
     public ItemArmor getEquippedHelmet()
     {
         return equipedHelmet;
     }
 
+    /// <summary>
+    /// Get the equipped chest armor.
+    /// </summary>
+    /// <returns></returns>
     public ItemArmor getEquippedChest()
     {
         return equipedChest;
     }
+
+    /// <summary>
+    /// Get the equipped leg armor.
+    /// </summary>
+    /// <returns></returns>
     public ItemArmor getEquippedLegs()
     {
         return equipedLegs;
     }
 
+    /// <summary>
+    /// Given a type of ore, this method returns the quantity of this ore in the inventory.
+    /// </summary>
+    /// <param name="oreType"></param>
+    /// <returns></returns>
     public int getOreQuantity(ItemBase.tOreType oreType)
     {
         return ores[(int)oreType];
     }
 
-    //can be called with null to un-equip the item
+    /// <summary>
+    /// Equip the piece of chest armor passed in.
+    /// Can be called with null to un-equip the item
+    /// </summary>
+    /// <param name="newChest"></param>
     public void inventoryEquipChest(ItemArmor newChest)
     {
         if (newChest == null)
@@ -330,8 +381,12 @@ public class Inventory
         
         calculateAndApplyStats();
     }
-    
-    //can be called with null to un-equip the item
+
+    /// <summary>
+    /// Equip the piece of armor passed in.
+    /// Can be called with null to un-equip the item
+    /// </summary>
+    /// <param name="newLegs"></param>
     public void inventoryEquipLegs(ItemArmor newLegs)
     {
         if (newLegs == null)
@@ -350,7 +405,11 @@ public class Inventory
         calculateAndApplyStats();
     }
 
-    //can be called with null to un-equip the item
+   /// <summary>
+    /// Equip the piece of chest armor passed in.
+    /// Can be called with null to un-equip the item
+   /// </summary>
+   /// <param name="newHelmet"></param>
     public void inventoryEquipHelmet(ItemArmor newHelmet)
     {
         if (newHelmet == null)
@@ -369,7 +428,9 @@ public class Inventory
         calculateAndApplyStats();
     }
 
-    //this can be called to rotate through weapons in the players inventory by pushing 'SwitchWeapon' button
+    /// <summary>
+    /// This can be called to rotate through weapons in the players inventory by pushing 'SwitchWeapon' button
+    /// </summary>
     public void inventorySwitchWeapon()
     {
         if(equipedWeapon == null)

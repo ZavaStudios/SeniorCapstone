@@ -1,9 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// This static class is used to construct items given some parameters
+/// </summary>
 public static class ItemFactory 
 {
-
 	/// <summary>
 	/// Given two itemComponents, one a handle, one a blade, creates a weapon.
 	/// </summary>

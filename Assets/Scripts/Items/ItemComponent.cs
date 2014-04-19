@@ -2,6 +2,9 @@
 using System.Collections;
 using System;
 
+/// <summary>
+/// This class represents components which weapons are made out of
+/// </summary>
 public class ItemComponent : ItemEquipment {
 
     public string strComponentCode;
@@ -19,6 +22,9 @@ public class ItemComponent : ItemEquipment {
 		Heavy = 2
 	};
 
+    /// <summary>
+    /// Types of components
+    /// </summary>
 	public enum tComponentPart
 	{
 		Handle = 0,

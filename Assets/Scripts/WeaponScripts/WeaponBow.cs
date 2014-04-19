@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// A bow weapon. Attack this script to a bow
+/// </summary>
 public class WeaponBow : WeaponBase {
 
     public const float bulletSpeed =  1200.0f;
@@ -20,7 +23,6 @@ public class WeaponBow : WeaponBase {
 
     protected override void specialAttackRoutine ()
     {
-
         Vector3 p1 = transform.position + capCollider.center + Vector3.up * -(capCollider.height*0.5f - capCollider.radius);
 		Vector3 p2 = transform.position + capCollider.center + Vector3.up *  (capCollider.height*0.5f - capCollider.radius);
         

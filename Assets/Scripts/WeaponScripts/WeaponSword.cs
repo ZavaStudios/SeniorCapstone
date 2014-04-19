@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// A sword weapon. Attach this to a prefab for functionality.
+/// </summary>
 public class WeaponSword : WeaponBase
 {
-	//TODO Better way to override the base string?
-	//TODO Instead of Using Strings, use an enum
 	public override string strWeaponName {get{return "Sword";}}
 	public override string strWeaponType {get{return "WeaponSword";}}
     WeaponSwordCollisionScript s;

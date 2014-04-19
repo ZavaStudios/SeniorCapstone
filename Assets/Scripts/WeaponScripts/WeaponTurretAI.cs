@@ -2,8 +2,9 @@
 using System.Collections;
 
 
-
-
+/// <summary>
+/// This script controls the AI for a turret. Attach it to a turret for functionality.
+/// </summary>
 public class WeaponTurretAI : WeaponBase {
 
 	public GameObject currentTarget;

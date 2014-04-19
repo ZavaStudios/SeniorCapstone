@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
+/// <summary>
+/// A magic staff weapon. Attack this to a staff prefab for functionality.
+/// </summary>
 public class WeaponStaff : WeaponBase
 {
 	// Use this for initialization

@@ -5,7 +5,9 @@ using System.Collections.Generic;
 
 public class Hud : MonoBehaviour
 {
-    //A private class to represent an inventory slot
+    /// <summary>
+    /// A private class to represent an inventory slot.
+    /// </summary>
     private class ItemSlot
     {
         public ItemBase item;
@@ -23,7 +25,9 @@ public class Hud : MonoBehaviour
         }
     }
 
-    //This enum defines the possible menu states that a player can be in
+    /// <summary>
+    /// This enum defines the possible menu states that a player can be in.
+    /// </summary>
     public enum tMenuStates
     {
         MENU_NONE = 0,
@@ -54,12 +58,6 @@ public class Hud : MonoBehaviour
     //Grid for possible assembled items
     ItemComponent[][] arrAssembleWeapons;
 
-    //The available options for selecting menus
-    tMenuStates[] arrMenusMenu = {
-		tMenuStates.INVENTORY,
-		tMenuStates.CRAFTING,
-		tMenuStates.ASSEMBLING,
-	};
 
     //Options for laying out the grid
     readonly int screenWidth = (int)(Screen.width * 0.8);
@@ -75,12 +73,14 @@ public class Hud : MonoBehaviour
     Vector2 vec2CompTypeDimensions;
 
     //Indexes for the selection  inside of a menu
-    private int intMenusMenu = 0; //Index for which menu is selected
     private int intInventoryItem = 0; //The index of the selected inventory item
 
     //Texture for the crosshair
     public Texture2D crosshairTexture;
 
+    /// <summary>
+    /// The initializer menu when this object is created.
+    /// </summary>
     protected void Start()
     {
         //Start off outside of a menu
@@ -240,9 +240,11 @@ public class Hud : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This method lays out GUI's based on the state the player is in.
+    /// </summary>
     void OnGUI()
     {
-
         switch (menuCode)
         {
             case tMenuStates.MENU_MAIN: //Display context of which direction moves into which menu
@@ -340,6 +342,9 @@ public class Hud : MonoBehaviour
     //List ores that armors can be made from
     List<ItemBase.tOreType> craftingOres = new List<ItemBase.tOreType>();
 
+    /// <summary>
+    /// The method to lay out the crafting menu
+    /// </summary>
     private void layoutCraftingGrid()
     {
         craftingOres = new List<ItemBase.tOreType>();
@@ -503,7 +508,9 @@ public class Hud : MonoBehaviour
         GUI.EndGroup();
     }
 
-    //This enum lists the states you can be in while using the crafting menu
+    /// <summary>
+    /// This enum lists the states you can be in while using the crafting menu
+    /// </summary>
     private enum tCraftingState
     {
         CATEGORY_SELECTION = 0,
@@ -516,6 +523,9 @@ public class Hud : MonoBehaviour
     //Keep track of the state inside the crafting menu
     private tCraftingState craftingState = tCraftingState.CATEGORY_SELECTION; 
 
+    /// <summary>
+    /// This method handles the button presses relevant to crafting while in the crafting menu
+    /// </summary>
     private void handleCraftingMovement()
     {
         if (InputContextManager.isMENU_UP())
@@ -646,7 +656,9 @@ public class Hud : MonoBehaviour
     int intBladeComponents = 0;
     int intHandleComponents = 0;
 
-    //This enum lists the states inside of the assembling menu
+    /// <summary>
+    /// This enum lists the states inside of the assembling menu
+    /// </summary>
     private enum tAssemState
     {
         BLADE = 0,
@@ -656,6 +668,9 @@ public class Hud : MonoBehaviour
     //Start off at the blade state
     tAssemState assemState = tAssemState.BLADE;
 
+    /// <summary>
+    /// This method takes care of drawing the assembly GUI
+    /// </summary>
     private void layoutAssembleGrid()
     {
         //Filter and separate blades from handles
@@ -765,32 +780,66 @@ public class Hud : MonoBehaviour
     }
 
     /// <summary>
-    /// Get a list of ItemWeapons which can be made from the components in the inventory.
+    /// Handles the button presses inside the assembling menu while the assembling menu is open
     /// </summary>
-    /// <returns>The makeable items.</returns>
-    private ArrayList getMakeableItems()
+    private void handleAssembleMovement()
     {
-        ArrayList arrListComponents = inventory.getInventoryComponents();
-        ArrayList arrListResults = new ArrayList();
+        //No components, no movement
+        if (handleComponents.Count == 0 || bladeComponents.Count == 0)
+            return;
 
-        //Loop through all pairs of items and see if they can be combined
-        for (int i = 0; i < arrListComponents.Count; i++)
+        //Left and right change the type being assembled. (With wraparound)
+        if (InputContextManager.isMENU_LEFT())
         {
-            for (int j = i + 1; j < arrListComponents.Count; j++)
+            assemState = (tAssemState)Math.Max(0, (int)assemState - 1);
+        }
+        else if (InputContextManager.isMENU_RIGHT())
+        {
+            int numStates = Enum.GetNames(typeof(tAssemState)).Length - 1;
+
+            assemState = (tAssemState)Math.Min(numStates, (int)assemState + 1);
+        }
+        //Up and down change which item to assemble (without wraparound)
+        else if (InputContextManager.isMENU_UP())
+        {
+            switch (assemState)
             {
-                //Create weapon returns null when the components given are unable to form a proper weapon
-                ItemWeapon potentialWeapon = ItemFactory.createWeapon((ItemComponent)arrListComponents[i], (ItemComponent)arrListComponents[j]);
-                if (potentialWeapon != null)
-                {
-                    //TODO Use a tuple instead of an array w/ 2 items. I think the compiler won't compile against .net 4.0+
-                    arrListResults.Add(new ItemComponent[2] {
-												(ItemComponent)arrListComponents [i],
-												(ItemComponent)arrListComponents [j]
-										});
-                }
+                case tAssemState.BLADE:
+                    intBladeComponents = Math.Max(0, intBladeComponents - 1);
+                    break;
+                case tAssemState.HANDLE:
+                    intHandleComponents = Math.Max(0, intHandleComponents - 1);
+                    break;
             }
         }
-        return arrListResults;
+        else if (InputContextManager.isMENU_DOWN())
+        {
+            switch (assemState)
+            {
+                case tAssemState.BLADE:
+                    intBladeComponents = Math.Min(bladeComponents.Count - 1, intBladeComponents + 1);
+                    break;
+                case tAssemState.HANDLE:
+                    intHandleComponents = Math.Min(handleComponents.Count - 1, intHandleComponents + 1);
+                    break;
+            }
+        }
+        else if (InputContextManager.isMENU_SELECT())
+        {
+            //Time to craft an item
+            ItemWeapon madeWeapon = ItemFactory.createWeapon(bladeComponents[intBladeComponents], handleComponents[intHandleComponents]);
+
+            //See if the two selected types are actually compatible
+            if (madeWeapon == null)
+                return;
+
+            //Since we have a weapon, add it to the inventory
+            inventory.inventoryAddItem(madeWeapon);
+
+            //Remove the components from the inventory
+            inventory.inventoryRemoveItem(bladeComponents[intBladeComponents]);
+            inventory.inventoryRemoveItem(handleComponents[intHandleComponents]);
+        }
     }
 
 
@@ -800,7 +849,7 @@ public class Hud : MonoBehaviour
     int inventorySlotHeight = 110; //The height that a slot should be
 
     /// <summary>
-    /// This method handles laying out the inventory menu 
+    /// This method handles drawingthe inventory GUI 
     /// </summary>
     private void layoutInventoryGrid()
     {
@@ -967,66 +1016,9 @@ public class Hud : MonoBehaviour
         GUI.EndGroup();
     }
 
-    private void handleAssembleMovement()
-    {
-        //No components, no movement
-        if(handleComponents.Count == 0 || bladeComponents.Count == 0)
-            return;
-
-        //Left and right change the type being assembled. (With wraparound)
-        if (InputContextManager.isMENU_LEFT())
-        {
-            assemState = (tAssemState)Math.Max(0, (int)assemState - 1);
-        }
-        else if (InputContextManager.isMENU_RIGHT())
-        {
-            int numStates = Enum.GetNames(typeof(tAssemState)).Length - 1;
-
-            assemState = (tAssemState)Math.Min(numStates,(int)assemState + 1);
-        }
-        //Up and down change which item to assemble (without wraparound)
-        else if (InputContextManager.isMENU_UP())
-        {
-            switch (assemState)
-            {
-                case tAssemState.BLADE:
-                    intBladeComponents = Math.Max(0, intBladeComponents - 1);
-                    break;
-                case tAssemState.HANDLE:
-                    intHandleComponents = Math.Max(0, intHandleComponents - 1);
-                    break;
-            }
-        }
-        else if (InputContextManager.isMENU_DOWN())
-        {
-            switch (assemState)
-            {
-                case tAssemState.BLADE:
-                    intBladeComponents = Math.Min(bladeComponents.Count - 1, intBladeComponents + 1);
-                    break;
-                case tAssemState.HANDLE:
-                    intHandleComponents = Math.Min(handleComponents.Count - 1, intHandleComponents + 1);
-                    break;
-            }
-        }
-        else if (InputContextManager.isMENU_SELECT())
-        {
-            //Time to craft an item
-            ItemWeapon madeWeapon = ItemFactory.createWeapon(bladeComponents[intBladeComponents], handleComponents[intHandleComponents]);
-
-            //See if the two selected types are actually compatible
-            if (madeWeapon == null)
-                return;
-
-            //Since we have a weapon, add it to the inventory
-            inventory.inventoryAddItem(madeWeapon);
-
-            //Remove the components from the inventory
-            inventory.inventoryRemoveItem(bladeComponents[intBladeComponents]);
-            inventory.inventoryRemoveItem(handleComponents[intHandleComponents]);
-        }
-    }
-
+    /// <summary>
+    /// Handles the button presses inside the assembling menu while the assembling menu is open
+    /// </summary>
     private void handleInventoryMovement()
     {
         int itemsEquippable = inventory.getInventoryArmors().Count + inventory.getInventoryWeapons().Count + 
@@ -1095,6 +1087,35 @@ public class Hud : MonoBehaviour
                     }
             }
         }
+    }
+
+    /// <summary>
+    /// Get a list of ItemWeapons which can be made from the components in the inventory.
+    /// </summary>
+    /// <returns>The makeable items.</returns>
+    private ArrayList getMakeableItems()
+    {
+        ArrayList arrListComponents = inventory.getInventoryComponents();
+        ArrayList arrListResults = new ArrayList();
+
+        //Loop through all pairs of items and see if they can be combined
+        for (int i = 0; i < arrListComponents.Count; i++)
+        {
+            for (int j = i + 1; j < arrListComponents.Count; j++)
+            {
+                //Create weapon returns null when the components given are unable to form a proper weapon
+                ItemWeapon potentialWeapon = ItemFactory.createWeapon((ItemComponent)arrListComponents[i], (ItemComponent)arrListComponents[j]);
+                if (potentialWeapon != null)
+                {
+                    //TODO Use a tuple instead of an array w/ 2 items. I think the compiler won't compile against .net 4.0+
+                    arrListResults.Add(new ItemComponent[2] {
+												(ItemComponent)arrListComponents [i],
+												(ItemComponent)arrListComponents [j]
+										});
+                }
+            }
+        }
+        return arrListResults;
     }
 
     /// <summary>

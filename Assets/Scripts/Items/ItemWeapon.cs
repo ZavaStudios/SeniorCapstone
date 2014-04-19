@@ -2,10 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// This class represents a weapon.
+/// </summary>
 public class ItemWeapon : ItemEquipment {
 
     public tWeaponType weaponType;
 
+    /// <summary>
+    /// Types of weapons
+    /// </summary>
     public enum tWeaponType
     {
         WeaponSword = 0,
@@ -16,6 +22,10 @@ public class ItemWeapon : ItemEquipment {
 		WeaponKey = 5,
     };
 
+    /// <summary>
+    /// Get weapons that can't be crafted
+    /// </summary>
+    /// <returns></returns>
 	public static List<tWeaponType> getNonCraftingWeapons()
 	{
 		List<tWeaponType> nonCraftingWeapons = new List<tWeaponType>();
@@ -24,7 +34,6 @@ public class ItemWeapon : ItemEquipment {
 		nonCraftingWeapons.Add(tWeaponType.WeaponKey);
 
 		return nonCraftingWeapons;
-
 	}
 
     public ItemWeapon(string name, tWeaponType wepType)

@@ -1,15 +1,21 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// This class representing a player.
+/// </summary>
 public class UnitPlayer : Unit {
 	
+    //Players have an inventory
     private Inventory inventory;
 
+    //Default stats
     public const float DefaultMoveSpeed = 8.0f;
     public const float DefaultMaxHealth = 100;
 
     public const float healthPerSec = 1; //health regeneration
 
+    //Cheats make testing easier
     private enum cheatAmount
     {
         a_lot,
@@ -18,11 +24,15 @@ public class UnitPlayer : Unit {
 
     WeaponModelSwitcher wepSwitcher;
 
+    /// <summary>
+    /// The initializer for this object.
+    /// </summary>
 	protected override void Start () 
 	{
+        //Grab the weapon switcher
 	    wepSwitcher = gameObject.GetComponentInChildren<WeaponModelSwitcher>();
 
-
+        //Grab an instance of the inventory
 		inventory = Inventory.getInstance();
 
         //Add the default weapons
@@ -38,7 +48,7 @@ public class UnitPlayer : Unit {
         inventory.inventoryAddItem(myFirstSword);
 
         cheat(cheatAmount.a_little);//add all weapons
-        //cheat(cheatAmount.a_lot);//add all weapons
+        //cheat(cheatAmount.a_lot);//add all weapons and make them top tier
 
         base.Start();
 
@@ -102,7 +112,7 @@ public class UnitPlayer : Unit {
         inventory.inventoryAddItem(new ItemKey("The cheaters key"));
     }
     
-    //this function is called by the blockDestroyerScript to 
+    //this function is called to 
     //give crafting points to the player
 	public void incrementScore()
 	{
