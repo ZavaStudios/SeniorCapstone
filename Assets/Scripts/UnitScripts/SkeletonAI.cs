@@ -19,7 +19,7 @@ public class SkeletonAI : UnitEnemy
 		maxHealth = 50; // Half the health as a zombie and player.
 		health = 50;
         AttackDamage = 20.0f;
-		AttackDelay = 0.5f;
+		AttackDelay = 1.0f;
 
         //Add the audio source for when this unit attacks
         attackSound = gameObject.AddComponent<AudioSource>();
@@ -29,8 +29,6 @@ public class SkeletonAI : UnitEnemy
 	// Update is called once per frame
 	protected override void Update () 
 	{
-//		float angleToTarget = Mathf.Atan2((Player.position.x - transform.position.x), (Player.position.z - transform.position.z)) * Mathf.Rad2Deg;
-//		transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
 		base.Update();
 	}
 

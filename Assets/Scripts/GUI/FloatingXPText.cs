@@ -27,12 +27,10 @@ public class FloatingXPText : MonoBehaviour {
     {
 	    if(alpha > 0)
         {
-            //Vector3 pos = transform.position;
-            //pos.y += scrollSpeed * Time.deltaTime;
-            //transform.position = pos;
             alpha -= Time.deltaTime/duration;
             textColor.a = alpha;
             guiText.material.color = textColor;
+            print(transform.position);
         }
         else
         {
@@ -53,6 +51,7 @@ public class FloatingXPText : MonoBehaviour {
 
         if (!started)
         {
+            print("displaying" + textToDisplay);
             Vector3 pos = Camera.main.WorldToViewportPoint(parent2.position);
             alpha = 1;
             textColor.a = 1;

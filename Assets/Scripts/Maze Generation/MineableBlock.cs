@@ -49,20 +49,27 @@ public class MineableBlock : MonoBehaviour
 	{
         if (_cube.Type != ItemBase.tOreType.Stone && _cube.Type != ItemBase.tOreType.NOT_ORE)
         {
-            floatingOreText = (GameObject)GameObject.Instantiate(Resources.Load("FloatingXPText"), transform.position, Quaternion.identity);
-            floatingOreTextScript = floatingOreText.GetComponent<FloatingXPText>();
-            floatingOreTextScript.parent2 = transform;
-            floatingOreTextScript.enabled = true;
-            floatingOreTextScript.textColor = new Color(1.0f, 0.6f, 0.0f, 1.0f);
             ItemOre ore = new ItemOre(_cube.Type);
-            floatingOreTextScript.displayText("+1 " + ore.ToString());
+            StartCoroutine(FloatingXPTextDisplay(ore));
             Inventory.getInstance().inventoryAddItem(ore);
         }
-		//_cube.Parent.DestroyCube(_cube);
+	    //Destroy (gameObject);
+    }
+
+    private IEnumerator FloatingXPTextDisplay(ItemOre ore)
+	{
+		floatingOreText = (GameObject)GameObject.Instantiate(Resources.Load("FloatingXPText"), transform.position, Quaternion.identity);
+        floatingOreTextScript = floatingOreText.GetComponent<FloatingXPText>();
+        floatingOreTextScript.parent2 = transform;
+        floatingOreTextScript.textColor = new Color(1.0f, 0.6f, 0.0f, 1.0f);
+        yield return new WaitForEndOfFrame();
+        floatingOreTextScript.displayText("+1 " + ore.ToString());
+        Destroy(floatingOreText,2);
+
+        
         // Surface level parent should be a rogue room, so assume:
         renderer.material.SetTexture("_DecalTex", crackTextures[0]);
 		((RogueRoom)_cube.Parent).DestroyMineableBlock(this);
         
-	    //Destroy (gameObject);
     }
 }
