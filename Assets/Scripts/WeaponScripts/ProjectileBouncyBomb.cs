@@ -46,6 +46,7 @@ public class ProjectileBouncyBomb : MonoBehaviour {
     {
         float radius = 1.0f;
         
+        //use a sphere-overlap call to find out which objects are within radius of the bouncybomb.
         Collider[] colliders = Physics.OverlapSphere (transform.position, radius,allLayersButWorldBitMask);
 		
         foreach ( Collider hit in colliders) 

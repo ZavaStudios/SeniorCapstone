@@ -4,7 +4,8 @@ using System.Collections;
 public class ItemTextureSwitcher : MonoBehaviour
 {
     public static Material[] materials;
-    
+
+    //applies the appropriate material to a weapon model
     public virtual void SwitchTexture(ItemBase.tOreType type)
     {
         switch (type)

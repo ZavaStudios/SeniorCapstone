@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+
+//the itembase class keeps reference to all variables that are common to inventory items:
+//name, oretype, quantity (if stackable), description, type etc.
 public class ItemBase
 {
     protected string _name;
@@ -34,7 +37,7 @@ public class ItemBase
         Mithril = 5,
         Dragon = 6,
         Ethereal = 7,
-        Stone = 8,  // probably not intended to be in the inventory, but needed elsewhere
+        Stone = 8  
     }
 
 	public static List<tOreType> getNonCraftingOres()
@@ -58,7 +61,7 @@ public class ItemBase
         oreType = tOreType.NOT_ORE;
         type = tItemType.Item;
         _name = name;
-        _description = "This item is called " + _name + ".";
+        _description = "A fine " + _name + ".";
 		_quantity = 1;
 		
 		neededOreQuantity = 1;
@@ -69,7 +72,7 @@ public class ItemBase
 		this.oreType = oreType;
 		type = tItemType.Item;
 		_name = name;
-		_description = "This item is called " + _name + ".";
+		_description = "A fine " + _name + ".";
 		_quantity = 1;
 		
 		neededOreQuantity = 1;

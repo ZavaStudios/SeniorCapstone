@@ -8,7 +8,7 @@ public class UnitPlayer : Unit {
     public const float DefaultMoveSpeed = 8.0f;
     public const float DefaultMaxHealth = 100;
 
-    public const float healthPerSec = 1;
+    public const float healthPerSec = 1; //health regeneration
 
     private enum cheatAmount
     {
@@ -25,10 +25,8 @@ public class UnitPlayer : Unit {
 
 		inventory = Inventory.getInstance();
 
-
-		//Add the default weapons
-		//TODO Instead of using the weapon types, use the names. Need some way to map between the names back to the types
-        ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, 0.0f, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.",ItemBase.tOreType.Copper);
+        //Add the default weapons
+		ItemEquipment myFirstPickaxe = new ItemWeapon(1, 1.0f, 0, 0, 0.0f, "Rusty Pickaxe", ItemWeapon.tWeaponType.WeaponPickaxe, "A slightly worn, but reliable pickaxe.",ItemBase.tOreType.Copper);
 
         string bladeCode = ItemComponent.generateComponentCode (ItemComponent.tAttributeType.Normal, ItemBase.tOreType.Bone, ItemWeapon.tWeaponType.WeaponSword,
 		                                                       ItemComponent.tComponentPart.Blade);
@@ -40,7 +38,7 @@ public class UnitPlayer : Unit {
         inventory.inventoryAddItem(myFirstSword);
 
         //cheat(cheatAmount.a_little);//add all weapons
-        cheat(cheatAmount.a_lot);//add all weapons
+        //cheat(cheatAmount.a_lot);//add all weapons
 
         base.Start();
 
@@ -48,6 +46,8 @@ public class UnitPlayer : Unit {
         inventory.inventorySwitchWeapon();
     }
 
+
+    //this function is used as a development tool to add all weapons to the player.
     private void cheat(cheatAmount cheatHowBadly)
     {   
 
@@ -101,17 +101,21 @@ public class UnitPlayer : Unit {
         inventory.inventoryAddItem(myWeapon4);
         inventory.inventoryAddItem(new ItemKey("The cheaters key"));
     }
+    
+    //this function is called by the blockDestroyerScript to 
+    //give crafting points to the player
 	public void incrementScore()
 	{
 		CraftingPoints++;
 	}
 
+    //this function gets input from the player.
 	protected override void Update () 
 	{
         Health += healthPerSec * Time.deltaTime;
         Health = Mathf.Min(maxHealth,Health);
 
-		if(InputContextManager.isATTACK()) //or some other button on OUYA
+		if(InputContextManager.isATTACK()) 
 		{
 			if (weapon != null)
 				weapon.attack();
@@ -157,7 +161,9 @@ public class UnitPlayer : Unit {
 		m.movement.maxSidewaysSpeed = newSpeed;
 		m.movement.maxBackwardsSpeed = newSpeed;
 	}
-	    
+
+	//given an itemWeapon instance, equips the appropriate 
+    //weapon model and texture
 	public override void equipWeapon(ItemWeapon newWeapon)
     {
         if(newWeapon==null) {return;}
@@ -165,7 +171,9 @@ public class UnitPlayer : Unit {
         base.equipWeapon(newWeapon);
         wepSwitcher.SwitchWeapon(newWeapon.weaponType, newWeapon.oreType);
     }   
-        
+    
+
+    //this function should be called when the player dies
 	protected override void killUnit ()
 	{
 		
@@ -187,6 +195,7 @@ public class UnitPlayer : Unit {
 	{
 		yield return new WaitForSeconds(seconds);
 	}
+
     public override void playAttackAnimation()
     {
         wepSwitcher.playAnimation();

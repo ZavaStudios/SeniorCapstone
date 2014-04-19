@@ -19,9 +19,6 @@ public class ItemArmor : ItemEquipment {
         Legs = 2
 	};
 
-
-
-
     public static string generateArmorCode(ItemComponent.tAttributeType att, tOreType ore, ItemArmor.tArmorPart part)
 	{
 		return "" + (int)att + (int)ore + (int)part;
@@ -63,7 +60,6 @@ public class ItemArmor : ItemEquipment {
 		} 
 		else
 		{
-			//Debug.Log("Invalid component code. Code must be in the format [0-2][0-7][0-5][0-1]");
 			strName = "N/A";
 		}
 

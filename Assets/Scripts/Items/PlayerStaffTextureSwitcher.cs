@@ -3,6 +3,7 @@ using System.Collections;
 
 public class PlayerStaffTextureSwitcher : ItemTextureSwitcher
 {
+    //sets the appropriate material on the model on the staff prefab, which was constructed differently from other weapon prefabs.
     public override void SwitchTexture(ItemBase.tOreType type)
     {
         switch (type)

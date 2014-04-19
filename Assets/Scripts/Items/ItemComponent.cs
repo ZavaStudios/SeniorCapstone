@@ -75,14 +75,11 @@ public class ItemComponent : ItemEquipment {
 		} 
 		else if (strCode.Length == 2) 
 		{
-			//TODO If we want to avoid having something like staff blade, then make some cases of numbers or
-			//		change tComponentType names to more generic things like offensive/defensive part
 			strName += ((ItemWeapon.tWeaponType)(Char.GetNumericValue(strCode[0]))).ToString () + " ";
 			strName += ((tComponentPart)(Char.GetNumericValue(strCode[1]))).ToString () + " ";
 		}
 		else
 		{
-			//Debug.Log("Invalid component code. Code must be in the format [0-2][0-7][0-5][0-1]");
 			strName = "N/A";
 		}
 
@@ -93,14 +90,7 @@ public class ItemComponent : ItemEquipment {
 	{
 		return ItemComponent.getComponentName (this.strComponentCode);
 	}
-
-    //public ItemComponent(string name, tItemType itemtype) 
-    //    : base(name, itemtype)
-    //{
-    //    this.type = itemtype;
-        
-    //}
-
+    
     public ItemComponent(float damage, float atkspd, float armor, float health, float moveSpeedModifier, string name, string componentCode, string description)
 		: base(damage,atkspd,armor,health,moveSpeedModifier,ItemComponent.getComponentName(componentCode),tItemType.Component,description)
 	{

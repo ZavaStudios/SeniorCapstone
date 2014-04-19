@@ -1,40 +1,44 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+
+/// <summary>
+/// This script is responsible for keeping reference to the player weapon models,
+/// enabling and disabling/texture swapping, and playing animations
+/// </summary>
 public class WeaponModelSwitcher : MonoBehaviour 
 {
     public GameObject sword;
     public GameObject pickaxe;
 	public GameObject staff;
-    //public GameObject crappy_toolbox;
     public GameObject wrench;
     public GameObject bow;
 	public GameObject key;
     private GameObject Active;
-    //private UnitPlayer PlayerCharacter;
     
     public void start()
     {
         sword.SetActive(false);
         pickaxe.SetActive(false);
 		staff.SetActive(false);
-        //crappy_toolbox.SetActive(false);
         wrench.SetActive(false);
         bow.SetActive(false);
 		key.SetActive(false);
     }
     
+    //given a newWeapon type and an oreType, swaps the weapon model to the appropriate
+    //model and texture
     public void SwitchWeapon(ItemWeapon.tWeaponType newWeapon, ItemWeapon.tOreType oreType)
     {
         sword.SetActive(false);
         pickaxe.SetActive(false);
 		staff.SetActive(false);
-        //crappy_toolbox.SetActive(false);
         wrench.SetActive(false);
         bow.SetActive(false);
 		key.SetActive(false);
-        
-        //PlayerCharacter = GameObject.FindGameObjectWithTag("Player").GetComponent<UnitPlayer>();
+      
+        //switch model to the model used for new weapon type.
         switch(newWeapon)
         {
             case ItemWeapon.tWeaponType.WeaponBow:
@@ -68,7 +72,7 @@ public class WeaponModelSwitcher : MonoBehaviour
             
         }
 
- 
+        //apply the texture.
         if (newWeapon != ItemWeapon.tWeaponType.WeaponStaff)
         {
             ItemTextureSwitcher texSwitcher;
@@ -92,6 +96,8 @@ public class WeaponModelSwitcher : MonoBehaviour
 
     }
     
+    //keeps track of which weapon is currently equippped
+    //and plays the appropriate attack animation.
     public void playAnimation()
     {
         if (!Active) return;
@@ -114,13 +120,11 @@ public class WeaponModelSwitcher : MonoBehaviour
         }
         else if (Active == wrench )
         {
-            //crappy_toolbox.animation.PlayQueued("ToolBoxSwing");
             Active.animation.PlayQueued("WrenchBonk");
         }
         else if (Active == key )
         {
             Active.animation.PlayQueued("KeyUnlock");
-            //print ("no animation found");
         }
     }
 }
