@@ -7,7 +7,7 @@ using System.Collections;
 public static class ItemFactory 
 {
 	/// <summary>
-	/// Given two itemComponents, one a handle, one a blade, creates a weapon.
+	/// 
 	/// </summary>
 	/// <param name="blade"></param>
 	/// <param name="handle"></param>
@@ -20,22 +20,23 @@ public static class ItemFactory
 		//If we don't have all the required parts, return null
 		if(!haveBladeAndHandle)
 			return null;
-        
+
+		int bladeType = (int)ItemComponent.getComponentAttribute(blade.strComponentCode);
+		int handleType = (int)ItemComponent.getComponentAttribute(handle.strComponentCode);
+
 		int bladeWeaponType = (int)ItemComponent.getComponentWeaponType (blade.strComponentCode);
 		int handleWeaponType = (int)ItemComponent.getComponentWeaponType (handle.strComponentCode);
 		
-		if ( bladeWeaponType != handleWeaponType) //Can't mix weapon types(e.g. sword, bow)
+		if (bladeType != handleType || bladeWeaponType != handleWeaponType) //Can't mix attributes(e.g. light and heavies) or weapon types(e.g. sword, bow)
 		{
 			return null;
 		} 
 		
-
-        //stats of weapon are combined stats.
         float totalDmg = handle.damage + blade.damage;
 		float totalSpeed = handle.atkspd + blade.atkspd;
         float totalArmor = blade.armor + handle.armor;
 		float totalHealth = blade.health + handle.health;
-        float totalMoveSpeedModifier = handle.moveSpeedModifier + blade.moveSpeedModifier; 
+        float totalMoveSpeedModifier = handle.moveSpeedModifier + blade.moveSpeedModifier; //get moveSpeed from handle
 
 		string handleOre = ItemBase.getOreString(handle.oreType);
 		string bladeOre = ItemBase.getOreString(blade.oreType);
@@ -49,12 +50,7 @@ public static class ItemFactory
 		return new ItemWeapon(totalDmg,totalSpeed,totalArmor,totalHealth,totalMoveSpeedModifier,weaponName,wepType,weaponDescription,blade.oreType);
 	}
 
-    /// <summary>
-    /// This function is used to create a new armor given a string code.
-    /// </summary>
-    /// <param name="strArmorCode"> strArmorCode is 3 character string, abc, where a= tAttributeType{Light=0, Normal=1, Heavy=2}, b=tOreType, c=tArmorPart</param>
-    /// For definitions of tAttributeType, tOreType, tArmorPart, see the definitions in ItemArmor.cs
-    /// <returns></returns>
+    //creates an ItemArmor based on the ArmorCode passed to it.
     public static ItemArmor createArmor (string strArmorCode)
     {
         int oreType =(int) ItemArmor.getArmorOre (strArmorCode); 
@@ -123,15 +119,6 @@ public static class ItemFactory
         return new ItemArmor (damage, speed, armor, health, moveSpeedModifier, itemName, strArmorCode, itemDescription);
     }
 
-
-    /// <summary>
-    /// This function, given an item component code, generates an apropriate itemComponent object.
-    /// </summary>
-    /// <param name="strCompCode">strCmpCode is 4 characters, abcd: where a=tAttributeType {Light=0, Normal=1, Heavy=2}, b=tOreType, c=tWeaponType d={handle=0, blade=1}.
-    /// for definition of tAttributeType, tOreType, tWeaponTypes, see the defintion in itemComponent.cs
-	///	Example: 0300 = Light iron sword handle
-	///	Example: 2731 = Heavy ethereal toolbox blade</param>
-    /// <returns>ItemComponent</returns>
 	public static ItemComponent createComponent (string strCompCode)
 	{
 		ItemBase.tOreType oreType = ItemComponent.getComponentOre (strCompCode);
