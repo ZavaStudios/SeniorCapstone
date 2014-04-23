@@ -27,7 +27,7 @@ public static class ItemFactory
 		int bladeWeaponType = (int)ItemComponent.getComponentWeaponType (blade.strComponentCode);
 		int handleWeaponType = (int)ItemComponent.getComponentWeaponType (handle.strComponentCode);
 		
-		if (bladeType != handleType || bladeWeaponType != handleWeaponType) //Can't mix attributes(e.g. light and heavies) or weapon types(e.g. sword, bow)
+		if (bladeWeaponType != handleWeaponType) //Can't mix attributes(e.g. light and heavies) or weapon types(e.g. sword, bow)
 		{
 			return null;
 		} 
