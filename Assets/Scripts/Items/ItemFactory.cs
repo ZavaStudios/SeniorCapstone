@@ -145,11 +145,11 @@ public static class ItemFactory
                 speed += 2.05f - (int)oreType * 0.15f; // from 2.1 second delay to 0.85 second delay > 64 possible dps, also special attack
             break;
             case ItemWeapon.tWeaponType.WeaponSword:
-                damage += 25 + 2 * (int) oreType + (((int)oreType*(int)oreType)/49)*50; // 28-89 damage
+                damage += 27 + 5 * (int) oreType + (((int)(oreType-1)*(int)(oreType-1))/49)*50; // 28-89 damage
                 speed += 2.00f - (int)oreType * 0.1f; // from 2.1 second delay to 1.2 second delay > 74 possible dps, also special attack
             break;
             case ItemWeapon.tWeaponType.WeaponToolbox:
-                damage += 25 + 5 * (int) oreType; // 30, 35, 40, 45, 50, 55, 60, 65
+                damage += 20 + 5 * (int) oreType; // 30, 35, 40, 45, 50, 55, 60, 65
                 speed += 1.9f - (int)oreType * 0.1f; // from 1.8 second delay to 1.0 second delay > 65 possible dps, also special attack
             break;
             default:

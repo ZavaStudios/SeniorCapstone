@@ -449,9 +449,9 @@ public class Hud : MonoBehaviour
         {
             GUI.BeginGroup(new Rect(4 * groupWidth + screenX0, screenY0, groupWidth, groupHeight));
             if (craftingState.Equals(tCraftingState.WEAPON_TYPE))
-                GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingWeaponTypes[intCraftingWeaponTypes].ToString(), categoryStyleActive);
+                GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), ItemComponent.getWeaponTypeName(craftingWeaponTypes[intCraftingWeaponTypes]), categoryStyleActive);
             else
-                GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), craftingWeaponTypes[intCraftingWeaponTypes].ToString(), categoryStyle);
+                GUI.Label(new Rect(0, labelHeight, groupWidth, groupHeight - labelHeight), ItemComponent.getWeaponTypeName(craftingWeaponTypes[intCraftingWeaponTypes]), categoryStyle);
             GUI.EndGroup();
         }
 
@@ -471,17 +471,15 @@ public class Hud : MonoBehaviour
             //Make the item and display the requirements
             String armorCode = ItemArmor.generateArmorCode(craftingAttributes[intCraftingAttributes], craftingOres[intCraftingOres], armors[intCraftingTypesInCategory]);
             ItemArmor madeArmor = ItemFactory.createArmor(armorCode);
-            fullDescription = "\n" +
-                        madeArmor.description + "\n" +
-                        "Stats" + "\n" +
-                        "Damage: " + madeArmor.damage + "\n" +
-                        "Armor: " + madeArmor.armor + "\n" +
+            fullDescription = 
+                        madeArmor.name + "\n\n" + 
+                        "Damage: " + (int)madeArmor.damage + "\n" +
+                        "Armor: " + (int)madeArmor.armor + "\n" +
                         "Attack Speed: " + madeArmor.atkspd + "\n" +
                         "\n" + "\n" +
-                        "Materials(Have <-> Needed): " + "\n" +
+                        "Materials:\n(Have <-> Need)" + "\n" +
                         madeArmor.oreType + ": " + inventory.getOreQuantity(madeArmor.oreType) + " <-> " + madeArmor.neededOreQuantity + "\n" +
-                        "Crafting Points: " + player.CraftingPoints + " <-> " + madeArmor.neededPoints + "\n" +
-                        "\n" + "\n";
+                        "Crafting Points: " + player.CraftingPoints + " <-> " + madeArmor.neededPoints;
         }
         else
         {
@@ -490,21 +488,19 @@ public class Hud : MonoBehaviour
                                                 craftingWeaponTypes[intCraftingWeaponTypes], (ItemComponent.tComponentPart)craftingTypeInCategory[intCraftingTypesInCategory]);
             ItemComponent madeComponent = ItemFactory.createComponent(componentCode);
 
-            fullDescription = "\n" +
-                        madeComponent.description + "\n\n" +
-                        "Stats" + "\n\n" +
-                        "Damage: " + madeComponent.damage + "\n" +
-                        "Armor: " + madeComponent.armor + "\n" +
+            fullDescription = 
+                        madeComponent.name + "\n\n" +
+                        "Damage: " + (int)madeComponent.damage + "\n" +
+                        "Armor: " + (int)madeComponent.armor + "\n" +
                         "Attack Speed: " + madeComponent.atkspd + "\n" +
                         "\n" + "\n" +
-                        "Materials(Have <-> Needed): " + "\n" +
+                        "Materials:\n(Have <-> Need)" + "\n" +
                         madeComponent.oreType + ": " + inventory.getOreQuantity(madeComponent.oreType) + " <-> " + madeComponent.neededOreQuantity + "\n" +
-                        "Crafting Points: " + player.CraftingPoints +  "  <-> " + madeComponent.neededPoints + "\n" +
-                        "\n" + "\n";
+                        "Crafting Points: " + player.CraftingPoints +  "  <-> " + madeComponent.neededPoints;
         }
         
         //Display the description which shows stats and requirements
-        GUI.Label(new Rect(0, 0, groupWidth, groupHeight), fullDescription, descriptionStyle);
+        GUI.Label(new Rect(0, 0, groupWidth-5, groupHeight), fullDescription, descriptionStyle);
         GUI.EndGroup();
     }
 

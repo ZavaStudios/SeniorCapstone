@@ -61,6 +61,37 @@ public class ItemComponent : ItemEquipment {
 		return "" + (int)wep + (int)part;
 	}
 
+
+    public static string getWeaponTypeName(ItemWeapon.tWeaponType wep)
+    {
+        string strName = "";
+
+        switch(wep)
+        {
+            case ItemWeapon.tWeaponType.WeaponBow:
+                strName += "Bow ";
+                break;
+            case ItemWeapon.tWeaponType.WeaponSword:
+                strName += "Sword ";
+                break;
+            case ItemWeapon.tWeaponType.WeaponStaff:
+                strName += "Staff ";
+                break;
+            case ItemWeapon.tWeaponType.WeaponToolbox:
+                strName += "Toolbox ";
+                break;
+            case ItemWeapon.tWeaponType.WeaponPickaxe:
+                strName += "Pickaxe ";
+                break;
+            case ItemWeapon.tWeaponType.WeaponKey:
+                strName += "Pickaxe ";
+                break;
+        }
+
+        return strName;
+    }
+
+
 	/// <summary>
 	/// This method takes a full component code (length 4) and returns the name, or
 	/// a partial code (length 2) of the category e.g. sword handle or sword blade
@@ -75,13 +106,13 @@ public class ItemComponent : ItemEquipment {
 		{
 			strName += ((tAttributeType)(Char.GetNumericValue(strCode[0]))).ToString () + " ";
 			strName += ((tOreType)(Char.GetNumericValue(strCode[1]))).ToString () + " ";
-			strName += ((ItemWeapon.tWeaponType)(Char.GetNumericValue(strCode[2]))).ToString () + " ";
+			strName += getWeaponTypeName((ItemWeapon.tWeaponType)(Char.GetNumericValue(strCode[2])));            
 			strName += ((tComponentPart)(Char.GetNumericValue(strCode[3]))).ToString () + " ";
 			
 		} 
 		else if (strCode.Length == 2) 
 		{
-			strName += ((ItemWeapon.tWeaponType)(Char.GetNumericValue(strCode[0]))).ToString () + " ";
+            strName += getWeaponTypeName((ItemWeapon.tWeaponType)(Char.GetNumericValue(strCode[0])));   
 			strName += ((tComponentPart)(Char.GetNumericValue(strCode[1]))).ToString () + " ";
 		}
 		else
