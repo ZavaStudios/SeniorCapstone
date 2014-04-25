@@ -28,6 +28,7 @@ public class EnemyStaff : WeaponBase
 	{
 		 // Instantiate the projectile at the position and rotation of this transform
     	ProjectileFireball p;
+        //TODO Victor got warnings about "Referenced Script on this Behavior is Missing". Things work fine, but could this be because the player is null?
     	GameObject clone = (GameObject)GameObject.Instantiate(Resources.Load("FireballEnemy"), new Vector3(startPos.x, player.position.y, startPos.z), Character.getLookRotation());
 		p = (ProjectileFireball)clone.gameObject.AddComponent("ProjectileFireball");
 		Physics.IgnoreCollision(clone.collider, enemyCollider);

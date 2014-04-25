@@ -16,6 +16,9 @@ public class UnitPlayer : Unit
 
     public const float healthPerSec = 1; //health regeneration
 
+    //A whole screen flash when damage is taken
+    GameObject damageTexture;
+
     //Cheats make testing easier
     private enum cheatAmount
     {
@@ -55,8 +58,28 @@ public class UnitPlayer : Unit
 
         inventory.initialize();//calling initialize here ensures inventory Character field is set before it is used
         inventory.inventorySwitchWeapon();
-    }
 
+        //Create a new gameobejct with a GUITexture attached to it
+        damageTexture = new GameObject();
+        damageTexture.AddComponent("GUITexture");
+
+        //Store away the color struct that gets returned and change it before saving it back again. Can't change color.a in one line
+        Color damageTextureColor = damageTexture.guiTexture.color;
+        damageTextureColor.a = 0;
+
+        //Get the texture that should take up the whole screen
+        Texture2D hurtScreen = (Texture2D)Resources.Load("HurtScreen");
+
+        //Center the damageTexture
+        Vector3 damagePos = damageTexture.transform.position;
+        damagePos.x = 0.5f; //GUITexture corrdinates are a bit different than usual ones
+        damagePos.y = 0.5f;
+        damagePos.z = 0f;
+        damageTexture.transform.position = damagePos;
+
+        damageTexture.guiTexture.texture = hurtScreen;
+        damageTexture.guiTexture.color = damageTextureColor;
+    }
 
     //this function is used as a development tool to add all weapons to the player.
     private void cheat(cheatAmount cheatHowBadly)
@@ -203,30 +226,36 @@ public class UnitPlayer : Unit
 
     public override void doDamage(float amount)
     {
+        StartCoroutine(FlashWhenHit());
+
         base.doDamage(amount);
-
-        FlashWhenHit();
     }
 
-    private IEnumerable FlashWhenHit()
+    private IEnumerator FlashWhenHit()
     {
-        GUITexture damageTexture = (GUITexture)Resources.Load("redBackground");
-        Fade(0.0f, 0.8f, 0.5f, damageTexture);
-        yield return new WaitForSeconds(.01f);
-        Fade(0.8f, 0.0f, 0.5f, damageTexture);
+        StartCoroutine(Fade(0.0f, 0.8f, 0.0001f, damageTexture));
+        yield return new WaitForSeconds(.1f);
+        StartCoroutine(Fade(0.8f, 0.0f, 0.0001f, damageTexture));
     }
 
-    private IEnumerable Fade(float start, float end, float length, GUITexture currentObject)
-    { //define Fade parmeters
+    private IEnumerator Fade(float start, float end, float length, GameObject currentObject)
+    {
         if (currentObject.guiTexture.color.a == start)
         {
             for (float i = 0.0f; i < 1.0; i += Time.deltaTime * (1 / length))
-            { //for the length of time
+            { 
+                Color newColor = currentObject.guiTexture.color;
+
                 float newAlpha = Mathf.Lerp(start, end, i); //lerp the value of the transparency from the start value to the end value in equal increments
-                currentObject.guiTexture.color = new Color(currentObject.guiTexture.color.r, currentObject.guiTexture.color.g, currentObject.guiTexture.color.b, newAlpha);
+                newColor.a = newAlpha;
+
+                currentObject.guiTexture.color = newColor;
                 yield return null;
+
                 // ensure the fade is completely finished (because lerp doesn't always end on an exact value)
-                currentObject.guiTexture.color = new Color(currentObject.guiTexture.color.r, currentObject.guiTexture.color.g, currentObject.guiTexture.color.b, end); 
+                newColor = currentObject.guiTexture.color;
+                newColor.a = end;
+                currentObject.guiTexture.color = newColor; 
             }
         }
     }

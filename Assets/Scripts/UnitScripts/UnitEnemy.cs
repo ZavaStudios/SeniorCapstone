@@ -52,7 +52,6 @@ public class UnitEnemy : Unit
 		if(weapon && (distance <= weapon.attackRange))
 		{
 			weapon.attack();
-            Debug.Log("Attacking");
             
 			float angleToTarget = Mathf.Atan2((PlayerPosition.x - transform.position.x), (PlayerPosition.z - transform.position.z)) * Mathf.Rad2Deg;
 			transform.eulerAngles = new Vector3(0, Mathf.MoveTowardsAngle(transform.eulerAngles.y, angleToTarget, Time.deltaTime * turnSpeed), 0);
