@@ -21,9 +21,6 @@ public static class ItemFactory
 		if(!haveBladeAndHandle)
 			return null;
 
-		int bladeType = (int)ItemComponent.getComponentAttribute(blade.strComponentCode);
-		int handleType = (int)ItemComponent.getComponentAttribute(handle.strComponentCode);
-
 		int bladeWeaponType = (int)ItemComponent.getComponentWeaponType (blade.strComponentCode);
 		int handleWeaponType = (int)ItemComponent.getComponentWeaponType (handle.strComponentCode);
 		

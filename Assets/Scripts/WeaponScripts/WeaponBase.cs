@@ -19,6 +19,9 @@ public class WeaponBase : MonoBehaviour
 	private float nextAttack = 0.0f;
     protected float nextSpecialAttack = 0.0f;
 
+    //Action sounds
+    protected AudioSource attackSound;
+
 	// Use this for initialization
 	virtual protected void Start ()
 	{
@@ -36,10 +39,12 @@ public class WeaponBase : MonoBehaviour
     {
         if (Time.time >= nextAttack)
 	    {
+            if (attackSound != null && !attackSound.isPlaying)
+                attackSound.Play();
+
 	        nextAttack = Time.time + Character.AttackDelay;
        		attackRoutine(Character.getEyePosition(),Character.getLookDirection());
                 
-            
 			if(Character is UnitPlayer)
 				Character.playAttackAnimation();
 	    }

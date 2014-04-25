@@ -18,6 +18,10 @@ public class EnemyStaff : WeaponBase
 		base.Start();
 		
 		enemyCollider = this.collider;
+
+        //Add the audio source for when this unit attacks
+        attackSound = gameObject.AddComponent<AudioSource>();
+        attackSound.clip = (AudioClip)Resources.Load("Sounds/Fireball");
 	}
 	
 	protected override void attackRoutine (Vector3 startPos, Vector3 faceDir)

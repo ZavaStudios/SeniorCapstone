@@ -22,10 +22,6 @@ public class ZombieAI : UnitEnemy
 		AttackDamage = 20.0f;
 		AttackDelay = 4.0f;
         armor = 20;
-
-        //Add the audio source for when this unit attacks
-        attackSound = gameObject.AddComponent<AudioSource>();
-        attackSound.clip = (AudioClip)Resources.Load("Sounds/Zombie");
 	}
 	
 	// Update is called once per frame

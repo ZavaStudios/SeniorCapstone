@@ -9,6 +9,10 @@ public class SpiderWeapon : ZombieWeapon
 	{
 		base.Start();
 		attackRange = 2;
+
+        //Add the audio source for when this unit attacks
+        attackSound = gameObject.AddComponent<AudioSource>();
+        attackSound.clip = (AudioClip)Resources.Load("Sounds/Spider");
 	}
 	
 	// Update is called once per frame

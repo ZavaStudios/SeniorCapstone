@@ -10,6 +10,10 @@ public class ZombieWeapon : WeaponBase
 	{
         base.Start();
         attackRange = 2.5f;
+
+        //Add the audio source for when this unit attacks
+        attackSound = gameObject.AddComponent<AudioSource>();
+        attackSound.clip = (AudioClip)Resources.Load("Sounds/Zombie");
 	}
 	
 	// Update is called once per frame
